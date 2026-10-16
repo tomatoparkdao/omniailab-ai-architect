@@ -333,7 +333,7 @@ Hit any one of these and you may, at best, redo a stretch of work — at worst, 
 | 19 | Delete licence information to zero the report | Licence violation, legal risk | `compliance-required` is not counted as pending — **do not delete it** |
 | 20 | Push to GitHub without specifying a proxy | The git protocol is blocked, `read operation timed out` | `HTTPS_PROXY=http://127.0.0.1:7890 … sync`; the sandbox default proxy only allows the API |
 | 21 | Assume the code broke when the token expires | Wasted debugging | A PAT has an expiry; just re-authorise once when it lapses |
-| 22 | Bump the version but do not sync all four places | Version mismatch | `VERSION` / `SKILL.md` / `installer/manifest.json` / both READMEs must agree |
+| 22 | Bump the version but do not sync | Version mismatch | `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` and both READMEs must agree |
 | 23 | Add a dependency without a licence check | Compliance risk | Register it in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) first, then in `brand_policy` |
 | 24 | Install a dependency and use it without asking "can it degrade" | Breaks zero hard dependencies | Before adding a dependency, ask first: can it degrade? |
 | 25 | Delete `omniarchitect/` as a duplicate directory | The project will not run at all | It is the **code itself** (the internal engine codename), not a duplicate |

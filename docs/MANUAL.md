@@ -594,7 +594,7 @@ python -m omniarchitect policy --write docs   # 品牌 / 供应商 / 凭据 / fa
 | 19 | 为了报告归零删掉许可证信息 | 违反许可证，法律风险 | `compliance-required` 不计入待处理，**不要删** |
 | 20 | 推 GitHub 未指定代理 | git 协议被拦，`read operation timed out` | `HTTPS_PROXY=http://127.0.0.1:7890 … sync`；沙箱默认代理只放行 API |
 | 21 | 令牌过期后以为是代码坏了 | 白排查 | PAT 有有效期，到期重新授权一次即可 |
-| 22 | 改了版本号但没同步四处 | 版本不一致 | `VERSION` / `SKILL.md` / `installer/manifest.json` / 两份 README 必须一致 |
+| 22 | 改了版本号但没同步 | 版本不一致 | `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README 必须一致 |
 | 23 | 新增依赖没做许可证核查 | 合规风险 | 先在 `THIRD_PARTY_NOTICES.md` 登记，再在 `brand_policy` 登记 |
 | 24 | 装了依赖就直接用而不问「能不能降级」 | 破坏零硬依赖 | 新增依赖前先问：能不能降级？ |
 | 25 | 把 `omniailab_ai_architect/` 当成重复目录删掉 | 项目直接跑不起来 | 它是**代码本体**（内部代号 `omniarchitect`），不是重复 |
@@ -660,7 +660,7 @@ python -m omniarchitect verify --project <项目目录>
 **改完必须跑的三项自检**：
 
 ```bash
-python scripts/run_tests.py        # 全量测试（当前 238 项，15 模块）
+python scripts/run_tests.py        # 全量测试（16 个模块）
 python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
 python -m omniarchitect audit --write docs && python -m omniarchitect policy --write docs
 ```
@@ -669,7 +669,7 @@ python -m omniarchitect audit --write docs && python -m omniarchitect policy --w
 
 1. 每份 `.md` 的开头是统一的 front-matter，结尾是署名行（README 例外，按参考仓库做法不带元数据）；
 2. 表格用 `|---|---|` 写法（不补空格），内容要足够长，保证在 GitHub 上撑满宽度、各处宽度一致；
-3. 版本号在 `VERSION` / `SKILL.md` / `installer/manifest.json` / 两份 README 四处保持一致。
+3. 版本号在 `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README 之间保持一致。
 
 **获取帮助**：与文档或 Skill 本体有关的问题，欢迎在
 [开源仓库](https://github.com/tomatoparkdao/omniailab-ai-architect)提 issue——留在仓库里最不容易丢。
