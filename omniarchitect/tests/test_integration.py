@@ -218,8 +218,9 @@ def test_user_facing_files_carry_no_external_promotion():
         text = (ROOT / rel).read_text(encoding="utf-8")
         urls = _ca.PATTERNS["url"].findall(text)
         for u in urls:
-            assert any(d in u for d in _ca.OWN_DOMAINS) or \
-                any(h in u for h in _ca.BENIGN_URL_HOSTS), f"{rel}: {u}"
+            assert (any(d in u for d in _ca.OWN_DOMAINS)
+                    or any(u.startswith(p) for p in _ca.OWN_URL_PREFIXES)
+                    or any(h in u for h in _ca.BENIGN_URL_HOSTS)), f"{rel}: {u}"
 
 
 def test_a_user_facing_file_with_external_promotion_is_flagged():
@@ -359,10 +360,12 @@ def test_frontmatter_tail_is_identical_in_every_markdown():
     from omniarchitect.paths import project_version
 
     version = project_version()
+    # README 是 GitHub 首页：按参考仓库做法不带 front-matter（见 normalize_attribution）
+    no_fm = ("README.md", "README_EN.md")
     bad = []
     for p in sorted(ROOT.rglob("*.md")):
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
-        if rel.startswith(("out/", "projects/")):
+        if rel.startswith(("out/", "projects/")) or rel in no_fm:
             continue
         text = p.read_text(encoding="utf-8")
         assert text.startswith("---"), rel
@@ -371,6 +374,23 @@ def test_frontmatter_tail_is_identical_in_every_markdown():
             if f"{key}: {value}" not in fm:
                 bad.append(f"{rel}: {key}")
     assert not bad, bad
+
+
+def test_readme_carries_no_frontmatter_and_links_repo_and_manual():
+    """README 按参考仓库做法不带元数据，但必须带仓库地址与手册地址。"""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "normalize_attribution", ROOT / "scripts" / "normalize_attribution.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)          # type: ignore[union-attr]
+
+    for rel in ("README.md", "README_EN.md"):
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        assert not text.startswith("---"), f"{rel} 不应有 front-matter"
+        assert mod.OPEN_REPO_URL in text, f"{rel} 缺少仓库地址"
+        assert mod.MANUAL_CN_URL in text or mod.MANUAL_NOTION_URL in text, \
+            f"{rel} 缺少操作手册地址"
 
 
 def test_generated_reports_carry_the_same_header_and_footer():

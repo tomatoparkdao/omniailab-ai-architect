@@ -60,12 +60,16 @@ SIGNATURE_SHORT_EN = "> © OmniAiLab ｜ Developer: Mochiball"
 # Unified front-matter. Every Markdown file in this repository opens with the
 # same tail block; file-type-specific keys come first. `scripts/normalize_
 # attribution.py` enforces this over the whole tree and `--check` is a test.
+# 地址取自 paths（唯一来源），不在这里另写一份。
+from .paths import MANUAL_CN_URL as _MANUAL_CN_URL  # noqa: E402
+from .paths import REPO_URL as _REPO_URL  # noqa: E402
+
 FRONTMATTER_TAIL: tuple = (
     ("author", "OmniAiLab"),
     ("developer", "Mochiball"),
     ("agent_created", "true"),
-    ("开源仓库", "待发布"),
-    ("操作手册", "待发布"),
+    ("开源仓库", _REPO_URL),
+    ("操作手册", _MANUAL_CN_URL),
 )
 
 

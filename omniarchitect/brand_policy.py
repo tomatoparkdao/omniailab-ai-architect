@@ -83,6 +83,16 @@ ALLOWED_HOSTS: Dict[str, str] = {
     "omniailab.cn": "自有平台（海外）",
 }
 
+# 本产品自有 URL —— 与「自有站点」同等对待，任何位置都允许：
+# 自己的源码仓库、自己的操作手册（飞书主文档 + Notion 镜像）。
+# 它们不是"第三方推广链接"，而是本产品的官方地址，所以登记为自有。
+OWN_URLS: Tuple[str, ...] = (
+    "https://github.com/tomatoparkdao/omniailab-ai-architect",
+    "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd",
+    "https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d",
+    "https://tomatopark.notion.site/",
+)
+
 # 规范命名空间与本地地址：不是推广链接，任何位置都允许。
 BENIGN_HOSTS: Dict[str, str] = {
     "schemas.openxmlformats.org": "OOXML 规范命名空间",
@@ -496,7 +506,8 @@ DEPENDENCY_FILES = (
 
 # 运行环境宿主允许出现的文件（宿主登记处）。
 HOST_ALLOWED_FILES = (
-    "compatibility/", "docs/INSTALL.md", "README.md", "README_EN.md",
+    "compatibility/", "docs/INSTALL.md", "docs/MANUAL.md",
+    "README.md", "README_EN.md",
     "omniarchitect/integration/agent_skills.py",
     "installer/", "scripts/",
 )
@@ -803,6 +814,9 @@ def _rule_urls(rel: str, text: str, hits: List[Hit]) -> None:
     licence_file = _is_licence_file(rel)
     for m in re.finditer(r"https?://[^\s)\]\"'`<>]+", text):
         raw = m.group(0).rstrip(".,;")
+        # 自有 URL（本产品仓库 / 操作手册）与自有站点同等对待
+        if any(raw.startswith(u) for u in OWN_URLS):
+            continue
         host = _host_of(raw)
         if not host:
             continue
@@ -837,6 +851,9 @@ def _rule_implicit_endpoint(rel: str, text: str, hits: List[Hit]) -> None:
         return
     for m in CODE_ENDPOINT_RE.finditer(text):
         url = m.group(1)
+        # 自有 URL（本产品仓库 / 操作手册）不是"隐式外部端点"
+        if any(url.startswith(u) for u in OWN_URLS):
+            continue
         host = _host_of(url)
         if not host or host_status(host) in ("own", "benign", "licence"):
             continue
@@ -1243,7 +1260,7 @@ __all__ = [
     "LICENCE_ALLOWED_PATHS", "REGISTERED_MODEL_ROUTES",
     "REGISTERED_LOCAL_TOOLS", "REGISTERED_MCP_SERVERS", "REGISTERED_RUNTIME_HOSTS",
     "APPROVED_DEPENDENCIES", "NOTICE_FILE", "LICENCE_DIR",
-    "FORBIDDEN_CREATIVE_PLATFORMS", "PROMO_PATTERNS",
+    "FORBIDDEN_CREATIVE_PLATFORMS", "PROMO_PATTERNS", "OWN_URLS",
     "FOREIGN_ATTRIBUTION_PATTERNS", "CREDENTIAL_PATTERNS",
     "CREATIVE_SCOPES", "BUILTIN_SCOPES", "CREATIVE_OWNER", "ROUTE_ALLOWLIST",
     "REGISTERED_PROVIDER_IDS", "RULES", "DISPOSITIONS", "DISPOSITION_MEANING",

@@ -5,11 +5,83 @@ version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 变更记录
+
+## v1.3.0 · 后续补充二 — 操作手册、README 对齐参考仓库、仓库与手册地址入册
+
+版本号仍为 **1.3.0**（全仓统一，不新开小版本）。
+
+### 新增操作手册（可被技能调用）
+
+- **`docs/MANUAL.md`**：完整操作手册，15 章 —— 这份手册怎么用 / 如何调用 / 八阶段与八道门禁 /
+  三步启动 / 示例对话 / 逐阶段操作细则 S1–S8 / 门禁后置动作（概念效果图）/ 能力速查 30 项 /
+  工具与权限 / 平台接入与创作能力独占 / 品牌署名合规 / **避坑总表 25 条** / 常见问题 /
+  交付物清单 / 版本同步。
+- **手册同时发布三处，内容一致、版本同步**：飞书主文档（可批注）· Notion 镜像 · 仓库内
+  `docs/MANUAL.md`（**离线可用**）。
+- **新增 `omniarchitect/manual.py`**：手册指针模块。把「去查手册」做成**可在代码里查表定位**的东西，
+  而不是文档里的一句建议：
+  - `SECTIONS` 把 23 个主题映射到手册章节（`degraded` → 9.2、`platform` → 10、`pitfalls` → 12 …）；
+  - `hint(topic)` 给一行提示，`pointer(topic)` 给三处地址，未登记主题兜底到避坑总表。
+- **新增 CLI `manual`**：`manual` 列三处地址与主题表；`manual --topic <主题>` 定向；
+  `manual --read [--section "避坑"]` **离线读手册正文指定章节**；`--json` 机器可读。
+  `--help` 的 epilog 也印出手册与仓库地址。
+- **把提醒接到实际会卡住的地方**：`doctor` 有工具缺失时、`providers` 平台未配置时、
+  `concept-render` 状态非 ok 时、`present` 的 PDF 未生成时——都会打印「不会处理？看操作手册「X 节」」。
+- 新增 `omniarchitect/tests/test_manual.py`（10 项）：手册存在且可离线读、自身带八项 front-matter、
+  三处地址互指、**主题表不允许指向不存在的章节**、hint/pointer 兜底、CLI 三种模式接线、`--help` 能看见手册。
+- **`SKILL.md` 新增「4a. 不会做就查手册（硬性提醒）」**：给出「什么情况 → 查哪一节」的对照表，
+  并写明**不要凭印象回答手册里写清楚的事**（4a 节 342 行 / 17.8 KB，仍在 400 行上限内）。
+
+### 仓库与手册地址写入全仓 front-matter
+
+- front-matter 的标准尾部两项改为**真实地址**（原为「待发布」）：
+  `开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect` ·
+  `操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd`。
+  **这就是「手册能被技能调用」的机制**：读到本仓任一 `.md` 的 front-matter 即可拿到仓库与手册地址。
+- 地址**唯一来源**收敛到 `paths.py`（`REPO_URL` / `MANUAL_CN_URL` / `MANUAL_NOTION_URL`），
+  `registry.FRONTMATTER_TAIL`、`manual.py`、`scripts/normalize_attribution.py` 全部从那里读。
+- 全部 .md 同步（61 个文件尾部字段归位）。
+
+### README 对齐参考仓库 `omniailab-ai-director`
+
+- **README 不再带 front-matter**（与参考仓库一致：GitHub 首页直接以居中 HTML 头开始，
+  避免首页顶部被渲染成元数据表）。`scripts/normalize_attribution.py` 新增 `NO_FRONTMATTER`
+  规则并把 README 纳入，`--check` 守护。
+- **章节结构按参考仓库重排**为 19 节：一句话 / 能力一览（含 30 项能力表）/ 八阶段工作流 /
+  快速开始 / 逐阶段操作细则 / 门禁后置动作 / 模型口径速查 / **避坑总表 25 条** / 目录结构 /
+  交付物清单 / 常见问题 / 推荐工具与模型 / 基础设备要求 / 品牌与创作工具独占 /
+  **配套操作手册** / 文档地图 / 贡献 / 许可与法律 / 出处与致谢。
+- **表格统一为参考仓库写法**：分隔行一律 `|---|---|`（不补空格），内容加长以保证在 GitHub 上
+  撑满宽度；中英两份 19 节标题、18 张表、列数与代码块**逐项对齐**。
+- 徽章链接到本仓库；新增"操作手册（飞书）"徽章；表格里的"开源仓库"改为真实链接。
+- `README_EN.md` 结尾署名改为英文形式（与参考仓库的英文 README 一致）。
+
+### 新增登记：自有 URL
+
+- `brand_policy.OWN_URLS` + `compliance_audit.OWN_URL_PREFIXES`（单一来源）登记本产品自有的
+  仓库与手册地址；它们与自有站点同等对待，**不再被当成"外部推广链接"**
+  （涉及 `external-url` 与 `implicit-endpoint` 两条规则）。
+- `brand_policy.HOST_ALLOWED_FILES` 纳入 `docs/MANUAL.md`（手册本来就登记运行环境宿主）。
+
+### 修掉的两处测试自伤
+
+1. `test_user_facing_files_carry_no_external_promotion` 与
+   `test_knowledge_is_self_contained_and_carries_the_signature` 会因 front-matter 里
+   强制要求的自有地址而失败 → 前者放行已登记的 `OWN_URL_PREFIXES`，
+   后者**改判正文**（front-matter 尾部是仓库统一格式要求，不属于"引用外部资料"），原意不变。
+
+### 验证
+
+- `run_tests.py`：**249 passed / 0 failed**（16 个模块，238 → 249）
+- `verify_all.py`：六段全通过（内容自检 **0**；策略 **0** 禁止项 / **0** 待审）
+- `normalize_attribution.py --check`：145 个文件 **0** 处不一致
+- 飞书手册：15 章 / 避坑 25 条 / 能力 30 行 / 全部表格与署名写入成功
+- Notion 手册：15 章 / 29 张表 / 同上
 
 ## v1.3.0 · 后续补充 — 文件格式统一、包名与结构整理
 

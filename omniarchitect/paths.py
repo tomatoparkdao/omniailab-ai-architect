@@ -23,6 +23,13 @@ TEMPLATES = ROOT / "templates"
 INSTALLER = ROOT / "installer"
 COMPATIBILITY = ROOT / "compatibility"
 
+# --------------------------------------------------------------------------
+# 官方地址（唯一来源）。front-matter 的「开源仓库 / 操作手册」、CLI 的 manual 命令、
+# 生成器的报告头，全部读这里，避免同一串地址在多个文件里各写一份。
+REPO_URL = "https://github.com/tomatoparkdao/omniailab-ai-architect"
+MANUAL_CN_URL = "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"
+MANUAL_NOTION_URL = "https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d"
+
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:
     p = Path(path) if path else (ROOT / default)

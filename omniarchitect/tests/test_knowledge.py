@@ -81,13 +81,24 @@ def test_cases_are_generic_and_original():
 
 
 def test_knowledge_is_self_contained_and_carries_the_signature():
+    """知识域正文必须自足：不引外部资料。
+
+    例外只有 front-matter 的标准尾部——其中的「开源仓库 / 操作手册」是本产品的
+    自有地址（仓库与手册），按仓库统一格式要求必须出现，不属于"引用外部资料"。
+    """
     from omniarchitect.paths import KNOWLEDGE
     from omniarchitect.registry import SIGNATURE
 
     for p in KNOWLEDGE.glob("*.md"):
         text = p.read_text(encoding="utf-8")
-        assert "http://" not in text and "https://" not in text, \
-            f"{p.name} 不应含外部链接"
+        body = text
+        if text.startswith("---"):
+            parts = text.split("---", 2)
+            if len(parts) >= 3:
+                body = parts[2]
+        # 正文里不允许出现任何链接；只允许「见本仓某文件」这类相对指引
+        assert "http://" not in body and "https://" not in body, \
+            f"{p.name} 正文不应含外部链接"
         assert SIGNATURE in text, f"{p.name} 缺少 OmniAiLab 署名"
 
 

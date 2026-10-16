@@ -85,6 +85,64 @@ def cmd_doctor(args) -> int:
             print(f"         降级方案：{row['degraded_to']}")
     print(f"\n可用：{', '.join(rep['available']) or '（无）'}")
     print(f"缺失：{', '.join(rep['unavailable']) or '（无）'}")
+    if rep["unavailable"]:
+        from .manual import hint
+        print("\n" + hint("degraded"))
+    return 0
+
+
+def cmd_manual(args) -> int:
+    """打印操作手册指针：三处地址 + 主题 → 章节对照。"""
+    from . import manual as M
+
+    if args.json:
+        _print_json({
+            "local": M.MANUAL_LOCAL,
+            "feishu": M.MANUAL_CN,
+            "notion": M.MANUAL_NOTION,
+            "repo": M.REPO,
+            "exists_locally": M.manual_path() is not None,
+            "topics": M.topics(),
+        })
+        return 0
+    if args.read:
+        p = M.manual_path()
+        if p is None:
+            print(f"本仓未找到 {M.MANUAL_LOCAL}；请在线查阅：{M.MANUAL_CN}")
+            return 1
+        text = p.read_text(encoding="utf-8")
+        if args.section:
+            # 只打印该章节（从标题到下一个同级或更高级标题）
+            lines = text.splitlines()
+            start = next((i for i, l in enumerate(lines)
+                          if l.startswith("#") and args.section in l), None)
+            if start is None:
+                print(f"手册里没有匹配「{args.section}」的章节；可用主题：")
+                for topic, sec in M.topics().items():
+                    print(f"  {topic:<16} {sec}")
+                return 1
+            level = len(lines[start]) - len(lines[start].lstrip("#"))
+            end = len(lines)
+            for i in range(start + 1, len(lines)):
+                l = lines[i]
+                if l.startswith("#") and (len(l) - len(l.lstrip("#"))) <= level:
+                    end = i
+                    break
+            print("\n".join(lines[start:end]).rstrip())
+            return 0
+        print(text)
+        return 0
+    if args.topic:
+        print(M.hint(args.topic))
+        print()
+        print(M.pointer(args.topic))
+        return 0
+    print("操作手册（三处内容一致，版本与 Skill 同步）")
+    print(M.pointer())
+    print("\n按主题查：python -m omniarchitect manual --topic <主题>")
+    for topic, sec in M.topics().items():
+        print(f"  {topic:<16} {sec}")
+    print("\n读正文：python -m omniarchitect manual --read [--section \"避坑\"]")
     return 0
 
 
@@ -307,9 +365,18 @@ def cmd_demo(args) -> int:
 
 # --------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
+    from .manual import MANUAL_CN, MANUAL_LOCAL, REPO
+
     p = argparse.ArgumentParser(
         prog="omniailab-ai-architect",
         description="OmniArchitect — AI 建筑 / 室内设计总设计师（八阶段工作流）",
+        epilog=(
+            "不会用或卡住了？先看操作手册（离线可用）：" + MANUAL_LOCAL + "\n"
+            "飞书主文档：" + MANUAL_CN + "\n"
+            "源码仓库：" + REPO + "\n"
+            "也可直接运行：python -m omniarchitect manual"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--version", action="version", version=f"OmniArchitect {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -324,6 +391,13 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("doctor", help="检测本机工具链")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_doctor)
+
+    sp = sub.add_parser("manual", help="操作手册指针（三处地址 + 主题→章节 + 读正文）")
+    sp.add_argument("--topic", default=None, help="按主题查该看哪一节")
+    sp.add_argument("--read", action="store_true", help="打印手册正文（离线）")
+    sp.add_argument("--section", default=None, help="配合 --read，只打印匹配该关键词的章节")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_manual)
 
     sp = sub.add_parser("stages", help="打印八阶段模型")
     sp.add_argument("--json", action="store_true")

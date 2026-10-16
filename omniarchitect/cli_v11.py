@@ -130,6 +130,9 @@ def cmd_providers(args) -> int:
     print(f"  待执行创作任务：{rep['deferred_tasks']}")
     for t in reg.deferred[:5]:
         print(f"    · {t['scope']} {t['status']}　{t['reason'][:90]}")
+    from .manual import hint
+    if "omniailab" in rep["not_configured"]:
+        print(f"\n  {hint('platform')}")
     return 0
 
 
@@ -236,6 +239,8 @@ def cmd_present(args) -> int:
         print(f"PDF：{pdf['path']}（{pdf.get('renderer')}）")
     else:
         print(f"PDF：未生成（{pdf.get('reason')}）→ 降级：{pdf.get('fallback')}")
+        from .manual import hint
+        print(f"  {hint('degraded')}")
     for i in rep["issues"]:
         print(f"  ! {i}")
     return 0 if not rep["issues"] else 1
@@ -387,6 +392,9 @@ def cmd_concept_render(args) -> int:
         print(f"  说明：{n}")
     for w in res.warnings:
         print(f"  ! {w}")
+    if res.status != "ok":
+        from .manual import hint
+        print(f"  {hint('concept')}")
     print(f"  非权威声明：{canvas.DISCLAIMER}")
     return 0
 

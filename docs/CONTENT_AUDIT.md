@@ -6,15 +6,15 @@ version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 内容合规自检报告
 
-- 扫描时间：2026-10-16 19:09:47
+- 扫描时间：2026-10-16 20:25:30
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**147**
+- 扫描文本文件：**150**
 - 结论：**全部文档已署名，且无个人信息、外部推广链接或归属问题**
 
 ## 处置分布
@@ -22,8 +22,8 @@ agent_created: true
 | 处置 | 文件数 | 含义 |
 | --- | --- | --- |
 | `generated-ok` | 2 | 运行时生成，不列入本仓内容 |
-| `original` | 127 | 本项目原创内容，已合规 |
-| `test-fixture` | 18 | 测试夹具，含样本数据；内容规则不适用 |
+| `original` | 129 | 本项目原创内容，已合规 |
+| `test-fixture` | 19 | 测试夹具，含样本数据；内容规则不适用 |
 
 ## 需要处理的文件
 

@@ -56,16 +56,29 @@ sys.path.insert(0, str(ROOT))
 from omniarchitect.paths import project_version  # noqa: E402
 from omniarchitect.registry import SIGNATURE  # noqa: E402
 
+# 仓库与手册地址：唯一来源在 omniarchitect/paths.py
+from omniarchitect.paths import (  # noqa: E402
+    MANUAL_CN_URL,
+    MANUAL_NOTION_URL,
+    REPO_URL as OPEN_REPO_URL,
+)
+
 # Markdown 统一尾部：键 -> 固定值（version 由 VERSION 决定）
+# 后两项就是「手册与源码就地在任何一个文件里可查」的机制：技能读到任一 .md 的
+# front-matter，就能拿到操作手册与仓库地址，不需要额外配置。
 TAIL_KEYS: Tuple[str, ...] = ("version", "author", "developer", "agent_created",
                               "开源仓库", "操作手册")
 TAIL_FIXED: Dict[str, str] = {
     "author": "OmniAiLab",
     "developer": "Mochiball",
     "agent_created": "true",
-    "开源仓库": "待发布",
-    "操作手册": "待发布",
+    "开源仓库": OPEN_REPO_URL,
+    "操作手册": MANUAL_CN_URL,
 }
+
+# README 是 GitHub 首页：按参考仓库（omniailab-ai-director）的做法**不加 front-matter**，
+# 直接以居中的 HTML 标题开始，避免首页顶部被渲染成一张元数据表。
+NO_FRONTMATTER: Tuple[str, ...] = ("README.md", "README_EN.md")
 
 # Python / 注释类文件使用的署名（= SIGNATURE 去掉 Markdown 引用前缀）
 ATTRIBUTION = SIGNATURE.lstrip("> ").strip()
@@ -143,7 +156,17 @@ def normalize_markdown(path: Path, rel: str, version: str, check: bool) -> List[
     changes: List[str] = []
 
     m = FM_RE.match(text)
-    if m:
+    if rel in NO_FRONTMATTER:
+        # GitHub 首页不加 front-matter：已有则移除，正文原样保留。
+        if m:
+            body = text[m.end():]
+            while body.startswith(nl):
+                body = body[len(nl):]
+            new_text = body
+            changes.append("移除 front-matter（README 按参考仓库做法不带元数据）")
+        else:
+            new_text = text
+    elif m:
         body = text[m.end():]
         fm_body = m.group(1).replace("\r\n", "\n").replace("\r", "\n")
         new_fm_body = _normalize_tail(fm_body, version)

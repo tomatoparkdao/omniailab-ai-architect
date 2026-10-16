@@ -6,19 +6,19 @@ version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 品牌与供应商策略审计报告
 
 > 规则集：`brand-and-provider-policy` —— 品牌统一 · 第三方来源合规隔离 · OmniAiLab 创作工具独占
 
-- 扫描时间：2026-10-16 19:09:47
+- 扫描时间：2026-10-16 20:25:30
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**139**
+- 扫描文本文件：**141**
 - 待处理：**0**（禁止项 0，待审 0）
-- 已抑制：20（宣告某平台不被允许的表述，不计入待处理）
+- 已抑制：25（宣告某平台不被允许的表述，不计入待处理）
 - 结论：**品牌统一、第三方来源隔离与创作工具独占三项均无未处理命中**
 
 ## 品牌登记
@@ -46,7 +46,7 @@ agent_created: true
 | 5 | `external-creative-call` | 图片 / 视频外部调用检测 — 对外部生成平台的调用、SDK 引入或路由配置 | 0 |
 | 6 | `third-party-credential` | 第三方凭据检测 — 外部服务密钥、令牌或访问凭据被写入仓库 | 0 |
 | 7 | `illegal-fallback` | 非法默认 fallback 检测 — 把未登记 provider 作为默认备选或隐式回退路径 | 0 |
-| 8 | `user-facing-content` | PPT / README / SKILL 用户展示内容扫描 — 用户面文件中的推广话术、引流机制、无关署名，以及宿主机语境检查 | 24 |
+| 8 | `user-facing-content` | PPT / README / SKILL 用户展示内容扫描 — 用户面文件中的推广话术、引流机制、无关署名，以及宿主机语境检查 | 30 |
 | 9 | `licence-completeness` | 第三方许可证完整性检查 — 许可证登记文件是否齐备、依赖是否逐项登记 | 0 |
 
 ## 命中分类
@@ -54,7 +54,7 @@ agent_created: true
 | 分类 | 数量 | 含义与处理 |
 | --- | --- | --- |
 | `compliance-required` | 0 | 合规必要：许可证 / 版权声明 / 来源链接 / 署名——**必须保留** |
-| `authorized-dependency` | 24 | 已授权依赖：已登记的本地专业工具 / MCP / 依赖——允许存在 |
+| `authorized-dependency` | 30 | 已授权依赖：已登记的本地专业工具 / MCP / 依赖——允许存在 |
 | `needs-human-review` | 0 | 需人工审查：归属或授权无法自动判定 |
 | `forbidden` | 0 | 禁止项：外部创作平台 / 未登记供应商 / 隐式 endpoint / 凭据 / 非法 fallback |
 
@@ -79,25 +79,31 @@ agent_created: true
 | 文件 | 行 | 规则 | 命中 | 原因 |
 | --- | --- | --- | --- | --- |
 | `AGENTS.md` | 146 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 39 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 39 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 39 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 39 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 24 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 24 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 24 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 24 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 24 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 24 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `SKILL.md` | 278 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `SKILL.md` | 278 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `SKILL.md` | 278 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `SKILL.md` | 278 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 92 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 92 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 92 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 92 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 14 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 14 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 14 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 14 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 14 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 14 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 14 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 14 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `SKILL.md` | 306 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `SKILL.md` | 306 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `SKILL.md` | 306 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `SKILL.md` | 306 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/agent-skills.md` | 74 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/agent-skills.md` | 75 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/agent-skills.md` | 76 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/agent-skills.md` | 77 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/codex.md` | 3 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `docs/MANUAL.md` | 68 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `docs/MANUAL.md` | 68 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `docs/MANUAL.md` | 68 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `docs/MANUAL.md` | 68 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `omniarchitect/integration/agent_skills.py` | 30 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `omniarchitect/integration/agent_skills.py` | 35 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `omniarchitect/integration/agent_skills.py` | 40 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
@@ -114,16 +120,21 @@ agent_created: true
 | `AGENTS.md` | 142 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `AGENTS.md` | 142 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `AGENTS.md` | 142 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `SKILL.md` | 247 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `SKILL.md` | 247 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `SKILL.md` | 247 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `SKILL.md` | 247 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `SKILL.md` | 247 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `SKILL.md` | 275 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `SKILL.md` | 275 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `SKILL.md` | 275 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `SKILL.md` | 275 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `SKILL.md` | 275 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 72 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 72 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 72 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 517 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 517 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 517 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 517 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 517 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 48 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 48 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 49 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |

@@ -23,6 +23,10 @@ from typing import Any, Dict, Iterable, List, Optional
 from .paths import ROOT
 from .registry import PROJECT_ATTRIBUTION, SIGNATURE
 
+# 本产品自有 URL（源码仓库 + 操作手册）：与自有站点同等对待。
+# 单一来源取自 brand_policy.OWN_URLS —— 避免两处各维护一份白名单。
+from .brand_policy import OWN_URLS as OWN_URL_PREFIXES  # noqa: E402
+
 # Domains that belong to this project and may legitimately appear.
 OWN_DOMAINS = ("omniailabx.com", "omniailab.cn", "omniailab")
 
@@ -204,6 +208,7 @@ def scan_file(root: Path, path: Path) -> Optional[FileFinding]:
     urls = PATTERNS["url"].findall(text)
     external = [u for u in urls
                 if not any(d in u for d in OWN_DOMAINS)
+                and not any(u.startswith(p) for p in OWN_URL_PREFIXES)
                 and not any(h in u for h in BENIGN_URL_HOSTS)]
 
     # --- 4. licence text -------------------------------------------------

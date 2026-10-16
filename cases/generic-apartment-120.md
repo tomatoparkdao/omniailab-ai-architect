@@ -57,8 +57,8 @@ version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 通用案例：约 120 m² 公寓（住宅类）

@@ -27,6 +27,8 @@ REQUIRED_PATHS = [
     PACKAGE + "/planner.py", PACKAGE + "/workflow.py", PACKAGE + "/stage_state.py",
     PACKAGE + "/routing.py", PACKAGE + "/quantities.py", PACKAGE + "/compliance.py",
     PACKAGE + "/registry.py", PACKAGE + "/brand_policy.py",
+    PACKAGE + "/manual.py",
+    "docs/MANUAL.md",
     # v1.1 additions
     PACKAGE + "/providers/omniailab.py", PACKAGE + "/providers/base.py",
     PACKAGE + "/providers/canvas.py", PACKAGE + "/providers/omniailab.models.json",

@@ -2,10 +2,10 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-16 19:09:47",
-  "files_scanned": 139,
+  "scanned_at": "2026-10-16 20:25:30",
+  "files_scanned": 141,
   "by_disposition": {
-    "authorized-dependency": 24
+    "authorized-dependency": 30
   },
   "by_rule": {
     "brand-text": 0,
@@ -15,7 +15,7 @@
     "external-creative-call": 0,
     "third-party-credential": 0,
     "illegal-fallback": 0,
-    "user-facing-content": 24,
+    "user-facing-content": 30,
     "licence-completeness": 0
   },
   "action_count": 0,
@@ -35,7 +35,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Codex",
-      "line": 39,
+      "line": 92,
       "excerpt": "cad / ifcopenshell，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -44,7 +44,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Claude",
-      "line": 39,
+      "line": 92,
       "excerpt": "copenshell，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -53,7 +53,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Cursor",
-      "line": 39,
+      "line": 92,
       "excerpt": "l，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域**（`image",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -62,7 +62,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "WorkBuddy",
-      "line": 39,
+      "line": 92,
       "excerpt": "流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域**（`image_generati",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -71,8 +71,8 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Codex",
-      "line": 24,
-      "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\">",
+      "line": 14,
+      "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -80,17 +80,26 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Claude",
-      "line": 24,
-      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p a",
+      "line": 14,
+      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
       "path": "README.md",
+      "token": "Cursor",
+      "line": 14,
+      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">",
+      "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "README.md",
       "token": "WorkBuddy",
-      "line": 24,
-      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p align=\"cente",
+      "line": 14,
+      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">   <b>简体中文</b>",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -98,8 +107,8 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Codex",
-      "line": 24,
-      "excerpt": "https://img.shields.io/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / Omni",
+      "line": 14,
+      "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -107,17 +116,26 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Claude",
-      "line": 24,
-      "excerpt": "g.shields.io/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / OmniAiLab\"> </",
+      "line": 14,
+      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
+      "token": "Cursor",
+      "line": 14,
+      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">",
+      "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "README_EN.md",
       "token": "WorkBuddy",
-      "line": 24,
-      "excerpt": "o/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p alig",
+      "line": 14,
+      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">   <b>English<",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -125,7 +143,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Codex",
-      "line": 278,
+      "line": 306,
       "excerpt": "*：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -134,7 +152,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Claude",
-      "line": 278,
+      "line": 306,
       "excerpt": "ckup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、消防、无障碍、机电",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -143,7 +161,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Cursor",
-      "line": 278,
+      "line": 306,
       "excerpt": "先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -152,7 +170,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "WorkBuddy",
-      "line": 278,
+      "line": 306,
       "excerpt": "与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -200,6 +218,42 @@
       "line": 3,
       "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.3.0 author: OmniAiLab developer: Mochiball agen",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "docs/MANUAL.md",
+      "token": "Codex",
+      "line": 68,
+      "excerpt": "|  调用名是**全小写连字符**写法，不是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-a",
+      "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "docs/MANUAL.md",
+      "token": "Claude",
+      "line": 68,
+      "excerpt": "**全小写连字符**写法，不是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect",
+      "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "docs/MANUAL.md",
+      "token": "Cursor",
+      "line": 68,
+      "excerpt": "是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skil",
+      "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
+    },
+    {
+      "rule": "user-facing-content",
+      "disposition": "authorized-dependency",
+      "path": "docs/MANUAL.md",
+      "token": "WorkBuddy",
+      "line": 68,
+      "excerpt": "kill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skill 名）， > 里",
+      "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
       "rule": "user-facing-content",
@@ -289,7 +343,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "midjourney",
-      "line": 247,
+      "line": 275,
       "excerpt": "atus = awaiting_platform`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -298,7 +352,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "krea",
-      "line": 247,
+      "line": 275,
       "excerpt": "`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canv",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -307,7 +361,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "higgsfield",
-      "line": 247,
+      "line": 275,
       "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -316,7 +370,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "runway",
-      "line": 247,
+      "line": 275,
       "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -325,7 +379,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "sora",
-      "line": 247,
+      "line": 275,
       "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image2.5）——这是**平台服务**",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -377,6 +431,51 @@
     {
       "rule": "brand-text",
       "disposition": "forbidden",
+      "path": "docs/MANUAL.md",
+      "token": "midjourney",
+      "line": 517,
+      "excerpt": "status = awaiting_platform`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：",
+      "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
+    },
+    {
+      "rule": "brand-text",
+      "disposition": "forbidden",
+      "path": "docs/MANUAL.md",
+      "token": "krea",
+      "line": 517,
+      "excerpt": "rm`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**",
+      "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
+    },
+    {
+      "rule": "brand-text",
+      "disposition": "forbidden",
+      "path": "docs/MANUAL.md",
+      "token": "higgsfield",
+      "line": 517,
+      "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是*",
+      "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
+    },
+    {
+      "rule": "brand-text",
+      "disposition": "forbidden",
+      "path": "docs/MANUAL.md",
+      "token": "runway",
+      "line": 517,
+      "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提",
+      "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
+    },
+    {
+      "rule": "brand-text",
+      "disposition": "forbidden",
+      "path": "docs/MANUAL.md",
+      "token": "sora",
+      "line": 517,
+      "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提供方**的区别，**不宣称模型由",
+      "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
+    },
+    {
+      "rule": "brand-text",
+      "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "midjourney",
       "line": 48,
@@ -420,12 +519,12 @@
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     }
   ],
-  "suppressed_count": 20,
+  "suppressed_count": 25,
   "notes": [
     "登记制而非黑名单：只报告「未登记」的命中，并把合规必需项与已授权依赖排除在待处理之外。",
     "许可证与版权声明集中在 THIRD_PARTY_NOTICES.md 与 LICENSES/；法律要求的位置（LICENSE、依赖包内）必须遵守。",
     "创作能力域（AI 生图 / AI 视频 / Agent 工作流）唯一被授权主体：omniailab。不可用时返回明确错误 + 待执行任务，禁止静默改道。",
-    "被抑制的命中 20 条：这些是「宣告某平台不被允许」的表述，不计入待处理；集成类问题由结构化规则（外部调用 / 隐式 endpoint / 非法 fallback）判定。"
+    "被抑制的命中 25 条：这些是「宣告某平台不被允许」的表述，不计入待处理；集成类问题由结构化规则（外部调用 / 隐式 endpoint / 非法 fallback）判定。"
   ],
   "registries": {
     "brand": {

@@ -1,14 +1,3 @@
----
-name: omniailab-readme
-description: OmniAiLab AI 建筑与室内设计总设计师（omniailab-ai-architect）中文说明：能力概览、八阶段工作流、安装与快速开始、命令速查、品牌与合规边界。
-version: 1.3.0
-author: OmniAiLab
-developer: Mochiball
-agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
----
-
 <h1 align="center">OmniAiLab AI 建筑与室内设计总设计师</h1>
 
 <p align="center">
@@ -17,33 +6,19 @@ agent_created: true
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.3.0-1f6feb?style=flat-square" alt="版本 1.3.0">
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.3.0-1f6feb?style=flat-square" alt="版本 1.3.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-db6d28?style=flat-square" alt="8 阶段 × 30 能力">
-  <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square" alt="兼容 Codex / Claude / WorkBuddy / OmniAiLab">
+  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6%E4%B8%BB%E6%96%87%E6%A1%A3-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
+  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 30 能力">
+  <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="兼容 Codex / Claude / Cursor / WorkBuddy">
 </p>
 
 <p align="center">
   <b>简体中文</b>　｜　<a href="README_EN.md">English</a>
 </p>
 
-> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/)
-
-**建筑与室内设计全流程 AI 总设计师 Skill。** 它不只回答问题：**开工先要一份业主需求与原始条件**，把需求整理成可验收的设计任务书；再按真实项目节奏推进八个阶段——概念、平面、初步设计、三维与表现、设计定稿、施工图深化、物料与交付，**每个阶段末尾一次确认门**，你只需回答"确认"或"第 X 处要改"。所有图纸、模型、效果图、材料表与汇报都读**同一份**已更新的空间数据，改一处不会产生八套互相矛盾的理解。
-
-| 项目 | 值 | 说明 |
-|---|---|---|
-| Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
-| 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.3.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md` 四处一致 |
-| 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
-| 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
-| 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
-| 运行要求 | Python 3.11+ | 零硬依赖：DXF、网格、PPTX 都有内置写出器 |
-| 开源仓库 | 待发布 | 目前以本地目录形式分发；发布后此处补链接 |
-
-调用名是**全小写连字符**写法（`omniailab-ai-architect`），不是「OmniAiLab AI 建筑与室内设计总设计师」这个显示名。支持 skill 的工具直接用调用名最稳；不支持原生 skill 的工具，用自然语言描述设计任务也能触发。
+> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 
 ---
 
@@ -51,9 +26,29 @@ agent_created: true
 
 把一条需求（哪怕只是一张户型图加一句"想做成意式极简"）交给它，它会先问清功能与预算，再按阶段推进到可交付的图纸、模型与物料清单；你在每个阶段末尾只需回答"确认"或"要改哪里"。
 
-- **适用 · 项目类型不限** —— 住宅公寓、大平层、别墅，办公、商业、餐饮、酒店、展厅，方案阶段与深化阶段都在范围内。
-- **适用 · 深度可控** —— 只要"两套平面比一比"，或要"平面 + 三维 + 效果图任务包 + 施工图深度 DXF + 物料清单 + 汇报 PPT"，用同一条管线按需取用。
-- **不适用（明确说不）** —— 结构安全、消防、无障碍、机电负荷与当地法规符合性的**最终结论**不在本系统结论范围内；本系统只标注问题、给出待复核清单，须由持证专业人员在项目所在地复核签署。
+| 适用范围 | 具体是什么 |
+|---|---|
+| **适用 · 项目类型不限** | 住宅公寓、大平层、别墅，办公、商业、餐饮、酒店、展厅；方案阶段与深化阶段都在范围内 |
+| **适用 · 深度可控** | 只要"两套平面比一比"，或要"平面 + 三维 + 效果图任务包 + 施工图深度 DXF + 物料清单 + 汇报 PPT"，用同一条管线按需取用 |
+| **不适用（明确说不）** | 结构安全、消防、无障碍、机电负荷与当地法规符合性的**最终结论**不在本系统结论范围内；本系统只标注问题、给出待复核清单，须由持证专业人员在项目所在地复核签署 |
+
+| 项目 | 值 | 说明 |
+|---|---|---|
+| Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
+| 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
+| 版本 | v1.3.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json` 保持一致 |
+| 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
+| 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
+| 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
+| 运行要求 | Python 3.10+ | 零硬依赖：DXF、网格、PPTX 都有内置写出器 |
+| 开源仓库 | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | 全部源码、文档与验收脚本 |
+| 操作手册 | [飞书主文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion 镜像](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | 三处内容一致，版本与 Skill 同步 |
+
+调用名是**全小写连字符**写法（`omniailab-ai-architect`），不是「OmniAiLab AI 建筑与室内设计总设计师」这个显示名。支持 skill 的工具直接用调用名最稳；不支持原生 skill 的工具，用自然语言描述设计任务也能触发。
+
+> **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skill 名），
+> 里面的 Python 包叫 `omniarchitect`（内部引擎代号，可导入）。**两者不是重复目录**——
+> 根目录是 Skill 载荷（`SKILL.md` / `knowledge/` / `skills/` / `docs/`），包目录是全部可执行代码。
 
 ---
 
@@ -70,29 +65,74 @@ agent_created: true
 | **⑤ 真的会出文件** | 可编辑 DXF（方案深度与施工深度分开）、OBJ 三维网格、示意图、可编辑 PPTX 提案、Markdown 与打印就绪 HTML、工程量与造价估算 JSON、变更影响报告。**写出的文件都用独立实现复核**，读不回即判失败。 |
 | **⑥ 不假装做到** | 没装 Blender / FreeCAD / IfcOpenShell → 输出**可直接运行的脚本**并标 `degraded`；平台未配置 → 标 `NOT_CONFIGURED` 并列出缺什么；DXF 不会改名成 DWG，网格不会说成参数化 BIM，效果图不会当尺寸依据。 |
 
+### 能力清单（30 项，按服务阶段）
+
+| 能力 | 名称 | 服务阶段 |
+|---|---|---|
+| `design-brief` | 设计任务书 | S1 · S6 |
+| `site-analysis` | 场地与建筑条件分析 | S1 |
+| `existing-drawing-analysis` | 原始图纸解析 | S1 |
+| `architectural-design` | 建筑设计 | S1 · S4 |
+| `concept-design` | 概念方案设计 | S2 · S3 |
+| `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 |
+| `create-draw` | 概念图解与评图 | S2 · S4 · S7 |
+| `lighting-design` | 灯光设计 | S2 · S4 · S7 |
+| `space-planning` | 空间规划 | S3 |
+| `layout-optimization` | 布局优化 | S3 · S6 |
+| `ergonomics` | 人体工学与尺度 | S3 · S4 |
+| `concept-visualization` | 概念效果图 | S3 · S4（G3 门禁后置动作） |
+| `interior-design` | 室内设计 | S4 · S6 |
+| `material-design` | 材料与色彩设计 | S4 · S5 · S8 |
+| `building-services` | 机电与设备协同 | S4 · S6 · S7 |
+| `cad-drafting` | CAD 制图 | S4 · S7 |
+| `3d-modeling` | 3D 空间建模 | S5 |
+| `scene-rendering` | 场景渲染 | S5 |
+| `ai-visualization` | AI 视觉表现 | S5 |
+| `walkthrough` | 漫游与多视角表现 | S5 |
+| `bim-modeling` | BIM 建模 | S5 · S7 |
+| `design-review` | 设计审核 | S6 · S7 |
+| `coordination-check` | 专业协调校核 | S6 · S7 |
+| `construction-detailing` | 施工深化与节点 | S7 |
+| `cost-check` | 造价适配 | S1–S6 |
+| `quantity-takeoff` | 工程量计算 | S1–S8 |
+| `material-schedule` | 材料与物料表 | S8 |
+| `documentation` | 交付文档 | S8 |
+| `delivery` | 版本管理与交付 | S8 |
+| `design-presentation` | 设计汇报与提案 | S2–S8 |
+
+```bash
+python -m omniarchitect registry     # 打印能力目录与技能→阶段完整映射
+python -m omniarchitect criteria     # 设计判据体系（自有口径）
+```
+
 ---
 
 ## 八阶段工作流
 
 | 阶段 | 名称 | 阶段产出 | 门禁 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
 | S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念确认 |
 | S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面确认 |
-| S3·后 | **概念效果图**（门禁后置动作） | AI 概念效果图、画布任务包、概念效果图汇报 | 附属于 G3 |
+| S3·后 | **概念效果图**（G3 门禁后置动作） | AI 概念效果图、画布任务包、概念效果图汇报 | 附属于 G3 |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
 | S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现确认 |
 | S6 | 设计定稿与技术协调 | 确认版方案、深化依据 | G6 设计锁定 |
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
 | S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付确认 |
 
+**八阶段是流程，30 项能力是岗位——不要混为一谈。** 一项能力可以服务多个阶段：灯光设计同时在
+S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；设计汇报横跨 S2–S8。
+
 ### 五条不可协商的专业逻辑
 
-1. **业主确认功能需求前，不得开始精细建模；**
-2. **CAD 自 S4 起即可绘制**，区别在 `schematic` / `construction` 两个深度，不在有没有图纸；
-3. **成本与工程量自 S1 起动态估算**，S8 才形成正式清单；
-4. **平面未确认不得出正式图纸**；锁定后不得局部手改，必须走变更影响分析；
-5. **概念效果图只在业主确认的平面上生成**——平面一变，整批作废重出。
+| 编号 | 规则 | 为什么 |
+|---|---|---|
+| **R1** | 业主确认功能需求前，不得开始精细建模 | 需求没定就建模＝白建 |
+| **R2** | CAD 不是最后才画：方案深度图自 S4 起即可绘制 | 区别在 `schematic` / `construction` 两个深度，不在有无 |
+| **R3** | 成本与工程量自 S1 起动态估算，S8 才形成正式清单 | 估算随阶段收敛，不是最后才拍 |
+| **R4** | 平面未确认不得出正式图纸；锁定后不得局部手改 | 必须走变更影响分析 |
+| **R5** | 概念效果图只在业主确认的平面上生成 | 平面一变，整批作废重出 |
 
 ---
 
@@ -104,11 +144,11 @@ agent_created: true
 
 | 工具 | 放哪里 | 怎么调起 |
 |---|---|---|
-| **WorkBuddy** | 用户级：`~/.workbuddy/skills/omniailab-ai-architect/`<br>项目级：`<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后出现在技能列表里；直接说 `$omniailab-ai-architect 开始` |
-| **Codex** | 放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，并在项目根 `AGENTS.md` 加一行：<br>`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行` | 说"按 SKILL.md 开始做设计" |
-| **Claude / Claude Code** | 个人级：`~/.claude/skills/omniailab-ai-architect/`<br>项目级：`<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 `/omniailab-ai-architect`，或直接描述设计任务 |
-| **OmniAiLab** | 放进客户端的技能目录（客户端内可查看位置） | 新开会话后出现在技能列表里 |
-| **其它 Agent** | 任何支持标准 `SKILL.md` 的运行环境 | 见 [compatibility/agent-skills.md](compatibility/agent-skills.md) |
+| **WorkBuddy** | 用户级 `~/.workbuddy/skills/omniailab-ai-architect/`；项目级 `<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后出现在技能列表里；直接说 `$omniailab-ai-architect 开始` |
+| **Codex** | 放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，并在项目根 `AGENTS.md` 加一行：`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行` | 说"按 SKILL.md 开始做设计" |
+| **Claude / Claude Code** | 个人级 `~/.claude/skills/omniailab-ai-architect/`；项目级 `<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 `/omniailab-ai-architect`，或直接描述设计任务 |
+| **Cursor** | `~/.cursor/skills-cursor/omniailab-ai-architect/` | 在对话里描述设计任务 |
+| **通用 Agent Skills** | `<你的项目>/.agent/skills/omniailab-ai-architect/` | 按宿主约定；见 [compatibility/agent-skills.md](compatibility/agent-skills.md) |
 
 本仓库自带安装器，可自动探测运行环境：
 
@@ -147,14 +187,144 @@ python -m omniarchitect present --project projects/demo-120 --kind plan-comparis
 
 ---
 
-## 你能直接拿到什么
+## 逐阶段操作细则
+
+| 阶段 | 你要做的判断 | 常用能力 | 注意 |
+|---|---|---|---|
+| **S1** 启动与任务书 | 功能需求、面积指标、预算口径对不对得上 | 设计任务书、场地分析、图纸解析、造价适配 | 从图纸推断而非实测的数据会带 `uncertain = true`，须现场核实 |
+| **S2** 概念方案 | 概念方向与意向板认不认 | 概念方案、意向板迭代、概念灯光方向、汇报 | 评分口径在同一项目内不会中途更换 |
+| **S3** 平面方案 | **最重要的一次拍板**：选哪套平面 | 空间规划、人体工学、布局优化 | 平面四问：采光面是否被独占、流线是否穿私密区、有无真实主导线、是否留出"空的地方" |
+| **S3·后** 概念效果图 | 空间感受对不对 | 概念效果图（G3 通过后自动执行） | 只能在已确认平面上生成；改平面＝整批作废 |
+| **S4** 初步设计 | 做法、材料与机电协调 | 室内、建筑、材料与色彩、灯光、机电协同、CAD 制图 | R2：从这一步起就能出 CAD，是 `schematic` 深度 |
+| **S5** 三维与表现 | 效果图与漫游认不认 | 3D 建模、场景渲染、AI 视觉表现、漫游、BIM | 跨视角一致靠同一份模型：机位、材质、光线全部取自统一空间模型 |
+| **S6** 设计定稿 | **设计锁定**（之后不许局部手改） | 设计审核、专业协调校核、布局优化 | 任何修改都走 `change`，产出诊断、影响面与门禁重开清单 |
+| **S7** 施工图深化 | 结构、消防、机电与法规由**持证人员**复核 | 施工深化与节点、CAD 制图、BIM、审核 | 本系统只做规则初筛与提示，**不出合规结论** |
+| **S8** 物料与交付 | 交付内容与版本核对 | 材料与物料表、工程量、交付文档、版本管理、汇报 | 量价分离；方案估算**不构成结算依据** |
+
+细节见操作手册与 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
+
+---
+
+## 门禁后置动作：平面确认后的概念效果图
+
+**它是门禁后置动作，不是独立阶段**：没有自己的门禁、不能单独确认，只在 **G3 通过的那一刻**执行；
+门禁被打回时记录会被清除。
+
+| 环节 | 说明 |
+|---|---|
+| 平台 | OmniAiLab 画布（canvas） |
+| 推荐模型 | **OmniP**（整体空间氛围、多机位一致）· **image2.5**（跟随已确认平面、材质细节） |
+| 机位 | 整户型 1 张 + 主要空间各 1 张；视高 / 镜头 / 光线 / 材料全部取自统一空间模型 |
+| 参考图 | 由本系统**自有确定性栅格化**产出（已确认平面的示意图，不是 AI 图） |
+| 产出 | `canvas-jobs.json`、`canvas-brief.md`、`RUN-STATUS.md`、参考图、可编辑汇报 PPTX |
+
+```bash
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect concept-render --project <dir> --submit --authorize   # L3 联网，需授权
+python -m omniarchitect canvas-models                                         # 模型声明与选择规则
+```
+
+**三条不许越过的线**：平面未确认不得出图（依据是 G3）；平台未连接就只交付任务包，
+逐张标 `awaiting_platform`，**绝不写占位图、绝不改道第三方**；提交生成属 **L3 联网**，
+需要 `--submit --authorize` 显式授权，图像永远 `authoritative = false`。详见 [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md)。
+
+---
+
+## 模型口径速查
+
+| 用途 | 模型 / 后端 | 说明 |
+|---|---|---|
+| 概念效果图 · 整体空间氛围与多机位一致 | **OmniP**（OmniAiLab 画布） | 整户型机位、公区需要读空间关系时 |
+| 概念效果图 · 跟随已确认平面与材质细节 | **image2.5**（OmniAiLab 画布） | 房间机位；要求画面与已确认平面严格对齐时 |
+| 平面示意图（参考图） | 自有确定性栅格化（`schematic_diagram`） | 与 DXF 共用绘图基元，图与图纸不会互相矛盾；标"非写实渲染" |
+| 施工尺寸依据 | **不存在生成式选项** | 施工图必须由经过校核的几何 / BIM 模型生成 |
+
+**一句话口径**：概念效果图与材质参考图只能经 OmniAiLab 平台；底层模型供应商由平台侧依法授权并路由
+（已登记画布路由 `omniailab.canvas`），这是**平台服务**与**模型提供方**的区别，**不宣称模型由 OmniAiLab 自研**。
+
+---
+
+## 避坑总表
+
+踩中任意一条，轻则返工一段，重则整套成果作废。
+
+| # | 坑 | 后果 | 怎么避 |
+|---|---|---|---|
+| 1 | 平面没确认就往下做 | 整批概念效果图与下游全部作废 | G3 必须显式 `confirm`，判断依据是门禁不是感觉 |
+| 2 | 锁定后局部手改下游文件 | 改一处坏三处，模型与图纸不一致 | 一律走 `change` 命令，让它算影响面 |
+| 3 | 把 DXF 改名成 DWG | AutoCAD 拒绝打开或损坏 | DXF ≠ DWG；要 DWG 必须由具备许可的后端另存 |
+| 4 | 把 AI 效果图当尺寸依据 | 施工尺寸错，现场返工 | 效果图永远只用于表现，`authoritative = false` |
+| 5 | 没装 IfcOpenShell 却说出了 IFC | 交付物无法被 BIM 软件读入 | 只能说「IFC 投影数据 + 生成脚本」 |
+| 6 | 把三角网格当参数化 BIM | 无构件语义，无法承载 IFC 信息 | 网格就是网格，参数化 BIM 需 IFC / 原生 BIM 后端 |
+| 7 | 跳过 G7 让系统给法规结论 | 结论无效，风险落在业主 | 结构 / 消防 / 无障碍 / 负荷必须持证专业人员复核签署 |
+| 8 | 从图纸推断的尺寸当实测 | 隐蔽误差带到施工 | 推断值带 `uncertain = true`，校核中作为阻断项 |
+| 9 | 平面改了但概念效果图没重出 | 业主按旧图想象空间 | R5：平面一变，整批概念图作废重出 |
+| 10 | 门禁打回后仍用旧的下游产物 | 新旧混用 | 门禁打回会清除后置动作记录，下游失效重算 |
+| 11 | 未授权就提交平台生成 | 产生计费调用 | L3 操作必须 `--submit --authorize` |
+| 12 | 平台没连上就等着出图 | 空等 | 平台缺席是**正常降级**：只交付任务包，逐张标 `awaiting_platform` |
+| 13 | 让系统改道第三方生成平台 | 违反品牌与供应商策略 | 创作能力域只有 OmniAiLab；不可用时延后，不改道 |
+| 14 | 说模型是 OmniAiLab 自研 | 虚假陈述 | OmniP / image2.5 是平台内已授权路由，不是自研模型 |
+| 15 | 把自有示意图当 AI 效果图 | 误导业主 | 本地栅格化只声明 `schematic_diagram`，标「非写实渲染」 |
+| 16 | 期望本机直接生成 PDF | 拿不到 PDF | 无 LibreOffice / soffice 时不伪造 PDF，走 HTML 打印路径 |
+| 17 | 用裸 `python` 跑验证 | 缺 Pillow 导致示意图用例走降级分支而失败 | 用装了依赖的解释器：`…\python\envs\default\Scripts\python.exe` |
+| 18 | 忘记跑自检就交付 | 署名 / 外链 / 隐私问题带出去 | 交付前跑 `audit` 与 `policy`，两者都必须 0 |
+| 19 | 为了报告归零删掉许可证信息 | 违反许可证，法律风险 | `compliance-required` 不计入待处理，**不要删** |
+| 20 | 推 GitHub 未指定代理 | git 协议被拦，`read operation timed out` | `HTTPS_PROXY=http://127.0.0.1:7890 … sync`；沙箱默认代理只放行 API |
+| 21 | 令牌过期后以为是代码坏了 | 白排查 | PAT 有有效期，到期重新授权一次即可 |
+| 22 | 改了版本号但没同步四处 | 版本不一致 | `VERSION` / `SKILL.md` / `installer/manifest.json` / 两份 README 必须一致 |
+| 23 | 新增依赖没做许可证核查 | 合规风险 | 先在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 登记，再在 `brand_policy` 登记 |
+| 24 | 装了依赖就直接用而不问"能不能降级" | 破坏零硬依赖 | 新增依赖前先问：能不能降级？ |
+| 25 | 把 `omniarchitect/` 当成重复目录删掉 | 项目直接跑不起来 | 它是**代码本体**（内部引擎代号），不是重复 |
+
+完整版见操作手册第 12 节。
+
+---
+
+## 目录结构
+
+```
+omniailab-ai-architect/          ← Skill 根（本仓库）
+├── SKILL.md                     入口：Skill 契约与流程总纲
+├── README.md / README_EN.md     中英文说明（本文件）
+├── AGENTS.md                    开发约定（面向编码 Agent）
+├── LICENSE / THIRD_PARTY_NOTICES.md / LICENSES/
+│                                许可、第三方许可证与署名的唯一集中登记处
+├── docs/                        架构、流程、判据、平台接入、工具、安装、品牌策略、操作手册
+│   └── MANUAL.md                ★ 操作手册（离线可用，与飞书 / Notion 同步）
+├── omniarchitect/               ★ Python 包（内部引擎代号）= 全部可执行代码
+│   ├── model.py planner.py      统一空间模型与方案生成
+│   ├── stages.py workflow.py    八阶段与门禁、执行器
+│   ├── changes.py revisions.py  变更影响分析与失效重算
+│   ├── adapters/                DXF / 网格 / Blender / FreeCAD / IFC / 表现适配器
+│   ├── providers/               OmniAiLab 适配器、自有确定性 provider、画布工作流
+│   ├── tools/                   工具注册表 + L1–L4 权限 + 产物独立校验
+│   ├── presentation/            汇报 → PPTX / MD / HTML / PDF
+│   ├── integration/ installer/  Agent Skills 校验与安装
+│   ├── brand_policy.py          品牌与供应商策略 + 创作能力独占裁决
+│   └── tests/                   15 个模块、238 项测试
+├── knowledge/                   13 个原创设计知识域（渐进式加载）
+├── skills/                      30 项专业能力说明
+├── cases/                       通用项目类型案例判据
+├── schemas/                     空间模型 / 案例 / 工具能力 / 汇报 Schema
+├── workflows/                   阶段流程定义
+├── adapters/specs/              MCP / 外部工具适配规范
+├── compatibility/               各运行环境兼容说明
+├── installer/                   安装脚本与清单
+├── examples/                    示例任务书
+├── providers/                   平台连接配置位置（凭据不入库）
+└── scripts/                     测试、验证、格式统一脚本
+```
+
+---
+
+## 交付物清单
 
 | 类型 | 文件 | 说明 |
-| --- | --- | --- |
+|---|---|---|
 | CAD 图纸 | `.dxf` | 方案深度与施工深度分开命名；写出后用独立解析器复核实体数、图层与闭合性 |
 | 三维模型 | `.obj` | 毫米单位、Z 轴向上、含材质分组；网格**不冒充**参数化 BIM |
 | 空间示意 | `.png` | 由统一模型栅格化，固定标注"示意图 · 非写实渲染 · 不得作为施工尺寸依据" |
-| 概念效果图 | `.png` + `.json` + `.md` | 平面确认（G3）后由 OmniAiLab 画布生成的 AI 概念效果图；未接入平台时交付**完整任务包**（机位、提示词、参考图、逐张状态）与汇报 PPTX，不写占位图 |
+| 概念效果图 | `.png` + `.json` + `.md` | 平面确认（G3）后由 OmniAiLab 画布生成；未接平台时交付**完整任务包**与汇报 PPTX，不写占位图 |
 | 设计汇报 | `.pptx` / `.md` / `.html` | 可编辑 PPTX（10 种汇报类型：概念、平面比选、**概念效果图**、初步设计、表现、定稿、材料照明、技术交底、交付、全案） |
 | 工程量与估算 | `.json` / 表格 | 分空间工程量、量价分离的估算口径、与预算的适配结论 |
 | 影响分析 | `.json` / `.md` | 变更诊断、影响面、回流阶段、门禁重开清单、保留有效的已确认成果 |
@@ -162,35 +332,58 @@ python -m omniarchitect present --project projects/demo-120 --kind plan-comparis
 
 ---
 
-## 工具、权限与平台
+## 常见问题
 
-统一工具注册表声明**每个工具能做什么、有多危险、产物能被称为多强**。
+**会不会说它做了其实没做的事？**
+不会。这是硬性规则并写进了测试：DXF 不改名成 DWG、三角网格不叫参数化 BIM、AI 效果图不作尺寸依据、没有 IFC 写出后端时只能说输出了"IFC 投影数据 + 生成脚本"。工具缺失时阶段状态标 `degraded` 并写明原因。
 
-| 级别 | 含义 | 是否需要确认 |
-| --- | --- | --- |
-| L1 | 只读：解析图纸、查询状态 | 否 |
-| L2 | 本地写入：在项目目录内创建 / 修改文件 | 否 |
-| L3 | 联网：调用外部服务或模型 provider | **是** |
-| L4 | 执行 / 发送：运行第三方代码、驱动宿主软件 | **是，且必须先 dry-run** |
+**必须联网或注册吗？**
+不必。`doctor`、`stages`、`demo`、`scenario`、DXF / 网格 / PPTX 导出都在本机完成。平台能力用于写实效果图与视频，缺失时走降级路径，几何 / 图纸 / 模型 / 工程量 / 汇报**完全不受影响**。
 
-```bash
-python -m omniarchitect tools     # 工具注册表 + 权限分级
-python -m omniarchitect honesty   # 不得声称的能力清单
-python -m omniarchitect providers # 平台与生成式 provider 状态
-```
+**它替我拿主意吗？**
+不给"两套都行"。方案对比只给推荐 + 理由 + 备选，最终决策与门禁确认由业主 / 主创完成。
 
-**平台接入是发现式的，不是猜出来的**：官方 SDK、本地配置、平台下发的 API 契约、环境变量，四者皆无时状态为 `NOT_CONFIGURED` 并列出具体缺什么。不猜 endpoint、不猜参数、不猜鉴权；接入方式见 [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) 与 [providers/README.md](providers/README.md)。
+**能不能只做一小块？**
+可以。`route` 会自动补齐前置阶段：说"只画天花吊顶施工图"，它会带上必须已确认的前序阶段，而不是从零跑一遍。
 
-**平面确认后的概念效果图**走平台的**画布（canvas）**，推荐模型 **OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）：
+**为什么它老是停下来问我？**
+因为那正是门禁。八道门禁就是八个**必须由人拍板**的位置，它停下来是在执行设计，不是在偷懒。
 
-```bash
-python -m omniarchitect concept-render --project <dir> --scheme A --views 5
-python -m omniarchitect canvas-models      # 模型声明与选择规则
-```
+**不会用、卡住了怎么办？**
+先翻操作手册（第 12 节避坑总表最省时间）。也可以直接对 Skill 说"查手册第 X 节"——它会读 `docs/MANUAL.md` 并返回对应小节。
 
-提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。详见 [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md)。
+---
 
-### 品牌与创作工具独占
+## 推荐工具与模型
+
+| 用途 | 用什么 | 说明 |
+|---|---|---|
+| 运行环境 | 任意装了 **Python 3.10+** 的机器 | 核心路径零硬依赖，没装任何包也能跑通闭环保底 |
+| 图纸 | 内置 DXF 写出器（R12 始终可用） | 装了 `ezdxf` 则升级到 R2010 并带独立审计 |
+| 三维 | 内置 OBJ/MTL + `build_scene.py` | 有 Blender 时可在本机直接跑出场景 |
+| BIM | IFC 投影 JSON + `build_ifc.py` | 装了 IfcOpenShell 才能真正写出 IFC 文件 |
+| 参数化 | `build_freecad.py` | 有 FreeCAD 时可直接跑 |
+| 示意图 | 装了 `Pillow` 即可出图 | 未装则跳过图像，矢量与 DXF 照常 |
+| 汇报 | `python-pptx` 优先，内置 OOXML 兜底 | 两者都能被 PowerPoint 打开并编辑 |
+| 效果图 / 视频 | **OmniAiLab 平台**（唯一被授权主体） | 见下方"品牌与创作工具独占"；平台不可用时只出任务包，不改道第三方 |
+
+---
+
+## 基础设备要求
+
+| 项 | 最低 | 建议 |
+|---|---|---|
+| 操作系统 | Windows 10 / macOS 12 / 常见 Linux 发行版 | 任意 64 位系统 |
+| Python | 3.10 | 3.11+ |
+| 内存 | 4 GB | 8 GB 以上（大型项目与三维导出） |
+| 磁盘 | 200 MB（Skill 本体） | 2 GB 以上（含项目产物与汇报） |
+| 网络 | **不需要** | 仅接入平台出写实效果图 / 视频时需要 |
+| 显卡 | **不需要** | 本机不跑生成式模型 |
+| 账号 / 密钥 | **不需要** | 平台能力可选；凭据只存本机配置文件，不入库 |
+
+---
+
+## 品牌与创作工具独占
 
 **对外名称**：OmniAiLab AI Architect ／ OmniAiLab AI 建筑与室内设计总设计师；
 Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https://www.omniailabx.com/) 与 [海外站](https://omniailab.cn/)。
@@ -199,28 +392,43 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 （概念图、室内效果图、材质参考图、立面表现图、设计分析图、漫游与方案演示视频）的唯一被授权
 主体是 OmniAiLab 平台；平台不可用时系统**返回明确错误并生成待执行任务**
 （`status = awaiting_platform`），**不会**改道到任何第三方生成平台。
-底层模型供应商由平台侧依法授权并路由（已登记画布路由 **OmniP** 与 **image2.5**）——
-这是平台服务与模型提供方的区别，不宣称模型由 OmniAiLab 自研。
 
 | 自检 | 覆盖 |
-| --- | --- |
+|---|---|
 | `python -m omniarchitect audit` | 署名 / 隐私 / 外链 / 许可 |
 | `python -m omniarchitect policy` | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
 
 策略采用**登记制（allowlist）而非关键词黑名单**：命中分为**合规必要**（许可证 / 版权 / 来源 /
 署名，必须保留）、**已授权依赖**（已登记的本地工具 / MCP / 依赖 / 宿主）、**需人工审查**、
 **禁止项**四类。第三方许可证、版权声明与来源链接集中在
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [LICENSES/](LICENSES/)，
-不出现在普通设计成果与营销材料中；**不得删除法律要求的署名**，也不把第三方代码或文档
-宣称为 OmniAiLab 原创。Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用，
-但不构成对任何外部商业 AI 设计平台的推广。
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [LICENSES/](LICENSES/)，不出现在普通设计成果与
+营销材料中；**不得删除法律要求的署名**，也不把第三方代码或文档宣称为 OmniAiLab 原创。
+Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用，但不构成对任何外部商业 AI 设计平台的推广。
+
+---
+
+## 配套操作手册
+
+本 README 覆盖操作手册的全部要点；**完整手册同时发布在飞书与 Notion 两处，内容一致**，版本与 Skill 版本严格同步：
+
+- **操作手册（飞书，主文档）**：<https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
+- **操作手册（Notion，同内容）**：<https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d>
+- **操作手册（Skill 内，离线可用）**：[docs/MANUAL.md](docs/MANUAL.md)
+- **开源仓库**：<https://github.com/tomatoparkdao/omniailab-ai-architect>
+
+> **【强制】文档同步**：本 Skill 每次更新（版本号、主干流程、模型口径、能力接线任一变化）
+> 都必须**同步更新**上述操作手册（飞书 + Notion + `docs/MANUAL.md`）与两份 README，版本号保持一致。
+
+**不会用、卡住了、术语看不懂**——先翻手册。指南第 12 节「避坑总表」最省时间；
+也可以直接对 Skill 说「查手册第 X 节」，它会去读 `docs/MANUAL.md` 并返回对应小节。
 
 ---
 
 ## 文档地图
 
 | 想了解 | 看这里 |
-| --- | --- |
+|---|---|
+| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) |
 | 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
 | 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
@@ -239,28 +447,41 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 
 ---
 
-## 常见问题
+## 贡献
 
-**会不会说它做了其实没做的事？**
-不会。这是硬性规则并写进了测试：DXF 不改名成 DWG、三角网格不叫参数化 BIM、AI 效果图不作尺寸依据、没有 IFC 写出后端时只能说输出了"IFC 投影数据 + 生成脚本"。工具缺失时阶段状态标 `degraded` 并写明原因。
+本仓库以 **MIT** 许可开源（全文见 [LICENSE](LICENSE)），欢迎参与。贡献遵循一个前提：**只提交方法、规范与判据，不引入任何第三方平台依赖**——生成一律在 OmniAiLab 完成，口径与现有文件保持一致。
 
-**必须联网或注册吗？**
-不必。`doctor`、`stages`、`demo`、`scenario`、DXF / 网格 / PPTX 导出都在本机完成。平台能力用于写实效果图与视频，缺失时走降级路径。
+| 方向 | 具体内容 | 提交位置 |
+|---|---|---|
+| 新增设计知识 | 原创的设计判据与数值区间，写成可判定的句子 | `knowledge/`，并在 `knowledge/INDEX.md` 索引 |
+| 新增能力说明 | 一项专业能力的职责、输入、门禁与产物 | `skills/`，并在 `stages.py: CAPABILITIES` 登记 |
+| 新增案例判据 | 通用项目类型的判据（不含客户资料与商业案例） | `cases/` |
+| 修正与补全 | 错字、过时口径、断链、计数不一致、表格在 GitHub 上未撑满 | 直接提 PR 或 issue |
+| 新增知识域/依赖 | 先做许可证核查并在 `THIRD_PARTY_NOTICES.md` 登记 | 见 [AGENTS.md](AGENTS.md) 第 6 节 |
 
-**它替我拿主意吗？**
-不给"两套都行"。方案对比只给推荐 + 理由 + 备选，最终决策与门禁确认由业主 / 主创完成。
+**改完必须跑**：
 
-**能不能只做一小块？**
-可以。`route` 会自动补齐前置阶段：说"只画天花吊顶施工图"，它会带上必须已确认的前序阶段，而不是从零跑一遍。
+```bash
+python scripts/run_tests.py                     # 全量测试（238 项，15 模块）
+python scripts/verify_all.py                    # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
+python -m omniarchitect audit --write docs      # 署名 / 隐私 / 外链 / 许可
+python -m omniarchitect policy --write docs     # 品牌 / 供应商 / 凭据 / fallback / 创作独占
+python scripts/normalize_attribution.py --check # 全仓开头结尾格式一致性
+```
 
 ---
 
-## 免责与边界
+## 许可与法律
 
-- 结构安全、消防、无障碍、机电负荷与当地法规符合性**不在本系统结论范围内**，须由持证专业人员在项目所在地复核并签署；
-- 方案深度成果**不得**当作施工图；生成式图像**不得**作为尺寸依据；
-- 工程量与造价为方案阶段估算，**不构成结算依据**；
-- 使用本 Skill 直接或间接造成的任何损失，作者与维护者不承担责任。
+| 项 | 内容 |
+|---|---|
+| 本仓库许可 | **MIT**，全文见 [LICENSE](LICENSE) |
+| 第三方许可证与署名 | 集中登记在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [LICENSES/](LICENSES/) |
+| 署名硬约定 | 每份 Markdown 的 front-matter 含 `author: OmniAiLab` / `developer: Mochiball`，末尾附标准署名行 |
+| 不得删除法律要求的署名 | 第三方署名、版权声明与来源链接一律保留 |
+| 不得冒充自主开发 | 不把第三方代码或文档宣称为 OmniAiLab 原创 |
+| 免责 | 结构安全、消防、无障碍、机电负荷与当地法规符合性不在本系统结论范围内，须由持证专业人员在项目所在地复核签署；方案深度成果不得当作施工图；生成式图像不得作为尺寸依据；工程量与造价为方案阶段估算，不构成结算依据 |
+| 责任限制 | 使用本 Skill 直接或间接造成的任何损失，作者与维护者不承担责任 |
 
 ---
 
@@ -268,8 +489,9 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 
 - 出品与维护：**OmniAiLab**（[omniailabx.com](https://www.omniailabx.com/)）
 - 开发者：**Mochiball**
-- 设计知识（`knowledge/` 12 域）、项目类型案例（`cases/`）、专业能力说明（`skills/`）与设计判据（[docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)）均由本项目**独立撰写**，来源为通用设计原理与公开工程惯例；不复制、不改写任何外部文档。
-- 本 skill 的原生平台为 **OmniAiLab**；对 Blender / FreeCAD / AutoCAD / IfcOpenShell 等外部工具只做**适配声明与降级路径**，不附带其代码，也不依赖其存在。
+- 设计知识（`knowledge/` 13 域）、项目类型案例（`cases/`）、专业能力说明（`skills/`）与设计判据（[docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)）均由本项目**独立撰写**，来源为通用设计原理与公开工程惯例；不复制、不改写任何外部文档。
+- 本 Skill 的原生平台为 **OmniAiLab**；对 Blender / FreeCAD / AutoCAD / IfcOpenShell 等外部工具只做**适配声明与降级路径**，不附带其代码，也不依赖其存在。
+- 操作手册同步发布：[飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d)。
 
 ---
 
@@ -279,7 +501,4 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 
 </div>
 
-> © OmniAiLab ｜ 开发者：Mochiball ｜ omniailabx.com
-
----
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

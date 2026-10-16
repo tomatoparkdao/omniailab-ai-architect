@@ -9,8 +9,8 @@ version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-开源仓库: 待发布
-操作手册: 待发布
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # OmniArchitect · AI 建筑 / 室内设计总设计师
@@ -93,6 +93,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 
 | 需要什么 | 读哪里 | 加载方式 |
 | --- | --- | --- |
+| **不会用 / 报错 / 术语看不懂** | **操作手册 `docs/MANUAL.md`** | **先读手册对应小节；在线版见 front-matter 的 `操作手册:` 字段** |
 | 专业设计判据与数值区间 | `knowledge/`（13 个领域） | 先读 `knowledge/INDEX.md`，再按需读单篇或单节 |
 | 通用项目类型案例判据 | `cases/` | 按项目类型 |
 | 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
@@ -101,6 +102,33 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
 | 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
+
+### 4a. 不会做就查手册（硬性提醒）
+
+**操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档。** 三种入手方式内容一致、版本同步：
+仓库内 `docs/MANUAL.md`（离线可用）· 飞书主文档 · Notion 镜像（地址见任一 `.md` 的 front-matter 里
+`操作手册:` 字段，以及本文件 front-matter 的同一字段）。
+
+**触发规则——出现下列任一情况，必须先查手册再动手，并把结论说出来：**
+
+| 情况 | 查手册哪一节 |
+| --- | --- |
+| 用户问「怎么装 / 怎么调起 / 怎么跟你说话」 | 第 2 节 |
+| 用户问「现在该干什么 / 阶段怎么走 / 门禁是什么」 | 第 3 节 |
+| 用户说「不会」「看不懂」「什么意思」「卡住了」 | 第 12 节避坑总表 + 第 13 节常见问题 |
+| 报错、工具缺失、出不来图、PDF 没生成 | 第 9 节（9.2 降级表）+ 第 5.4 节中途救火 |
+| 平台接入、效果图一直「待平台」 | 第 10 节 |
+| 交付前、对外分发前 | 第 11 节 + 第 14 节 |
+| 任何拿不准该不该往下走的时候 | 第 3.3 节五条铁律 |
+
+```bash
+python -m omniarchitect manual                       # 手册三处地址 + 主题→章节对照
+python -m omniarchitect manual --topic degraded      # 某个主题该看哪一节
+python -m omniarchitect manual --read --section "避坑"  # 离线读手册正文指定章节
+```
+
+**不要凭印象回答手册里写清楚的事。** 拿不准时宁可先 `manual --read --section` 读一遍，
+再把手册结论转述给用户，也不要自己编一套说法。
 
 知识库支持渐进式加载，避免一次拉全 2700 行：
 
