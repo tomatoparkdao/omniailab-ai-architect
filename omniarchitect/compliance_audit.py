@@ -315,7 +315,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
         "## 处置分布",
         "",
         "| 处置 | 文件数 | 含义 |",
-        "| --- | --- | --- |",
+        "|---|---|---|",
     ]
     meaning = {
         "original": "本项目原创内容，已合规",
@@ -332,7 +332,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
 
     if report["needs_action"]:
         lines += ["## 需要处理的文件", "",
-                  "| 文件 | 处置 | 原因 |", "| --- | --- | --- |"]
+                  "| 文件 | 处置 | 原因 |", "|---|---|---|"]
         for f in report["needs_action"]:
             reasons = "；".join(f["reasons"])[:220] or "-"
             lines.append(f"| `{f['path']}` | `{f['disposition']}` | {reasons} |")

@@ -73,15 +73,24 @@ agent_created: true
 
 ### 2.2 装到哪：按你用的工具
 
-把**整个 `omniailab-ai-architect` 目录**（含 `SKILL.md`、`omniarchitect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`）放进下面对应的目录，重开一个新会话即可生效：
+把**整个 `omniailab-ai-architect` 文件夹**（含 `SKILL.md`、`omniarchitect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`、`docs/`）放进下面对应的目录，重开一个新会话即可生效：
 
 | 工具 | 放这里 | 怎么调起 |
 |---|---|---|
-| **Codex** | 个人级 `~/.codex/skills/omniailab-ai-architect/`<br>项目级 `<你的项目>/.codex/skills/omniailab-ai-architect/` | 直接描述设计任务；或按 Codex 的 Skill 语法点名 |
+| **Codex**（推荐主用） | 没有原生 skill 目录：把文件夹放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，再在项目根目录的 `AGENTS.md` 里加一行：<br>`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行。` | 说"按 SKILL.md 开始做设计" |
 | **Claude / Claude Code** | 个人级 `~/.claude/skills/omniailab-ai-architect/`<br>项目级 `<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 `/omniailab-ai-architect`，或直接描述任务 |
-| **Cursor** | `~/.cursor/skills-cursor/omniailab-ai-architect/` | 在对话里描述任务 |
-| **WorkBuddy** | `~/.workbuddy/skills/omniailab-ai-architect/` | 直接描述任务 |
-| **通用 Agent Skills** | `<你的项目>/.agent/skills/omniailab-ai-architect/` | 按宿主的约定 |
+| **WorkBuddy** | 用户级 `~/.workbuddy/skills/omniailab-ai-architect/`<br>项目级 `<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后出现在技能列表；说 `$omniailab-ai-architect 开始` |
+| **OmniAiLab**（omniailabx） | 官网下载客户端（版本以官网为准）后，把整个文件夹放进它的**技能目录**（客户端内可查看位置） | 说 `$omniailab-ai-architect 开始` |
+| **其他 Agent Skills 宿主** | Cursor 用 `~/.cursor/skills-cursor/omniailab-ai-architect/`；通用约定 `<你的项目>/.agent/skills/omniailab-ai-architect/` | 在对话里描述设计任务 |
+
+**克隆安装（推荐）**
+
+```bash
+git clone https://github.com/tomatoparkdao/omniailab-ai-architect.git \
+  ~/.workbuddy/skills/omniailab-ai-architect
+```
+
+> 本仓库是**私密仓库**：克隆需要 GitHub 授权（HTTPS 用访问令牌，或改用 SSH）。升级只需在该目录执行 `git pull`。
 
 也可以用它自带的安装器（**只移不删**，目标已存在时先备份到 `_backup/`）：
 
@@ -93,6 +102,8 @@ python installer/verify_install.py --check-python     # 校验安装与解释器
 ```
 
 **指针安装 vs 复制安装**：`pointer`（默认）只在技能目录放 `SKILL.md` + 指向原仓库的指针，升级只需 `git pull`；`copy` 整包复制，适合搬移或离线分发。
+
+> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 30 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、13 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
 
 ### 2.3 怎么跟它对话
 

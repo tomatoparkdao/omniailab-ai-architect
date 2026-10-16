@@ -29,7 +29,7 @@ python -m omniarchitect providers --json
 状态取值：
 
 | 状态 | 含义 |
-| --- | --- |
+|---|---|
 | `connected` | 已发现配置，且**健康检查通过** |
 | `unauthorized` | 已发现配置，但凭据或网络未通过健康检查 |
 | `not_configured` | 缺少 SDK / 配置 / API 契约中的必要项 |
@@ -153,7 +153,7 @@ local = reg.select("schematic_diagram")              # 返回 local
 能力域分两族，**不允许混用**：
 
 | 族 | 能力域 | 唯一被授权主体 |
-| --- | --- | --- |
+|---|---|---|
 | **生成式创作域** | `image_generation`、`image_editing`、`reference_image_generation`、`multi_view_visualization`、`video_generation`、`architectural_walkthrough`、`visual_workflow_execution` | `omniailab` |
 | **自有确定性域** | `schematic_diagram`、`media_asset_management` | `local`（本系统自有模块，输出示意图） |
 
@@ -196,7 +196,7 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 ```
 
 | 环节 | 说明 |
-| --- | --- |
+|---|---|
 | 机位 | 整户型 1 张（OmniP）+ 主要空间各 1 张（image2.5），视高 / 镜头 / 光线取自统一模型 |
 | 模型选择 | 按 `providers/omniailab.models.json` 的取向规则；可显式覆盖 |
 | 契约校验 | 推荐模型与契约 `models` 比对，冲突时以契约为准并记录偏差 |
@@ -212,7 +212,7 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 `LocalDeterministicProvider` 是内置的零依赖 provider，用于在平台未接入时**仍能产出真实图像**：
 
 | 能力域 | 产物 | 性质 |
-| --- | --- | --- |
+|---|---|---|
 | `schematic_diagram` | 平面示意图 PNG（`variant=plan`）/ 空间示意图集（`variant=rooms`） | 由 Canonical Spatial Model 直接栅格化 |
 | `media_asset_management` | 媒体资产索引 JSON（含版本关联） | 数据文件 |
 
@@ -229,7 +229,7 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 ## 5. 未接入时的行为（不是失败，也不是改道）
 
 | 场景 | 系统行为 |
-| --- | --- |
+|---|---|
 | 平台未配置 | `NOT_CONFIGURED`；表现图任务包照常生成（机位/材质/灯光/提示词齐备） |
 | 概念效果图（G3 后置动作） | 任务包 + 参考图 + 逐张状态 + 汇报 PPTX 全部照常交付；图像待平台生成，逐张标 `awaiting_platform` |
 | 需要写实效果图 | 报告写明"待平台接入"，并在 Scenario B 中记为**跳过**而非通过 |

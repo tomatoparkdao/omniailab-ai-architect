@@ -28,7 +28,7 @@ python -m omniarchitect tools --plan "dxf:draw_plan"
 ## 2. 已适配的工具
 
 | id | 类型 | 能力 | 缺失时的降级 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | `dxf` | python | 绘制平面图、写出 DXF（R12 / R2010）、独立复核 | 内置 R12 写出器，始终可用 |
 | `mesh` | python | 由空间模型构建三角网格、导出 OBJ/MTL | 纯 Python，始终可用 |
 | `blender` | 宿主程序 | 生成场景脚本、执行 Blender 批处理 | `build_scene.py`（有 Blender 的机器可直接跑） |
@@ -41,7 +41,7 @@ python -m omniarchitect tools --plan "dxf:draw_plan"
 ## 3. 权限分级
 
 | 级别 | 含义 | 确认 | 示例 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | L1 | 只读 | 否 | `dxf:audit`、`dxf:read_back` |
 | L2 | 本地写入 | 否 | `dxf:draw_plan`、`mesh:build`、`ifc:emit_projection`、`render:render_local` |
 | L3 | 联网 | **是** | `render:render_ai`（调用 OmniAiLab 生成式能力，唯一被授权主体） |
@@ -61,7 +61,7 @@ reg.guard("blender", "run_blender", approved=True)   # 仍需工具真实可用
 写出即验证，且**用不同实现**：
 
 | 扩展名 | 验证方式 |
-| --- | --- |
+|---|---|
 | `.dxf` | 内置 R12 解析器（实体/图层统计）+ `ezdxf.recover` 交叉复核 |
 | `.obj` | 重新解析顶点/面/材质，回读包围盒与尺寸 |
 | `.pptx` | 解开 OOXML 容器：`[Content_Types].xml`、slide part 数量、每张 slide 的 XML 合法性 |
@@ -78,7 +78,7 @@ reg.verify("out/03-plan/S3-schematic-A.dxf")
 `python -m omniarchitect honesty` 打印完整清单。核心五条：
 
 | 不得声称 | 为什么 | 应当表述为 |
-| --- | --- | --- |
+|---|---|---|
 | DXF 改名为 DWG 即为 DWG | DWG 是封闭二进制格式，改名不改内容 | 只能声明输出了 DXF；DWG 需具备许可的后端另存 |
 | 三角网格是参数化 BIM | 网格无构件语义、属性与参数关系 | 输出为三维网格模型（非参数化 BIM） |
 | AI 效果图可作施工尺寸依据 | 生成图不保证尺寸与比例 | 施工图须由经校核的几何模型生成 |

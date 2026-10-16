@@ -228,6 +228,7 @@ class CapabilityRecord:
     stages: List[str]
     source: str
     legacy: str
+    brief_file: str = ""
     legacy_file: str = ""
     version: str = ""
     responsibility: str = ""
@@ -239,6 +240,7 @@ class CapabilityRecord:
             "stages": list(self.stages),
             "source": self.source,
             "legacy": self.legacy,
+            "brief_file": self.brief_file,
             "legacy_file": self.legacy_file,
             "version": self.version,
             "responsibility": self.responsibility,
@@ -246,7 +248,12 @@ class CapabilityRecord:
 
 
 def load_registry(skills_dir: Path | None = None) -> List[CapabilityRecord]:
-    """Capability records, joined with the specialist brief on disk when present."""
+    """Capability records, joined with the specialist brief on disk when present.
+
+    说明文件的权威位置是 `skills/<slug>.md`——文件名就是能力名，所以
+    「我要 `ergonomics` 这项能力」可以直接定位到文件，不需要中间映射表。
+    `legacy` 只记录 v1.0 的编号文件名（历史），此时文件已并入 slug 文件。
+    """
     d = skills_dir or SKILLS
     out: List[CapabilityRecord] = []
     for cap in CAPABILITIES:
@@ -254,11 +261,14 @@ def load_registry(skills_dir: Path | None = None) -> List[CapabilityRecord]:
             slug=cap.slug, name=cap.name, stages=list(cap.stages), source=cap.source,
             legacy=cap.legacy, responsibility=cap.responsibility,
         )
+        brief = d / f"{cap.slug}.md"
+        if brief.exists():
+            rec.brief_file = str(brief.relative_to(d.parent))
+            rec.version = _frontmatter(brief.read_text(encoding="utf-8")).get("version", "")
         if cap.legacy:
             p = d / f"{cap.legacy}.md"
             if p.exists():
                 rec.legacy_file = str(p.relative_to(d.parent))
-                rec.version = _frontmatter(p.read_text(encoding="utf-8")).get("version", "")
         out.append(rec)
     return out
 

@@ -54,15 +54,16 @@ python -m omniarchitect doctor
 | `omniarchitect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
 | `omniarchitect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
 | `THIRD_PARTY_NOTICES.md` · `LICENSES/` | 第三方许可证、版权声明、来源链接与署名的唯一集中落点 | 不得删除署名；不得出现在普通成果与营销材料中 |
-| `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
+| `knowledge/` | **原创** 13 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
-| `skills/` | 29 份专业能力说明书 + 画布概念效果图（30 项能力，非流程步骤） | 只增不改语义 |
+| `skills/` | 30 份专业能力说明（**文件名 = 能力名**，可直接按名加载；能力 ≠ 流程步骤） | 只增不改语义；文件名必须等于能力 slug |
 | `adapters/specs/` | MCP 适配规范 | 文档 |
 | `schemas/` | 空间模型 / 案例 / 工具能力 / 汇报 Schema | 只允许**向后兼容**的新增 |
 | `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
 | `installer/` · `compatibility/` | 安装脚本、清单与兼容说明 | 脚本 |
 | `projects/` | 示例与真实项目数据 | 项目数据 |
 | `out/` | 运行产物（可丢弃） | 可清理 |
+| `openai.yaml` | 接口元数据（显示名 / 默认提示词 / 隐式调用开关） | 显示名与版本须与 `SKILL.md` 同步 |
 | `LICENSE` · `VERSION` | 许可与版本（全仓唯一处） | 版本号须与 `__version__`、`pyproject.toml` 一致 |
 | `README.md` · `README_EN.md` | 中英文对外说明 | 两份必须镜像，改动同步 |
 | `.workbuddy/`（在父目录） | 会话记忆 | 只追加 |
@@ -262,7 +263,7 @@ python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭�
 **署名是硬约定**，三处必须一致，改动时同步：
 
 | 位置 | 形式 |
-| --- | --- |
+|---|---|
 | 每份 Markdown 的 front-matter | `author: OmniAiLab` / `developer: Mochiball` / `agent_created: true` |
 | 每份 Markdown 的末尾 | 标准署名行（`registry.py: SIGNATURE`，唯一定义处） |
 | `README.md` / `README_EN.md` | 顶部 `> © OmniAiLab ｜ 开发者：Mochiball` + 页脚语言切换与署名 |
@@ -278,7 +279,7 @@ python -m omniarchitect policy --write docs    :: 品牌 / 供应商 / 凭据 / 
 ```
 
 | 自检 | 覆盖 |
-| --- | --- |
+|---|---|
 | `audit`（`compliance_audit.py`） | 署名是否齐全、是否泄露个人信息、用户面是否有外部链接、许可证文本是否只在登记处 |
 | `policy`（`brand_policy.py`） | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
 

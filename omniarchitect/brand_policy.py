@@ -1096,7 +1096,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 品牌登记",
         "",
         "| 项 | 值 |",
-        "| --- | --- |",
+        "|---|---|",
         f"| 对外名称（英文） | {BRAND['product_en']} |",
         f"| 对外名称（中文） | {BRAND['product_cn']} |",
         f"| Skill 调用名 | `{BRAND['skill']}` |",
@@ -1110,7 +1110,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 检测规则与命中",
         "",
         "| # | 规则 | 说明 | 命中 |",
-        "| --- | --- | --- | --- |",
+        "|---|---|---|---|",
     ]
     by_rule = d["by_rule"]
     for i, r in enumerate(RULES, 1):
@@ -1120,7 +1120,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 命中分类",
         "",
         "| 分类 | 数量 | 含义与处理 |",
-        "| --- | --- | --- |",
+        "|---|---|---|",
     ]
     for k in DISPOSITIONS:
         lines.append(f"| `{k}` | {d['by_disposition'].get(k, 0)} | {DISPOSITION_MEANING[k]} |")
@@ -1137,7 +1137,7 @@ def render_markdown(rep: PolicyReport) -> str:
             lines.append("")
             return
         lines.extend(["| 文件 | 行 | 规则 | 命中 | 原因 |",
-                      "| --- | --- | --- | --- | --- |"])
+                      "|---|---|---|---|---|"])
         for h in rows[:60]:
             lines.append(f"| `{h.path}` | {h.line} | `{h.rule}` | `{h.token}` | {h.reason} |")
         if len(rows) > 60:
@@ -1158,7 +1158,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 已登记：模型路由与供应商",
         "",
         "| 路由 | 平台 | 模型 | 性质 | 说明 |",
-        "| --- | --- | --- | --- | --- |",
+        "|---|---|---|---|---|",
     ]
     for r in REGISTERED_MODEL_ROUTES:
         lines.append(f"| `{r['route']}` | {r['platform']} | {r['models']} | {r['kind']} | {r['note']} |")
@@ -1167,7 +1167,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 已登记：本地专业工具与 MCP",
         "",
         "| 工具 | 用途 | 性质 | 品牌推广 |",
-        "| --- | --- | --- | --- |",
+        "|---|---|---|---|",
     ]
     for t in REGISTERED_LOCAL_TOOLS:
         lines.append(f"| `{t['id']}` | {t['what']} | {t['kind']} | {t.get('brand_promotion', '—')} |")
@@ -1179,7 +1179,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 已登记：经批准的依赖（许可证已核查）",
         "",
         "| 依赖 | 许可证 | 版权持有方 | 来源 | 用途 |",
-        "| --- | --- | --- | --- | --- |",
+        "|---|---|---|---|---|",
     ]
     for dep in APPROVED_DEPENDENCIES:
         lines.append(f"| {dep['name']} | `{dep['spdx']}` | {dep['holder']} | {dep['source']} | {dep['role']} |")
@@ -1191,7 +1191,7 @@ def render_markdown(rep: PolicyReport) -> str:
         "## 只允许经 OmniAiLab 的创作能力域",
         "",
         "| 能力域 | 唯一被授权主体 |",
-        "| --- | --- |",
+        "|---|---|",
     ]
     for s in CREATIVE_SCOPES:
         lines.append(f"| `{s}` | `{CREATIVE_OWNER}` |")

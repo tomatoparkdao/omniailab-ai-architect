@@ -41,7 +41,9 @@ REQUIRED_PATHS = [
     "schemas/concept-render.schema.json",
     "schemas/tool-capability.schema.json", "schemas/presentation.schema.json",
     "workflows/interior-full.yaml",
-    "skills/01-brief.md", "skills/18-revisions.md", "skills/design-presentation.md",
+    "skills/design-brief.md", "skills/space-planning.md",
+    "skills/design-presentation.md", "skills/delivery.md",
+    "skills/concept-visualization.md", "skills/building-services.md",
     "adapters/specs/blender.md", "adapters/specs/ifc.md",
     "knowledge/architectural-design-principles.md",
     "knowledge/ai-concept-visualization.md",
@@ -93,9 +95,12 @@ def check_catalogue() -> int:
     cross = [c.slug for c in CAPABILITIES if len(c.stages) > 1]
     print(f"  跨阶段能力 {len(cross)}：{', '.join(cross[:8])}{' …' if len(cross) > 8 else ''}")
     recs = load_registry()
-    unmapped = [r.slug for r in recs if r.legacy and not r.legacy_file]
+    # 说明文件的权威位置是 skills/<能力名>.md（文件名 = 能力名，可直接按名加载）。
+    unmapped = [r.slug for r in recs if not r.brief_file]
     if unmapped:
-        print(f"  未找到说明文件的技能：{unmapped}")
+        print(f"  未找到说明文件的能力：{unmapped}")
+    else:
+        print(f"  能力说明文件：{len(recs)}/{len(CAPABILITIES)} 齐全（skills/<能力名>.md）")
     crit = criteria_report()
     print(f"  设计判据：{crit['summary']['criteria_sets']} 组，"
           f"覆盖阶段 {', '.join(crit['summary']['stages_touched'])}")

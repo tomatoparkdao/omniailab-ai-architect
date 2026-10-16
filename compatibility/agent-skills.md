@@ -22,7 +22,7 @@ omniailab-ai-architect/          ← 技能根（工作区根）
 ├── README.md
 ├── LICENSE / VERSION            ← 许可与版本
 ├── knowledge/                   ← 12 个原创知识域 + INDEX.md（渐进式加载）
-├── skills/                      ← 29 项专业能力说明（按需加载）
+├── skills/                      ← 30 项专业能力说明（文件名 = 能力名，按需加载）
 ├── schemas/                     ← 统一空间模型 / 案例 / 工具能力 / 汇报
 ├── workflows/                   ← 阶段工作流定义
 ├── adapters/specs/              ← MCP / 外部工具适配规范
@@ -52,7 +52,7 @@ license: ...
 ## 3. 渐进式信息加载
 
 | 层级 | 内容 | 何时加载 |
-| --- | --- | --- |
+|---|---|---|
 | L0 常驻 | `SKILL.md` | 每次会话 |
 | L1 索引 | `knowledge/INDEX.md`、`skills/*` 的 front-matter | 判断需要哪个专业域时 |
 | L2 领域 | `knowledge/<domain>.md` 单篇 | 该领域命中时 |
@@ -70,7 +70,7 @@ python -m omniarchitect knowledge --domain lighting-design --section "数值与�
 运行环境由 `detect_runtimes()` **探测**，不假设存在：
 
 | key | 默认路径 | 说明 |
-| --- | --- | --- |
+|---|---|---|
 | `workbuddy` | `~/.workbuddy/skills` | WorkBuddy 用户级技能目录 |
 | `codex` | `~/.codex/skills` | OpenAI Codex 用户级技能目录 |
 | `cursor` | `~/.cursor/skills-cursor` | Cursor 技能目录 |

@@ -63,7 +63,7 @@ agent_created: true
 | lighting-design | S2, S4, S7 | delivery | S8 |
 | building-services | S4, S6, S7 | cad-drafting | S4, S7 |
 
-原始的 18 份说明书全部保留，就地注入 `capability` 与 `stages` 字段；新增 `19-design-presentation` 系列能力。`python -m omniarchitect registry` 可打印完整映射。
+v1.0 的 18 份说明书已按能力域重组为 `skills/<能力名>.md`（共 30 份，文件名即能力名，可直接按名加载），每份的 front-matter 含 `capability` 与 `stages`；`design-presentation`（跨 S2–S8）与 `concept-visualization`（G3 门禁后置动作）为新增能力。`python -m omniarchitect registry` 可打印完整映射。
 
 ---
 

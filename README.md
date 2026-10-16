@@ -107,7 +107,120 @@ python -m omniarchitect criteria     # 设计判据体系（自有口径）
 
 ---
 
-## 八阶段工作流
+## 快速开始
+
+> **第一次用？照这五步走就够了。** 它不会一上来就问"你的设计需求是什么"，而是按下面顺序把你需要的东西收齐。
+
+### 一、装到哪：按你用的工具
+
+把**整个 `omniailab-ai-architect` 文件夹**（含 `SKILL.md`、`omniarchitect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`、`docs/`）放进下面对应的目录，重开一个新会话即可生效。
+
+| 工具 | 放哪里 | 怎么调起 |
+|---|---|---|
+| **Codex**（推荐主用） | 没有原生 skill 目录：把文件夹放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，再在项目根目录的 `AGENTS.md` 里加一行：<br>`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行。` | 说"按 SKILL.md 开始做设计"。它读 `AGENTS.md` 后会加载这个 skill。 |
+| **Claude / Claude Code** | 个人级：`~/.claude/skills/omniailab-ai-architect/`<br><br>项目级：`<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 **`/omniailab-ai-architect`**；或直接描述任务（如"照这份户型图走完整设计流程"），它会按描述命中并加载。 |
+| **WorkBuddy** | 用户级（全局可用）：`~/.workbuddy/skills/omniailab-ai-architect/`<br><br>项目级（只在该项目可用）：`<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后它出现在技能列表里；直接说 **`$omniailab-ai-architect 开始`**。 |
+| **OmniAiLab**（omniailabx） | [官网下载](https://www.omniailabx.com/)（版本以官网为准）；安装后把整个文件夹放进它的 **技能目录**（客户端内可查看技能目录位置） | 新开会话后它出现在技能列表里；直接说 **`$omniailab-ai-architect 开始`**。 |
+| **其他 Agent Skills 宿主** | 按宿主约定，例如 `<你的项目>/.agent/skills/omniailab-ai-architect/`；Cursor 用 `~/.cursor/skills-cursor/omniailab-ai-architect/` | 在对话里描述设计任务；详见 [compatibility/agent-skills.md](compatibility/agent-skills.md)。 |
+
+> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 30 项能力说明在 `skills/`、13 个知识域在 `knowledge/`、判据在 [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)、操作手册在 [docs/MANUAL.md](docs/MANUAL.md)、模板在 `schemas/` 与 `workflows/`、可执行代码在 `omniarchitect/`；少拷一个目录，运行时就会断链。
+
+**克隆安装（推荐）**
+
+```bash
+git clone https://github.com/tomatoparkdao/omniailab-ai-architect.git \
+  ~/.workbuddy/skills/omniailab-ai-architect
+```
+
+> 本仓库是**私密仓库**：克隆时需要 GitHub 授权（HTTPS 用访问令牌，或改用 SSH）。以后更新只需在该目录执行 `git pull`。发现问题也可以在仓库里提 issue。
+
+本仓库自带安装器，可自动探测运行环境（**不需要注册 OmniAiLab，也不会读取任何平台密钥**）：
+
+```bash
+python installer/install.py --dry-run          # 先看会发生什么
+python installer/install.py                    # 指针安装到已探测到的环境
+python installer/install.py --target ~/.codex/skills --mode copy
+python installer/verify_install.py --check-python
+```
+
+> 安装与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。
+
+### 二、资料从哪来（三选一）
+
+1. **你直接上传原始图纸 / 设计任务书** —— 它读取后按 `existing-drawing-analysis` 解析，直接进入 S1。
+2. **什么都不给，直接说"开始"** —— 它会先问四件事（项目类型 / 功能需求 / 预算口径与交付深度 / 手上有哪些资料），**不会自动编一套需求**；只有你明确说"跑示例项目"时，才用内置的 120㎡ 住宅示例。
+3. **只给一句话需求**（例如"120㎡ 三居，想要现代意式极简，预算 30 万"）—— 它先整理成一版可确认的设计任务书给你确认，确认后才进 S1。
+
+### 三、启动指令
+
+```text
+$omniailab-ai-architect 开始
+```
+
+直接说"开始"即可，它**不会**反问"请问你的需求是什么"，而是直接问：项目类型、功能需求、预算口径、手上有哪些资料。
+
+用命令行方式也可以（全在本机跑，不需要平台、不需要密钥）：
+
+```bash
+export PYTHONPATH=<你的路径>/omniailab-ai-architect
+python -m omniarchitect doctor                 # 本机工具链体检
+python -m omniarchitect stages                 # 八阶段与门禁
+python -m omniarchitect demo --out out         # 示例项目跑通全部八阶段
+python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
+```
+
+推进一个真实项目：
+
+```bash
+python -m omniarchitect status  --project projects/demo-120
+python -m omniarchitect route   --project projects/demo-120 "想做成现代意式极简，先给我两套平面方案"
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniarchitect change  --project projects/demo-120 "把厨房和餐厅之间的墙往外移300mm"
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+```
+
+`route` 会把一句话变成明确的阶段计划：跑哪些阶段、谁负责、门禁是谁、此刻哪些动作被拦下。
+
+### 四、启动前必须想清楚的两件事
+
+- **功能需求必须由业主确认。** R1：业主确认功能需求之前，不得开始精细建模——需求没定就建模＝白建。中途大改功能（尤其涉及房间增删）会让前面已确认的平面与下游成果全部作废。
+- **目标交付深度先定好。** 只要"两套平面比一比"，还是要"平面 + 三维 + 效果图任务包 + 施工图深度 DXF + 物料清单 + 汇报 PPT"？用同一条管线按需取用，但深度要在 S1 说清——中途加深会让返工面扩大。
+
+### 五、全程你只需要回答两种话
+
+1. **放行到下一阶段** —— 必须是这四个词之一，其它说法它不开门：
+
+```text
+确认 / 通过 / 定稿 / 继续
+```
+
+2. **要改就指出位置** —— 它停在当前阶段就地重做，不会往下走：
+
+```text
+第 3 套平面的客厅采光面被独占了，重排一下
+把主卧衣柜从 600 深改成 550 深
+```
+
+**只想用其中一项能力时**，直接点名即可，不必走全流程：
+
+| 你想要什么 | 复制这句话直接说 | 它会给你什么 |
+|---|---|---|
+| 设计任务书 | `只做任务书，帮我把需求整理成可验收的任务书` | 功能任务书 + 面积指标 + 预算口径 + 验收标准 |
+| 平面方案比选 | `只做平面，给我两到三套可比较的方案` | 多套平面 + 可比指标 + 面积配比 + 造价影响 |
+| 人体尺度校核 | `只做尺度，帮我核一下通道和家具间距够不够` | 通道净宽 / 家具间距 / 洁具间距的数值校核清单 |
+| 材料与饰面 | `只做材料，给我一套可采购可施工的材料体系` | 材料选型 + 规格排版 + 样板清单 |
+| 灯光 | `只做灯光，给我照度、色温与灯位方案` | 照度标准 / 色温 / 显色 / 灯位与回路建议 |
+| 概念效果图 | `只做概念效果图，平面我确认了` | 画布任务包（机位 + 提示词 + 参考图）+ 逐张状态；未接平台时标 `awaiting_platform` |
+| CAD 图纸 | `只做图纸，出方案深度的 DXF` | 可编辑 DXF（方案深度 `schematic`）+ 独立解析复核结果 |
+| 工程量与造价 | `只做工程量，算一下这套方案的量和估算` | 分空间工程量 + 量价分离估算 + 与预算的适配结论 |
+| 设计汇报 | `只做汇报，把这个阶段的成果做成提案` | 可编辑 PPTX（含免责与边界页）+ Markdown + HTML |
+
+> **给的信息越具体，返工越少。** 最有效的三样：① 原始图纸或现场实测尺寸；② 功能需求与使用人数；③ 预算口径与硬性限制（不能出现什么、必须出现什么）。这三样在第一步就给它，比后面补要省得多。
+
+---
+
+## 全流程总览
 
 | 阶段 | 名称 | 阶段产出 | 门禁 |
 |---|---|---|---|
@@ -133,57 +246,6 @@ S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现�
 | **R3** | 成本与工程量自 S1 起动态估算，S8 才形成正式清单 | 估算随阶段收敛，不是最后才拍 |
 | **R4** | 平面未确认不得出正式图纸；锁定后不得局部手改 | 必须走变更影响分析 |
 | **R5** | 概念效果图只在业主确认的平面上生成 | 平面一变，整批作废重出 |
-
----
-
-## 快速开始
-
-### 一、装到哪：按你用的工具
-
-把**整个 `omniailab-ai-architect` 目录**（含 `SKILL.md`、`omniarchitect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`）放进下面对应的目录，重开一个新会话即可生效。
-
-| 工具 | 放哪里 | 怎么调起 |
-|---|---|---|
-| **WorkBuddy** | 用户级 `~/.workbuddy/skills/omniailab-ai-architect/`；项目级 `<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后出现在技能列表里；直接说 `$omniailab-ai-architect 开始` |
-| **Codex** | 放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，并在项目根 `AGENTS.md` 加一行：`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行` | 说"按 SKILL.md 开始做设计" |
-| **Claude / Claude Code** | 个人级 `~/.claude/skills/omniailab-ai-architect/`；项目级 `<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 `/omniailab-ai-architect`，或直接描述设计任务 |
-| **Cursor** | `~/.cursor/skills-cursor/omniailab-ai-architect/` | 在对话里描述设计任务 |
-| **通用 Agent Skills** | `<你的项目>/.agent/skills/omniailab-ai-architect/` | 按宿主约定；见 [compatibility/agent-skills.md](compatibility/agent-skills.md) |
-
-本仓库自带安装器，可自动探测运行环境：
-
-```bash
-python installer/install.py --dry-run          # 先看会发生什么
-python installer/install.py                    # 指针安装到已探测到的环境
-python installer/install.py --target ~/.codex/skills --mode copy
-python installer/verify_install.py --check-python
-```
-
-> 安装与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。**不需要注册 OmniAiLab，也不会读取任何平台密钥。**
-
-### 二、跑起来
-
-```bash
-export PYTHONPATH=<你的路径>/omniailab-ai-architect
-
-python -m omniarchitect doctor                 # 本机工具链体检
-python -m omniarchitect stages                 # 八阶段与门禁
-python -m omniarchitect demo --out out         # 示例项目跑通全部八阶段
-python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
-```
-
-### 三、推进一个真实项目
-
-```bash
-python -m omniarchitect status  --project projects/demo-120
-python -m omniarchitect route   --project projects/demo-120 "想做成现代意式极简，先给我两套平面方案"
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniarchitect change  --project projects/demo-120 "把厨房和餐厅之间的墙往外移300mm"
-python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
-```
-
-`route` 会把一句话变成明确的阶段计划：跑哪些阶段、谁负责、门禁是谁、此刻哪些动作被拦下。
 
 ---
 
@@ -287,6 +349,8 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 ├── SKILL.md                     入口：Skill 契约与流程总纲
 ├── README.md / README_EN.md     中英文说明（本文件）
 ├── AGENTS.md                    开发约定（面向编码 Agent）
+├── openai.yaml                  接口元数据（显示名 / 默认提示词 / 隐式调用开关）
+├── CHANGELOG.md                 版本变更记录
 ├── LICENSE / THIRD_PARTY_NOTICES.md / LICENSES/
 │                                许可、第三方许可证与署名的唯一集中登记处
 ├── docs/                        架构、流程、判据、平台接入、工具、安装、品牌策略、操作手册
@@ -301,16 +365,16 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 │   ├── presentation/            汇报 → PPTX / MD / HTML / PDF
 │   ├── integration/ installer/  Agent Skills 校验与安装
 │   ├── brand_policy.py          品牌与供应商策略 + 创作能力独占裁决
-│   └── tests/                   15 个模块、238 项测试
+│   └── tests/                   16 个测试模块（全量回归）
 ├── knowledge/                   13 个原创设计知识域（渐进式加载）
-├── skills/                      30 项专业能力说明
+├── skills/                      30 项专业能力说明（文件名 = 能力名，可直接按名加载）
 ├── cases/                       通用项目类型案例判据
 ├── schemas/                     空间模型 / 案例 / 工具能力 / 汇报 Schema
 ├── workflows/                   阶段流程定义
 ├── adapters/specs/              MCP / 外部工具适配规范
 ├── compatibility/               各运行环境兼容说明
 ├── installer/                   安装脚本与清单
-├── examples/                    示例任务书
+├── examples/                    示例库（起手话术 / 交付清单 / 需求样例，可整段照抄）
 ├── providers/                   平台连接配置位置（凭据不入库）
 └── scripts/                     测试、验证、格式统一脚本
 ```
@@ -424,6 +488,25 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 ---
 
+## 获取帮助
+
+遇到问题、想反馈 bug 或提功能建议——按这个顺序找最省时间：
+
+| 渠道 | 地址 | 适合用来 |
+|---|---|---|
+| **操作手册（离线，最快）** | [docs/MANUAL.md](docs/MANUAL.md) | 安装、命令、报错、术语；**第 12 节避坑总表**最省时间 |
+| **操作手册（在线）** | [飞书主文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion 镜像](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 同上；可批注、可分享给同事 |
+| **Skill 内直接问** | 对 Skill 说「查手册第 X 节」或「查手册避坑总表」 | 它会读 `docs/MANUAL.md` 并返回对应小节，不用自己翻 |
+| **命令行定位** | `python -m omniarchitect manual --topic <主题>` | 23 个主题 → 手册章节对照；拿不准看哪节时用 |
+| **仓库 issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | 反馈 bug、提功能建议；留在仓库里最不容易丢 |
+| **OmniAiLab 官方** | [国内站](https://www.omniailabx.com/) · [海外站](https://omniailab.cn/) | 平台能力、模型路由与账号相关 |
+
+> 提问前建议先翻本 README 的[避坑总表](#避坑总表)与操作手册对应章节。发问时带上
+> **项目类型、当前阶段、你用的工具（Codex / Claude / WorkBuddy / OmniAiLab）与报错原文**，
+> 更容易一次问清。
+
+---
+
 ## 文档地图
 
 | 想了解 | 看这里 |
@@ -462,7 +545,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 **改完必须跑**：
 
 ```bash
-python scripts/run_tests.py                     # 全量测试（238 项，15 模块）
+python scripts/run_tests.py                     # 全量测试（16 个模块）
 python scripts/verify_all.py                    # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
 python -m omniarchitect audit --write docs      # 署名 / 隐私 / 外链 / 许可
 python -m omniarchitect policy --write docs     # 品牌 / 供应商 / 凭据 / fallback / 创作独占

@@ -15,7 +15,7 @@ agent_created: true
 （`BUILTIN_OPERATIONS` / `BUILTIN_LIMITS`）。两者必须一致，改动要一起改。
 
 | 规范 | 对应工具 id | 风险示例 | 缺失时 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | [`blender.md`](blender.md) | `blender` | `run_blender` **L4** | 输出 `build_scene.py`（有 Blender 的机器直接跑） |
 | [`freecad.md`](freecad.md) | `freecad` | `run_freecad` **L4** | 输出 `build_freecad.py` |
 | [`autocad.md`](autocad.md) | `autocad`（MCP） | 写回原图 **L4** | 使用内置 DXF 写出器；DWG 需许可后端 |

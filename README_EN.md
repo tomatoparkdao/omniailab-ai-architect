@@ -15,16 +15,16 @@
 </p>
 
 <p align="center">
-  <b>English</b>　｜　<a href="README.md">简体中文</a>
+  <a href="README.md">简体中文</a>　｜　<b>English</b>
 </p>
 
-> © OmniAiLab ｜ Developer: Mochiball ｜ Platform: [omniailabx.com](https://www.omniailabx.com/) ｜ Repo: [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
+> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 
 ---
 
 ## In one sentence
 
-Hand it one requirement — even just a floor plan plus a line like "make it Italian minimalist" — and it first pins down function and budget, then advances stage by stage to deliverable drawings, models and schedules. At the end of every stage you only answer "confirmed" or "change item X".
+Hand it one requirement — even just a floor plan plus a line like "make it Italian minimalist" — and it first pins down function and budget, then advances stage by stage to deliverable drawings, models and material schedules. At the end of every stage you only answer "confirmed" or "change item X".
 
 | Scope | What it covers |
 |---|---|
@@ -35,7 +35,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 | Item | Value | Notes |
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
-| Display name | OmniAiLab AI Architect & Interior Designer | The name shown on the repository page and in the docs — not the invocation name |
+| Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
 | Version | v1.3.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md` and `installer/manifest.json` |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
@@ -44,7 +44,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 | Open-source repo | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | All source, documentation and acceptance scripts |
 | Operation manual | [Feishu main doc](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion mirror](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
 
-The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect & Interior Designer". Tools that support skills are safest with the invocation name; tools without native skill support still trigger from a natural-language design task.
+The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect for Architecture & Interior Design". Tools that support skills are safest with the invocation name; tools without native skill support still trigger from a natural-language design task.
 
 > **A trap in the name**: the repository root is called `omniailab-ai-architect` (with hyphens — that is the Skill name),
 > while the Python package inside is called `omniarchitect` (the internal engine codename, importable). **The two are not duplicate directories** —
@@ -80,7 +80,7 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 | `space-planning` | Space planning | S3 |
 | `layout-optimization` | Layout optimization | S3 · S6 |
 | `ergonomics` | Ergonomics and dimensions | S3 · S4 |
-| `concept-visualization` | Concept renderings | S3 · S4 (post-G3 action) |
+| `concept-visualization` | Concept renderings | S3 · S4 (post-gate action of G3) |
 | `interior-design` | Interior design | S4 · S6 |
 | `material-design` | Material and colour design | S4 · S5 · S8 |
 | `building-services` | MEP and services coordination | S4 · S6 · S7 |
@@ -107,7 +107,120 @@ python -m omniarchitect criteria     # the design-criteria system (own definitio
 
 ---
 
-## The eight-stage workflow
+## Quick start
+
+> **First time here? Just follow these five steps.** It does not open by asking "what is your design requirement"; instead it gathers what it needs in the order below.
+
+### 1. Where to install it: by the tool you use
+
+Put the **entire `omniailab-ai-architect` directory** (with `SKILL.md`, `omniarchitect/`, `knowledge/`, `cases/`, `skills/`, `schemas/`, `workflows/`, `docs/`) into the matching directory below, then open a new session for it to take effect.
+
+| Tool | Where to put it | How to invoke |
+|---|---|---|
+| **Codex** (recommended primary) | No native skill directory: put the folder in the project, e.g. `<your project>/skills/omniailab-ai-architect/`, then add a line to the project-root `AGENTS.md`: <br>`Design task: read skills/omniailab-ai-architect/SKILL.md first and follow its process.` | Say "start the design following SKILL.md". After reading `AGENTS.md` it loads this skill. |
+| **Claude / Claude Code** | Personal level: `~/.claude/skills/omniailab-ai-architect/`<br><br>Project level: `<your project>/.claude/skills/omniailab-ai-architect/` | Type **`/omniailab-ai-architect`**; or describe the task directly (e.g. "run the full design workflow for this floor plan") and it will match and load from the description. |
+| **WorkBuddy** | User level (global): `~/.workbuddy/skills/omniailab-ai-architect/`<br><br>Project level (this project only): `<your project>/.workbuddy/skills/omniailab-ai-architect/` | It appears in the skill list after a new session; just say **`$omniailab-ai-architect 开始`**. |
+| **OmniAiLab** (omniailabx) | [Download from the website](https://www.omniailabx.com/) (version per the website); after installing, put the whole folder into its **skills directory** (the client shows where it is) | It appears in the skill list after a new session; just say **`$omniailab-ai-architect 开始`**. |
+| **Other Agent Skills hosts** | Follow the host convention, e.g. `<your project>/.agent/skills/omniailab-ai-architect/`; for Cursor use `~/.cursor/skills-cursor/omniailab-ai-architect/` | Describe the design task in the chat; see [compatibility/agent-skills.md](compatibility/agent-skills.md). |
+
+> **The whole folder must be copied together — you cannot copy only SKILL.md.** The 30 capability briefs are in `skills/`, the 13 knowledge domains in `knowledge/`, the criteria in [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md), the operation manual in [docs/MANUAL.md](docs/MANUAL.md), the templates in `schemas/` and `workflows/`, and the executable code in `omniarchitect/`; miss one directory and the run breaks its links.
+
+**Clone install (recommended)**
+
+```bash
+git clone https://github.com/tomatoparkdao/omniailab-ai-architect.git \
+  ~/.workbuddy/skills/omniailab-ai-architect
+```
+
+> This repository is a **private repository**: cloning needs GitHub authorisation (a token over HTTPS, or SSH). To update later, just run `git pull` in that directory. You can also file an issue in the repository.
+
+A bundled installer can auto-detect the runtime environment (**no OmniAiLab registration is required and no platform key is ever read**):
+
+```bash
+python installer/install.py --dry-run          # see what will happen first
+python installer/install.py                    # pointer-install into the detected environment
+python installer/install.py --target ~/.codex/skills --mode copy
+python installer/verify_install.py --check-python
+```
+
+> Installation and uninstallation **never delete content**: if the target already exists it is first moved to `_backup/`.
+
+### 2. Where the material comes from (pick one of three)
+
+1. **You upload the original drawings / design brief directly** — it reads them, parses them with `existing-drawing-analysis`, and goes straight into S1.
+2. **You give nothing and just say "start"** — it first asks four things (project type / functional requirements / budget basis and delivery depth / what material you have), and **will not invent a set of requirements on its own**; only when you explicitly say "run the sample project" does it use the built-in 120㎡ residential sample.
+3. **You give one requirement in a single line** (e.g. "120㎡ three-bedroom, modern Italian minimalist, budget 300k") — it first organises a confirmable version of the design brief for you to confirm, and only then enters S1.
+
+### 3. The starting command
+
+```text
+$omniailab-ai-architect 开始
+```
+
+Just say "start" — it will **not** ask back "what is your requirement", but instead asks directly: project type, functional requirements, budget basis, and what material you have.
+
+Command line works too (it all runs locally; no platform and no key needed):
+
+```bash
+export PYTHONPATH=<your path>/omniailab-ai-architect
+python -m omniarchitect doctor                 # local toolchain health check
+python -m omniarchitect stages                 # the eight stages and gates
+python -m omniarchitect demo --out out         # sample project through all eight stages
+python -m omniarchitect scenario --name all    # acceptance: Scenario A/B/C
+```
+
+Driving a real project:
+
+```bash
+python -m omniarchitect status  --project projects/demo-120
+python -m omniarchitect route   --project projects/demo-120 "make it modern Italian minimalist, give me two layouts first"
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by client
+python -m omniarchitect change  --project projects/demo-120 "move the wall between the kitchen and the dining room 300mm outward"
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+```
+
+`route` turns one sentence into an explicit stage plan: which stages run, who owns them, who confirms at the gate, and which actions are blocked right now.
+
+### 4. Two things to settle before you start
+
+- **The functional requirements must be confirmed by the client.** R1: detailed modelling may not start before the client confirms the functional requirements — modelling before the requirements are fixed = wasted modelling. A major mid-course change to the functions (especially adding or removing rooms) voids every layout already confirmed and all downstream deliverables.
+- **Fix the target delivery depth first.** Just "compare two layouts", or "layouts + 3D + a render task package + construction-depth DXF + material schedules + a presentation deck"? The same single pipeline serves them on demand, but the depth must be stated at S1 — deepening mid-course widens the rework.
+
+### 5. All you ever need to say is one of two things
+
+1. **Go ahead to the next stage** — it must be one of these four words; nothing else opens the gate:
+
+```text
+confirm / pass / finalise / continue
+```
+
+2. **To change something, point at where** — it redoes the work in place at the current stage and does not move on:
+
+```text
+The living-room daylight face of layout 3 is monopolised — rearrange it
+Change the master-bedroom wardrobe from 600 deep to 550 deep
+```
+
+**When you only want one capability**, name it directly — there is no need to run the whole workflow:
+
+| What you want | Copy this line and just say it | What it gives you |
+|---|---|---|
+| Design brief | `Just do the brief — turn my requirements into a verifiable brief` | functional brief + area targets + budget basis + acceptance criteria |
+| Layout comparison | `Just do the layouts — give me two or three comparable options` | multiple layouts + comparable metrics + area mix + cost impact |
+| Human-scale check | `Just do the dimensions — check whether the corridors and furniture clearances are enough` | a numeric check list for clear corridor widths / furniture clearances / sanitary-fixture clearances |
+| Materials and finishes | `Just do the materials — give me a procurable, buildable material system` | material selection + specification layout + sample list |
+| Lighting | `Just do the lighting — give me an illuminance, colour-temperature and fixture-position scheme` | illuminance standards / colour temperature / colour rendering / fixture positions and circuit suggestions |
+| Concept renderings | `Just do the concept renderings, I have confirmed the layout` | canvas task package (views + prompts + reference images) + per-image status; marked `awaiting_platform` when no platform is connected |
+| CAD drawings | `Just do the drawings — issue schematic-depth DXF` | editable DXF (schematic depth `schematic`) + an independent parse re-check result |
+| Quantities and cost | `Just do the quantities — work out the quantities and estimate for this scheme` | per-space quantities + a cost/quantity-separated estimate + a budget-fit conclusion |
+| Design presentation | `Just do the presentation — turn this stage's output into a proposal` | editable PPTX (with disclaimer and boundary pages) + Markdown + HTML |
+
+> **The more specific the information, the less the rework.** The three most useful things: ① original drawings or on-site measured dimensions; ② functional requirements and number of occupants; ③ budget basis and hard constraints (what must not appear, what must appear). Giving these three at step one saves far more than adding them later.
+
+---
+
+## End-to-end at a glance
 
 | Stage | Name | Stage deliverable | Gate |
 |---|---|---|---|
@@ -133,57 +246,6 @@ S2 (concept lighting direction), S4 (lighting scheme) and S7 (fixture positionin
 | **R3** | Cost and quantities are estimated dynamically from S1; only at S8 do they become a formal schedule | Estimates converge across stages — they are not guessed at the very end |
 | **R4** | No formal drawings before the layout is confirmed; no local hand-editing once locked | It must go through change-impact analysis |
 | **R5** | Concept renderings are generated only from a client-confirmed layout | Change the layout and the whole batch is void and regenerated |
-
----
-
-## Quick start
-
-### 1. Where to install: by the tool you use
-
-Put the **entire `omniailab-ai-architect` directory** (with `SKILL.md`, `omniarchitect/`, `knowledge/`, `cases/`, `skills/`, `schemas/`, `workflows/`) into the matching directory below, then open a new session for it to take effect.
-
-| Tool | Where to put it | How to invoke |
-|---|---|---|
-| **WorkBuddy** | User-level `~/.workbuddy/skills/omniailab-ai-architect/`; project-level `<your project>/.workbuddy/skills/omniailab-ai-architect/` | It appears in the skill list after a new session; just say `$omniailab-ai-architect start` |
-| **Codex** | Put it in the project, e.g. `<your project>/skills/omniailab-ai-architect/`, and add a line to the project root `AGENTS.md`: `Design task: read skills/omniailab-ai-architect/SKILL.md first and follow its process` | Say "start the design following SKILL.md" |
-| **Claude / Claude Code** | Personal level `~/.claude/skills/omniailab-ai-architect/`; project level `<your project>/.claude/skills/omniailab-ai-architect/` | Type `/omniailab-ai-architect`, or describe the design task directly |
-| **Cursor** | `~/.cursor/skills-cursor/omniailab-ai-architect/` | Describe the design task in the chat |
-| **Generic Agent Skills** | `<your project>/.agent/skills/omniailab-ai-architect/` | Follow the host convention; see [compatibility/agent-skills.md](compatibility/agent-skills.md) |
-
-A bundled installer can auto-detect the runtime environment:
-
-```bash
-python installer/install.py --dry-run          # see what will happen first
-python installer/install.py                    # pointer-install into the detected environment
-python installer/install.py --target ~/.codex/skills --mode copy
-python installer/verify_install.py --check-python
-```
-
-> Installation and uninstallation **never delete content**: if the target already exists it is first moved to `_backup/`. **No OmniAiLab registration is required and no platform key is ever read.**
-
-### 2. Run it
-
-```bash
-export PYTHONPATH=<your path>/omniailab-ai-architect
-
-python -m omniarchitect doctor                 # local toolchain health check
-python -m omniarchitect stages                 # the eight stages and gates
-python -m omniarchitect demo --out out         # sample project through all eight stages
-python -m omniarchitect scenario --name all    # acceptance: Scenario A/B/C
-```
-
-### 3. Drive a real project
-
-```bash
-python -m omniarchitect status  --project projects/demo-120
-python -m omniarchitect route   --project projects/demo-120 "make it modern Italian minimalist, give me two layouts first"
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by client
-python -m omniarchitect change  --project projects/demo-120 "move the wall between the kitchen and the dining room 300mm outward"
-python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
-```
-
-`route` turns one sentence into an explicit stage plan: which stages run, who owns them, who confirms at the gate, and which actions are blocked right now.
 
 ---
 
@@ -264,7 +326,7 @@ Hit any one of these and you may, at best, redo a stretch of work — at worst, 
 | 12 | Wait for renderings while the platform is not connected | Waiting for nothing | An absent platform is a **normal degradation**: deliver only the task package, each image marked `awaiting_platform` |
 | 13 | Let the system re-route to a third-party generation platform | Breaks brand and vendor policy | The generative creative domain is OmniAiLab only; when unavailable it defers, it does not re-route |
 | 14 | Say the models are developed in-house by OmniAiLab | False statement | OmniP / image2.5 are licensed routes inside the platform, not in-house models |
-| 15 | Pass off an in-house schematic as an AI rendering | Misleads the client | Local rasterisation declares only `schematic_diagram`, marked "not a photoreal render" |
+| 15 | Pass off an in-house schematic as an AI render | Misleads the client | Local rasterisation declares only `schematic_diagram`, marked "not a photoreal render" |
 | 16 | Expect the machine to produce a PDF directly | No PDF obtained | Without LibreOffice / soffice it does not fake a PDF; it uses the HTML print path |
 | 17 | Run verification with a bare `python` | Missing Pillow makes the schematic case take the degraded branch and fail | Use an interpreter with the dependencies: `…\python\envs\default\Scripts\python.exe` |
 | 18 | Deliver without running the self-checks | Signature / external-link / privacy issues ship out | Run `audit` and `policy` before delivery; both must be 0 |
@@ -287,6 +349,8 @@ omniailab-ai-architect/          ← Skill root (this repository)
 ├── SKILL.md                     Entry: Skill contract and process overview
 ├── README.md / README_EN.md     Chinese and English documentation (this file)
 ├── AGENTS.md                    Development conventions (for coding agents)
+├── openai.yaml                  Interface metadata (display name / default prompt / implicit-invocation switch)
+├── CHANGELOG.md                 Version history
 ├── LICENSE / THIRD_PARTY_NOTICES.md / LICENSES/
 │                                The single central register for licences, third-party licences and attribution
 ├── docs/                        Architecture, workflow, criteria, platform integration, tools, install, brand policy, manual
@@ -301,16 +365,16 @@ omniailab-ai-architect/          ← Skill root (this repository)
 │   ├── presentation/            Presentation → PPTX / MD / HTML / PDF
 │   ├── integration/ installer/  Agent Skills verification and installation
 │   ├── brand_policy.py          Brand and vendor policy + creative-capability exclusivity ruling
-│   └── tests/                   15 modules, 238 tests
+│   └── tests/                   16 test modules (full regression)
 ├── knowledge/                   13 original design knowledge domains (progressive loading)
-├── skills/                      30 professional capability briefs
+├── skills/                      30 professional capability briefs (filename = capability name, loadable by name)
 ├── cases/                       Case criteria for generic project types
 ├── schemas/                     Spatial model / case / tool-capability / presentation schemas
 ├── workflows/                   Stage process definitions
 ├── adapters/specs/              MCP / external-tool adapter specifications
 ├── compatibility/               Compatibility notes per runtime
 ├── installer/                   Install scripts and manifest
-├── examples/                    Sample briefs
+├── examples/                    Example library (opening prompts / deliverable checklist / sample brief; copy as-is)
 ├── providers/                   Platform connection config location (credentials never committed)
 └── scripts/                     Test, verify and format-normalisation scripts
 ```
@@ -424,6 +488,25 @@ you can also just tell the Skill "look up section X of the manual" and it will r
 
 ---
 
+## Getting help
+
+Hit a problem, want to report a bug or suggest a feature — this order saves the most time:
+
+| Channel | Where | Best for |
+|---|---|---|
+| **Operation manual (offline, fastest)** | [docs/MANUAL.md](docs/MANUAL.md) | Install, commands, errors, terminology; **section 12, the pitfall table**, saves the most time |
+| **Operation manual (online)** | [Feishu main doc](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion mirror](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | Same as above; supports commenting and sharing with colleagues |
+| **Ask inside the Skill** | Tell the Skill "look up section X of the manual" or "look up the manual's pitfall table" | It reads `docs/MANUAL.md` and returns the matching section — no flipping through it yourself |
+| **Locate from the command line** | `python -m omniarchitect manual --topic <topic>` | 23 topics → manual chapter mapping; use it when unsure which section to read |
+| **Repository issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | Report bugs, suggest features; leaving it in the repository is the least likely to be lost |
+| **OmniAiLab official** | [China site](https://www.omniailabx.com/) · [International site](https://omniailab.cn/) | Platform capabilities, model routing and account matters |
+
+> Before asking, read this README's [Pitfall table](#pitfall-table) and the matching operation-manual section. When you ask, include
+> **the project type, the current stage, the tool you use (Codex / Claude / WorkBuddy / OmniAiLab) and the verbatim error**,
+> and it is easier to settle in one go.
+
+---
+
 ## Documentation map
 
 | To learn about | Read |
@@ -462,7 +545,7 @@ This repository is open source under the **MIT** licence (full text in [LICENSE]
 **After any change you must run**:
 
 ```bash
-python scripts/run_tests.py                     # full test suite (238 tests, 15 modules)
+python scripts/run_tests.py                     # full test suite (16 modules)
 python scripts/verify_all.py                    # directory + self-checks + toolchain + closed loop + tests + subsystems
 python -m omniarchitect audit --write docs      # signature / privacy / external links / licences
 python -m omniarchitect policy --write docs     # brand / vendors / credentials / fallback / creative exclusivity
@@ -501,7 +584,5 @@ python scripts/normalize_attribution.py --check # repository-wide head/tail form
 
 </div>
 
-> © OmniAiLab ｜ Developer: Mochiball ｜ OmniAiLab AI Architect (omniailabx.com) — unauthorized copying, distribution or redistribution is prohibited.
-
 ---
-> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+> © OmniAiLab ｜ Developer: Mochiball ｜ OmniAiLab AI Architect for Architecture & Interior Design (omniailabx.com) — unauthorised copying, distribution and re-sharing are prohibited.

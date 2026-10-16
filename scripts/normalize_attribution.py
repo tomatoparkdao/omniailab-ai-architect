@@ -80,6 +80,14 @@ TAIL_FIXED: Dict[str, str] = {
 # 直接以居中的 HTML 标题开始，避免首页顶部被渲染成一张元数据表。
 NO_FRONTMATTER: Tuple[str, ...] = ("README.md", "README_EN.md")
 
+# 英文 README 用英文页脚署名（与参考仓库做法一致）；其余文件用中文标准署名。
+EN_SIGNATURE_FILES: Tuple[str, ...] = ("README_EN.md",)
+EN_SIGNATURE = (
+    "> © OmniAiLab ｜ Developer: Mochiball ｜ OmniAiLab AI Architect for "
+    "Architecture & Interior Design (omniailabx.com) — unauthorised copying, "
+    "distribution and re-sharing are prohibited."
+)
+
 # Python / 注释类文件使用的署名（= SIGNATURE 去掉 Markdown 引用前缀）
 ATTRIBUTION = SIGNATURE.lstrip("> ").strip()
 SHORT_ATTRIBUTION = "© OmniAiLab ｜ 开发者：Mochiball"
@@ -117,6 +125,10 @@ SKIP_TOP = {"projects"}
 
 FM_RE = re.compile(r"\A(?:\ufeff)?---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n", re.S)
 
+# 表格分隔行：`|---|---|` 与 `| --- | --- |` 都是合法 Markdown，但全仓只能有一种。
+# 参考仓库 tomatoparkdao/omniailab-ai-director 一律用紧凑写法，本仓统一到它。
+TABLE_SEP_RE = re.compile(r"^[ \t]*\|[\s:|-]+\|[ \t]*$")
+
 
 # --------------------------------------------------------------------------
 def _iter(root: Path, pattern: str):
@@ -147,6 +159,39 @@ def _normalize_tail(fm_body: str, version: str) -> str:
         kept.pop()
     tail = [f"version: {version}"] + [f"{k}: {v}" for k, v in TAIL_FIXED.items()]
     return "\n".join(kept + tail)
+
+
+def normalize_tables(text: str, nl: str) -> Tuple[str, int]:
+    """把 Markdown 表格分隔行统一成紧凑写法 `|---|---|`。
+
+    代码块（``` / ~~~）内的内容一律不动——那里可能有示例文本。
+    返回 (新文本, 改动行数)。
+    """
+    lines = text.split(nl)
+    out: List[str] = []
+    fence = ""
+    changed = 0
+    for line in lines:
+        stripped = line.strip()
+        if fence:
+            out.append(line)
+            if stripped.startswith(fence):
+                fence = ""
+            continue
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            fence = stripped[:3]
+            out.append(line)
+            continue
+        if TABLE_SEP_RE.match(line):
+            cols = line.count("|") - 1
+            if cols >= 1:
+                compact = "|" + "---|" * cols
+                if compact != line:
+                    changed += 1
+                out.append(compact)
+                continue
+        out.append(line)
+    return nl.join(out), changed
 
 
 def normalize_markdown(path: Path, rel: str, version: str, check: bool) -> List[str]:
@@ -187,9 +232,22 @@ def normalize_markdown(path: Path, rel: str, version: str, check: bool) -> List[
         new_text = f"---{nl}" + nl.join(fm_lines) + f"{nl}---{nl}{nl}" + text
         changes.append("新增 front-matter")
 
-    if SIGNATURE not in new_text:
+    if rel in EN_SIGNATURE_FILES:
+        # 英文 README 的页脚只留英文署名：先清掉两种署名的残留，再统一追加。
+        tmp = new_text
+        for sig in (SIGNATURE, EN_SIGNATURE):
+            if sig in tmp:
+                tmp = tmp.replace(f"---{nl}{sig}", "").replace(sig, "")
+        new_text = tmp.rstrip("\r\n") + f"{nl}{nl}---{nl}{EN_SIGNATURE}{nl}"
+        if new_text != text:
+            changes.append("页脚统一为英文署名")
+    elif SIGNATURE not in new_text:
         new_text = new_text.rstrip("\r\n") + f"{nl}{nl}---{nl}{SIGNATURE}{nl}"
         changes.append("补写结尾署名行")
+
+    new_text, table_changes = normalize_tables(new_text, nl)
+    if table_changes:
+        changes.append(f"表格分隔行统一为 |---|---|（{table_changes} 行）")
 
     if not check and new_text != text:
         path.write_bytes(new_text.encode("utf-8"))

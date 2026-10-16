@@ -19,7 +19,7 @@ OmniArchitect 支持**独立安装**：不强制注册 OmniAiLab，不读取任�
 ## 1. 环境要求
 
 | 项 | 要求 |
-| --- | --- |
+|---|---|
 | Python | ≥ 3.10（开发与验证使用 3.13） |
 | 硬依赖 | **无**。核心路径零第三方依赖 |
 | 网络 | 非必需 |
@@ -54,7 +54,7 @@ python installer/install.py --dry-run --target ~/.codex/skills
 ### 3.2 两种模式
 
 | 模式 | 内容 | 适用 |
-| --- | --- | --- |
+|---|---|---|
 | `pointer`（默认） | `SKILL.md` + `omniailab-home.txt` + `manifest.json` | 开发中；升级只需 `git pull`，不产生知识库副本 |
 | `copy` | 整包复制（排除 `out/`、`.git/`） | 离线分发或整体搬移 |
 
@@ -91,7 +91,7 @@ python -m omniarchitect uninstall --dry-run
 不假设存在，逐个探测：
 
 | key | 路径 |
-| --- | --- |
+|---|---|
 | `workbuddy` | `~/.workbuddy/skills` |
 | `codex` | `~/.codex/skills` |
 | `cursor` | `~/.cursor/skills-cursor` |

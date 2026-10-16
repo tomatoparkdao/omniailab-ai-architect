@@ -11,6 +11,80 @@ agent_created: true
 
 # 变更记录
 
+## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充
+
+版本号仍为 **1.3.0**（全仓统一，不新开小版本）。本轮是一次**全盘审计**：把「文档承诺」与
+「仓库实际」对齐，补掉所有缺口。
+
+### 补掉的最大缺口：`skills/` 能力说明缺 11 项、命名无法定位
+
+**问题**：文档一直承诺「30 项专业能力说明在 `skills/`」，实际只有 19 份——18 份编号文件
+（`01-brief.md`…`18-revisions.md`）+ `design-presentation.md`，且**编号与能力名不可互推**：
+Agent 拿到 `ergonomics` 这个能力名时无处定位。18 份编号文件还是 42 行的通用英文模板。
+
+**处理**：
+- 全部改为 **`skills/<能力名>.md`**（30 份），**文件名即能力名**，可按名直接加载；
+  旧编号文件删除（其能力已被全部覆盖，逐个核对过 `capability` 字段）。
+- 30 份全部重写为实用内容（**70–110 行**，中位 88 行）：六节结构 —— 做什么 / 什么时候用·不用 /
+  输入→输出 / 操作步骤 / **判断清单（可判定的判据，含数值区间）** / 硬性规则 / 常见坑 / 与阶段的关系。
+- `registry.load_registry()` 新增 **`brief_file`** 字段指向 `skills/<slug>.md`，`version` 从该文件读；
+  `legacy` 降级为纯历史记录（v1.0 编号）。`registry` 命令现在逐项打印 ✓/✗，缺文件会显式告警。
+
+### 新增 `openai.yaml`（接口元数据，参考仓库有而本仓缺）
+
+`interface.display_name` / `short_description` / `author` / `developer` / `default_prompt` /
+`policy.allow_implicit_invocation`，与 `SKILL.md` 同版本。是「隐式调用」与「默认提示词」的落点。
+
+### README 安装引导对齐参考仓库 `omniailab-ai-director`
+
+- **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →
+  OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。
+- 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从哪来（三选一）→ 三、启动指令 →
+  四、启动前必须想清楚的两件事 → 五、全程你只需要回答两种话（+ **「只想用其中一项能力时」
+  9 行点名表**）。
+- 章节顺序对齐参考：`快速开始` 提到 `全流程总览`（原「八阶段工作流」）之前。
+- 新增 **「获取帮助」** 章节（手册 / Skill 内直接问 / `manual --topic` / 仓库 issue / 官方站）。
+- 删掉过期数字：`15 个模块、238 项测试` → `16 个测试模块`（不再写死条数，避免每次加测试都要改 README）。
+- 同步改了 `README_EN.md`（20 节 / 20 表逐项一致），页脚改为只留英文署名。
+
+### 表格样式全仓统一（此前遗漏的第三条格式规则）
+
+同一份 Markdown 里 `|---|---|` 与 `| --- | --- |` 混用（此前 85 : 66）。参考仓库一律用紧凑写法，
+故全仓统一到 `|---|---|`：**146 行表格、30 个文件**被改写。
+规则写进 `scripts/normalize_attribution.py` 的 `normalize_tables()`——**跳过代码块**，
+`--check` 继续作为测试守卫。生成器（`brand_policy` / `compliance_audit`）的表格字面量同步改成紧凑写法。
+
+### 示例库扩充（`examples/` 从 1 → 4）
+
+新增 `examples/README.md`（索引）、`examples/cold-start-prompts.md`（**4 种起手式 + 30 项能力
+一句话点名表 + 卡住时的三句话**）、`examples/deliverable-checklist.md`（逐阶段产物清单 +
+五件必须存在的东西 + 四条不许出现的说法）。`demo-brief.md` 改为中英对照并加「示范了什么」。
+
+### 其它一致性修正
+
+- `knowledge/INDEX.md` 版本小节 `1.1.0` → `1.3.0`，并加「须与 `VERSION` 同步」的约束。
+- `AGENTS.md` 文件表：知识域 `12 个` → `13 个`；skills `29 份` → `30 份（文件名 = 能力名）`；
+  新增 `openai.yaml` 行。
+- `docs/WORKFLOW.md` 里「原始的 18 份说明书全部保留…新增 `19-design-presentation` 系列能力」
+  的过期表述已重写。
+- `compatibility/agent-skills.md` 的「29 项专业能力说明」→「30 项（文件名 = 能力名）」。
+- `SKILL.md` / `README` 目录树补 `openai.yaml`、`CHANGELOG.md`、`examples/` 实际说明。
+- `docs/MANUAL.md` §2.2 安装表同步为参考排序 + 补「克隆安装（推荐）」（飞书 / Notion 待同步）。
+
+### 新增防漂移测试（+4）
+
+- `test_every_capability_has_a_specialist_brief`：30 项能力必须各有 `skills/<slug>.md`，
+  且不许有多余文件。
+- `test_specialist_briefs_declare_matching_capability_and_stages`：每份说明的 `capability`
+  必须等于文件名、`stages` 必须等于 `CAPABILITIES` 的定义。
+- `test_readme_install_table_lists_tools_in_the_reference_order`：安装表工具顺序锁定。
+- `test_readme_guides_the_first_time_user_through_five_steps`：五步引导小节必须齐全。
+
+**验证**：`run_tests` **252 passed / 0 failed**（16 模块）；`normalize --check` 160 文件
+**0 处不一致**；`verify_all` 六段全通过；`scenario --name all` 3/3；`audit` 0；`policy` 0 禁止项。
+
+---
+
 ## v1.3.0 · 后续补充二 — 操作手册、README 对齐参考仓库、仓库与手册地址入册
 
 版本号仍为 **1.3.0**（全仓统一，不新开小版本）。
@@ -304,7 +378,7 @@ AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明�
 ### 新增
 
 | 子系统 | 内容 |
-| --- | --- |
+|---|---|
 | 内容合规 | `compliance_audit.py` 可执行扫描器（署名 / 隐私 / 外链 / 许可四类判定）、`docs/CONTENT_AUDIT.md` |
 | 原创知识库 | `knowledge/` 12 个领域（约 2 480 行，全部原创）+ `INDEX.md` + 渐进式加载器；`cases/` 3 个通用案例模板；`schemas/case.schema.json` |
 | 平台 provider | `providers/`：OmniAiLab 发现式适配器（SDK / 配置 / API 契约）+ 本地确定性 provider；能力发现、模型选择、任务提交、状态轮询、媒体取回、失败重试、成本估算、资产版本关联 |

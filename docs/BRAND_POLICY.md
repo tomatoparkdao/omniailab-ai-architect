@@ -14,9 +14,9 @@ agent_created: true
 
 > 规则集：`brand-and-provider-policy` —— 品牌统一 · 第三方来源合规隔离 · OmniAiLab 创作工具独占
 
-- 扫描时间：2026-10-16 20:25:30
+- 扫描时间：2026-10-16 21:28:23
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**141**
+- 扫描文本文件：**156**
 - 待处理：**0**（禁止项 0，待审 0）
 - 已抑制：25（宣告某平台不被允许的表述，不计入待处理）
 - 结论：**品牌统一、第三方来源隔离与创作工具独占三项均无未处理命中**
@@ -24,7 +24,7 @@ agent_created: true
 ## 品牌登记
 
 | 项 | 值 |
-| --- | --- |
+|---|---|
 | 对外名称（英文） | OmniAiLab AI Architect |
 | 对外名称（中文） | OmniAiLab AI 建筑与室内设计总设计师 |
 | Skill 调用名 | `omniailab-ai-architect` |
@@ -38,7 +38,7 @@ agent_created: true
 ## 检测规则与命中
 
 | # | 规则 | 说明 | 命中 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | 1 | `brand-text` | 品牌文字扫描 — 未登记品牌名的出现（含隐藏推广文字与外部品牌标识） | 0 |
 | 2 | `external-url` | 未授权外部 URL 检测 — 用户面材料与代码中指向未登记主机的链接 | 0 |
 | 3 | `unregistered-vendor` | 未登记模型供应商检测 — 外部模型供应商 / 平台名称或端点作为生成后端出现 | 0 |
@@ -52,7 +52,7 @@ agent_created: true
 ## 命中分类
 
 | 分类 | 数量 | 含义与处理 |
-| --- | --- | --- |
+|---|---|---|
 | `compliance-required` | 0 | 合规必要：许可证 / 版权声明 / 来源链接 / 署名——**必须保留** |
 | `authorized-dependency` | 30 | 已授权依赖：已登记的本地专业工具 / MCP / 依赖——允许存在 |
 | `needs-human-review` | 0 | 需人工审查：归属或授权无法自动判定 |
@@ -77,12 +77,12 @@ agent_created: true
 以下条目是已登记的本地专业工具与运行环境宿主，允许存在。
 
 | 文件 | 行 | 规则 | 命中 | 原因 |
-| --- | --- | --- | --- | --- |
-| `AGENTS.md` | 146 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 92 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 92 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 92 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 92 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+|---|---|---|---|---|
+| `AGENTS.md` | 147 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 40 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 40 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 40 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 238 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
@@ -114,12 +114,12 @@ agent_created: true
 这些命中出现在禁止性表述中，例如「不得调用某平台」。它们**不计入待处理**，在此列出仅为可复核；真正的集成问题由结构化规则判定。
 
 | 文件 | 行 | 规则 | 命中 | 原因 |
-| --- | --- | --- | --- | --- |
-| `AGENTS.md` | 141 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `AGENTS.md` | 142 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `AGENTS.md` | 142 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `AGENTS.md` | 142 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `AGENTS.md` | 142 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+|---|---|---|---|---|
+| `AGENTS.md` | 142 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `AGENTS.md` | 143 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `AGENTS.md` | 143 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `AGENTS.md` | 143 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `AGENTS.md` | 143 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `SKILL.md` | 275 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `SKILL.md` | 275 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `SKILL.md` | 275 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
@@ -130,11 +130,11 @@ agent_created: true
 | `docs/CONCEPT_RENDER.md` | 72 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `docs/MANUAL.md` | 517 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `docs/MANUAL.md` | 517 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `docs/MANUAL.md` | 517 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `docs/MANUAL.md` | 517 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `docs/MANUAL.md` | 517 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 528 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 528 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 528 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 528 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `docs/MANUAL.md` | 528 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 48 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 48 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `providers/README.md` | 49 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
@@ -144,13 +144,13 @@ agent_created: true
 ## 已登记：模型路由与供应商
 
 | 路由 | 平台 | 模型 | 性质 | 说明 |
-| --- | --- | --- | --- | --- |
+|---|---|---|---|---|
 | `omniailab.canvas` | OmniAiLab | OmniP, image2.5 | platform-managed-vendor-routing | 画布内依法授权并已配置的底层模型供应商，由平台侧路由；本系统不自行连接其 API，也不宣称这些模型由 OmniAiLab 自研。 |
 
 ## 已登记：本地专业工具与 MCP
 
 | 工具 | 用途 | 性质 | 品牌推广 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | `dxf` | 内置 DXF R12/R2010 写出与独立复核 | own-builtin | — |
 | `mesh` | 内置三角网格构建与 OBJ 导出 | own-builtin | — |
 | `blender` | Blender 批处理场景构建 | external-host-app | 禁止 |
@@ -166,7 +166,7 @@ agent_created: true
 ## 已登记：经批准的依赖（许可证已核查）
 
 | 依赖 | 许可证 | 版权持有方 | 来源 | 用途 |
-| --- | --- | --- | --- | --- |
+|---|---|---|---|---|
 | ezdxf | `MIT` | Manfred Moitzi | https://github.com/mozman/ezdxf | 可选：DXF R2010 写出与审计（缺失时用内置 R12 写出器） |
 | Pillow | `MIT-CMU (HPND)` | Jeffrey A. Clark 及 Pillow 贡献者 | https://github.com/python-pillow/Pillow | 可选：本地确定性示意图栅格化（缺失时跳过图像输出） |
 | python-pptx | `MIT` | Steve Canny | https://github.com/scanny/python-pptx | 可选：PPTX 主写出后端（缺失时用内置 OOXML 写出器） |
@@ -184,7 +184,7 @@ agent_created: true
 ## 只允许经 OmniAiLab 的创作能力域
 
 | 能力域 | 唯一被授权主体 |
-| --- | --- |
+|---|---|
 | `image_generation` | `omniailab` |
 | `image_editing` | `omniailab` |
 | `reference_image_generation` | `omniailab` |

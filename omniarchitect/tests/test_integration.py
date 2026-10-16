@@ -393,6 +393,33 @@ def test_readme_carries_no_frontmatter_and_links_repo_and_manual():
             f"{rel} 缺少操作手册地址"
 
 
+def test_readme_install_table_lists_tools_in_the_reference_order():
+    """安装表里的工具与排序必须与参考仓库 omniailab-ai-director 一致。
+
+    顺序：Codex（推荐主用）→ Claude / Claude Code → WorkBuddy → OmniAiLab。
+    这份顺序是给第一次用的人的引导路径，漂移了就等于换了一套上手方式。
+    """
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    i = text.index("### 一、装到哪")
+    j = text.index("### 二、")
+    block = text[i:j]
+    want = ["**Codex**", "**Claude", "**WorkBuddy**", "**OmniAiLab**"]
+    positions = [block.index(tok) for tok in want]
+    assert positions == sorted(positions), "安装表工具顺序须为 Codex → Claude → WorkBuddy → OmniAiLab"
+    assert "克隆安装（推荐）" in block, "安装表后必须给出克隆安装（推荐）"
+
+
+def test_readme_guides_the_first_time_user_through_five_steps():
+    """快速开始必须是给小白看的五步，且含「你只需要回答两种话」的引导。"""
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    for heading in ("### 一、装到哪：按你用的工具",
+                    "### 二、资料从哪来（三选一）",
+                    "### 三、启动指令",
+                    "### 四、启动前必须想清楚的两件事",
+                    "### 五、全程你只需要回答两种话"):
+        assert heading in text, f"快速开始缺少小节：{heading}"
+
+
 def test_generated_reports_carry_the_same_header_and_footer():
     from omniarchitect.paths import project_version
 

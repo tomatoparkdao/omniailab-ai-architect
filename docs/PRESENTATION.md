@@ -28,7 +28,7 @@ python -m omniarchitect present --list-kinds
 ```
 
 | kind | 阶段 | 用途 | 默认页结构 |
-| --- | --- | --- | --- |
+|---|---|---|---|
 | `concept` | S2 | 概念设计提案 | 封面 / 结构 / 摘要 / 概念 / 关键词 / 意向板 / 平面 / 照明 / 材料 / 预算 / 待确认 / 免责 |
 | `plan-comparison` | S3 | 平面方案比选 | 封面 / 结构 / 摘要 / 平面 / 比选 / 分析 / 预算 / 决策 / 待确认 / 免责 |
 | `concept-rendering` | S3 | **平面确认后 · 概念效果图汇报** | 基础页 + **逐机位一页**（图 / 模型 / 状态 / 提示词指纹） |
@@ -48,7 +48,7 @@ python -m omniarchitect present --project projects/demo-120 --kind full --brand 
 ## 2. 产出物
 
 | 文件 | 说明 |
-| --- | --- |
+|---|---|
 | `presentation-<kind>-r<rev>.pptx` | **可编辑** PPTX（表格、图片、讲稿备注） |
 | `presentation-<kind>-r<rev>.md` | 文字版，便于评审、检索与 diff |
 | `presentation-<kind>-r<rev>.html` | 打印就绪版式，浏览器可另存为 PDF |
@@ -60,7 +60,7 @@ PDF 缺失时**不会伪造**：报告写明原因，并给出 HTML 打印作为
 ## 3. 两个写出后端
 
 | 后端 | 何时使用 | 特点 |
-| --- | --- | --- |
+|---|---|---|
 | `python-pptx` | 已安装（主后端） | 富排版：表格、图片、备注页、品牌样式 |
 | `native-ooxml` | 未安装（内置兜底） | 零第三方依赖，直写 Open XML 容器，文本层完整，同样可被 PowerPoint 打开编辑 |
 

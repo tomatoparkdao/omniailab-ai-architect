@@ -27,7 +27,7 @@ agent_created: true
 ## 八阶段速查
 
 | 阶段 | 名称 |
-| --- | --- |
+|---|---|
 | S1 | 项目启动与设计任务书 |
 | S2 | 概念方案设计 |
 | S3 | 平面方案设计 |
@@ -40,7 +40,7 @@ agent_created: true
 ## 领域清单
 
 | # | domain | 中文名 | 一句话用途 | 加载时机 | 阶段 | 成本 |
-| --- | --- | --- | --- | --- | --- | --- |
+|---|---|---|---|---|---|---|
 | 1 | architectural-design-principles | 建筑设计原理 | 判断总图、功能分区、流线、体量与场地关系的自洽性 | 涉及总体布局、体型生成、功能分区、流线与场地关系时 | S1,S2,S3,S4 | medium |
 | 2 | interior-design-methodology | 室内设计方法论 | 把建筑壳体翻译为可施工的室内功能、界面与氛围方案 | 涉及室内功能重塑、界面、风格落地与软装策略时 | S1,S2,S3,S4,S6 | medium |
 | 3 | spatial-planning | 空间规划 | 把功能意向落成房间、面积与动线的可校核平面 | 涉及房间划分、面积指标、动线组织与平面优化时 | S3,S4,S5 | heavy |
@@ -58,7 +58,7 @@ agent_created: true
 ## 文件对应关系
 
 | domain | 文件路径 |
-| --- | --- |
+|---|---|
 | architectural-design-principles | knowledge/architectural-design-principles.md |
 | interior-design-methodology | knowledge/interior-design-methodology.md |
 | spatial-planning | knowledge/spatial-planning.md |
@@ -86,7 +86,7 @@ agent_created: true
 ## 按阶段加载矩阵
 
 | 阶段 | 主加载领域 | 次加载领域 |
-| --- | --- | --- |
+|---|---|---|
 | S1 | architectural-design-principles | design-review-checklists、interior-design-methodology |
 | S2 | architectural-design-principles | design-presentation-methodology、interior-design-methodology |
 | S3 | spatial-planning | human-ergonomics、architectural-design-principles、ai-concept-visualization |
@@ -99,7 +99,7 @@ agent_created: true
 ## 按问题类型加载路由
 
 | 问题类型 | 应加载领域 |
-| --- | --- |
+|---|---|
 | 功能分区与流线 | architectural-design-principles、spatial-planning |
 | 房间面积与布置 | spatial-planning、human-ergonomics |
 | 人体尺度与通行 | human-ergonomics |
@@ -188,7 +188,7 @@ agent_created: true
 ## 领域—阶段覆盖核对
 
 | 阶段 | 覆盖领域数 | 是否含 heavy 领域 |
-| --- | --- | --- |
+|---|---|---|
 | S1 | 3 | 否 |
 | S2 | 3 | 否 |
 | S3 | 4 | 是 |
@@ -222,10 +222,11 @@ agent_created: true
 
 ## 版本
 
-- 索引版本：1.1.0
+- 索引版本：1.3.0（与 Skill 版本同步）
 - 覆盖领域：13 个
 - 覆盖阶段：S1–S8
 - 对应文件：knowledge/ 下 13 个文档
+- 版本一致性：本索引版本须与 `VERSION` 及 `SKILL.md` 的 `version` 保持一致
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

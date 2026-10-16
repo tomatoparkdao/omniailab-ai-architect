@@ -31,7 +31,7 @@ codex
 ## 2. 三种接入方式
 
 | 方式 | 命令 | 适用 |
-| --- | --- | --- |
+|---|---|---|
 | 直接用仓库 | 工作区指向本目录即可 | 开发与调试 |
 | 指针安装 | `python -m omniarchitect install --target ~/.codex/skills --mode pointer` | 让 Codex 在任意项目里都能调用，且不复制知识库 |
 | 完整安装 | `python -m omniarchitect install --target ~/.codex/skills --mode copy` | 需要完全自包含、可整体搬移 |

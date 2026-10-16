@@ -35,7 +35,7 @@ agent_created: true
 本系统的核心路径**零硬依赖**。下表依赖全部为可选：装了就增强，不装就走自有实现。
 
 | 项目 | 许可证（SPDX） | 版权持有方 | 来源 | 在本系统中的用途 |
-| --- | --- | --- | --- | --- |
+|---|---|---|---|---|
 | ezdxf | `MIT` | Manfred Moitzi | https://pypi.org/project/ezdxf/ · https://github.com/mozman/ezdxf | DXF R2010 写出与审计；缺失时用内置 R12 写出器 |
 | Pillow | `MIT-CMU (HPND)` | Jeffrey A. Clark 及 Pillow 贡献者 | https://pypi.org/project/Pillow/ · https://github.com/python-pillow/Pillow | 本地确定性示意图栅格化；缺失时跳过图像输出 |
 | python-pptx | `MIT` | Steve Canny | https://pypi.org/project/python-pptx/ · https://github.com/scanny/python-pptx | PPTX 主写出后端；缺失时用内置 OOXML 写出器 |
@@ -52,7 +52,7 @@ agent_created: true
 本系统可通过命令行或 MCP 驱动它们完成几何建模、BIM 与专业文件处理。
 
 | 项目 | 许可证（SPDX） | 版权持有方 | 来源 | 在本系统中的角色 |
-| --- | --- | --- | --- | --- |
+|---|---|---|---|---|
 | Blender | `GPL-2.0-or-later` | Blender Foundation | https://www.blender.org/ | 本机三维场景构建与渲染宿主 |
 | FreeCAD | `LGPL-2.1-or-later` | FreeCAD 贡献者 | https://www.freecad.org/ | 本机参数化建模宿主 |
 | IfcOpenShell | `LGPL-3.0-or-later` | IfcOpenShell 贡献者 | https://ifcopenshell.org/ · https://github.com/IfcOpenShell/IfcOpenShell | IFC 读写能力来源 |
@@ -66,7 +66,7 @@ agent_created: true
 本仓生成的文件用到以下公开规范命名空间，它们**不是**第三方广告或推广链接：
 
 | 命名空间 / 规范 | 用途 |
-| --- | --- |
+|---|---|
 | `http://schemas.openxmlformats.org/...` | OOXML（PPTX）包结构 |
 | `http://purl.org/dc/elements/1.1/` | Dublin Core 元数据 |
 | `http://www.w3.org/...` | XML / SVG 规范 |

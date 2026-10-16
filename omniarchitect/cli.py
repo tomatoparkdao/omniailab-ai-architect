@@ -179,14 +179,23 @@ def cmd_registry(args) -> int:
     if args.json:
         _print_json(rep)
         return 0
-    print(f"专业能力 {rep['capability_count']} 项，映射到 {rep['stage_count']} 个阶段\n")
+    print(f"专业能力 {rep['capability_count']} 项，映射到 {rep['stage_count']} 个阶段")
+    print("说明文件：skills/<能力名>.md —— 文件名就是能力名，可直接按名加载\n")
+    printed = set()
     for r in rep["capabilities"]:
+        if r["slug"] in printed:          # slug 是唯一键，同一能力只印一行
+            continue
+        printed.add(r["slug"])
         stages = ",".join(r["stages"])
         src = "" if r["source"] == "OmniAiLab" else f"  [{r['source']}]"
-        print(f"  {r['slug']:<34} {stages:<22}{src}")
-    print("\n原始 18 项能力 → 阶段映射")
-    for legacy, sts in rep["legacy_coverage"].items():
-        print(f"  {legacy:<24} → {','.join(sts)}")
+        mark = "✓" if r["brief_file"] else "✗"
+        print(f"  {mark} {r['slug']:<34} {stages:<24}{src}")
+    if any(not r["brief_file"] for r in rep["capabilities"]):
+        print("\n⚠ 有 ✗ 的能力缺说明文件——文档承诺与仓库不一致，需补齐")
+    if rep["legacy_coverage"]:
+        print("\nv1.0 编号说明（历史映射，文件已并入 skills/<能力名>.md）")
+        for legacy, sts in rep["legacy_coverage"].items():
+            print(f"  {legacy:<24} → {','.join(sts)}")
     if rep["catalog_issues"]:
         print(f"\n自检问题 {len(rep['catalog_issues'])} 项")
         for i in rep["catalog_issues"]:

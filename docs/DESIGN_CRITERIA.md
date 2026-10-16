@@ -40,7 +40,7 @@ agent_created: true
 - 执行能力：`concept-design`、`space-planning`、`interior-design`、`material-design`
 
 | 判据 | 可判定的形式 |
-| --- | --- |
+|---|---|
 | 冷暖对峙 | 冷调打底、暖色点睛，暖材占比 ≤40% |
 | 一条主导线 | 全场只保留一条主导线；天花是第一叙事面 |
 | 黑作重音 | 黑色占比 3–8%，作重音不作块面 |

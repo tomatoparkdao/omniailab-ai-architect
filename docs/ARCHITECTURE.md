@@ -132,7 +132,7 @@ class Adapter:
 ## v1.1 增量（本次新增的子系统）
 
 | 子系统 | 模块 | 职责 |
-| --- | --- | --- |
+|---|---|---|
 | 内容合规 | `compliance_audit.py` | 逐文件检查署名 / 隐私 / 外链 / 许可；用户面材料只能指向自有站点；署名行由 `registry.py: SIGNATURE` 统一定义 |
 | 原创知识库 | `knowledge/` + `knowledge/loader.py` | 13 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
 | 平台 provider | `providers/` | OmniAiLab 发现式接入（SDK / 配置 / API 契约）+ 内置本地确定性 provider；未验证一律 `NOT_CONFIGURED` |
@@ -145,7 +145,7 @@ class Adapter:
 ### v1.2 增量（概念效果图）
 
 | 位置 | 内容 |
-| --- | --- |
+|---|---|
 | `providers/canvas.py` | 画布工作流：机位规划、提示词组装、参考图栅格化、逐机位提交与状态登记、汇报落盘 |
 | `providers/omniailab.models.json` | 画布模型声明：OmniP / image2.5 的取向与选择规则；与平台契约交叉校验，冲突时以契约为准 |
 | `stages.py` | `POST_GATE_ACTIONS = {"G3": ["concept-visualization"]}` + 能力 `concept-visualization` + 铁律 R5 |
