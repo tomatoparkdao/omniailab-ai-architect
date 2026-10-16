@@ -2752,7 +2752,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\01-brief\\design-brief.md",
+      "path": "out\\_demo2\\run-20261016-180145\\01-brief\\design-brief.md",
       "depends_on": [
         "project:program"
       ],
@@ -2764,7 +2764,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\01-brief\\site-report.md",
+      "path": "out\\_demo2\\run-20261016-180145\\01-brief\\site-report.md",
       "depends_on": [
         "shell",
         "existing_walls"
@@ -2777,7 +2777,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\02-concept\\concept-options.md",
+      "path": "out\\_demo2\\run-20261016-180145\\02-concept\\concept-options.md",
       "depends_on": [
         "project:program"
       ],
@@ -2789,7 +2789,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\02-concept\\moodboard.md",
+      "path": "out\\_demo2\\run-20261016-180145\\02-concept\\moodboard.md",
       "depends_on": [
         "art-concept"
       ],
@@ -2801,7 +2801,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\03-plan\\scheme-comparison.md",
+      "path": "out\\_demo2\\run-20261016-180145\\03-plan\\scheme-comparison.md",
       "depends_on": [
         "project:program",
         "shell"
@@ -2814,7 +2814,7 @@
       "type": "render",
       "revision": 1,
       "status": "needs_review",
-      "path": "out\\_demo\\run-20261016-175938\\03-plan\\concept-render",
+      "path": "out\\_demo2\\run-20261016-180145\\03-plan\\concept-render",
       "depends_on": [
         "SA-ENTRY",
         "SA-LIVING",
@@ -2837,7 +2837,7 @@
       "type": "drawing",
       "revision": 2,
       "status": "draft",
-      "path": "out\\_demo\\run-20261016-175938\\04-preliminary\\S4-schematic-A.dxf",
+      "path": "out\\_demo2\\run-20261016-180145\\04-preliminary\\S4-schematic-A.dxf",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -2875,7 +2875,7 @@
       "type": "model",
       "revision": 2,
       "status": "validated",
-      "path": "out\\_demo\\run-20261016-175938\\05-visual",
+      "path": "out\\_demo2\\run-20261016-180145\\05-visual",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -2939,7 +2939,7 @@
       "type": "render",
       "revision": 2,
       "status": "needs_review",
-      "path": "out\\_demo\\run-20261016-175938\\05-visual\\render-jobs.json",
+      "path": "out\\_demo2\\run-20261016-180145\\05-visual\\render-jobs.json",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -2977,7 +2977,7 @@
       "type": "report",
       "revision": 2,
       "status": "validated",
-      "path": "out\\_demo\\run-20261016-175938\\06-freeze\\coordination.md",
+      "path": "out\\_demo2\\run-20261016-180145\\06-freeze\\coordination.md",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -3015,7 +3015,7 @@
       "type": "drawing",
       "revision": 2,
       "status": "needs_review",
-      "path": "out\\_demo\\run-20261016-175938\\07-documents",
+      "path": "out\\_demo2\\run-20261016-180145\\07-documents",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -3074,7 +3074,7 @@
       "type": "schedule",
       "revision": 2,
       "status": "validated",
-      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\takeoff.json",
+      "path": "out\\_demo2\\run-20261016-180145\\08-delivery\\takeoff.json",
       "depends_on": [
         "SA-ENTRY",
         "SA-LIVING",
@@ -3097,7 +3097,7 @@
       "type": "schedule",
       "revision": 2,
       "status": "validated",
-      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\material-schedule.md",
+      "path": "out\\_demo2\\run-20261016-180145\\08-delivery\\material-schedule.md",
       "depends_on": [
         "art-quantities"
       ],
@@ -3109,7 +3109,7 @@
       "type": "document",
       "revision": 2,
       "status": "issued",
-      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\delivery-manifest.json",
+      "path": "out\\_demo2\\run-20261016-180145\\08-delivery\\delivery-manifest.json",
       "depends_on": [
         "art-quantities",
         "art-materials"
@@ -3121,7 +3121,7 @@
   "change_log": [
     {
       "revision": 1,
-      "timestamp": "2026-10-16T09:59:38+00:00",
+      "timestamp": "2026-10-16T10:01:46+00:00",
       "author": "omniailab-ai-architect",
       "kind": "gate_action",
       "targets": [
@@ -3132,7 +3132,7 @@
     },
     {
       "revision": 2,
-      "timestamp": "2026-10-16T09:59:39+00:00",
+      "timestamp": "2026-10-16T10:01:46+00:00",
       "author": "omniailab-ai-architect",
       "kind": "scheme",
       "targets": [
@@ -3143,7 +3143,7 @@
     },
     {
       "revision": 2,
-      "timestamp": "2026-10-16T09:59:39+00:00",
+      "timestamp": "2026-10-16T10:01:46+00:00",
       "author": "omniailab-ai-architect",
       "kind": "freeze",
       "targets": [
@@ -3301,7 +3301,7 @@
     "stage_state": {
       "S1": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:38+00:00",
+        "confirmed_at": "2026-10-16T10:01:45+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3309,7 +3309,7 @@
       },
       "S2": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:38+00:00",
+        "confirmed_at": "2026-10-16T10:01:45+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3317,7 +3317,7 @@
       },
       "S3": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:38+00:00",
+        "confirmed_at": "2026-10-16T10:01:45+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3325,7 +3325,7 @@
       },
       "S4": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:39+00:00",
+        "confirmed_at": "2026-10-16T10:01:46+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3333,7 +3333,7 @@
       },
       "S5": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:39+00:00",
+        "confirmed_at": "2026-10-16T10:01:46+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3341,7 +3341,7 @@
       },
       "S6": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:39+00:00",
+        "confirmed_at": "2026-10-16T10:01:46+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3349,7 +3349,7 @@
       },
       "S7": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:39+00:00",
+        "confirmed_at": "2026-10-16T10:01:46+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3357,7 +3357,7 @@
       },
       "S8": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T09:59:39+00:00",
+        "confirmed_at": "2026-10-16T10:01:46+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3378,8 +3378,8 @@
         "views": 5,
         "generated": 0,
         "awaiting_platform": 5,
-        "dir": "out\\_demo\\run-20261016-175938\\03-plan\\concept-render",
-        "at": "2026-10-16T17:59:38",
+        "dir": "out\\_demo2\\run-20261016-180145\\03-plan\\concept-render",
+        "at": "2026-10-16T18:01:46",
         "authoritative": false
       }
     },

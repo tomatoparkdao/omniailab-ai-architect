@@ -93,6 +93,7 @@ class StageOutcome:
     error: str = ""
     seconds: float = 0.0
     next_action: str = ""
+    gate_actions: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -106,6 +107,7 @@ class StageOutcome:
             "error": self.error,
             "seconds": round(self.seconds, 3),
             "next_action": self.next_action,
+            "gate_actions": [dict(a) for a in self.gate_actions],
         }
 
 
@@ -121,6 +123,11 @@ class RunManifest:
     doctor: Dict[str, Any] = field(default_factory=dict)
     progress: Dict[str, Any] = field(default_factory=dict)
     out_dir: str = ""
+
+    @property
+    def gate_actions(self) -> List[Dict[str, Any]]:
+        """Everything the gates produced *after* they were passed."""
+        return [a for o in self.outcomes for a in o.gate_actions]
 
     def add(self, o: StageOutcome) -> None:
         self.outcomes.append(o)
@@ -141,6 +148,7 @@ class RunManifest:
             "progress": self.progress,
             "blocks": list(self.blocks),
             "stages": [o.to_dict() for o in self.outcomes],
+            "gate_actions": self.gate_actions,
             "host": {"platform": platform.platform(), "python": sys.version.split()[0]},
         }
 
@@ -162,6 +170,19 @@ class RunManifest:
                 f"| {o.stage_name} | {', '.join(o.skills[:4])} | {o.status} | {arts} "
                 f"| {o.next_action or '—'} |"
             )
+        if self.gate_actions:
+            lines += ["", "## 门禁后置动作（通过门禁后才成立的工作）", "",
+                      "| 能力 | 阶段 | 状态 | 机位数 | 已生成 | 待平台 | 输出 |",
+                      "|---|---|---|---|---|---|---|"]
+            for a in self.gate_actions:
+                lines.append(
+                    f"| `{a.get('capability')}` | {a.get('stage', '-')} "
+                    f"| {a.get('status', '-')} | {a.get('views', '-')} "
+                    f"| {a.get('generated', '-')} | {a.get('awaiting_platform', '-')} "
+                    f"| {a.get('dir', '-')} |"
+                )
+            lines += ["", "> 后置动作没有自己的门禁，只在所在门禁通过的那一刻执行；"
+                          "门禁被打回时其记录会被清除。图像一律为非权威成果。"]
         if self.blocks:
             lines += ["", "## 阻断 / 失败", ""] + [f"- {b}" for b in self.blocks]
         return "\n".join(lines)
@@ -244,7 +265,9 @@ class StageRunner:
                 confirm_stage(self.project, stage_id, by="业主/主创（假设）",
                               note="由 --assume-approval 自动确认")
                 out.next_action = "已确认，可进入下一阶段"
-                for action in self.run_post_gate(stage_id):
+                actions = self.run_post_gate(stage_id)
+                out.gate_actions = actions
+                for action in actions:
                     label = action.get("capability", "")
                     if action.get("ran"):
                         out.notes.append(
@@ -274,13 +297,15 @@ class StageRunner:
         for slug in post_gate_actions_for_stage(stage_id):
             handler = getattr(self, f"post_gate_{slug.replace('-', '_')}", None)
             if handler is None:
-                out.append({"capability": slug, "ran": False,
+                out.append({"capability": slug, "stage": stage_id, "ran": False,
                             "reason": "该后置动作尚未实现"})
                 continue
             try:
-                out.append(handler(stage_id=stage_id, **kwargs))
+                rec = handler(stage_id=stage_id, **kwargs)
+                rec.setdefault("stage", stage_id)
+                out.append(rec)
             except Exception as exc:
-                out.append({"capability": slug, "ran": False,
+                out.append({"capability": slug, "stage": stage_id, "ran": False,
                             "reason": f"{type(exc).__name__}: {exc}"})
         return out
 

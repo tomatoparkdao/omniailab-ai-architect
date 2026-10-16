@@ -48,7 +48,7 @@
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
   "file_count": 147,
-  "total_bytes": 1304571,
+  "total_bytes": 1308786,
   "files": [
     {
       "path": ".gitignore",
@@ -133,12 +133,12 @@
     {
       "path": "docs/content-audit.json",
       "size": 1467,
-      "sha256_16": "146b9cabf1871bc9"
+      "sha256_16": "f17563cd3818c6c8"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
       "size": 1647,
-      "sha256_16": "0794005e53b0a570"
+      "sha256_16": "885c32f4fd5b5a99"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
@@ -182,8 +182,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 20300,
-      "sha256_16": "28342eb992ccad27"
+      "size": 21627,
+      "sha256_16": "5033239d0056fc69"
     },
     {
       "path": "installer/verify_install.py",
@@ -502,8 +502,8 @@
     },
     {
       "path": "omniailab_ai_architect/tests/test_concept_render.py",
-      "size": 16169,
-      "sha256_16": "0120d7aa5a218bc6"
+      "size": 16839,
+      "sha256_16": "202b04a4a79c74f0"
     },
     {
       "path": "omniailab_ai_architect/tests/test_dxf.py",
@@ -582,8 +582,8 @@
     },
     {
       "path": "omniailab_ai_architect/workflow.py",
-      "size": 68030,
-      "sha256_16": "94f1c16ed3d9cb8e"
+      "size": 69496,
+      "sha256_16": "900cb7a563d33091"
     },
     {
       "path": "projects/_pre-rename-copy/demo-120/project.json",
@@ -597,8 +597,8 @@
     },
     {
       "path": "projects/demo-120/project.json",
-      "size": 72285,
-      "sha256_16": "6890bc1737796f77"
+      "size": 73037,
+      "sha256_16": "7ebdd0be8a14ddfc"
     },
     {
       "path": "projects/demo-120/README.md",

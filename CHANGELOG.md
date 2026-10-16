@@ -41,9 +41,10 @@ agent_created: true
 - **CLI**：`concept-render`、`canvas-models` 两个命令。
 - **文档** `docs/CONCEPT_RENDER.md`；README 中英双版、SKILL.md、AGENTS.md、WORKFLOW、ARCHITECTURE、
   OMNIAILAB_INTEGRATION、PRESENTATION 同步更新。
+- **运行报告**新增「门禁后置动作」小节：门禁通过后做了什么、产在哪，直接出现在 `run-report.md`。
 - **验收**：Scenario A 增加 6 项概念效果图检查（任务包存在 / 可解析 / 机位指向已确认平面 /
   逐张可追溯 / 模型按声明选择 / 状态口径未混淆且未伪造图像 + 汇报 PPTX 独立复核）。
-- **测试** 164 → **180** 项（新增 `test_concept_render.py`，14 个模块）。
+- **测试** 164 → **181** 项（新增 `test_concept_render.py`，14 个模块）。
 
 ### 设计取舍
 

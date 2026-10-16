@@ -366,3 +366,19 @@ def test_render_without_a_plan_says_what_to_do_instead_of_inventing_views():
         assert res.status == "blocked"
         assert not res.views
         assert res.warnings and "S3" in res.warnings[0]
+
+
+def test_the_run_report_surfaces_the_gate_action():
+    """The stage report is the user-facing surface; it must name what ran."""
+    with tempfile.TemporaryDirectory() as td:
+        project, runner, outcomes = _confirmed_plan(td)
+        report = runner.manifest.markdown()
+        assert "门禁后置动作" in report
+        assert "concept-visualization" in report
+        assert "S3" in report
+
+        payload = runner.manifest.to_dict()
+        actions = payload["gate_actions"]
+        assert actions and actions[0]["capability"] == "concept-visualization"
+        assert actions[0]["views"] >= 1
+        assert outcomes["S3"].gate_actions[0]["ran"] is True
