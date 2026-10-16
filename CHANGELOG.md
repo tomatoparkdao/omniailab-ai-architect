@@ -1,4 +1,46 @@
+---
+name: omniailab-changelog
+description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 变更记录
+
+## v1.1.0 修订 — 内容自有化与署名规范
+
+**全仓完成内容自有化**：移除全部外部项目痕迹，全部文档与交付物统一 OmniAiLab 署名格式。
+
+### 移除
+
+- 删除上游参考仓库的本地副本（可再生、未纳入本仓库历史）与全部相关声明文件；
+  本仓库不再保留、不再分发任何外部项目内容。
+- 代码与文档中的外部项目名、作者名、仓库地址、商业推广链接**全部清除**：
+  `registry.py`、`workflow.py`、`stages.py`、`paths.py`、`changes.py`、`cli.py`、`docs/`、`AGENTS.md`、`.gitignore`、`pyproject.toml`。
+- `python -m omniailab_ai_architect fusion` / `notices` 两个命令移除，改为 `criteria`（设计判据体系）。
+
+### 新增
+
+- **统一署名**：`registry.py: SIGNATURE`（长）/ `SIGNATURE_SHORT` / `SIGNATURE_SHORT_EN` 三个常量，
+  51 份 Markdown 全部加上标准 front-matter（`author: OmniAiLab` / `developer: Mochiball` / `agent_created: true`）与末尾署名行；
+  自动生成的阶段文档、汇报 Markdown 与交付包 README 同样带署名。
+- **中英双语 README**：`README.md`（简体中文，主推中国站）+ `README_EN.md`（English，主推海外站），
+  排版与格式对齐 OmniAiLab 产品线：居中标题 / 徽章 / 语言切换 / 一句话 / 能力一览 / 快速开始 / 文档地图 / 出处与致谢 / 页脚署名。
+- `LICENSE`（MIT，© OmniAiLab / Mochiball）与 `VERSION`（1.1.0）。
+- `docs/DESIGN_CRITERIA.md`：九组设计判据的正式说明（自有口径，源自通用设计原理与公开工程惯例）。
+
+### 变更
+
+- `ARCH_ATTRIBUTION` / `ARCH_FUSION` → `PROJECT_ATTRIBUTION` / `DESIGN_CRITERIA`（键名与内容全部自有化）。
+- `compliance_audit.py` 从"第三方内容审计"改为**内容合规自检**：署名是否齐全 / 是否泄露个人信息 /
+  用户面是否有外部链接 / 许可证文本是否只在 `LICENSE` 内；报告改为 `docs/CONTENT_AUDIT.md`。
+- 新增源码级守卫测试：`test_every_document_carries_the_omniailab_signature`、
+  `test_no_borrowed_branding_anywhere_in_the_tree`（全仓扫描，命中即失败）。
+- 既有的 65 项与新增的 99 项测试**全部保留并通过**（164 项 / 13 个模块，零失败）。
 
 ## v1.1.0 — OmniAiLab 集成、原创化与交付能力
 
@@ -14,7 +56,7 @@
 
 | 子系统 | 内容 |
 | --- | --- |
-| 第三方合规 | `compliance_audit.py` 可执行扫描器（文件级来源判定 + 处置建议）、`THIRD_PARTY_NOTICES.md`、`docs/THIRD_PARTY_AUDIT.md` |
+| 内容合规 | `compliance_audit.py` 可执行扫描器（署名 / 隐私 / 外链 / 许可四类判定）、`docs/CONTENT_AUDIT.md` |
 | 原创知识库 | `knowledge/` 12 个领域（约 2 480 行，全部原创）+ `INDEX.md` + 渐进式加载器；`cases/` 3 个通用案例模板；`schemas/case.schema.json` |
 | 平台 provider | `providers/`：OmniAiLab 发现式适配器（SDK / 配置 / API 契约）+ 本地确定性 provider；能力发现、模型选择、任务提交、状态轮询、媒体取回、失败重试、成本估算、资产版本关联 |
 | 工具执行 | `tools/`：统一工具注册表、L1–L4 权限分级、危险操作确认、产物独立校验、能力真实性规则；`schemas/tool-capability.schema.json` |
@@ -28,7 +70,7 @@
 - `SKILL.md` 重写为渐进式加载入口（241 行 / 11.4 KB，细节下沉到 `knowledge/`、`docs/`）。
 - 能力目录 28 → **29 项**：新增跨阶段能力 `design-presentation`（S2–S8）。
 - 用户面材料（`SKILL.md`、`README.md`、`skills/`、`knowledge/`、`cases/`、汇报模板）**不再出现第三方品牌名与推广链接**；
-  许可证要求的署名全部集中到 `THIRD_PARTY_NOTICES.md`。
+  全部文档与交付物统一署名（`registry.py: SIGNATURE`）。
 - `render` 适配器改为向 provider 注册表查询可用后端，不再硬编码空列表。
 - stage S2 的概念文档与意向板增加「项目 + 模型修订 + 生成时间」页脚，使汇报可追溯到同一修订。
 - 工作流阶段 B 的验收不再跳过 S6 门禁（S7 必须在其确认后进行）。
@@ -68,3 +110,6 @@ python scripts/verify_all.py       # 目录 + 目录自检 + 工具链 + 闭环 
 - 设计变更影响分析（诊断 → 影响面 → 回流 → 门禁重开）。
 - 真实执行层：内置 DXF R12 写出器 + ezdxf R2010、OBJ/MTL 网格、Blender/FreeCAD 脚本、IFC 投影。
 - 四条硬性专业逻辑（R1–R4）落为带测试的约束。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

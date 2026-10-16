@@ -1,6 +1,11 @@
 ---
 name: omniarchitect-02-site-analysis
 version: 0.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 capability: site-analysis
 stages: [S1]
 ---
@@ -30,3 +35,6 @@ If professional sign-off, statutory compliance or site measurement is needed, ex
 - 专业能力：`site-analysis`（场地与建筑条件分析）
 - 参与阶段：S1
 - 说明：专业能力是设计事务所的岗位能力，可跨阶段调用；项目推进按 `docs/WORKFLOW.md` 的八个业务阶段进行。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

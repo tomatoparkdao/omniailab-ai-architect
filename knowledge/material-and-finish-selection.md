@@ -5,6 +5,11 @@ stage_affinity: [S4, S6, S8]
 loads_when: 当任务涉及材质选型、饰面构造、规格排版、样板确认或物料清单编制时加载
 load_cost: heavy
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 材料与饰面选择
@@ -199,3 +204,6 @@ version: 1.0.0
 - [ ] 替代方案已备选。
 - [ ] 材料与运输通道尺寸兼容。
 - [ ] 未对防火环保安全下最终结论，并标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

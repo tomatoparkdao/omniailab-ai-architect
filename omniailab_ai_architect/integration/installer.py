@@ -30,7 +30,7 @@ BACKUP_DIR = "_backup"
 MODE_POINTER = "pointer"
 MODE_COPY = "copy"
 
-EXCLUDE_DIRS = {".git", "out", "__pycache__", ".pytest_cache", "third_party",
+EXCLUDE_DIRS = {".git", "out", "__pycache__", ".pytest_cache",
                 ".workbuddy", "node_modules"}
 EXCLUDE_SUFFIX = {".pyc", ".pyo"}
 

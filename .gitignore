@@ -11,6 +11,3 @@ dist/
 projects/*/renders/
 projects/*/private/
 
-# upstream reference repo — fetched, not vendored into this repo's history
-# git clone https://github.com/gujun1502/arch-skills.git third_party/arch-skills
-third_party/arch-skills/

@@ -77,14 +77,15 @@ def test_cases_are_generic_and_original():
         assert c.get("review_results"), c.get("slug")
 
 
-def test_knowledge_contains_no_third_party_branding():
+def test_knowledge_is_self_contained_and_carries_the_signature():
     from omniailab_ai_architect.paths import KNOWLEDGE
+    from omniailab_ai_architect.registry import SIGNATURE
 
-    banned = ("arch-skills", "Gu Jun", "gujun", "chodo")
     for p in KNOWLEDGE.glob("*.md"):
         text = p.read_text(encoding="utf-8")
-        for b in banned:
-            assert b.lower() not in text.lower(), f"{p.name} 含第三方名称 {b!r}"
+        assert "http://" not in text and "https://" not in text, \
+            f"{p.name} 不应含外部链接"
+        assert SIGNATURE in text, f"{p.name} 缺少 OmniAiLab 署名"
 
 
 def test_report_is_machine_readable():

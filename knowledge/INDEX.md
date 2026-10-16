@@ -1,3 +1,14 @@
+---
+name: omniailab-index
+description: 知识库索引（INDEX） —— 本索引供程序做渐进式加载：先读本文件确定需要哪个领域，再按需加载对应知识文档，避免一次性加载全部内容。索引本身只做路由，不承载领域判据。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 知识库索引（INDEX）
 
 本索引供程序做**渐进式加载**：先读本文件确定需要哪个领域，再按需加载对应知识文档，避免一次性加载全部内容。索引本身只做路由，不承载领域判据。
@@ -209,3 +220,6 @@
 - 覆盖领域：12 个
 - 覆盖阶段：S1–S8
 - 对应文件：knowledge/ 下 12 个文档
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

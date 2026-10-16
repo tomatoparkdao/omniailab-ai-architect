@@ -86,13 +86,15 @@ def test_legacy_eighteen_capabilities_are_all_remapped():
     assert not missing, f"specialist briefs not mapped to a capability: {sorted(missing)}"
 
 
-def test_arch_skills_attribution_is_recorded():
-    a = oa.ARCH_ATTRIBUTION
-    assert a["author"] == "Gu Jun"
-    assert "CC BY 4.0" in a["license"]
-    fusion = oa.fusion_report()
-    assert fusion["summary"]["upstream_skills"] >= 8
-    assert "S2" in fusion["summary"]["stages_touched"]
+def test_project_attribution_and_criteria_are_recorded():
+    a = oa.PROJECT_ATTRIBUTION
+    assert a["owner"] == "OmniAiLab"
+    assert a["developer"] == "Mochiball"
+    assert "OmniAiLab" in oa.SIGNATURE
+    rep = oa.criteria_report()
+    assert rep["summary"]["criteria_sets"] >= 8
+    assert "S2" in rep["summary"]["stages_touched"]
+    assert rep["summary"]["note"]
 
 
 def test_registry_report_counts_match():

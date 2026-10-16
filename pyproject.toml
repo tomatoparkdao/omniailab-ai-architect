@@ -51,7 +51,8 @@ omniailab_ai_architect = ["*.md"]
 [tool.setuptools.data-files]
 # Agent Skill payload: the root-level assets the SKILL.md points at.
 "share/omniailab-ai-architect" = [
-    "SKILL.md", "README.md", "AGENTS.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md",
+    "SKILL.md", "README.md", "README_EN.md", "AGENTS.md", "LICENSE", "VERSION",
+    "CHANGELOG.md",
 ]
 
 [tool.pytest.ini_options]

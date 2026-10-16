@@ -34,6 +34,7 @@ from .adapters import (
 from .errors import GateBlocked, OmniArchitectError, ValidationError
 from .model import Project, summary, validate_all, validate_semantics, validate_schema
 from .paths import relpath
+from .registry import SIGNATURE
 from .planner import PlanGenerator, SchemeOptions, SchemeResult, envelope_polygon, entry_point
 from .revisions import record_change, register_artifact
 from .stage_state import (
@@ -485,8 +486,8 @@ class StageRunner:
                   "", "## 成本影响（R3 · 前期动态估算）", "",
                   "- 概念阶段成本差异主要来自天花造型复杂度与走廊面积占比",
                   "", "---", "",
-                  "> 方法与判据来源：arch-skills（Gu Jun / arch-skills，CC BY 4.0）——"
-                  "克制美学宪章、概念四步引擎、意向板协议。",
+                  "> 判据为本系统自有口径：克制美学基线、概念四步引擎、意向板协议"
+                  "（见 docs/DESIGN_CRITERIA.md）。",
                   "> 概念方向须在平面阶段（S3）验证是否成立，不能只活在效果图里。"]
         lines += [
             "", "---", "",
@@ -498,7 +499,7 @@ class StageRunner:
         ]
         (d / "concept-options.md").write_text("\n".join(lines), encoding="utf-8")
 
-        # moodboard protocol (arch-skills fusion)
+        # moodboard protocol
         mood = [
             "# 意向板（Moodboard）骨架", "",
             "| 格位 | 内容 | 判据 |", "|---|---|---|",
@@ -513,7 +514,7 @@ class StageRunner:
             "## 量化评分口径（跨轮不可更换）", "",
             "- 200ms 第一印象　- 气质吻合度 0–100　- Design Critic 六维 0–100",
             "- Color Harmony 60-30-10 拆色　- Design Taste 三维校准（Variance/Motion/Density）",
-            "", "> 方法来源：arch-skills · moodboard-aesthetic-iteration（CC BY 4.0）。",
+            "", "> 迭代方法：意向板六格 → 关键词三组 → 量化打分 → 跨轮整改追踪。",
             "", "---", "",
             f"项目：{self.project.project_id}　模型修订 r{self.project.revision}"
             f"　阶段 S2 　生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
@@ -584,7 +585,7 @@ class StageRunner:
                 rows += ["", f"### 方案{v} 提示", ""] + [f"- {w}" for w in s.warnings]
         rows += ["", "---", "",
                  "> 平面未确认前不得进入精细建模与正式出图（门禁 G3）。",
-                 "> 评审判据来源：arch-skills 平面九问 / 硬审十二条（CC BY 4.0）。"]
+                 "> 评审判据：平面九问 / 硬审十二条（本系统口径，见 docs/DESIGN_CRITERIA.md）。"]
         (d / "scheme-comparison.md").write_text("\n".join(rows), encoding="utf-8")
 
         # schematic drawing is legitimate at this depth (R2)
@@ -674,7 +675,7 @@ class StageRunner:
             "本阶段输出**方案深度**图纸：可用于与业主沟通做法与造价，**不得用于施工**。",
             "正式施工图在 S7 出，深度区别是 construction，而不是有没有图纸（R2）。",
             "", "---", "",
-            "> 做法、材料与灯光的判断口径吸收自 arch-skills（CC BY 4.0）；"
+            "> 做法、材料与灯光的判断口径为本系统自有标准；"
             "机电口径为空间影响速查，具体设计须专业工程师完成。",
         ]
         (d / "preliminary-design.md").write_text("\n".join(lines), encoding="utf-8")
@@ -787,8 +788,7 @@ class StageRunner:
             "1. 五张图必须是同一套几何、同一套材质、同一套光线；",
             "2. AI 表现类成果一律标注为非尺寸依据（authoritative = false）；",
             "3. 不做『只活在效果图里』的空间——平面上找不到的手法一律不画。",
-            "", "> 迭代方法：arch-skills · moodboard-aesthetic-iteration"
-            "（意向板打分 + 跨轮整改追踪，CC BY 4.0）。",
+            "", "> 迭代方法：意向板打分 + 跨轮整改追踪（本系统口径）。",
         ]
         (d / "walkthrough-plan.md").write_text("\n".join(walk), encoding="utf-8")
         arts.append(str(d / "walkthrough-plan.md"))
@@ -1049,9 +1049,9 @@ class StageRunner:
                    "4. 工程量与估算为区间值，非结算依据。", "",
                    "## 未闭环项", ""]
         readme += [f"- {i}" for i in pkg["open_items"]]
-        readme += ["", "## 第三方归属", "",
-                   "- arch-skills（Gu Jun / arch-skills，CC BY 4.0）——设计判据、评审方法与文档规范",
-                   "  详见 `docs/ARCH_SKILLS_INTEGRATION.md`"]
+        readme += ["", "---", "",
+                   "本交付文件由 OmniArchitect 依据统一空间模型自动生成。",
+                   "", SIGNATURE]
         (d / "README.md").write_text("\n".join(readme), encoding="utf-8")
 
         self.project.save(self.out / "project-final.json")

@@ -56,6 +56,13 @@ review_results:
 generic: true
 source: original
 version: 1.0.0
+name: omniailab-generic-restaurant-200
+description: 通用案例：约 200 m² 餐厅（餐饮类） —— 以下为常见工程惯例区间，非当地法定强制值，须以项目所在地现行规范与专业复核为准。
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 通用案例：约 200 m² 餐厅（餐饮类）
@@ -208,3 +215,6 @@ version: 1.0.0
 - 客座效率与就餐体验需要按业态定位平衡。
 - 显色指数对餐饮氛围的影响常被低估。
 - 任何燃气、消防与机电结论均须由持证专业人员在项目所在地复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

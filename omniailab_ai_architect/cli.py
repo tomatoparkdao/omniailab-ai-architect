@@ -23,7 +23,7 @@ from .changes import analyse
 from .errors import OmniArchitectError, ValidationError
 from .model import load_project, summary, validate_all
 from .paths import EXAMPLES, PROJECTS, ROOT, ensure_output_dir
-from .registry import fusion_report, registry_report
+from .registry import criteria_report, registry_report
 from .routing import route
 from .stage_state import markdown as stage_markdown
 from .stage_state import progress
@@ -122,7 +122,7 @@ def cmd_registry(args) -> int:
     print(f"专业能力 {rep['capability_count']} 项，映射到 {rep['stage_count']} 个阶段\n")
     for r in rep["capabilities"]:
         stages = ",".join(r["stages"])
-        src = "" if r["source"] == "omnilab" else f"  [{r['source']}]"
+        src = "" if r["source"] == "OmniAiLab" else f"  [{r['source']}]"
         print(f"  {r['slug']:<34} {stages:<22}{src}")
     print("\n原始 18 项能力 → 阶段映射")
     for legacy, sts in rep["legacy_coverage"].items():
@@ -134,22 +134,23 @@ def cmd_registry(args) -> int:
     return 0
 
 
-def cmd_fusion(args) -> int:
-    rep = fusion_report()
+def cmd_criteria(args) -> int:
+    rep = criteria_report()
     if args.json:
         _print_json(rep)
         return 0
     a = rep["attribution"]
-    print(f"融合报告　（{a['author']} · {a['url']}；完整声明见 THIRD_PARTY_NOTICES.md）")
-    print(f"许可：{a['license']}　本地副本：{a['vendored_at']}\n")
-    for slug, info in rep["map"].items():
-        stages = ",".join(info["absorbed_into_stages"]) or "—"
-        print(f"  {slug:<34} → 阶段 {stages}")
-        for item in info["absorbed"][:3]:
+    print(f"设计判据体系　（{a['owner']} · 开发者 {a['developer']}）")
+    print(f"署名：{rep['signature']}\n")
+    for slug, info in rep["criteria"].items():
+        stages = ",".join(info["applies_to_stages"]) or "—"
+        print(f"  {slug:<28} → 阶段 {stages}")
+        for item in info["criteria"][:3]:
             print(f"      · {item}")
     s = rep["summary"]
-    print(f"\n上游技能 {s['upstream_skills']} 项，覆盖阶段 {', '.join(s['stages_touched'])}")
-    print(f"明确不纳入：{', '.join(s['declined']) or '（无）'}")
+    print(f"\n判据集 {s['criteria_sets']} 组，覆盖阶段 {', '.join(s['stages_touched'])}")
+    print(f"不参与设计生成：{', '.join(s['not_applied']) or '（无）'}")
+    print(f"说明：{s['note']}")
     return 0
 
 
@@ -330,9 +331,9 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_registry)
 
-    sp = sub.add_parser("fusion", help="能力融合与方法来源归属报告")
+    sp = sub.add_parser("criteria", help="设计判据体系（自有口径）")
     sp.add_argument("--json", action="store_true")
-    sp.set_defaults(func=cmd_fusion)
+    sp.set_defaults(func=cmd_criteria)
 
     sp = add_project(sub.add_parser("status", help="阶段推进状态"))
     sp.set_defaults(func=cmd_status)

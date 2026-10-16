@@ -2,7 +2,12 @@
 name: omniailab-ai-architect
 description: AI 建筑与室内设计总设计师。八个业务阶段 + 29 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。
 version: 1.1.0
-license: Proprietary (OmniAiLab) — third-party notices in THIRD_PARTY_NOTICES.md
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
@@ -93,7 +98,7 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 | 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
 | 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md` | 需要生成式图像 / 视频时 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
-| 第三方署名义务 | `THIRD_PARTY_NOTICES.md` | 分发前必读 |
+| 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
 
 知识库支持渐进式加载，避免一次拉全 2500 行：
 
@@ -133,7 +138,6 @@ python -m omniailab_ai_architect tools           # 工具注册表 + L1–L4 权
 python -m omniailab_ai_architect providers       # OmniAiLab / 本地 provider 状态
 python -m omniailab_ai_architect honesty         # 不得声称的能力清单
 python -m omniailab_ai_architect audit           # 第三方内容审计
-python -m omniailab_ai_architect notices         # 第三方声明
 python -m omniailab_ai_architect compat          # Agent Skills 兼容性
 python -m omniailab_ai_architect manifest        # 生成安装清单
 python -m omniailab_ai_architect install --dry-run
@@ -219,7 +223,7 @@ python installer/verify_install.py --check-python
   须由持证专业人员在项目所在地复核并签署。
 - 方案深度成果**不得**当作施工图；生成式图像**不得**作为尺寸依据。
 - 工程量与造价为方案阶段估算，**不构成结算依据**。
-- 第三方署名义务集中在 `THIRD_PARTY_NOTICES.md`，分发前必读。
+- 全部文档与交付物均带统一署名；内容自检（署名 / 隐私 / 外链 / 许可）见 `docs/CONTENT_AUDIT.md`。
 
 ---
 
@@ -229,7 +233,7 @@ python installer/verify_install.py --check-python
 SKILL.md                ← 入口（本文件）
 README.md               概览与快速上手
 AGENTS.md               开发约定（面向编码 Agent）
-THIRD_PARTY_NOTICES.md  第三方声明（唯一集中处）
+LICENSE  VERSION        许可与版本
 omniailab_ai_architect/ Python 包：模型 / 规划 / 阶段 / 变更 / 适配器 /
                         provider / 工具注册表 / 汇报 / 安装
 knowledge/  cases/      原创知识体系与通用案例
@@ -239,3 +243,6 @@ adapters/specs/         MCP / 外部工具适配规范
 docs/                   架构、流程、平台接入、工具、安装、合规审计
 installer/  compatibility/  安装脚本与兼容说明
 ```
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

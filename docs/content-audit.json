@@ -1,0 +1,46 @@
+{
+  "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
+  "scanned_at": "2026-10-16 17:19:20",
+  "files_scanned": 132,
+  "by_disposition": {
+    "original": 117,
+    "test-fixture": 15
+  },
+  "needs_action": [],
+  "action_count": 0,
+  "signature": "> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
+  "attribution": {
+    "product": "OmniArchitect",
+    "display_name": "OmniAiLab AI 建筑与室内设计总设计师",
+    "skill": "omniailab-ai-architect",
+    "owner": "OmniAiLab",
+    "developer": "Mochiball",
+    "license": "见 LICENSE",
+    "homepage_cn": "https://www.omniailabx.com",
+    "homepage_intl": "https://omniailab.cn"
+  },
+  "rules": {
+    "every_markdown_carries_the_signature": true,
+    "user_facing_links_must_be_own_domains": [
+      "omniailabx.com",
+      "omniailab.cn",
+      "omniailab"
+    ],
+    "personal_and_client_data_must_be_redacted": true,
+    "licence_text_belongs_in_LICENSE": true
+  },
+  "user_facing_globs": [
+    "SKILL.md",
+    "README.md",
+    "README_EN.md",
+    "docs/PRESENTATION.md",
+    "docs/INSTALL.md",
+    "docs/MCP_TOOLS.md",
+    "docs/OMNIAILAB_INTEGRATION.md",
+    "templates/",
+    "skills/",
+    "cases/",
+    "knowledge/"
+  ],
+  "conclusion": "全部文档已署名，且无个人信息、外部推广链接或归属问题"
+}

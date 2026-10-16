@@ -1,3 +1,14 @@
+---
+name: omniailab-presentation
+description: 设计汇报与 PPT 交付 —— 汇报能力是跨阶段通用能力（design-presentation，参与 S2–S8），不是流程末尾的一次动作。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 设计汇报与 PPT 交付
 
 汇报能力是**跨阶段通用能力**（`design-presentation`，参与 S2–S8），不是流程末尾的一次动作。
@@ -95,3 +106,6 @@ print(rep["issues"])        # [] 表示通过
 `.deck.json` 里的 `provenance` 记录本次汇报用到了哪些知识域，
 `project_id` / `revision` / `generated_at` 把文件钉在模型的具体修订上。
 模型改了修订，旧汇报不会假装还成立。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

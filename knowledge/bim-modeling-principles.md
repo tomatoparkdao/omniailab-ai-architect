@@ -5,6 +5,11 @@ stage_affinity: [S5, S7]
 loads_when: 当任务涉及三维建模、模型精度、构件参数、协同校核、碰撞检查或模型交付时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # BIM 建模原理
@@ -203,3 +208,6 @@ BIM 建模原理定义"用三维数字模型承载设计信息"的规则。它�
 - [ ] 变更已同步。
 - [ ] 交付前完成模型检查。
 - [ ] 涉及安全构件信息标注待持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

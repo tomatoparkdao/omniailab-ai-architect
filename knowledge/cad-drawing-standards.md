@@ -5,6 +5,11 @@ stage_affinity: [S7]
 loads_when: 当任务涉及图层命名、线型线宽、尺寸标注、图框比例、图纸编号或制图规范时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # CAD 制图标准
@@ -204,3 +209,6 @@ CAD 制图标准是设计成果能否被准确施工、被他人读懂、被反�
 - [ ] 出图前完成校审并记录。
 - [ ] 交付格式与用途匹配。
 - [ ] 涉及合规的交付要求已由项目负责人确认。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

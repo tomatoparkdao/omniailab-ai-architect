@@ -1,6 +1,11 @@
 ---
 name: omniailab-ai-architect-design-presentation
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 capability: design-presentation
 stages: [S2, S3, S4, S5, S6, S7, S8]
 ---
@@ -60,3 +65,6 @@ stages: [S2, S3, S4, S5, S6, S7, S8]
 
 ## Gate
 汇报文件不通过内容自检（缺免责页、空页、表格列数不一致）时，**不得作为交付件提交**。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

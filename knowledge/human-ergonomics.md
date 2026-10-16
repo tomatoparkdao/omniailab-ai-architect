@@ -5,6 +5,11 @@ stage_affinity: [S3, S4, S7]
 loads_when: 当任务涉及家具尺寸、通行宽度、洁具间距、操作台高度或任何人体活动尺度校核时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 人体工学与尺度
@@ -199,3 +204,6 @@ version: 1.0.0
 - [ ] 尺度取值标注了目标人群。
 - [ ] 关键尺寸在图上有明确标注。
 - [ ] 未对安全类尺度下最终结论，并标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

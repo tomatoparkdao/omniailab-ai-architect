@@ -24,6 +24,16 @@ from .pptx_writer import (  # noqa: F401
 )
 
 
+def _stamp(path: Path) -> None:
+    """Every deck ends with the OmniAiLab signature."""
+    from ..registry import SIGNATURE
+
+    text = path.read_text(encoding="utf-8").rstrip()
+    if SIGNATURE in text:
+        return
+    path.write_text(f"{text}\n\n---\n\n{SIGNATURE}\n", encoding="utf-8")
+
+
 def render(project: Project, kind: str = "concept", out_dir: str | Path = "out",
            stem: str = "", brand: Optional[Brand] = None, want_pdf: bool = True,
            **builder_kwargs: Any) -> Dict[str, Any]:
@@ -38,6 +48,7 @@ def render(project: Project, kind: str = "concept", out_dir: str | Path = "out",
     pptx_path = out / f"{name}.pptx"
     written["pptx"] = write_pptx(deck, pptx_path)["path"]      # type: ignore[assignment]
     written["markdown"] = write_markdown(deck, out / f"{name}.md")
+    _stamp(Path(written["markdown"]))
     written["html"] = write_html(deck, out / f"{name}.html")
 
     pdf_report: Dict[str, Any] = {"ok": False, "reason": "未请求 PDF"}

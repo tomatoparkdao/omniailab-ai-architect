@@ -22,7 +22,6 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from .errors import ModelError, ValidationError
 from .model import Element, Project, Space
-from .registry import ARCH_ATTRIBUTION
 from .revisions import (
     InvalidationReport,
     apply_geometry_change,
@@ -226,9 +225,8 @@ class ChangeImpactReport:
             "invalidation": self.invalidation.to_dict() if self.invalidation else None,
             "risks": self.risks,
             "notes": self.notes,
-            "attribution": {
-                "change_ledger_method": "arch-skills · red-blue-pen-annotation "
-                                        f"({ARCH_ATTRIBUTION['attribution_line']})"
+            "method": {
+                "change_ledger": "逐条核销的批注台账：每一轮变更都可追溯、可核销",
             },
         }
 

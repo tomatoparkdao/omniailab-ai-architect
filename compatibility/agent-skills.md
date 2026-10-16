@@ -1,3 +1,14 @@
+---
+name: omniailab-compatibility-agent-skills
+description: Agent Skills 兼容规范对照 —— OmniArchitect 遵循通用 Agent Skills 约定，不绑定任何单一厂商运行时。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # Agent Skills 兼容规范对照
 
 OmniArchitect 遵循通用 Agent Skills 约定，不绑定任何单一厂商运行时。
@@ -9,7 +20,7 @@ omniailab-ai-architect/          ← 技能根（工作区根）
 ├── SKILL.md                     ← 唯一入口，YAML front-matter + 渐进式加载指引
 ├── AGENTS.md                    ← 开发约定（面向编码 Agent）
 ├── README.md
-├── THIRD_PARTY_NOTICES.md       ← 第三方声明（唯一集中处）
+├── LICENSE / VERSION            ← 许可与版本
 ├── knowledge/                   ← 12 个原创知识域 + INDEX.md（渐进式加载）
 ├── skills/                      ← 29 项专业能力说明（按需加载）
 ├── schemas/                     ← 统一空间模型 / 案例 / 工具能力 / 汇报
@@ -75,7 +86,7 @@ python -m omniailab_ai_architect compat
 
 - **pointer（默认）**：技能目录里放 `SKILL.md` + `omniailab-home.txt` + `manifest.json`。
   真实工具链留在原仓库，升级只需 `git pull`，不会产生多份知识库副本。
-- **copy**：整包复制（排除 `out/`、`third_party/`、`.git/`），适合整体搬移或离线分发。
+- **copy**：整包复制（排除 `out/`、`.git/`），适合整体搬移或离线分发。
 
 安全约定：**任何安装/卸载都不删除内容**。目标已存在时先移动到
 `<目标父目录>/_backup/`。请先 `--dry-run`。
@@ -91,3 +102,6 @@ python -m omniailab_ai_architect compat
 不满足第 2 条（无 Python 执行能力）时，`SKILL.md`、`knowledge/`、`schemas/`、
 `workflows/` 仍可作为纯知识与规范资产被读取——但**不会**产出图纸与模型，
 此时系统不会声称具备执行能力。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

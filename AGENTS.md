@@ -1,3 +1,14 @@
+---
+name: omniailab-agents-conventions
+description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # AGENTS.md — OmniArchitect 开发约定
 
 > **本文件约束所有在本仓库中工作的 AI 智能体与开发者。**
@@ -35,8 +46,8 @@ python -m omniailab_ai_architect doctor
 | `omniailab_ai_architect/tools/` | 工具注册表 · L1–L4 权限 · 独立校验 | 风险等级静态声明，禁止运行时提权 |
 | `omniailab_ai_architect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
 | `omniailab_ai_architect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
-| `omniailab_ai_architect/compliance_audit.py` | 第三方内容扫描器 | 规则只收紧不放松 |
-| `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入第三方文案 |
+| `omniailab_ai_architect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
+| `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
 | `skills/` | 29 份专业能力说明书（岗位能力，非流程步骤） | 只增不改语义 |
 | `adapters/specs/` | MCP 适配规范 | 文档 |
@@ -45,8 +56,8 @@ python -m omniailab_ai_architect doctor
 | `installer/` · `compatibility/` | 安装脚本、清单与兼容说明 | 脚本 |
 | `projects/` | 示例与真实项目数据 | 项目数据 |
 | `out/` | 运行产物（可丢弃） | 可清理 |
-| `THIRD_PARTY_NOTICES.md` | 第三方声明（唯一集中处） | 只增不减署名 |
-| `third_party/arch-skills/` | 上游研究方法副本，**原样保留** | **禁止修改** |
+| `LICENSE` · `VERSION` | 许可与版本（全仓唯一处） | 版本号须与 `__version__`、`pyproject.toml` 一致 |
+| `README.md` · `README_EN.md` | 中英文对外说明 | 两份必须镜像，改动同步 |
 | `.workbuddy/`（在父目录） | 会话记忆 | 只追加 |
 
 ---
@@ -99,7 +110,11 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 8. **不代业主决策**：方案对比只给推荐 + 理由 + 备选，不给"两套都行"的话术。
 9. **不得猜测外部接口**：provider 与 MCP 只能读**已声明**的配置 / 契约；未验证一律 `NOT_CONFIGURED`，不伪造成功。
 10. **不得声称做不到的事**：DXF ≠ DWG、网格 ≠ 参数化 BIM、效果图 ≠ 尺寸依据、未装 IfcOpenShell 就不存在 IFC。完整清单：`python -m omniailab_ai_architect honesty`。
-11. **不得把第三方内容带进用户面**：品牌名、商业站点、推广链接只能出现在 `THIRD_PARTY_NOTICES.md`。新增素材前先说清来源与授权。
+11. **用户面内容必须自有**：全仓不得出现外部品牌名、商业站点或推广链接（自有站点除外）。
+    新增任何素材前先确认来源与授权，判据一律用通用设计原理与公开工程惯例重新表述。
+12. **每份文档都要带署名**：`docs/` `knowledge/` `cases/` `skills/` 等每一份 Markdown 的
+    front-matter 含 `author: OmniAiLab` / `developer: Mochiball`，末尾附标准署名行
+    （`registry.py: SIGNATURE`，唯一定义处）。新文档由 `audit` 兜底检查。
 
 ---
 
@@ -112,9 +127,8 @@ cd /d E:\SKILL\建筑室内设计skill\omniarchitect
 python -m omniailab_ai_architect doctor               :: 工具链体检
 python -m omniailab_ai_architect stages               :: 打印八阶段模型
 python -m omniailab_ai_architect registry             :: 能力目录 + 29 份技能→阶段映射
-python -m omniailab_ai_architect fusion              :: 能力融合与方法来源归属
-python -m omniailab_ai_architect audit               :: 第三方内容审计
-python -m omniailab_ai_architect notices             :: 打印第三方声明
+python -m omniailab_ai_architect criteria            :: 设计判据体系（自有口径）
+python -m omniailab_ai_architect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniailab_ai_architect demo --out out        :: 示例项目跑通全部八阶段
 python -m omniailab_ai_architect status  --project projects/demo-120
 python -m omniailab_ai_architect route   --project projects/demo-120 "出施工图"
@@ -139,7 +153,7 @@ python installer/verify_install.py --check-python
 验证（改完必须跑）：
 
 ```bat
-python scripts/run_tests.py          :: 164 项测试，零第三方依赖
+python scripts/run_tests.py          :: 164 项测试，零外部依赖
 python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1 子系统
 ```
 
@@ -165,21 +179,29 @@ python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭�
 
 ---
 
-## 6. 第三方归属
+## 6. 署名、归属与内容合规
 
-第三方声明、作者署名与许可义务**全部集中**在根目录 `THIRD_PARTY_NOTICES.md`，任何其它文件不得新增第三方品牌名或推广链接。
-`third_party/arch-skills/` 是上游研究方法副本，**原样保留、不得修改**。
+**全仓内容均为本项目自有**：设计知识、案例判据、汇报模板与 PPT 全部由本项目独立撰写，
+来源为通用设计原理与公开工程惯例。不复制、不改写任何外部文档。
 
-吸收进本系统的是**方法论与判据**，不是代码：融合记录在 `registry.py: ARCH_FUSION`，说明见 `docs/ARCH_SKILLS_INTEGRATION.md`。任何使用这些判据的交付物都要在内联标注归属。
+**署名是硬约定**，三处必须一致，改动时同步：
 
-**用户面内容必须原创**：`knowledge/`、`cases/`、`skills/`、`templates/`、汇报模板与 PPT 均不得混入第三方品牌广告或不相关宣传链接。
-要去掉某份第三方文档的再分发依赖，只能从通用设计原理与公开工程惯例出发独立原创，**不得复制或仅作同义改写**。
+| 位置 | 形式 |
+| --- | --- |
+| 每份 Markdown 的 front-matter | `author: OmniAiLab` / `developer: Mochiball` / `agent_created: true` |
+| 每份 Markdown 的末尾 | 标准署名行（`registry.py: SIGNATURE`，唯一定义处） |
+| `README.md` / `README_EN.md` | 顶部 `> © OmniAiLab ｜ 开发者：Mochiball` + 页脚语言切换与署名 |
 
-改完必须跑审计（`action_count` 必须为 0）：
+**用户面材料只能指向自有站点**（`omniailabx.com` / `omniailab.cn`）；外部推广链接一律不得出现。
+**个人与客户信息一律先脱敏**，未经授权不得作为可分发资产。
+
+改完必须跑自检，`action_count` 必须为 0：
 
 ```bat
 python -m omniailab_ai_architect audit --write docs
 ```
+
+自检覆盖四件事：**署名是否齐全**、**是否泄露个人信息**、**用户面是否有外部链接**、**许可证文本是否只在 LICENSE 内**。
 
 ---
 
@@ -198,3 +220,6 @@ python -m omniailab_ai_architect audit --write docs
 ## 8. 免责边界（写进代码，也写进交付）
 
 结构安全、消防、无障碍、机电负荷与当地法规符合性，**不在本系统结论范围内**，必须由具备相应资质的专业人员在项目所在地复核并签署。任何把方案深度成果当作施工图的表述都是严重错误。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -1,3 +1,14 @@
+---
+name: omniailab-compatibility-mcp-servers-example-json
+description: MCP 服务器声明示例 —— 本文件是示例，不会被自动加载。真实配置请放到项目根目录的 mcp.json。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # MCP 服务器声明示例
 
 本文件是**示例**，不会被自动加载。真实配置请放到项目根目录的 `mcp.json`。
@@ -62,3 +73,6 @@ python -m omniailab_ai_architect tools --plan "blender:run_blender"
 2. 任何 L3/L4 调用在未获显式授权时抛出 `PermissionRequired`，不静默执行。
 3. 修改原始文件前必须留事务/撤销备份，并限制可访问路径。
 4. 不把任意 CAD/Blender 脚本执行权限开放给互联网用户。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

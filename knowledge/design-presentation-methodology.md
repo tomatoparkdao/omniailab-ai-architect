@@ -5,6 +5,11 @@ stage_affinity: [S2, S4, S6, S8]
 loads_when: 当任务涉及方案表达、图册组织、汇报结构、术语统一或向业主/评审方沟通时加载
 load_cost: light
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 设计汇报方法论
@@ -209,3 +214,6 @@ version: 1.0.0
 - [ ] 重点方案有辅助剖面或轴测。
 - [ ] 汇报后形成纪要与待办。
 - [ ] 所有安全与合规结论均标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

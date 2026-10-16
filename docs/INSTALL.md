@@ -1,3 +1,14 @@
+---
+name: omniailab-install
+description: 安装与独立运行 —— OmniArchitect 支持独立安装：不强制注册 OmniAiLab，不读取任何平台密钥，
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 安装与独立运行
 
 OmniArchitect 支持**独立安装**：不强制注册 OmniAiLab，不读取任何平台密钥，
@@ -45,7 +56,7 @@ python installer/install.py --dry-run --target ~/.codex/skills
 | 模式 | 内容 | 适用 |
 | --- | --- | --- |
 | `pointer`（默认） | `SKILL.md` + `omniailab-home.txt` + `manifest.json` | 开发中；升级只需 `git pull`，不产生知识库副本 |
-| `copy` | 整包复制（排除 `out/`、`third_party/`、`.git/`） | 离线分发或整体搬移 |
+| `copy` | 整包复制（排除 `out/`、`.git/`） | 离线分发或整体搬移 |
 
 ```bash
 python installer/install.py                              # 自动选已检测到的运行环境
@@ -110,3 +121,6 @@ python -m omniailab_ai_architect scenario --name all   # Scenario A/B/C 验收
 验收口径：文件真实存在、格式经独立解析有效、内容与项目关联、可追溯版本、
 可重复运行、**未以 Mock 通过宣称生产功能可用**。
 缺少真实 MCP / API 的功能在报告中记为**跳过**，不记为通过。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

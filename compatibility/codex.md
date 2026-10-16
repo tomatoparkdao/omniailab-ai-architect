@@ -1,3 +1,14 @@
+---
+name: omniailab-compatibility-codex
+description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口，
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # OmniArchitect × OpenAI Codex
 
 OmniArchitect 是一个标准 Agent Skill：仓库根目录的 `SKILL.md` 是入口，
@@ -73,3 +84,6 @@ python -m omniailab_ai_architect providers --json # 机器可读
 - 可选依赖见 `requirements.txt`：装了提升产物质量，不装自动降级。
 - 本机若没有 Blender / FreeCAD / AutoCAD / IfcOpenShell，适配器输出可在有环境的机器上
   直接运行的脚本，并在报告中标注 `degraded`。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -5,6 +5,11 @@ stage_affinity: [S1, S4, S6, S8]
 loads_when: 当任务涉及方案自检、阶段评审、提交前检查或交付验收时加载
 load_cost: heavy
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 设计评审清单
@@ -205,3 +210,6 @@ version: 1.0.0
 - [ ] 未决项已列清单并指定决策人。
 - [ ] 退回项已闭环。
 - [ ] 所有安全与合规结论均标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

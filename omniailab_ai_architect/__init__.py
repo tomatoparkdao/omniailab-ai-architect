@@ -1,7 +1,9 @@
 """OmniArchitect — AI Chief Designer for architecture and interior design.
 
-An eight-stage professional workflow, twenty-seven mapped capabilities, real
+An eight-stage professional workflow, twenty-nine mapped capabilities, real
 tool adapters, and one canonical spatial model every deliverable derives from.
+
+© OmniAiLab ｜ 开发者：Mochiball — 未经授权禁止复制、传播或二次分发。
 
 Quick start
 -----------
@@ -40,9 +42,12 @@ from .model import (  # noqa: F401
 from .paths import ROOT  # noqa: F401
 from .planner import PlanGenerator, SchemeOptions, SchemeResult  # noqa: F401
 from .registry import (  # noqa: F401
-    ARCH_ATTRIBUTION,
-    ARCH_FUSION,
-    fusion_report,
+    DESIGN_CRITERIA,
+    PROJECT_ATTRIBUTION,
+    SIGNATURE,
+    SIGNATURE_SHORT,
+    SIGNATURE_SHORT_EN,
+    criteria_report,
     load_registry,
     registry_report,
 )
@@ -128,8 +133,8 @@ __all__ = [
     "invalidate", "dependents_of", "apply_geometry_change", "apply_space_change",
     "register_artifact", "mark_validated", "InvalidationReport",
     # registry / provenance
-    "registry_report", "load_registry", "fusion_report",
-    "ARCH_ATTRIBUTION", "ARCH_FUSION",
+    "registry_report", "load_registry", "criteria_report",
+    "PROJECT_ATTRIBUTION", "DESIGN_CRITERIA", "SIGNATURE", "SIGNATURE_SHORT", "SIGNATURE_SHORT_EN",
     # errors
     "OmniArchitectError", "ModelError", "ValidationError",
     "AdapterUnavailable", "GateBlocked",

@@ -1,3 +1,14 @@
+---
+name: omniailab-workflow
+description: 八阶段专业工作流 —— 阶段推进项目进度，能力提供专业方法，门禁控制确认节奏
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 八阶段专业工作流
 
 > 本文是阶段模型的说明文档。**代码中的唯一权威是 `stages.py`**；两者不一致时以代码为准，并回来修文档。
@@ -132,3 +143,6 @@ python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 
 python -m omniailab_ai_architect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
 python -m omniailab_ai_architect status  --project projects/demo-120
 ```
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

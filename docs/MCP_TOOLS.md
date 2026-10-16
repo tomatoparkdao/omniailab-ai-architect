@@ -1,3 +1,14 @@
+---
+name: omniailab-mcp-tools
+description: MCP 与工具执行系统 —— 统一工具注册表、L1–L4 权限分级与产物独立校验
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # MCP 与工具执行系统
 
 ## 1. 统一工具注册表
@@ -97,3 +108,6 @@ MCP 服务器**只被读取，不被猜测**。配置放项目根目录 `mcp.jso
 - 只给了 `url` → `not_configured`（**不做连通性探测，不猜测鉴权**）。
 
 示例见 `compatibility/mcp.servers.example.json.md`。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

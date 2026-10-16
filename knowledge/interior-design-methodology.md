@@ -5,6 +5,11 @@ stage_affinity: [S1, S2, S3, S4, S6]
 loads_when: 当任务涉及室内功能重塑、界面设计、风格落地、软装策略或室内与建筑的边界处理时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 室内设计方法论
@@ -207,3 +212,6 @@ version: 1.0.0
 - [ ] 设备检修路径未被永久构件封堵。
 - [ ] 软装点位在硬装阶段已预留。
 - [ ] 未对结构、消防、机电负荷下最终结论，并标注待持证专业人员复核。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

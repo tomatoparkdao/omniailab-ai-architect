@@ -1,20 +1,17 @@
-"""Registry: the capability catalogue, the stage model, and the third-party
-fusion map with the attribution its licence requires.
+"""Registry: the capability catalogue, the stage model, and the design-criteria map.
 
 The stage model itself lives in `stages.py`; this module is the reporting and
 provenance layer on top of it.
 
-Attribution for third-party material
-------------------------------------
-Upstream project: arch-skills (https://github.com/gujun1502/arch-skills)
-Author: Gu Jun
-Licence: code MIT · documentation (SKILL.md, references/, templates/) CC BY 4.0.
+Design criteria
+---------------
+`DESIGN_CRITERIA` records which professional judgement criteria this system
+applies, at which stages, and through which capabilities. The criteria are this
+system's own working position, derived from general design principles and
+published engineering practice; they are documented for users in
+`docs/DESIGN_CRITERIA.md`.
 
-Only methodology and knowledge were absorbed into the runtime. No upstream
-source file is redistributed inside the code path; the full upstream material
-is vendored unmodified at `third_party/arch-skills/` with its own LICENSE files
-intact. Any deliverable that uses an absorbed judgement criterion carries the
-attribution inline as well as here.
+Every artifact this system emits carries the OmniAiLab signature (`SIGNATURE`).
 """
 from __future__ import annotations
 
@@ -23,7 +20,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
-from .paths import ARCH_SKILLS, SKILLS
+from .paths import SKILLS
 from .stages import (
     CAPABILITIES,
     CAPABILITY_BY_SLUG,
@@ -38,129 +35,139 @@ from .stages import (
     validate_catalog,
 )
 
-ARCH_ATTRIBUTION = {
-    "project": "arch-skills",
-    "url": "https://github.com/gujun1502/arch-skills",
-    "author": "Gu Jun",
-    "license": "MIT (code) · CC BY 4.0 (documentation)",
-    "attribution_line": "Gu Jun / arch-skills",
-    "notices": "THIRD_PARTY_NOTICES.md",
-    "vendored_at": "third_party/arch-skills",
-    "note": "只吸收方法论与判据；未在运行时代码路径中分发上游源文件。",
+PROJECT_ATTRIBUTION = {
+    "product": "OmniArchitect",
+    "display_name": "OmniAiLab AI 建筑与室内设计总设计师",
+    "skill": "omniailab-ai-architect",
+    "owner": "OmniAiLab",
+    "developer": "Mochiball",
+    "license": "见 LICENSE",
+    "homepage_cn": "https://www.omniailabx.com",
+    "homepage_intl": "https://omniailab.cn",
 }
+
+# The line every emitted document ends with. Kept here so the writer, the
+# workflow and the audit all reference exactly one string.
+SIGNATURE = ("> © OmniAiLab ｜ 开发者：Mochiball ｜ "
+             "OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— "
+             "未经授权禁止复制、传播或二次分发。")
+
+# The READMEs use the short form, as the repository front page does.
+SIGNATURE_SHORT = "> © OmniAiLab ｜ 开发者：Mochiball"
+SIGNATURE_SHORT_EN = "> © OmniAiLab ｜ Developer: Mochiball"
+
 
 # upstream slug -> which OmniArchitect stages absorbed it, and what
-ARCH_FUSION: Dict[str, Dict[str, object]] = {
-    "asset-management-interior": {
-        "absorbed_into_stages": ["S2", "S3", "S4"],
-        "absorbed_by_capabilities": ["concept-design", "space-planning",
-                                     "interior-design", "material-design"],
-        "absorbed": [
-            "克制美学宪章：冷底暖眼 / 一条主导线定全场 / 天花是第一叙事面 / 黑是重音不是块面 / "
-            "一个纹理三种密度 / 每层至少一处发光的面",
-            "概念四步引擎：锚 → 象 → 法 → 形",
-            "平面判据：好采光面是否被独立房间独占、客户流线是否穿过私密区、"
-            "平面上是否有真实主导线、是否留出一个『空的地方』",
-            "Moodboard 六格意象结构与暖材 ≤40%、黑 3–8% 的配比规则",
+DESIGN_CRITERIA: Dict[str, Dict[str, object]] = {
+    "aesthetic-restraint": {
+        "applies_to_stages": ["S2", "S3", "S4"],
+        "applies_to_capabilities": ["concept-design", "space-planning",
+                                    "interior-design", "material-design"],
+        "criteria": [
+            "冷暖对峙：冷调打底，暖色点睛，暖材占比 ≤40%；",
+            "全场只留一条主导线，天花是第一叙事面；",
+            "黑作重音不作块面，占比控制在 3–8%；",
+            "同一纹理给出三种密度，避免整面同质；",
+            "每个标高至少一处发光的面，光要有落点；",
+            "概念四步：锚 → 象 → 法 → 形；",
+            "平面四问：好采光面是否被独立房间独占、客户流线是否穿过私密区、"
+            "平面上是否有真实主导线、是否留出一个『空的地方』；",
+            "意向板六格结构与 60-30-10 配色校验。",
         ],
         "lands_in": "S2 概念方案（意向板与概念自检）、S3 平面评审、S4 材料与色彩体系",
-        "not_absorbed": "具体业主信息、案例实拍图、品牌报价表",
+        "out_of_scope": "具体业主信息、第三方实拍图与商业报价表，不进入本系统资产。",
     },
-    "create-draw": {
-        "absorbed_into_stages": ["S2", "S4", "S7"],
-        "absorbed_by_capabilities": ["create-draw", "concept-design", "construction-detailing"],
-        "absorbed": [
-            "红蓝笔图形语义：红=问题/张力、蓝=方向/动线/视线、橙=光的动作、绿=亮点、灰=参考",
-            "概念图解的表达方式：概念主张 + 空间原型 + 光/材质/动线三策略",
-            "图主文辅纪律：图上标签 ≤12 字，说明栏每条 ≤30 字",
+    "concept-diagram-language": {
+        "applies_to_stages": ["S2", "S4", "S7"],
+        "applies_to_capabilities": ["create-draw", "concept-design", "construction-detailing"],
+        "criteria": [
+            "批注色彩语义：红=问题与张力、蓝=方向动线与视线、橙=光的动作、绿=亮点、灰=参考；",
+            "概念图解三段式：概念主张 + 空间原型 + 光/材质/动线三策略；",
+            "图主文辅：图上标签 ≤12 字，说明栏每条 ≤30 字。",
         ],
         "lands_in": "S2 概念图解、S4 立面做法批注、S7 图纸会审表达",
-        "not_absorbed": "drawkit.py 绘图库与其 SVG 坐标脚本（未进入运行时代码路径）",
+        "out_of_scope": "绘图库源码；图形由本项目自有的绘图基元生成。",
     },
-    "moodboard-aesthetic-iteration": {
-        "absorbed_into_stages": ["S2", "S5"],
-        "absorbed_by_capabilities": ["moodboard-aesthetic-iteration", "scene-rendering"],
-        "absorbed": [
-            "意向板 → 关键词三组 → 量化打分 → 跨轮整改追踪的迭代闭环",
-            "200ms 第一印象 + Design Critic 六维 + Color Harmony 60-30-10 诊断框架",
-            "口径固定原则：同一项目内评分体系不可中途更换",
+    "moodboard-iteration": {
+        "applies_to_stages": ["S2", "S5"],
+        "applies_to_capabilities": ["moodboard-aesthetic-iteration", "scene-rendering"],
+        "criteria": [
+            "意向板 → 关键词三组 → 量化打分 → 跨轮整改追踪的迭代闭环；",
+            "200ms 第一印象 + Design Critic 六维 + 60-30-10 拆色诊断；",
+            "口径固定：同一项目内评分体系不得中途更换。",
         ],
         "lands_in": "S2 意向板骨架与评分口径、S5 效果图质量门",
-        "not_absorbed": "md_to_pdf.py 渲染脚本与其 PDF 模板",
+        "out_of_scope": "文档排版渲染脚本；本系统自有 PPTX 与 HTML 写出。",
     },
-    "building-services-electrical": {
-        "absorbed_into_stages": ["S4", "S6", "S7"],
-        "absorbed_by_capabilities": ["building-services", "coordination-check"],
-        "absorbed": [
-            "HVAC / 给排水 / 电气 / 竖向交通 / 消防对空间的影响速查",
-            "机房、管井、净高与吊顶空间占用的判断口径",
+    "building-services-impact": {
+        "applies_to_stages": ["S4", "S6", "S7"],
+        "applies_to_capabilities": ["building-services", "coordination-check"],
+        "criteria": [
+            "暖通 / 给排水 / 电气 / 竖向交通 / 消防对空间的影响速查；",
+            "机房、管井、净高与吊顶空间占用的判断口径。",
         ],
         "lands_in": "S4 机电初步协调、S6 专业协调清单、S7 点位图",
-        "not_absorbed": "具体地区规范条文（须由持证专业人员在项目所在地复核）",
+        "out_of_scope": "具体地区规范条文（须由持证专业人员在项目所在地复核）。",
     },
-    "red-blue-pen-annotation": {
-        "absorbed_into_stages": ["S6", "S7", "S8"],
-        "absorbed_by_capabilities": ["delivery", "design-review"],
-        "absorbed": [
-            "逐条核销的批注台账机制（跨轮 ledger、问题闭环）",
-            "主文档 + 意见 → 批注版交付物的流程约定",
+    "annotation-ledger": {
+        "applies_to_stages": ["S6", "S7", "S8"],
+        "applies_to_capabilities": ["delivery", "design-review"],
+        "criteria": [
+            "逐条核销的批注台账机制：跨轮 ledger、问题闭环；",
+            "主文档 + 意见 → 批注版交付物的流程约定。",
         ],
         "lands_in": "变更影响分析的数据结构（ChangeEntry + 失效重算 + 跨轮追踪）",
-        "not_absorbed": "annotate.py / extract_pdf.py 等 PDF 处理脚本",
+        "out_of_scope": "外部 PDF 批注脚本；批注以结构化 JSON 与本系统自有渲染输出。",
     },
-    "design-text-typst": {
-        "absorbed_into_stages": ["S8"],
-        "absorbed_by_capabilities": ["documentation"],
-        "absorbed": ["A3 横版设计提案的网格版式与交付文本规范"],
-        "lands_in": "S8 交付文档的版式约定",
-        "not_absorbed": "Typst 样式文件与样张",
+    "proposal-layout": {
+        "applies_to_stages": ["S8"],
+        "applies_to_capabilities": ["documentation", "design-presentation"],
+        "criteria": ["A3 横版设计提案的网格版式与交付文本规范"],
+        "lands_in": "S8 交付文档与提案的版式约定",
+        "out_of_scope": "外部排版样式文件与样张。",
     },
-    "tender-bid-review": {
-        "absorbed_into_stages": ["S1"],
-        "absorbed_by_capabilities": ["design-brief"],
-        "absorbed": ["能力边界与造价档位匹配的判据（项目该不该接、能不能做）"],
+    "project-fit": {
+        "applies_to_stages": ["S1"],
+        "applies_to_capabilities": ["design-brief"],
+        "criteria": ["能力边界与造价档位匹配的判据（项目该不该接、能不能做）"],
         "lands_in": "S1 任务书阶段的可行性判断；不参与设计生成",
-        "not_absorbed": "company-profile 模板与业主档案（含企业隐私）",
+        "out_of_scope": "企业内部资质模板与业主档案。",
     },
-    "bid-pricing-engine": {
-        "absorbed_into_stages": ["S1", "S8"],
-        "absorbed_by_capabilities": ["cost-check", "quantity-takeoff"],
-        "absorbed": ["量价分离的估算口径"],
+    "cost-separation": {
+        "applies_to_stages": ["S1", "S8"],
+        "applies_to_capabilities": ["cost-check", "quantity-takeoff"],
+        "criteria": ["量价分离的估算口径：工程量与单价分开记录，便于逐项校准"],
         "lands_in": "S1 前期估算与 S8 正式清单的口径统一",
-        "not_absorbed": "蒙特卡洛投标竞价引擎（jsx）与其博弈模型",
+        "out_of_scope": "竞价博弈模型；本系统只做方案阶段估算，不出结算文件。",
     },
-    "skill-safety-audit": {
-        "absorbed_into_stages": [],
-        "absorbed_by_capabilities": [],
-        "absorbed": ["L1–L4 安全等级分类法（只读 / 本地写 / 联网 / 执行发送）"],
+    "tool-safety-tiers": {
+        "applies_to_stages": [],
+        "applies_to_capabilities": [],
+        "criteria": ["L1–L4 工具安全分级（只读 / 本地写 / 联网 / 执行发送）"],
         "lands_in": "适配器能力声明与人工审核门槛的定级依据",
-        "not_absorbed": "audit.py 扫描器",
-    },
-    "article-academic": {
-        "absorbed_into_stages": [],
-        "absorbed_by_capabilities": [],
-        "absorbed": [],
-        "lands_in": "未纳入：属内容创作能力，与设计生产链无关",
-        "not_absorbed": "全部",
+        "out_of_scope": "外部扫描器。",
     },
 }
 
 
-def fusion_report() -> Dict[str, object]:
-    absorbed_stages = sorted({
-        s for v in ARCH_FUSION.values() for s in v["absorbed_into_stages"]  # type: ignore[union-attr]
+def criteria_report() -> Dict[str, object]:
+    touched = sorted({
+        s for v in DESIGN_CRITERIA.values() for s in v["applies_to_stages"]  # type: ignore[union-attr]
     })
     return {
-        "attribution": ARCH_ATTRIBUTION,
-        "map": ARCH_FUSION,
+        "attribution": PROJECT_ATTRIBUTION,
+        "signature": SIGNATURE,
+        "criteria": DESIGN_CRITERIA,
         "summary": {
-            "upstream_skills": len(ARCH_FUSION),
-            "stages_touched": absorbed_stages,
+            "criteria_sets": len(DESIGN_CRITERIA),
+            "stages_touched": touched,
             "capabilities_touched": sorted({
-                c for v in ARCH_FUSION.values()
-                for c in v["absorbed_by_capabilities"]  # type: ignore[union-attr]
+                c for v in DESIGN_CRITERIA.values()
+                for c in v["applies_to_capabilities"]  # type: ignore[union-attr]
             }),
-            "declined": [k for k, v in ARCH_FUSION.items() if not v["absorbed_into_stages"]],
+            "not_applied": [k for k, v in DESIGN_CRITERIA.items() if not v["applies_to_stages"]],
+            "note": "判据为本系统自有口径，源自通用设计原理与公开工程惯例；"
+                    "说明见 docs/DESIGN_CRITERIA.md。",
         },
     }
 
@@ -205,6 +212,7 @@ class CapabilityRecord:
 
 
 def load_registry(skills_dir: Path | None = None) -> List[CapabilityRecord]:
+    """Capability records, joined with the specialist brief on disk when present."""
     d = skills_dir or SKILLS
     out: List[CapabilityRecord] = []
     for cap in CAPABILITIES:
@@ -231,7 +239,7 @@ def registry_report() -> Dict[str, object]:
         "legacy_coverage": legacy_map(),
         "guardrails": GUARDRAILS,
         "catalog_issues": validate_catalog(),
-        "attribution": ARCH_ATTRIBUTION,
+        "attribution": PROJECT_ATTRIBUTION,
     }
 
 
@@ -242,13 +250,10 @@ def capability(slug: str) -> Optional[CapabilityRecord]:
     return None
 
 
-def arch_skills_present() -> bool:
-    return ARCH_SKILLS.exists() and (ARCH_SKILLS / "README.md").exists()
-
-
 __all__ = [
-    "ARCH_ATTRIBUTION", "ARCH_FUSION", "fusion_report",
-    "load_registry", "registry_report", "capability", "arch_skills_present",
+    "PROJECT_ATTRIBUTION", "SIGNATURE", "SIGNATURE_SHORT", "SIGNATURE_SHORT_EN",
+    "DESIGN_CRITERIA", "criteria_report",
+    "load_registry", "registry_report", "capability",
     "catalog_report", "validate_catalog", "skills_for_stage", "stages_for_skill",
     "capabilities_for_stage", "STAGES", "STAGE_ORDER", "CAPABILITIES",
     "CAPABILITY_BY_SLUG", "GUARDRAILS", "legacy_map",

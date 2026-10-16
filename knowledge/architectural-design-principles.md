@@ -5,6 +5,11 @@ stage_affinity: [S1, S2, S3, S4]
 loads_when: 当任务涉及总体布局、体型生成、功能分区、流线组织或形体与场地关系判断时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 建筑设计原理
@@ -205,3 +210,6 @@ version: 1.0.0
 - [ ] 对周边既有建筑的影响已识别。
 - [ ] 未对结构、消防、无障碍、机电负荷下最终结论。
 - [ ] 所有安全类结论均标注"须由持证专业人员复核签署"。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

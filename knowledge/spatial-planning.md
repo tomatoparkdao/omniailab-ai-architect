@@ -5,6 +5,11 @@ stage_affinity: [S3, S4, S5]
 loads_when: 当任务涉及房间划分、面积指标、动线组织、功能气泡图或平面优化时加载
 load_cost: heavy
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 空间规划
@@ -201,3 +206,6 @@ version: 1.0.0
 - [ ] 平面无死角空间。
 - [ ] 平面达到可标注施工的完成度。
 - [ ] 未对结构、消防、无障碍、机电负荷下最终结论，并标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

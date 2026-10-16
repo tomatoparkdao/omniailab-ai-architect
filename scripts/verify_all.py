@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 PACKAGE = "omniailab_ai_architect"
 
 REQUIRED_PATHS = [
-    "AGENTS.md", "README.md", "SKILL.md", "THIRD_PARTY_NOTICES.md",
+    "AGENTS.md", "README.md", "README_EN.md", "SKILL.md", "LICENSE", "VERSION",
     PACKAGE + "/stages.py", PACKAGE + "/changes.py", PACKAGE + "/model.py",
     PACKAGE + "/planner.py", PACKAGE + "/workflow.py", PACKAGE + "/stage_state.py",
     PACKAGE + "/routing.py", PACKAGE + "/quantities.py", PACKAGE + "/compliance.py",
@@ -45,9 +45,9 @@ REQUIRED_PATHS = [
     PACKAGE + "/tests/test_workflow.py", PACKAGE + "/tests/test_provider.py",
     PACKAGE + "/tests/test_tools.py", PACKAGE + "/tests/test_presentation.py",
     PACKAGE + "/tests/test_scenarios.py", PACKAGE + "/tests/test_integration.py",
-    "docs/WORKFLOW.md", "docs/ARCH_SKILLS_INTEGRATION.md", "docs/ARCHITECTURE.md",
-    "docs/OMNIAILAB_INTEGRATION.md", "docs/THIRD_PARTY_AUDIT.md",
-    "docs/MCP_TOOLS.md", "docs/INSTALL.md",
+    "docs/WORKFLOW.md", "docs/DESIGN_CRITERIA.md", "docs/ARCHITECTURE.md",
+    "docs/OMNIAILAB_INTEGRATION.md", "docs/CONTENT_AUDIT.md",
+    "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
 ]
 
@@ -73,7 +73,7 @@ def check_paths() -> int:
 def check_catalogue() -> int:
     section("2. 阶段与能力目录自检")
     from omniailab_ai_architect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
-    from omniailab_ai_architect.registry import load_registry, fusion_report
+    from omniailab_ai_architect.registry import criteria_report, load_registry
 
     issues = validate_catalog()
     print(f"  阶段 {len(STAGE_ORDER)}：{', '.join(STAGE_ORDER)}")
@@ -84,9 +84,10 @@ def check_catalogue() -> int:
     unmapped = [r.slug for r in recs if r.legacy and not r.legacy_file]
     if unmapped:
         print(f"  未找到说明文件的技能：{unmapped}")
-    fusion = fusion_report()
-    print(f"  方法融合：上游 {fusion['summary']['upstream_skills']} 项，"
-          f"覆盖阶段 {', '.join(fusion['summary']['stages_touched'])}")
+    crit = criteria_report()
+    print(f"  设计判据：{crit['summary']['criteria_sets']} 组，"
+          f"覆盖阶段 {', '.join(crit['summary']['stages_touched'])}")
+    print(f"  署名：{crit['signature']}")
     for i in issues:
         print(f"  ISSUE  {i}")
     if not issues:
@@ -176,16 +177,16 @@ def check_v11() -> int:
     from omniailab_ai_architect import compliance_audit as ca
 
     audit = ca.scan(ROOT)
-    print(f"  第三方审计：扫描 {audit['files_scanned']} 个文本文件，"
+    print(f"  内容自检：扫描 {audit['files_scanned']} 个文本文件，"
           f"需处理 {audit['action_count']} 个")
     if audit["action_count"]:
         failures += audit["action_count"]
         for f in audit["needs_action"]:
             print(f"  FAIL  {f['path']}　{f['disposition']}")
-    notices = ROOT / "THIRD_PARTY_NOTICES.md"
-    if not notices.exists():
-        failures += 1
-        print("  FAIL  缺少 THIRD_PARTY_NOTICES.md")
+    for need in ("LICENSE", "VERSION", "README_EN.md"):
+        if not (ROOT / need).exists():
+            failures += 1
+            print(f"  FAIL  缺少 {need}")
 
     # --- knowledge base ---------------------------------------------------
     from omniailab_ai_architect import knowledge

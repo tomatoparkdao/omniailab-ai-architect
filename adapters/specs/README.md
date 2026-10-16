@@ -1,3 +1,14 @@
+---
+name: omniailab-adapters-specs-index
+description: 外部工具适配规范索引 —— 每个适配器声明能力、权限与降级路径
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 工具适配规范（MCP / 外部软件）
 
 本目录是**人读**的适配规范；**机器读**的声明在 `omniailab_ai_architect/tools/registry.py`
@@ -34,3 +45,6 @@ python -m omniailab_ai_architect honesty
 4. 修改原始文件前必须留事务/撤销备份，并限制可访问路径。
 5. 详细说明见 [`../../docs/MCP_TOOLS.md`](../../docs/MCP_TOOLS.md) 与
    [`../../compatibility/mcp.servers.example.json.md`](../../compatibility/mcp.servers.example.json.md)。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

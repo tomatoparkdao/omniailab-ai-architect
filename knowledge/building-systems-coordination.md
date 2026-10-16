@@ -5,6 +5,11 @@ stage_affinity: [S4, S6, S7]
 loads_when: 当任务涉及净高协调、管井布置、设备机房、风管水管桥架走向或末端点位综合时加载
 load_cost: heavy
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 机电与设备协同
@@ -208,3 +213,6 @@ version: 1.0.0
 - [ ] 净高控制条件已共享给各专业。
 - [ ] 碰撞检查有记录。
 - [ ] 未对机电负荷、消防、容量下最终结论，并标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

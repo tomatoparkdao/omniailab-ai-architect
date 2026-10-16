@@ -5,6 +5,11 @@ stage_affinity: [S4, S5, S6]
 loads_when: 当任务涉及照度标准、色温选择、灯具布置、自然光策略或照明场景控制时加载
 load_cost: medium
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 照明设计
@@ -208,3 +213,6 @@ version: 1.0.0
 - [ ] 室外照明光污染已考虑。
 - [ ] 能耗策略与节能目标一致。
 - [ ] 应急与安全照明独立复核，并标注待持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

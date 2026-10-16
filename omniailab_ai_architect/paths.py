@@ -20,8 +20,6 @@ CASES = ROOT / "cases"
 TEMPLATES = ROOT / "templates"
 INSTALLER = ROOT / "installer"
 COMPATIBILITY = ROOT / "compatibility"
-THIRD_PARTY = ROOT / "third_party"
-ARCH_SKILLS = THIRD_PARTY / "arch-skills"
 
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:

@@ -1,4 +1,4 @@
-"""v1.1 CLI surface: compliance, providers, tools, knowledge, decks, scenarios, install.
+"""v1.1 CLI surface: content compliance, providers, tools, knowledge, decks, scenarios, install.
 
 Kept apart from `cli.py` so the eight-stage core command set stays readable.
 `register(subparsers)` is called by the main parser.
@@ -23,7 +23,7 @@ def cmd_audit(args) -> int:
     if args.json:
         print(json.dumps(rep, ensure_ascii=False, indent=2))
         return 0
-    print("第三方内容审计")
+    print("内容合规自检")
     print(f"  扫描文本文件：{rep['files_scanned']}")
     for k, v in rep["by_disposition"].items():
         print(f"  {k:<28} {v}")
@@ -33,26 +33,6 @@ def cmd_audit(args) -> int:
         for r in f["reasons"]:
             print(f"      - {r}")
     return 0 if rep["action_count"] == 0 else 1
-
-
-def cmd_notices(args) -> int:
-    from .compliance_audit import UPSTREAM
-    from .paths import ROOT
-
-    path = ROOT / "THIRD_PARTY_NOTICES.md"
-    print(f"第三方声明：{path}")
-    print(f"  上游项目：{UPSTREAM['project']}　{UPSTREAM['url']}")
-    print(f"  作者：{UPSTREAM['author']}")
-    print(f"  许可：{UPSTREAM['license']}")
-    print(f"  本地副本：{UPSTREAM['vendored_at']}（原样保留，不得修改）")
-    if not path.exists():
-        print("  ! 声明文件缺失")
-        return 1
-    print(f"  文件存在，{len(path.read_text(encoding='utf-8').splitlines())} 行")
-    if getattr(args, "full", False):
-        print()
-        print(path.read_text(encoding="utf-8"))
-    return 0
 
 
 def cmd_providers(args) -> int:
@@ -298,14 +278,10 @@ def cmd_manifest(args) -> int:
 def register(sub: "argparse._SubParsersAction") -> None:
     """Attach the v1.1 commands to the main parser."""
 
-    sp = sub.add_parser("audit", help="第三方内容审计（可执行扫描）")
+    sp = sub.add_parser("audit", help="内容合规自检（署名 / 隐私 / 外链 / 许可）")
     sp.add_argument("--write", default=None, help="把报告写入该目录")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_audit)
-
-    sp = sub.add_parser("notices", help="打印第三方声明与许可义务")
-    sp.add_argument("--full", action="store_true", help="打印完整声明")
-    sp.set_defaults(func=cmd_notices)
 
     sp = sub.add_parser("providers", help="OmniAiLab 与生成式 provider 状态")
     sp.add_argument("--project", default=None, help="项目目录（读取平台配置）")
@@ -378,6 +354,6 @@ def register(sub: "argparse._SubParsersAction") -> None:
     sp.set_defaults(func=cmd_manifest)
 
 
-__all__ = ["register", "cmd_audit", "cmd_notices", "cmd_providers", "cmd_tools",
+__all__ = ["register", "cmd_audit", "cmd_providers", "cmd_tools",
            "cmd_honesty", "cmd_knowledge", "cmd_present", "cmd_scenario",
            "cmd_compat", "cmd_install", "cmd_uninstall", "cmd_manifest"]

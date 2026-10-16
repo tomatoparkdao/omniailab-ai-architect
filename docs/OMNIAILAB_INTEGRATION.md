@@ -1,3 +1,14 @@
+---
+name: omniailab-omniailab-integration
+description: OmniAiLab 平台接入 —— OmniAiLab 是 OmniArchitect 的原生平台，但接入是发现式的，不是写死的。
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # OmniAiLab 平台接入
 
 OmniAiLab 是 OmniArchitect 的**原生平台**，但接入是**发现式**的，不是写死的。
@@ -176,3 +187,6 @@ links = reg.link_asset(job, job.outputs, "demo-120", 3, "S5", "image_generation"
 2. `api_key` 只在内存中使用，绝不写入日志、报告或产物。
 3. 所有生成式媒体 `authoritative` 恒为 `False`，并随资产登记其 provider 与 `job_id`。
 4. 远端调用属 L3，需显式授权；本仓库不会自动触发任何付费任务。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

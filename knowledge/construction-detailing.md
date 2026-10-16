@@ -5,6 +5,11 @@ stage_affinity: [S6, S7]
 loads_when: 当任务涉及节点大样、收口做法、基层构造、防水防潮或材料交接时加载
 load_cost: heavy
 version: 1.0.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # 构造与施工深化
@@ -207,3 +212,6 @@ version: 1.0.0
 - [ ] 特殊造型基层做法已说明。
 - [ ] 节点索引完整。
 - [ ] 未对结构安全与消防构造下最终结论，并标注须由持证专业人员复核签署。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

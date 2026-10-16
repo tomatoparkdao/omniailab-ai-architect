@@ -162,7 +162,7 @@ def test_compatibility_report_is_machine_readable():
 
 
 # --------------------------------------------------------------------------
-# third-party audit
+# content audit
 # --------------------------------------------------------------------------
 def test_audit_scan_is_clean_and_reports_a_reason():
     rep = ca.scan(ROOT)
@@ -171,52 +171,75 @@ def test_audit_scan_is_clean_and_reports_a_reason():
     assert rep["conclusion"]
 
 
-def test_vendored_upstream_is_preserved_untouched():
-    rep = ca.scan(ROOT)
-    assert rep["by_disposition"].get("vendored-preserve", 0) > 0
-    vendored = ROOT / "third_party" / "arch-skills"
-    if vendored.exists():
-        assert (vendored / "LICENSE").exists(), "上游 LICENSE 不得删除"
+def test_every_document_carries_the_omniailab_signature():
+    from omniailab_ai_architect.registry import (
+        SIGNATURE,
+        SIGNATURE_SHORT,
+        SIGNATURE_SHORT_EN,
+    )
+
+    missing = []
+    for p in sorted(ROOT.rglob("*.md")):
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if rel.startswith(("out/", "projects/")):
+            continue
+        text = p.read_text(encoding="utf-8")
+        if not any(mark in text for mark in
+                   (SIGNATURE, SIGNATURE_SHORT, SIGNATURE_SHORT_EN)):
+            missing.append(rel)
+    assert not missing, f"缺少署名：{missing}"
 
 
-def test_licence_attribution_is_concentrated_and_kept():
-    notices = ROOT / "THIRD_PARTY_NOTICES.md"
-    assert notices.exists()
-    text = notices.read_text(encoding="utf-8")
-    for need in ("arch-skills", "Gu Jun", "MIT", "CC BY 4.0", "third_party/arch-skills"):
-        assert need in text, need
-
-
-def test_user_facing_files_carry_no_commercial_promotion():
-    banned = ("chodo",)
-    for rel in ("SKILL.md", "README.md"):
-        text = (ROOT / rel).read_text(encoding="utf-8")
+def test_no_borrowed_branding_anywhere_in_the_tree():
+    # These strings must not appear anywhere: the material is our own.
+    banned = ("arch-skills", "gujun", "gu jun", "chodo", "顾俊")
+    offenders = []
+    for p in sorted(ROOT.rglob("*")):
+        if p.is_dir() or p.suffix.lower() not in (".md", ".py", ".json", ".yaml",
+                                                  ".yml", ".toml", ".txt"):
+            continue
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if rel.startswith(("out/", "projects/", "omniailab_ai_architect/tests/")):
+            continue        # the test file itself must name the banned strings
+        low = p.read_text(encoding="utf-8", errors="replace").lower()
         for b in banned:
-            assert b.lower() not in text.lower(), rel
+            if b in low:
+                offenders.append(f"{rel}: {b}")
+    assert not offenders, offenders
 
 
-def test_a_user_facing_file_with_third_party_branding_is_flagged():
+def test_user_facing_files_carry_no_external_promotion():
+    from omniailab_ai_architect import compliance_audit as _ca
+
+    for rel in ("SKILL.md", "README.md", "README_EN.md"):
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        urls = _ca.PATTERNS["url"].findall(text)
+        for u in urls:
+            assert any(d in u for d in _ca.OWN_DOMAINS) or \
+                any(h in u for h in _ca.BENIGN_URL_HOSTS), f"{rel}: {u}"
+
+
+def test_a_user_facing_file_with_external_promotion_is_flagged():
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)
         (root / "knowledge").mkdir()
         (root / "knowledge" / "x.md").write_text(
-            "本项目参考 Gu Jun 的 arch-skills 方法。", encoding="utf-8")
+            "更多内容见 https://example-shop.example.com/sale 与 https://promo.example.net\n\n"
+            "---\n" + ca.SIGNATURE + "\n", encoding="utf-8")
         rep = ca.scan(root)
         assert rep["action_count"] == 1
         f = rep["needs_action"][0]
-        assert f["disposition"] == "sanitize-user-facing"
-        assert any("第三方名称" in r for r in f["reasons"])
+        assert f["disposition"] == "user-facing-external-link"
 
 
-def test_attribution_inside_a_compliance_file_is_kept():
+def test_a_document_without_the_signature_is_flagged():
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)
-        (root / "manifest").parent.mkdir(parents=True, exist_ok=True)
-        (root / "THIRD_PARTY_NOTICES.md").write_text(
-            "Upstream: arch-skills · Gu Jun · MIT / CC BY 4.0", encoding="utf-8")
+        (root / "docs").mkdir()
+        (root / "docs" / "note.md").write_text("# 说明\n\n没有署名的文档。", encoding="utf-8")
         rep = ca.scan(root)
-        assert rep["action_count"] == 0
-        assert rep["by_disposition"].get("attribution-required-keep") == 1
+        assert rep["action_count"] == 1
+        assert rep["needs_action"][0]["disposition"] == "missing-signature"
 
 
 def test_client_names_and_emails_are_flagged_for_redaction():
@@ -234,7 +257,8 @@ def test_role_words_are_not_mistaken_for_client_names():
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)
         (root / "spec.md").write_text(
-            "业主：确认后进入下一阶段\n甲方：主创团队\n客户：设计方", encoding="utf-8")
+            "业主：确认后进入下一阶段\n甲方：主创团队\n客户：设计方\n\n"
+            "---\n" + ca.SIGNATURE + "\n", encoding="utf-8")
         rep = ca.scan(root)
         assert rep["action_count"] == 0, rep["needs_action"]
 
@@ -243,8 +267,9 @@ def test_report_rendering_and_writing():
     with tempfile.TemporaryDirectory() as td:
         rep = ca.scan(ROOT)
         md = ca.render_markdown(rep)
-        assert "# 第三方内容审计报告" in md
-        assert "必须保留的第三方署名" in md
+        assert "# 内容合规自检报告" in md
+        assert "署名与归属" in md
+        assert ca.SIGNATURE in md
         out = ca.write_report(td)
         for key in ("markdown", "json"):
             assert Path(out[key]).exists()
@@ -257,7 +282,7 @@ def test_spec_namespaces_are_not_treated_as_promotional_links():
         root = Path(td)
         (root / "SKILL.md").write_text(
             "---\nname: x\ndescription: d\nversion: 1\n---\n"
-            "XML: http://schemas.openxmlformats.org/xxx and https://purl.org/dc\n",
-            encoding="utf-8")
+            "XML: http://schemas.openxmlformats.org/xxx and https://purl.org/dc\n\n"
+            "---\n" + ca.SIGNATURE + "\n", encoding="utf-8")
         rep = ca.scan(root)
         assert rep["action_count"] == 0, rep["needs_action"]

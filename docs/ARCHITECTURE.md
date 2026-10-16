@@ -1,3 +1,14 @@
+---
+name: omniailab-architecture
+description: 系统架构 —— 阶段负责推进节奏，能力负责专业方法，适配器负责操作软件，模型负责记住一切
+version: 1.1.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 系统架构
 
 ```
@@ -122,7 +133,7 @@ class Adapter:
 
 | 子系统 | 模块 | 职责 |
 | --- | --- | --- |
-| 第三方合规 | `compliance_audit.py` | 逐文件判定来源与处置；用户面不得出现第三方品牌与推广链接；署名义务集中到 `THIRD_PARTY_NOTICES.md` |
+| 内容合规 | `compliance_audit.py` | 逐文件检查署名 / 隐私 / 外链 / 许可；用户面材料只能指向自有站点；署名行由 `registry.py: SIGNATURE` 统一定义 |
 | 原创知识库 | `knowledge/` + `knowledge/loader.py` | 12 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
 | 平台 provider | `providers/` | OmniAiLab 发现式接入（SDK / 配置 / API 契约）+ 内置本地确定性 provider；未验证一律 `NOT_CONFIGURED` |
 | 工具执行 | `tools/` | 统一工具注册表、L1–L4 权限分级、产物独立校验、能力真实性规则 |
@@ -135,3 +146,6 @@ class Adapter:
 1. **外部接口只读已声明的配置与契约**，不猜测 endpoint、参数与鉴权。
 2. **产物只能按能力上限命名**：DXF ≠ DWG，网格 ≠ 参数化 BIM，效果图 ≠ 尺寸依据。
 3. **缺失能力记为 `degraded` 或跳过**，绝不以 Mock 通过宣称生产功能可用。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

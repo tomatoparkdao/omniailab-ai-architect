@@ -238,12 +238,14 @@ def test_custom_brand_is_applied_and_default_is_our_own():
         assert Brand().name == "OmniArchitect", "默认品牌必须是自有的"
 
 
-def test_no_third_party_case_material_is_embedded_in_a_deck():
+def test_every_deck_carries_the_omniailab_signature():
+    from omniailab_ai_architect.registry import SIGNATURE
+
     with tempfile.TemporaryDirectory() as td:
         rep = presentation.render(_project(td), "full", out_dir=Path(td), want_pdf=False)
         text = Path(rep["files"]["markdown"]).read_text(encoding="utf-8")
-        for banned in ("arch-skills", "Gu Jun", "gujun", "chodo"):
-            assert banned.lower() not in text.lower(), banned
+        assert SIGNATURE in text
+        assert "http://" not in text and "https://" not in text
 
 
 def test_render_is_repeatable_in_structure():

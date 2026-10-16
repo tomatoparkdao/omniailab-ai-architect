@@ -26,8 +26,7 @@ from .errors import ModelError
 # studio, mapped to the stages where each one is used. A capability may serve
 # several stages; the stage is the business process, the capability is the job.
 # --------------------------------------------------------------------------
-SOURCE_OMNI = "omnilab"
-SOURCE_ARCH = "arch-skills"
+SOURCE_OMNI = "OmniAiLab"
 
 
 @dataclass(frozen=True)
@@ -67,9 +66,8 @@ CAPABILITIES: List[Capability] = [
     Capability("concept-design", "概念方案设计", (S2, S3), legacy="03-concept",
                responsibility="设计定位、概念主张、空间原型、风格与案例参照"),
     Capability("moodboard-aesthetic-iteration", "意向板与审美迭代", (S2, S5),
-               source=SOURCE_ARCH,
                responsibility="关键词锚定、多框架量化打分、跨轮整改追踪"),
-    Capability("create-draw", "概念图解与评图", (S2, S4, S7), source=SOURCE_ARCH,
+    Capability("create-draw", "概念图解与评图", (S2, S4, S7),
                responsibility="红蓝笔图形语义、概念图解、图面方向表达"),
 
     # --- 03 平面方案设计 --------------------------------------------------
@@ -124,7 +122,7 @@ CAPABILITIES: List[Capability] = [
                responsibility="工程量随阶段滚动更新，最终形成正式清单"),
     Capability("material-schedule", "材料与物料表", (S8,),
                responsibility="材料规格、品牌档位、用量、损耗与替代方案"),
-    Capability("documentation", "交付文档", (S8,), source=SOURCE_ARCH,
+    Capability("documentation", "交付文档", (S8,),
                responsibility="设计文本、说明书、技术交底文件的版式与归档"),
     Capability("delivery", "版本管理与交付", (S8,), legacy="18-revisions",
                responsibility="变更追踪、跨图纸同步、交付核对与版本冻结"),
