@@ -4,6 +4,8 @@ Runs everywhere, no DCC tool required, and produces a genuinely editable 3D
 model (Blender, FreeCAD, Rhino, SketchUp, 3ds Max all open it). The Blender
 adapter builds on the same geometry when Blender is present; when it is not,
 this is the honest deliverable instead of a promise.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

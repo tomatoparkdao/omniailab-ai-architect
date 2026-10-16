@@ -8,6 +8,8 @@
     python -m omniailab_ai_architect confirm   --project projects/demo-120 --stage S3 --by 业主
     python -m omniailab_ai_architect change    --project projects/demo-120 "我不喜欢客厅的电视背景墙"
     python -m omniailab_ai_architect demo      --out out
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

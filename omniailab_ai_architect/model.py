@@ -6,6 +6,8 @@ derived from this model; nothing else may claim dimensional authority.
 
 Units are millimetres everywhere. Text-to-image output is *never* allowed to
 feed back into this model.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

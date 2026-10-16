@@ -10,6 +10,8 @@ What these tests defend:
   statuses, per-view jobs and a client deck all exist on disk;
 * nothing is fabricated — with no platform there are **no image files**, and the
   L3 network submission refuses to fire without explicit authorisation.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

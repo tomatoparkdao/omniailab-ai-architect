@@ -2,8 +2,8 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-16 18:49:18",
-  "files_scanned": 140,
+  "scanned_at": "2026-10-16 18:56:11",
+  "files_scanned": 141,
   "by_disposition": {
     "authorized-dependency": 24
   },
@@ -71,7 +71,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Codex",
-      "line": 13,
+      "line": 24,
       "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\">",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -80,7 +80,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Claude",
-      "line": 13,
+      "line": 24,
       "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p a",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -89,7 +89,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "WorkBuddy",
-      "line": 13,
+      "line": 24,
       "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"兼容 Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p align=\"cente",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -98,7 +98,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Codex",
-      "line": 13,
+      "line": 24,
       "excerpt": "https://img.shields.io/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / Omni",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -107,7 +107,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Claude",
-      "line": 13,
+      "line": 24,
       "excerpt": "g.shields.io/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / OmniAiLab\"> </",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -116,7 +116,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "WorkBuddy",
-      "line": 13,
+      "line": 24,
       "excerpt": "o/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square\" alt=\"Works with Codex / Claude / WorkBuddy / OmniAiLab\"> </p>  <p alig",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -198,7 +198,7 @@
       "path": "compatibility/codex.md",
       "token": "Codex",
       "line": 3,
-      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.1.0 author: OmniAiLab developer: Mochiball agen",
+      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.3.0 author: OmniAiLab developer: Mochiball agen",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -206,7 +206,7 @@
       "disposition": "authorized-dependency",
       "path": "omniailab_ai_architect/integration/agent_skills.py",
       "token": "WorkBuddy",
-      "line": 28,
+      "line": 30,
       "excerpt": "{     \"workbuddy\": {         \"label\": \"WorkBuddy（用户级）\",         \"path\": \"~/.workbuddy/skills\",         \"layout\": \"dir-per-skill\",     },     \"codex\": {",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -215,7 +215,7 @@
       "disposition": "authorized-dependency",
       "path": "omniailab_ai_architect/integration/agent_skills.py",
       "token": "Codex",
-      "line": 33,
+      "line": 35,
       "excerpt": "\"codex\": {         \"label\": \"OpenAI Codex（用户级）\",         \"path\": \"~/.codex/skills\",         \"layout\": \"dir-per-skill\",     },     \"cursor\": {         \"label",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -224,7 +224,7 @@
       "disposition": "authorized-dependency",
       "path": "omniailab_ai_architect/integration/agent_skills.py",
       "token": "Cursor",
-      "line": 38,
+      "line": 40,
       "excerpt": "},     \"cursor\": {         \"label\": \"Cursor（用户级）\",         \"path\": \"~/.cursor/skills-cursor\",         \"layout\": \"dir-per-skill\",     },     \"claude\": {",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -233,7 +233,7 @@
       "disposition": "authorized-dependency",
       "path": "omniailab_ai_architect/integration/agent_skills.py",
       "token": "Claude",
-      "line": 43,
+      "line": 45,
       "excerpt": "},     \"claude\": {         \"label\": \"Claude Code（用户级）\",         \"path\": \"~/.claude/skills\",         \"layout\": \"dir-per-skill\",     },     \"project-workbuddy\"",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     }
@@ -379,7 +379,7 @@
       "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "midjourney",
-      "line": 37,
+      "line": 48,
       "excerpt": "）的唯一被授权    主体是 OmniAiLab。不得集成、默认推荐或隐藏调用 Midjourney / Leonardo / Krea /    Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、    账号、下载地址或自动回退路径。平台不可用时",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -388,7 +388,7 @@
       "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "krea",
-      "line": 37,
+      "line": 48,
       "excerpt": "。不得集成、默认推荐或隐藏调用 Midjourney / Leonardo / Krea /    Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、    账号、下载地址或自动回退路径。平台不可用时**返回明确错误 + 生成待执行任务**，",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -397,7 +397,7 @@
       "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "higgsfield",
-      "line": 38,
+      "line": 49,
       "excerpt": "或隐藏调用 Midjourney / Leonardo / Krea /    Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、    账号、下载地址或自动回退路径。平台不可用时**返回明确错误 + 生成待执行任务**，    **不得秘密切换供",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -406,7 +406,7 @@
       "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "runway",
-      "line": 38,
+      "line": 49,
       "excerpt": "ney / Leonardo / Krea /    Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、    账号、下载地址或自动回退路径。平台不可用时**返回明确错误 + 生成待执行任务**，    **不得秘密切换供应商**。 6. **自有",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -415,7 +415,7 @@
       "disposition": "forbidden",
       "path": "providers/README.md",
       "token": "sora",
-      "line": 38,
+      "line": 49,
       "excerpt": "Krea /    Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、    账号、下载地址或自动回退路径。平台不可用时**返回明确错误 + 生成待执行任务**，    **不得秘密切换供应商**。 6. **自有模块不冒称生成式**。本地确定性",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     }

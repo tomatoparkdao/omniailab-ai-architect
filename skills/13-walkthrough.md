@@ -1,15 +1,16 @@
 ---
 name: omniailab-walkthrough
 description: 漫游与多视角表现 —— 全景、动画漫游、空间序列表达
-version: 1.1.0
+capability: walkthrough
+stages: [S5]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: walkthrough
-stages: [S5]
 ---
+
 # Walkthrough
 
 ## Responsibility

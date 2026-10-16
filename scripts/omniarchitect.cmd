@@ -1,4 +1,6 @@
 @echo off
+:: © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+
 REM OmniArchitect launcher — pins the project root so nothing depends on the
 REM caller's working directory.
 REM
@@ -20,3 +22,6 @@ pushd "%PROJECT_ROOT%"
 set "RC=%ERRORLEVEL%"
 popd
 exit /b %RC%
+
+:: ---
+:: © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -1,15 +1,16 @@
 ---
 name: omniailab-cad-drafting
 description: CAD 制图 —— 方案图与正式施工图两个深度：schematic / construction
-version: 1.1.0
+capability: cad-drafting
+stages: [S4, S7]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: cad-drafting
-stages: [S4, S7]
 ---
+
 # Construction Documentation
 
 ## Responsibility

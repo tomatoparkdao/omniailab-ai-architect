@@ -15,6 +15,8 @@ Risk tiers (L1–L4) are the security classification the fusion map credits to
 
 Anything at L3 or above needs explicit approval before it runs, and L4 always
 runs with a dry-run preview first.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

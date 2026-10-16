@@ -4,6 +4,8 @@ Phase-two of the integration roadmap. When IfcOpenShell is importable the
 adapter writes a real IFC4 file from the canonical model; when it is not, it
 emits the generator script plus an IFC-ready JSON projection so the model data
 is not lost while the toolchain is being installed.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

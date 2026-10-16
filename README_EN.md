@@ -1,3 +1,14 @@
+---
+name: omniailab-readme-en
+description: OmniAiLab AI Architect (omniailab-ai-architect) — English README: capability overview, eight-stage workflow, install, quick start, command reference, brand and compliance boundaries.
+version: 1.3.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 <h1 align="center">OmniAiLab AI Architect &amp; Interior Designer</h1>
 
 <p align="center">
@@ -256,3 +267,6 @@ Yes. `route` closes over prerequisites: say "just draw the ceiling construction 
 </div>
 
 > © OmniAiLab ｜ Developer: Mochiball ｜ omniailab.cn
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

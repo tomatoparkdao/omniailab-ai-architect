@@ -9,6 +9,8 @@ Two backends, one output format:
 
 Both are verified after writing: the file is reopened, its parts listed, and a
 different implementation is used for the check than for the write.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

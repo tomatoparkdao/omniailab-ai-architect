@@ -1,15 +1,16 @@
 ---
 name: omniailab-bim-modeling
 description: BIM 建模 —— 参数化构件、IFC、信息模型与专业协同
-version: 1.1.0
+capability: bim-modeling
+stages: [S5, S7]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: bim-modeling
-stages: [S5, S7]
 ---
+
 # BIM Modeling
 
 ## Responsibility

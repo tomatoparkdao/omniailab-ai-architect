@@ -3,6 +3,8 @@
 These run the real pipeline, so they are the slowest part of the suite. They are
 also the part that proves the system is not a mock: every check re-opens the
 artifact with an independent parser.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

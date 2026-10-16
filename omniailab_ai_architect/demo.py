@@ -4,6 +4,8 @@ Writes a canonical model whose shell comes from a "surveyed" base plan. Two
 walls are marked `uncertain` on purpose: they were inferred from the drawing and
 must be confirmed on site, which is exactly the kind of thing the system must
 refuse to treat as fact.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

@@ -3,6 +3,8 @@
 FreeCAD is not normally installed on a design workstation, so this adapter's
 job today is to produce a script that, when run under FreeCADCmd, rebuilds the
 canonical model as parametric solids. It is honest about not being able to run.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

@@ -1,15 +1,16 @@
 ---
 name: omniailab-interior-design
 description: 室内设计 —— 顶面、墙面、地面、软硬装整合与做法定案
-version: 1.1.0
+capability: interior-design
+stages: [S4, S6]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: interior-design
-stages: [S4, S6]
 ---
+
 # Interior Design
 
 ## Responsibility

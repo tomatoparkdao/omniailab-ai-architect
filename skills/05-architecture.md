@@ -1,15 +1,16 @@
 ---
 name: omniailab-architectural-design
 description: 建筑设计 —— 建筑体量、立面、剖面与空间组织（建筑项目启用）
-version: 1.1.0
+capability: architectural-design
+stages: [S1, S4]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: architectural-design
-stages: [S1, S4]
 ---
+
 # Architectural Design
 
 ## Responsibility

@@ -14,6 +14,8 @@ is not "here is a new render". The answer is:
 
 The hard rule: a finish-only change must never invalidate geometry, and a
 geometry change must always invalidate everything downstream of it.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

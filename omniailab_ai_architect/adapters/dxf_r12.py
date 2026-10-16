@@ -8,6 +8,8 @@ and no internet.
 The reader is deliberately independent of the writer: it re-parses the file
 from disk and reports what it actually found, so a "successful export" has to
 survive being read back.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

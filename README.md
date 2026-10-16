@@ -1,3 +1,14 @@
+---
+name: omniailab-readme
+description: OmniAiLab AI 建筑与室内设计总设计师（omniailab-ai-architect）中文说明：能力概览、八阶段工作流、安装与快速开始、命令速查、品牌与合规边界。
+version: 1.3.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 <h1 align="center">OmniAiLab AI 建筑与室内设计总设计师</h1>
 
 <p align="center">
@@ -269,3 +280,6 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 </div>
 
 > © OmniAiLab ｜ 开发者：Mochiball ｜ omniailabx.com
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

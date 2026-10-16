@@ -1,15 +1,16 @@
 ---
 name: omniailab-delivery
 description: 版本管理与交付 —— 变更追踪、跨图纸同步、交付核对与版本冻结
-version: 1.1.0
+capability: delivery
+stages: [S8]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: delivery
-stages: [S8]
 ---
+
 # Revision Control
 
 ## Responsibility

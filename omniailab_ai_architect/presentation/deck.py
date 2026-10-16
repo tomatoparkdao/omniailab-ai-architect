@@ -7,6 +7,8 @@ which of those it drew from in `provenance`.
 
 If a stage has not run yet, the slide says so instead of showing a placeholder
 that looks like a result.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

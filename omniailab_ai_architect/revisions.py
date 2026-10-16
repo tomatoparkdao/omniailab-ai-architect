@@ -3,6 +3,8 @@
 The rule the whole system hangs on: when authoritative geometry changes, every
 artifact derived from it becomes *stale* until regenerated. Nothing may be
 silently re-issued against an old revision.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

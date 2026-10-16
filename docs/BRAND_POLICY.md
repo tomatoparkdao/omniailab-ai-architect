@@ -1,10 +1,22 @@
+---
+name: omniailab-brand-policy
+description: 品牌与供应商策略审计报告（自动生成）：九条检测规则、命中分类、已登记清单与创作能力独占的判定依据。
+scope: 自动生成 · 每次 policy 覆盖
+version: 1.3.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 品牌与供应商策略审计报告
 
 > 规则集：`brand-and-provider-policy` —— 品牌统一 · 第三方来源合规隔离 · OmniAiLab 创作工具独占
 
-- 扫描时间：2026-10-16 18:49:18
+- 扫描时间：2026-10-16 18:56:11
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**140**
+- 扫描文本文件：**141**
 - 待处理：**0**（禁止项 0，待审 0）
 - 已抑制：20（宣告某平台不被允许的表述，不计入待处理）
 - 结论：**品牌统一、第三方来源隔离与创作工具独占三项均无未处理命中**
@@ -71,12 +83,12 @@
 | `CHANGELOG.md` | 39 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `CHANGELOG.md` | 39 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `CHANGELOG.md` | 39 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 13 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 13 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README.md` | 13 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 13 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 13 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `README_EN.md` | 13 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 24 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 24 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README.md` | 24 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 24 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 24 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `README_EN.md` | 24 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `SKILL.md` | 278 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `SKILL.md` | 278 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `SKILL.md` | 278 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
@@ -86,10 +98,10 @@
 | `compatibility/agent-skills.md` | 76 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/agent-skills.md` | 77 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `compatibility/codex.md` | 3 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `omniailab_ai_architect/integration/agent_skills.py` | 28 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `omniailab_ai_architect/integration/agent_skills.py` | 33 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `omniailab_ai_architect/integration/agent_skills.py` | 38 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `omniailab_ai_architect/integration/agent_skills.py` | 43 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `omniailab_ai_architect/integration/agent_skills.py` | 30 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `omniailab_ai_architect/integration/agent_skills.py` | 35 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `omniailab_ai_architect/integration/agent_skills.py` | 40 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `omniailab_ai_architect/integration/agent_skills.py` | 45 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 
 ### 已抑制（宣告某平台不被允许，不是集成）
 
@@ -112,11 +124,11 @@
 | `docs/CONCEPT_RENDER.md` | 72 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 | `docs/CONCEPT_RENDER.md` | 73 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `providers/README.md` | 37 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `providers/README.md` | 37 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `providers/README.md` | 38 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `providers/README.md` | 38 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
-| `providers/README.md` | 38 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `providers/README.md` | 48 | `brand-text` | `midjourney` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `providers/README.md` | 48 | `brand-text` | `krea` | 外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `providers/README.md` | 49 | `brand-text` | `higgsfield` | 外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `providers/README.md` | 49 | `brand-text` | `runway` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
+| `providers/README.md` | 49 | `brand-text` | `sora` | 外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理） |
 
 ## 已登记：模型路由与供应商
 

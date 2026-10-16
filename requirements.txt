@@ -1,3 +1,5 @@
+# © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+
 # OmniArchitect dependencies
 #
 # The core pipeline has NO required dependency. Everything below is an optional
@@ -36,3 +38,6 @@ pyyaml>=6.0
 # FreeCAD / FreeCADCmd # parametric rebuild
 # AutoCAD             # not required — DXF output does not need it
 # LibreOffice/soffice # only for PDF export from the print-ready HTML deck
+
+# ---
+# © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -1,4 +1,5 @@
 {
+  "$comment": "© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
   "_readme": [
     "这是 OmniAiLab 平台 API 契约的**填写模板**，不是可用契约。",
     "把本文件复制为 providers/omniailab.api.json（或设置 OMNIAILAB_API_CONTRACT 指向它），",

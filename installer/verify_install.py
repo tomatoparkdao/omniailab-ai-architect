@@ -6,6 +6,8 @@
     python installer/verify_install.py --check-python        # 同时跑包导入自检
 
 Exit codes: 0 ok · 1 problems found.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

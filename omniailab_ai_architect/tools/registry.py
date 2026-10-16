@@ -12,6 +12,8 @@ MCP servers are *declared*, never guessed. The registry reads a
 reports each server as `available` (its command resolves on this host),
 `not_configured` (declared but the command is missing), or absent (not
 declared at all). It never invents a command, an endpoint or an auth scheme.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

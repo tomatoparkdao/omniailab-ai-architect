@@ -4,7 +4,7 @@ name: 机电与设备协同
 stage_affinity: [S4, S6, S7]
 loads_when: 当任务涉及净高协调、管井布置、设备机房、风管水管桥架走向或末端点位综合时加载
 load_cost: heavy
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

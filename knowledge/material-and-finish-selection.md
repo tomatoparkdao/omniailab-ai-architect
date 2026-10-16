@@ -4,7 +4,7 @@ name: 材料与饰面选择
 stage_affinity: [S4, S6, S8]
 loads_when: 当任务涉及材质选型、饰面构造、规格排版、样板确认或物料清单编制时加载
 load_cost: heavy
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

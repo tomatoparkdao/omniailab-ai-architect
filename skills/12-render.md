@@ -1,15 +1,16 @@
 ---
 name: omniailab-scene-rendering
 description: 场景渲染 —— 相机、材质、光影、批量多视角一致出图
-version: 1.1.0
+capability: scene-rendering
+stages: [S5]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: scene-rendering
-stages: [S5]
 ---
+
 # Visualization
 
 ## Responsibility

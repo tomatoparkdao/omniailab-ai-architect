@@ -4,7 +4,7 @@ name: 照明设计
 stage_affinity: [S4, S5, S6]
 loads_when: 当任务涉及照度标准、色温选择、灯具布置、自然光策略或照明场景控制时加载
 load_cost: medium
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

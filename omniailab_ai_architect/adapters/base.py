@@ -4,6 +4,8 @@ Every external tool is reached through an adapter that must answer a preflight
 question first: *does this tool exist on this host, and what can it actually
 do?* A tool is never presumed present. When it is missing the adapter returns a
 degraded deliverable and says so — it never fabricates success.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

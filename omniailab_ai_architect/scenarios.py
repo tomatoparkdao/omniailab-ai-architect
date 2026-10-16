@@ -8,6 +8,8 @@ tools cannot actually do.
 A scenario that "passes" by mocking a missing tool is a failed scenario. Where a
 capability is not configured the report says so and the check is recorded as
 `skipped`, never as `ok`.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

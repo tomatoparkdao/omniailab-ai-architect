@@ -4,7 +4,7 @@ name: BIM 建模原理
 stage_affinity: [S5, S7]
 loads_when: 当任务涉及三维建模、模型精度、构件参数、协同校核、碰撞检查或模型交付时加载
 load_cost: medium
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

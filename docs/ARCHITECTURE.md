@@ -1,7 +1,7 @@
 ---
 name: omniailab-architecture
 description: 系统架构 —— 阶段负责推进节奏，能力负责专业方法，适配器负责操作软件，模型负责记住一切
-version: 1.1.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

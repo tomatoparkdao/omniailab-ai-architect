@@ -12,6 +12,8 @@ adapter is split in two:
 
 The scene is built from canonical geometry, so dimensions stay authoritative.
 Renders derived from it are presentation material and are labelled as such.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

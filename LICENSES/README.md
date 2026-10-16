@@ -1,11 +1,13 @@
 ---
 name: omniailab-licences-index
 description: LICENSES 目录索引 —— 第三方许可证原文与署名的归档位置；与 THIRD_PARTY_NOTICES.md 配套，二者构成本仓唯一的第三方声明落点。
+scope: 许可证原文归档（唯一处）
 version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
-scope: 许可证原文归档（唯一处）
+开源仓库: 待发布
+操作手册: 待发布
 ---
 
 # LICENSES/ — 许可证原文归档

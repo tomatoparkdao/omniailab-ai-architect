@@ -1,3 +1,14 @@
+---
+name: omniailab-providers-readme
+description: OmniAiLab 平台连接说明：API 契约填写模板、凭据放置位置、三步接入流程，以及创作能力独占的硬规则。
+version: 1.3.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # OmniAiLab 平台连接
 
 本目录存放**平台连接所需的本地文件**。它不属于 Python 包，只是本机/本项目的连接配置位置。

@@ -1055,7 +1055,15 @@ DISPOSITION_MEANING = {
 
 
 def render_markdown(rep: PolicyReport) -> str:
+    from .registry import frontmatter_block
+
     d = rep.to_dict()
+    head = frontmatter_block(
+        "omniailab-brand-policy",
+        "品牌与供应商策略审计报告（自动生成）：九条检测规则、命中分类、"
+        "已登记清单与创作能力独占的判定依据。",
+        extra={"scope": "自动生成 · 每次 policy 覆盖"},
+    )
     lines = [
         "# 品牌与供应商策略审计报告",
         "",
@@ -1210,7 +1218,7 @@ def render_markdown(rep: PolicyReport) -> str:
         SIGNATURE,
         "",
     ]
-    return "\n".join(lines)
+    return head + "\n".join(lines)
 
 
 def write_report(out_dir: str | Path | None = None,

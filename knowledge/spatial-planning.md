@@ -4,7 +4,7 @@ name: 空间规划
 stage_affinity: [S3, S4, S5]
 loads_when: 当任务涉及房间划分、面积指标、动线组织、功能气泡图或平面优化时加载
 load_cost: heavy
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

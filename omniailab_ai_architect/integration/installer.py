@@ -8,6 +8,8 @@ Design rules
 * **Verifiable.** After installing, the entry point is re-parsed and the pointer
   is resolved back to a real checkout; the report says whether it worked.
 * **Standalone by default.** No platform account, no key, no network.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

@@ -7,6 +7,8 @@ dependency on any particular vendor runtime.
 This module parses and validates that contract so the skill can be checked,
 installed and run standalone — including on a machine where OmniAiLab was
 never configured. Nothing here reads a platform key.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

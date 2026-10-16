@@ -8,6 +8,8 @@ that is the whole point of the adapter-degradation design.
     python scripts/run_tests.py            # run everything
     python scripts/run_tests.py planner    # only modules matching 'planner'
     python scripts/run_tests.py -v
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

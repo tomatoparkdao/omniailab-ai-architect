@@ -10,6 +10,8 @@ Two backends, one drawing model:
 Whichever backend runs, the file is re-opened by an independent parser and
 audited before the export is reported as valid. A DXF that cannot be read back
 is a failed deliverable, not a success.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

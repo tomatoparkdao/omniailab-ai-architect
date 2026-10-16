@@ -4,7 +4,7 @@ name: 室内设计方法论
 stage_affinity: [S1, S2, S3, S4, S6]
 loads_when: 当任务涉及室内功能重塑、界面设计、风格落地、软装策略或室内与建筑的边界处理时加载
 load_cost: medium
-version: 1.0.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

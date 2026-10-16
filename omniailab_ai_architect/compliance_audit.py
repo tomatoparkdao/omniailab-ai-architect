@@ -275,6 +275,13 @@ def scan(root: str | Path = ROOT, include_generated: bool = False) -> Dict[str, 
 
 # --------------------------------------------------------------------------
 def render_markdown(report: Dict[str, Any]) -> str:
+    from .registry import frontmatter_block
+
+    head = frontmatter_block(
+        "omniailab-content-audit",
+        "内容合规自检报告（自动生成）：署名 / 隐私 / 外链 / 许可四类检查的扫描结果与待处理清单。",
+        extra={"scope": "自动生成 · 每次 audit 覆盖"},
+    )
     lines = [
         "# 内容合规自检报告",
         "",
@@ -334,7 +341,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
         SIGNATURE,
         "",
     ]
-    return "\n".join(lines)
+    return head + "\n".join(lines)
 
 
 def write_report(out_dir: str | Path | None = None,

@@ -18,6 +18,8 @@
 2. **不伪造图**。平台未连接时，产出的是完整的**可执行任务包**（提示词、参考图、
    机位、模型建议、回填位置），状态逐条标注 `awaiting_platform`，绝不写占位图片。
 3. **不发尺寸结论**。每张图的提示词、说明与登记信息都带非权威声明。
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

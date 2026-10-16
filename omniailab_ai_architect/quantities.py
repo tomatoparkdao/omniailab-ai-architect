@@ -3,6 +3,8 @@
 Quantities are derived from canonical geometry only. Rates live in
 `project.constraints.cost_bands` so a local estimator can override them; the
 defaults are indicative ranges, never a quotation.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

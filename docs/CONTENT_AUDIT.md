@@ -1,15 +1,27 @@
+---
+name: omniailab-content-audit
+description: 内容合规自检报告（自动生成）：署名 / 隐私 / 外链 / 许可四类检查的扫描结果与待处理清单。
+scope: 自动生成 · 每次 audit 覆盖
+version: 1.3.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: 待发布
+操作手册: 待发布
+---
+
 # 内容合规自检报告
 
-- 扫描时间：2026-10-16 18:49:18
+- 扫描时间：2026-10-16 18:56:11
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**146**
+- 扫描文本文件：**147**
 - 结论：**全部文档已署名，且无个人信息、外部推广链接或归属问题**
 
 ## 处置分布
 
 | 处置 | 文件数 | 含义 |
 | --- | --- | --- |
-| `original` | 128 | 本项目原创内容，已合规 |
+| `original` | 129 | 本项目原创内容，已合规 |
 | `test-fixture` | 18 | 测试夹具，含样本数据；内容规则不适用 |
 
 ## 需要处理的文件

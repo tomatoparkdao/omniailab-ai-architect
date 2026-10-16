@@ -55,9 +55,9 @@ review_results:
   - 照度与显色是否匹配餐饮
 generic: true
 source: original
-version: 1.0.0
 name: omniailab-generic-restaurant-200
 description: 通用案例：约 200 m² 餐厅（餐饮类） —— 以下为常见工程惯例区间，非当地法定强制值，须以项目所在地现行规范与专业复核为准。
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

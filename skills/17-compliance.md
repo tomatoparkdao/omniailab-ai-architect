@@ -1,15 +1,16 @@
 ---
 name: omniailab-design-review
 description: 设计审核 —— 几何、配置、规范初审；列出待专业复核项
-version: 1.1.0
+capability: design-review
+stages: [S6, S7]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: design-review
-stages: [S6, S7]
 ---
+
 # Review and Compliance
 
 ## Responsibility

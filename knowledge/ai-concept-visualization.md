@@ -1,16 +1,16 @@
 ---
 name: omniailab-ai-concept-visualization
 description: AI 概念表现方法论 —— 平面确认后的概念效果图：机位语言、提示词结构、参考图纪律与迭代协议
-version: 1.1.0
+domain: ai-concept-visualization
+stage_affinity: [S3, S4, S5]
+loads_when: 需要在平面确认后生成概念效果图、编写或审查出图提示词、判断一张表现图能不能拿给业主时
+load_cost: medium
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-domain: ai-concept-visualization
-stage_affinity: [S3, S4, S5]
-loads_when: 需要在平面确认后生成概念效果图、编写或审查出图提示词、判断一张表现图能不能拿给业主时
-load_cost: medium
 ---
 
 # AI 概念表现方法论

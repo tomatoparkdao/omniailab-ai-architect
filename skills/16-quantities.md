@@ -1,15 +1,16 @@
 ---
 name: omniailab-quantity-takeoff
 description: 工程量计算 —— 工程量随阶段滚动更新，最终形成正式清单
-version: 1.1.0
+capability: quantity-takeoff
+stages: [S1-S8]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: quantity-takeoff
-stages: [S1-S8]
 ---
+
 # Quantities and Cost
 
 ## Responsibility

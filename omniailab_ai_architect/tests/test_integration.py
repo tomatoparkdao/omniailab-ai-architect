@@ -1,4 +1,7 @@
-"""Agent Skills compatibility, installer safety, and third-party auditing."""
+"""Agent Skills compatibility, installer safety, and third-party auditing.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+"""
 from __future__ import annotations
 
 import json
@@ -286,3 +289,81 @@ def test_spec_namespaces_are_not_treated_as_promotional_links():
             "---\n" + ca.SIGNATURE + "\n", encoding="utf-8")
         rep = ca.scan(root)
         assert rep["action_count"] == 0, rep["needs_action"]
+
+
+# --------------------------------------------------------------------------
+# unified header / footer format
+# --------------------------------------------------------------------------
+def _normalizer():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "normalize_attribution", ROOT / "scripts" / "normalize_attribution.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)          # type: ignore[union-attr]
+    return mod
+
+
+def test_every_file_already_matches_the_unified_format():
+    """全仓「开头 + 结尾」格式已经统一；任何漂移都会在这里失败。"""
+    mod = _normalizer()
+    rep = mod.run(check=True, root=ROOT)
+    assert rep["changed_count"] == 0, rep["changed"]
+    assert rep["total"] > 100
+
+
+def test_the_normalizer_is_idempotent():
+    mod = _normalizer()
+    first = mod.run(check=True, root=ROOT)
+    second = mod.run(check=True, root=ROOT)
+    assert first["changed_count"] == second["changed_count"] == 0
+
+
+def test_frontmatter_tail_is_identical_in_every_markdown():
+    from omniailab_ai_architect.registry import FRONTMATTER_TAIL
+    from omniailab_ai_architect.paths import project_version
+
+    version = project_version()
+    bad = []
+    for p in sorted(ROOT.rglob("*.md")):
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if rel.startswith(("out/", "projects/")):
+            continue
+        text = p.read_text(encoding="utf-8")
+        assert text.startswith("---"), rel
+        fm = text.split("---", 2)[1]
+        for key, value in [("version", version), *FRONTMATTER_TAIL]:
+            if f"{key}: {value}" not in fm:
+                bad.append(f"{rel}: {key}")
+    assert not bad, bad
+
+
+def test_generated_reports_carry_the_same_header_and_footer():
+    from omniailab_ai_architect.paths import project_version
+
+    with tempfile.TemporaryDirectory() as td:
+        out = ca.write_report(td)
+        md = Path(out["markdown"]).read_text(encoding="utf-8")
+    assert md.startswith("---")
+    assert f"version: {project_version()}" in md.split("---", 2)[1]
+    assert "author: OmniAiLab" in md
+    assert "developer: Mochiball" in md
+    assert ca.SIGNATURE in md
+
+
+def test_every_python_module_carries_the_attribution():
+    missing = []
+    for p in sorted(ROOT.rglob("*.py")):
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if rel.startswith(("out/", "projects/")):
+            continue
+        if "© OmniAiLab" not in p.read_text(encoding="utf-8", errors="replace"):
+            missing.append(rel)
+    assert not missing, missing
+
+
+def test_shebang_scripts_keep_their_shebang_first():
+    for rel in ("scripts/run_tests.py", "scripts/verify_all.py",
+                "scripts/normalize_attribution.py"):
+        first = (ROOT / rel).read_text(encoding="utf-8").splitlines()[0]
+        assert first.startswith("#!"), f"{rel}: {first!r}"

@@ -56,6 +56,36 @@ SIGNATURE = ("> © OmniAiLab ｜ 开发者：Mochiball ｜ "
 SIGNATURE_SHORT = "> © OmniAiLab ｜ 开发者：Mochiball"
 SIGNATURE_SHORT_EN = "> © OmniAiLab ｜ Developer: Mochiball"
 
+# --------------------------------------------------------------------------
+# Unified front-matter. Every Markdown file in this repository opens with the
+# same tail block; file-type-specific keys come first. `scripts/normalize_
+# attribution.py` enforces this over the whole tree and `--check` is a test.
+FRONTMATTER_TAIL: tuple = (
+    ("author", "OmniAiLab"),
+    ("developer", "Mochiball"),
+    ("agent_created", "true"),
+    ("开源仓库", "待发布"),
+    ("操作手册", "待发布"),
+)
+
+
+def frontmatter_block(name: str, description: str, extra: Optional[dict] = None,
+                      version: str = "") -> str:
+    """Build the standard front-matter block, ending with a blank line.
+
+    Generated documents use this so their header can never drift from the rest
+    of the repository — including the project version, which is read from
+    `VERSION` rather than typed twice.
+    """
+    from .paths import project_version
+
+    lines = [f"name: {name}", f"description: {description}"]
+    for k, v in (extra or {}).items():
+        lines.append(f"{k}: {v}")
+    lines.append(f"version: {version or project_version()}")
+    lines.extend(f"{k}: {v}" for k, v in FRONTMATTER_TAIL)
+    return "---\n" + "\n".join(lines) + "\n---\n\n"
+
 
 # upstream slug -> which OmniArchitect stages absorbed it, and what
 DESIGN_CRITERIA: Dict[str, Dict[str, object]] = {
@@ -252,6 +282,7 @@ def capability(slug: str) -> Optional[CapabilityRecord]:
 
 __all__ = [
     "PROJECT_ATTRIBUTION", "SIGNATURE", "SIGNATURE_SHORT", "SIGNATURE_SHORT_EN",
+    "FRONTMATTER_TAIL", "frontmatter_block",
     "DESIGN_CRITERIA", "criteria_report",
     "load_registry", "registry_report", "capability",
     "catalog_report", "validate_catalog", "skills_for_stage", "stages_for_skill",

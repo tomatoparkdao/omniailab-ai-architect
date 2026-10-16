@@ -13,6 +13,8 @@ different things:
 
 This module is the single authority for the stage model. Routing, the workflow
 state machine, change-impact analysis and the CLI all read from here.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

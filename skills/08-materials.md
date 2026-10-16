@@ -1,15 +1,16 @@
 ---
 name: omniailab-material-design
 description: 材料与色彩设计 —— 材料组合、色彩体系、工艺与规格、面积占比
-version: 1.1.0
+capability: material-design
+stages: [S4, S5, S8]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: material-design
-stages: [S4, S5, S8]
 ---
+
 # Materials and Color
 
 ## Responsibility

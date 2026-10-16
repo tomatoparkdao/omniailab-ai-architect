@@ -17,6 +17,8 @@ Hard rules encoded here:
   available the system returns an explicit error plus a deferred task rather
   than silently switching vendor. The enforcement lives in `brand_policy` and
   is applied by the provider registry.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

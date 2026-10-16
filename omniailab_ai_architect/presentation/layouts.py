@@ -7,6 +7,8 @@ HTML sheet, or to plain Markdown for review.
 Brand defaults are OmniArchitect's own: neutral paper, one accent, generous
 margins. Nothing here imitates another studio's template, and no third-party
 case material is bundled as sample content.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

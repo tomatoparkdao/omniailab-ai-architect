@@ -16,6 +16,8 @@ would be an implicit, silent substitution for a generative model — exactly wha
 the brand-and-provider policy forbids. The two families are therefore kept
 apart at the type level: a caller asking for a generative scope can only ever
 be answered by the native platform, or by an explicit, clearly-labelled error.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

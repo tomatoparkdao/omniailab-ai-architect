@@ -16,6 +16,8 @@ Two genuinely different schemes come out of the same program:
 Rooms are allocated by a minimum-dimension aware strip packer. Anything that
 cannot reach a usable size is *reported*, not silently squeezed — a plan that
 quietly drops the kitchen is worse than one that says it could not place it.
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 

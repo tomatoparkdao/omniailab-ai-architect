@@ -1,15 +1,16 @@
 ---
 name: omniailab-lighting-design
 description: 灯光设计 —— 自然光、人工照明、照度与氛围；后期灯具定位
-version: 1.1.0
+capability: lighting-design
+stages: [S2, S4, S7]
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: 待发布
 操作手册: 待发布
-capability: lighting-design
-stages: [S2, S4, S7]
 ---
+
 # Lighting Design
 
 ## Responsibility
