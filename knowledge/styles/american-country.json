@@ -1,0 +1,276 @@
+{
+  "style_id": "american-country",
+  "display_name_zh": "美式乡村",
+  "display_name_en": "American Country",
+  "family": "classic",
+  "tags": [
+    "timber",
+    "porch",
+    "handmade",
+    "casual",
+    "warm"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "18 至 19 世纪北美乡村定居传统中成型，20 世纪经乡村住宅复兴延续",
+    "origin": "北美乡村定居住宅与自建木构居住传统",
+    "summary": "美式乡村形成于地广人稀、依赖自建的定居环境。大进深且可扩展的平面配合门廊（porch），用原木与本地松木等材料结合手作工艺完成建造，因此结构坦率、构件外露、节点可见。生活方式偏向户内户外贯通的日常用餐与聚会，室内以粗陶、铁艺、拼布等可修补、可替换的日用品为主要陈设，色彩取自当地日晒褪色后的明亮调子，与英式乡村的沉郁形成对照。",
+    "key_movements": [
+      "乡土建筑（Vernacular architecture）",
+      "震教徒手工艺传统（Shaker craft tradition）",
+      "边疆定居居住传统（Frontier settlement）"
+    ]
+  },
+  "spatial_principles": [
+    "公共区以开放式大空间为主，厨房、餐厅与起居三者连通，不设长走廊，便于聚会。",
+    "室内外以门廊（porch）过渡，门廊净宽常见 1800–3000mm，作为日常用餐与休息的延伸空间。",
+    "次要功能（洗衣、储藏、工具）就近布置在厨房或门廊附近，减少跨越动线。",
+    "天花可外露木梁形成谷仓感，屋面下净高常见 3000–4200mm。",
+    "家具沿墙布置，中央留出可临时加桌的活动地面。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "外露木梁间距取模数，常见 600–900mm，并与结构桁架对齐。",
+      "护墙板为竖条纹板式，板宽 90–150mm，与墙裙顶标高一致。",
+      "门洞方正宽大，常见净宽 ≥900mm，可加外露滑轨的谷仓式移门。",
+      "门廊柱间距常见 1800–2400mm，柱径与净间距之比控制在 1:10–1:14。"
+    ],
+    "ratios": [
+      "木梁间距 600–900mm",
+      "门廊柱净间距与柱径之比 10:1–14:1",
+      "竖条纹板宽 90–150mm",
+      "门廊净宽 1800–3000mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2700–3200mm；敞露屋面下 3000–4200mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "乳白",
+      "name_en": "Soft Cream",
+      "hex": "#F1E9D6",
+      "usage": "墙面与木作，占比约 40–55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "褪色蓝灰",
+      "name_en": "Faded Blue",
+      "hex": "#8FA6AE",
+      "usage": "柜体与门廊木作，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "原木黄",
+      "name_en": "Raw Timber",
+      "hex": "#C08A4E",
+      "usage": "地板与木梁，占比约 15–25%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "谷仓砖红",
+      "name_en": "Barn Red",
+      "hex": "#9C4A33",
+      "usage": "局部墙面与织物点缀，占比 ≤12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "铁黑",
+      "name_en": "Iron Black",
+      "hex": "#34302B",
+      "usage": "铁艺五金与灯具，占比 ≤8%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "松木与橡木实木",
+      "name_en": "Pine and Oak Timber",
+      "application": "木梁、地板与家具",
+      "finish": "自然纹理、哑光蜡油或清漆"
+    },
+    {
+      "name_zh": "竖条纹墙板",
+      "name_en": "Beadboard Panelling",
+      "application": "墙面、柜门与天花",
+      "finish": "哑光喷涂，接缝做明缝"
+    },
+    {
+      "name_zh": "铁艺",
+      "name_en": "Ironwork",
+      "application": "五金、灯具与支架",
+      "finish": "黑色或做旧铁色，哑光"
+    },
+    {
+      "name_zh": "手作粗陶",
+      "name_en": "Handmade Stoneware",
+      "application": "餐具陈列与台面小件",
+      "finish": "釉面不均、手感粗粝"
+    },
+    {
+      "name_zh": "拼布与粗棉印花",
+      "name_en": "Quilt and Printed Cotton",
+      "application": "软装、床品与靠垫",
+      "finish": "哑光、几何拼块"
+    }
+  ],
+  "furniture_language": [
+    "家具以手作实木为主，线条直率，允许可见榫接与手工痕迹。",
+    "体量中等偏大，坐面偏软，强调耐用与可修补。",
+    "柜门常为板条式或带简易嵌线，落地带托脚或简单直脚。",
+    "拉手为铁质小圆钮、挂钩或皮质拉手，形式简朴。",
+    "桌椅混搭是常态，可加入条凳、长桌与折叠家具以适应聚会。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以吊灯或轨道灯提供整体明亮的环境光，再用局部台灯补充，整体明亮而非幽暗。",
+      "门廊与室外照明纳入同一体系，强调室内外的连续。"
+    ],
+    "fixtures": [
+      "木质框架吊灯",
+      "轨道灯或吸顶灯",
+      "台灯",
+      "门廊壁灯与串灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3200
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，餐桌与厨房台面 300–500lx",
+    "layering": "环境层为主（吊灯与门廊灯），任务层（台面与餐桌）补足，重点层弱化；整体照度明显高于英式乡村。"
+  },
+  "architectural_elements": [
+    "外露木梁与桁架天花。",
+    "带顶门廊（porch）与柱列，作为室内外过渡。",
+    "竖条纹墙板与统一墙裙。",
+    "外露滑轨的谷仓式移门与宽门洞。",
+    "宽实木地板与砖砌或石砌壁炉。"
+  ],
+  "applicable_spaces": [
+    "乡村住宅与度假屋",
+    "民宿与客栈",
+    "美式餐厅与早午餐空间",
+    "农庄与亲子研学空间",
+    "精品酒店公区"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "外露木结构梁的加工与安装",
+      "门廊与户外木作的用量",
+      "实木地板与手作家具"
+    ],
+    "saving_moves": [
+      "梁做装饰性外包而非结构暴露",
+      "门廊用防腐木配户外涂料替代全实木",
+      "以成品家具替代定制手作"
+    ],
+    "notes": "造价随外露木构件面积与门廊尺度变化明显，建议方案阶段先锁定这两项。"
+  },
+  "construction_considerations": [
+    "外露梁与桁架若参与受力，其规格与连接必须由持证专业人员复核，不得仅按装饰假定",
+    "门廊木作需按所在环境做防腐、防潮与排冷凝构造，避免端头积水腐烂",
+    "竖条纹墙板应预留伸缩缝，接缝与阳角收边在封板前确认",
+    "谷仓式移门的承重与轨道预埋件需在墙体完成前预留位置",
+    "木构件含水率与室内湿度需控制，避免季节变形影响门窗开启"
+  ],
+  "compatible_styles": [
+    "english-country",
+    "american-classic",
+    "rustic-natural",
+    "mediterranean",
+    "earth-adobe"
+  ],
+  "incompatible_elements": [
+    "高光漆面与镜面不锈钢",
+    "极简无装饰的大面白墙",
+    "繁复石膏曲线线脚与水晶吊灯",
+    "冷白高照度顶部均布光"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "北美乡村住宅开放式起居餐厨空间，外露木梁天花，层高约 3.4m，一侧为带柱列的门廊，宽门洞连通户外",
+      "material": "竖条纹墙板哑光喷涂，松木与橡木实木地板，砖砌壁炉，铁艺五金，拼布与粗棉织物，手作粗陶陈列",
+      "lighting": "晴天午后，室内吊灯提供明亮暖白环境光，门廊壁灯与串灯把室内外光连成一体",
+      "furniture": "手作实木长桌配条凳与铁艺椅，板条式柜门与皮质拉手，粗陶餐具陈列，几何拼布靠垫",
+      "camera": "约 1.5m 视高、略带纵深，等效 28–35mm，画面明亮通透，视线贯穿至门廊",
+      "atmosphere": "明快、朴实、耐用，强调室内外贯通与日常聚会",
+      "keywords": [
+        "外露木梁",
+        "竖条纹墙板",
+        "带顶门廊",
+        "手作家具",
+        "粗陶陈列",
+        "谷仓移门"
+      ]
+    },
+    "en": {
+      "space": "North American country house open living and dining space, exposed timber beams, ceiling about 3.4 m, a columned porch to one side, wide openings linking to the outdoors",
+      "material": "matte-painted beadboard panelling, pine and oak plank flooring, masonry fireplace, iron hardware, quilted and printed cotton, handmade stoneware on display",
+      "lighting": "clear afternoon; pendant lights give bright warm-white ambient illumination, porch wall lights and string lights knit interior and exterior together",
+      "furniture": "handcrafted solid timber long table with benches and iron chairs, board-and-batten cabinet doors with leather pulls, stoneware crockery, geometric quilt cushions",
+      "camera": "eye level about 1.5 m, mild depth, 28–35 mm equivalent, bright and open image with the gaze running through to the porch",
+      "atmosphere": "bright, plain and durable, emphasising indoor-outdoor continuity and everyday gathering",
+      "keywords": [
+        "exposed timber beams",
+        "beadboard panelling",
+        "covered porch",
+        "handcrafted furniture",
+        "stoneware display",
+        "barn sliding door"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持门廊柱列的净间距与柱径比例不变。",
+    "保持外露木梁的间距模数与天花完成面标高不变。",
+    "保持宽门洞的位置与净宽不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现高光漆面与镜面不锈钢",
+      "不要出现繁复石膏曲线线脚或水晶吊灯",
+      "不要出现极简无装饰的大面白墙",
+      "不要出现冷白高照度顶部均布光",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no high-gloss lacquer or mirrored stainless steel",
+      "no intricate curved gypsum mouldings or crystal chandeliers",
+      "no large undecorated minimalist white walls",
+      "no cold-white high-illuminance uniform ceiling light",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "室内外贯通",
+      "criteria": "门廊净宽 1800–3000mm，柱净间距 1800–2400mm 且与柱径比 10:1–14:1",
+      "stage": "S4"
+    },
+    {
+      "check": "木构件外露",
+      "criteria": "梁间距 600–900mm 且与桁架对齐，竖条纹板宽 90–150mm",
+      "stage": "S5"
+    },
+    {
+      "check": "照度水平",
+      "criteria": "环境 150–300lx、任务 300–500lx，色温 2700–3200K",
+      "stage": "S6"
+    },
+    {
+      "check": "家具手作感",
+      "criteria": "主要家具含可见榫接或手工痕迹，同一空间混搭不少于两种坐具形式",
+      "stage": "S4"
+    },
+    {
+      "check": "合规复核",
+      "criteria": "外露木构件与门廊受力做法已由持证专业人员复核",
+      "stage": "S5"
+    }
+  ]
+}

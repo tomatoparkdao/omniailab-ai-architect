@@ -1,11 +1,11 @@
 {
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-16 23:21:31",
-  "files_scanned": 167,
+  "scanned_at": "2026-10-17 02:16:36",
+  "files_scanned": 245,
   "by_disposition": {
     "generated-ok": 2,
-    "original": 145,
-    "test-fixture": 20
+    "original": 218,
+    "test-fixture": 25
   },
   "needs_action": [],
   "action_count": 0,

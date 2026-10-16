@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,83 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.4.0 — 单 Skill 架构纠正：设计风格系统并入主 Skill
+
+本轮是一次**架构纠正**，不是功能增量。此前把「设计风格系统」建成了一个独立工程
+（Design Style Intelligence），这是架构偏差：`OmniAiLab AI Architect` 只能有一个主 Skill。
+本轮把它**整体并入**主工程，并删除合并过程中暴露出的**五处重复实现**。
+
+### 并入的能力（全部可由主 Skill 直接发现与调用）
+
+| 能力 | 落点 |
+|---|---|
+| 47 种建筑与室内设计风格结构化知识库（八族 × 20 字段） | `knowledge/styles/*.json` |
+| 风格索引与按需加载（179 个标签，不整体读入上下文） | `knowledge/styles/catalog.json` |
+| 风格分类与检索 | `omniarchitect/style/catalog.py` |
+| 三方案风格推荐（稳妥 / 个性 / 混搭，逐条可归因） | `omniarchitect/style/recommender.py` |
+| 中英双语结构化提示词编译（8 种目标） | `omniarchitect/style/compiler.py` |
+| 跨机位一致性指纹与几何保持规则 | 同上 |
+| 风格与空间关系检查、材料与灯光体系、设计意图核对 | `omniarchitect/style/hooks.py` |
+| 唯一生成出口（委托 provider 层，平台不可用则延后） | `omniarchitect/style/provider_bridge.py` |
+| 零依赖 Schema 校验器 | `omniarchitect/style/validation.py` |
+| Schema：设计风格、编译提示词 | `schemas/design-style.schema.json`、`schemas/compiled-prompt.schema.json` |
+| CLI | `python -m omniarchitect style <子命令>`（16 个） |
+| 测试 | `omniarchitect/tests/test_style_*.py`（5 个模块） |
+| 第三方审计与许可证留档 | `docs/STYLE_REFERENCE_AUDIT.md`、`LICENSES/`、`THIRD_PARTY_NOTICES.md` |
+
+### 删除的五处重复实现（"同一规则两份实现"的来源）
+
+| 原先自己实现 | 现在来自 |
+|---|---|
+| 项目根与目录常量（`paths.py` 自己推算 `parents[1]`） | `omniarchitect.paths` |
+| 署名与 front-matter（自带 `attribution.py`） | `omniarchitect.registry` |
+| 平台探测（自己读契约、自己判 `FILL_ME`、自己拼 missing） | `omniarchitect.providers` |
+| 八阶段与门禁（导出快照再读） | `omniarchitect.stages`（同包直接引用，**快照文件已删除**） |
+| 独立 CLI（`build_parser()` / `main()`） | 主 CLI 的 `style` 子命令 |
+
+**这不是形式统一，而是修掉一个真实故障源。** 分开时手写的门禁措辞与阶段模型存在
+**4 处不一致**（G2「概念确认」/ G3「平面确认」/ G5「表现确认」/ G8「交付确认」，
+而权威定义是「概念方案确认」「平面方案确认」「表现成果确认」「交付验收」）。
+这种漂移不抛异常，会一路飘到给业主的汇报里。合并后比对变成同进程内的对象引用。
+
+### 顺带修掉的两处文档缺陷
+
+1. **`SKILL.md` 与 `README` 的阶段表门禁名**：与阶段模型不一致（同样是那 4 处），
+   而 `SKILL.md` 正是 Agent 读的入口 —— 等于在教错名字。已改为权威全称，
+   `README_EN.md` 同步译为对应英文。
+2. **`catalog.json` 被当作风格记录校验**：它在独立工程里位于根目录，并进
+   `knowledge/styles/` 后与数据同目录，导致 47 条风格全部校验失败。
+   已抽出 `style_files()` 作为"哪些是风格记录"的唯一定义。
+
+### 单 Skill 架构保证（有测试守着）
+
+- **一个 Skill**：仓库内 `SKILL.md` 恰好一份。
+- **一个安装过程**：`installer/` 单一入口，无需第二个安装器。
+- **一个仓库**：远程 `origin` 一个，不再建第二个。
+- **零外部路径依赖**：全仓对独立工程目录的引用为 **0 处**。
+- **框架快照已删除**：`test_style_frame.py` 断言 `FRAME_FILE` 不存在、
+  `hooks._CORE_STAGES is stages.STAGES`（同一对象，不是副本）。
+
+### 版本
+
+- `1.3.0` → **`1.4.0`**，七处一致：`VERSION` / `pyproject.toml` / `SKILL.md` /
+  `installer/manifest.json` / `openai.yaml` / `README.md` / `README_EN.md`。
+- 已发布的 `v1.3.0` tag **未改动**。
+
+### 原独立工程的处置
+
+- 其仓库标记为**已合并归档**（新增 `MERGED.md` + README/SKILL.md 顶部横幅），
+  **保留为本地备份，未删除**。
+- 合并前的完整状态（两个工程的 git 历史与工作树）备份在
+  `E://OmniAiLab-Backup-2026-10-17//`。
+
+### 验证
+
+- `run_tests.py`：**350 passed / 0 failed**（22 模块）
+- 用户要求的十三项验证全部通过（单 Skill 可用、无第二目录 / 安装 / 仓库等）
+
+---
 
 ## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充
 

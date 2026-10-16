@@ -1,0 +1,276 @@
+{
+  "style_id": "mid-century-modern",
+  "display_name_zh": "中世纪现代",
+  "display_name_en": "Mid-Century Modern",
+  "family": "deco-retro",
+  "tags": [
+    "tapered-leg",
+    "walnut",
+    "organic",
+    "optimistic"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1945 至 1969 年",
+    "origin": "美国西海岸与北欧，成型于战后住宅建造与量产家具的背景下",
+    "summary": "中世纪现代是战后小住宅与量产制造共同作用的产物。战后住宅趋向开放平面与室内外连通，同时胶合板模压、钢管弯曲与胡桃木等新木种的工业供应，让家具第一次可以既轻又能量产。设计因此转向把结构做得可见而轻盈——细锥形腿把家具从地面托起、留出通透视线，开放式平面配合大面积玻璃把庭院纳入室内。它解决的是在成本受控的前提下，如何让空间显得明亮、开放而有秩序的问题。",
+    "key_movements": [
+      "中世纪现代主义（Mid-Century Modern）",
+      "国际主义风格（International Style）",
+      "北欧现代主义（Nordic Modernism）"
+    ]
+  },
+  "spatial_principles": [
+    "开放平面为主，起居、餐叙与厨房以家具布置与天花降板划分，少用实墙分隔。",
+    "以大面落地玻璃面向庭院或景观，室内外视线贯通，窗帘以可收起的轻薄织物为主。",
+    "室内保持大量留白，低矮家具占比高，主要家具高度常见 ≤750mm，形成低平视线水平。",
+    "储物内嵌于墙面，做成通墙低柜，保持地面与墙面简洁。",
+    "天花常为单坡或平顶，局部以木条或降板界定区域。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "家具以细锥形腿抬升，腿径细、收分明显，离地净高常见 150–250mm。",
+      "柜体为通墙低柜，深度 400–500mm，台面标高 750–900mm。",
+      "窗洞向水平方向延伸形成横向长窗，窗台压至 300–600mm。",
+      "以模数化构件组织分格，常见 600mm 与 900mm 两档。"
+    ],
+    "ratios": [
+      "家具腿离地净高 150–250mm",
+      "通墙低柜深度 400–500mm",
+      "窗台高 300–600mm",
+      "构件模数 600mm 与 900mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2400–2900mm；单坡顶局部 3200–4000mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "米白",
+      "name_en": "Warm Off-white",
+      "hex": "#EDE8DC",
+      "usage": "墙面与天花，占比约 45–60%",
+      "role": "base"
+    },
+    {
+      "name_zh": "胡桃木棕",
+      "name_en": "Walnut Brown",
+      "hex": "#6B4A34",
+      "usage": "家具与木作，占比约 18–28%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "芥末黄",
+      "name_en": "Mustard",
+      "hex": "#C79A3C",
+      "usage": "软装点缀，占比约 6–12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "橄榄绿",
+      "name_en": "Olive",
+      "hex": "#6E7047",
+      "usage": "软装与局部墙面，占比约 8–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "砖橙",
+      "name_en": "Burnt Orange",
+      "hex": "#C05F3C",
+      "usage": "单件坐具或织物重点，占比 ≤8%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "胡桃木与柚木",
+      "name_en": "Walnut and Teak",
+      "application": "家具、柜体与墙板",
+      "finish": "哑光硬蜡油，露出直纹"
+    },
+    {
+      "name_zh": "模压胶合板",
+      "name_en": "Molded Plywood",
+      "application": "坐具与曲面构件",
+      "finish": "浅色木纹，边缘可见层积"
+    },
+    {
+      "name_zh": "弯曲钢管与黄铜",
+      "name_en": "Bent Steel Tube and Brass",
+      "application": "家具腿、灯具与支架",
+      "finish": "烤漆或抛光黄铜"
+    },
+    {
+      "name_zh": "亚麻与羊毛",
+      "name_en": "Linen and Wool",
+      "application": "窗帘、坐具面料与地毯",
+      "finish": "哑光、粗织、平面图案"
+    },
+    {
+      "name_zh": "彩色玻璃与树脂",
+      "name_en": "Stained Glass and Resin",
+      "application": "隔断、灯具与装饰面板",
+      "finish": "半透明、几何分格"
+    }
+  ],
+  "furniture_language": [
+    "家具以细锥形或弯曲钢管腿抬离地面，视觉轻盈、地面连续可读。",
+    "体量低平、坐面宽，坐具常有模压曲面靠背与坐垫。",
+    "柜体为通墙低柜，无外露把手或仅设内凹抠手，表面平整。",
+    "材料与颜色对比克制，单件家具可作色彩重点，其余保持木色与米白。",
+    "结构节点坦率可见，不做外包装饰。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以顶部灯具与可调壁灯形成明亮而均匀的环境光，避免浓重阴影。",
+      "强调与室外光的衔接，白天以自然光为主，人工光作补充。"
+    ],
+    "fixtures": [
+      "球形或多臂吊灯",
+      "锥形壁灯",
+      "可调臂灯",
+      "落地阅读灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3200
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，阅读与餐桌任务面 300–500lx",
+    "layering": "环境层与任务层并重，重点层克制；白天以自然光为主，夜间人工光补足，明暗过渡平缓。"
+  },
+  "architectural_elements": [
+    "横向长窗与通高落地玻璃，通向庭院或露台。",
+    "木条隔断或竖向格栅，界定区域且保持通透。",
+    "单坡或平顶天花，局部降板或木条饰面。",
+    "通墙低柜与内嵌储物。",
+    "砖砌壁炉或独立壁炉体，作为开放平面的视觉锚点。"
+  ],
+  "applicable_spaces": [
+    "郊野住宅与度假屋",
+    "公寓起居与餐厨",
+    "办公与创意工作室",
+    "书店与咖啡馆",
+    "精品酒店与展厅"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "实木与模压木作家具的选料",
+      "大面积落地玻璃与门窗",
+      "黄铜与钢管构件的定制"
+    ],
+    "saving_moves": [
+      "关键家具用实木，其余用饰面板",
+      "玻璃窗做分段而非整片",
+      "五金用烤漆钢管替代黄铜"
+    ],
+    "notes": "造价的核心变量是玻璃面积与关键单件家具，可在方案阶段按留白比例调整。"
+  },
+  "construction_considerations": [
+    "大面积落地玻璃的结构、抗风压与安全做法标注待持证专业人员复核",
+    "通墙低柜与天花降板需统一模数，先做放线样板再批量加工",
+    "实木与胶合板家具需控制含水率与漆膜厚度，避免薄板开裂",
+    "单坡顶天花的排水与保温构造在屋面板封板前确认，标注待持证专业人员复核",
+    "室内外贯通的保温、隔热与冷凝问题应在门窗选型阶段一并处理"
+  ],
+  "compatible_styles": [
+    "scandinavian",
+    "japandi",
+    "bauhaus",
+    "vintage-european",
+    "modernist-classic",
+    "art-deco"
+  ],
+  "incompatible_elements": [
+    "厚重雕刻家具与繁复石膏线脚",
+    "满铺大图案壁纸与深色厚绒织物",
+    "裸露混凝土与明装管道的工业构件",
+    "高饱和荧光色与镜面不锈钢"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "中世纪现代风格住宅起居室，开放平面，一侧为通高落地玻璃面向庭院，天花为平顶局部木条降板，层高约 2.7m",
+      "material": "胡桃木通墙低柜哑光硬蜡油饰面，模压胶合板坐具，弯曲钢管与黄铜支架，亚麻窗帘与羊毛平面地毯",
+      "lighting": "晴天午后，自然光透过落地玻璃充满室内，球形吊灯与锥形壁灯补充暖白环境光，阴影轻柔",
+      "furniture": "细锥形腿坐具低平宽坐面，模压曲面靠背，内嵌抠手无拉手低柜，单件砖橙坐具作色彩重点",
+      "camera": "约 1.3m 视高、水平微侧视，等效 28–35mm，强调低平视线与室内外贯通",
+      "atmosphere": "明亮、开放、乐观而克制，留白充足，材质哑光",
+      "keywords": [
+        "细锥形腿",
+        "胡桃木通墙低柜",
+        "开放平面",
+        "通高落地玻璃",
+        "模压胶合板",
+        "平面图案地毯"
+      ]
+    },
+    "en": {
+      "space": "Mid-Century Modern living room, open plan, floor-to-ceiling glazing facing a courtyard on one side, flat ceiling with a slatted dropped section, ceiling height about 2.7 m",
+      "material": "walnut full-height low cabinet with matte hardwax finish, molded plywood seating, bent steel tube and brass frames, linen drapery and flat-pattern wool rug",
+      "lighting": "clear afternoon; daylight pours in through the floor-to-ceiling glazing, a spherical pendant and cone wall lights add warm-white ambient light, soft shadows",
+      "furniture": "tapered-leg seating with low, wide seats, molded curved backs, flush-pull low cabinets, a single burnt-orange chair as the colour accent",
+      "camera": "eye level about 1.3 m, level and slightly angled, 28–35 mm equivalent, emphasising the low horizon and indoor-outdoor continuity",
+      "atmosphere": "bright, open, optimistic yet restrained, generous negative space, matte materials",
+      "keywords": [
+        "tapered legs",
+        "walnut low cabinet",
+        "open plan",
+        "floor-to-ceiling glazing",
+        "molded plywood",
+        "flat pattern rug"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持落地玻璃与庭院之间的贯通关系不变。",
+    "保持通墙低柜与天花降板的模数一致。",
+    "保持开放平面的无实墙分隔状态。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现厚重雕刻家具与繁复石膏线脚",
+      "不要出现满铺大图案壁纸与深色厚绒织物",
+      "不要出现裸露混凝土或明装管道等工业构件",
+      "不要出现高饱和荧光色与镜面不锈钢",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no heavy carved furniture or intricate gypsum mouldings",
+      "no full-wall large-pattern wallpaper or dark heavy velvet",
+      "no exposed concrete or surface-mounted ducts as industrial features",
+      "no high-saturation fluorescent colour or mirrored stainless steel",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "留白与家具高度",
+      "criteria": "硬装留白充足，主要家具高度 ≤750mm，腿离地 150–250mm",
+      "stage": "S3"
+    },
+    {
+      "check": "室内外贯通",
+      "criteria": "落地玻璃处视线无遮挡，窗帘可完全收起",
+      "stage": "S4"
+    },
+    {
+      "check": "模数一致",
+      "criteria": "通墙低柜与天花降板模数统一，柜深 400–500mm",
+      "stage": "S4"
+    },
+    {
+      "check": "照明水平",
+      "criteria": "环境 150–300lx、任务 300–500lx，色温 2700–3200K",
+      "stage": "S6"
+    },
+    {
+      "check": "色彩克制",
+      "criteria": "木色与米白占主体，单空间彩色单件不超过 2 件",
+      "stage": "S3"
+    }
+  ]
+}

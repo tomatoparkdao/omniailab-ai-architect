@@ -1,0 +1,3008 @@
+{
+  "name": "OmniAiLab Design Style Catalog",
+  "version": "1.4.0",
+  "schema_id": "https://omniailabx.com/schemas/design-style.schema.json",
+  "generated_from": "knowledge/styles/",
+  "count": 47,
+  "families": {
+    "classic": [
+      "american-classic",
+      "american-country",
+      "english-country",
+      "european-classical",
+      "french-romantic",
+      "neoclassical",
+      "victorian"
+    ],
+    "deco-retro": [
+      "art-deco",
+      "memphis",
+      "mid-century-modern",
+      "postmodern",
+      "retro-70s",
+      "vintage-european"
+    ],
+    "experimental": [
+      "cyberpunk",
+      "deconstructivism",
+      "parametric-futurism",
+      "sci-fi-minimal",
+      "surrealist-interior"
+    ],
+    "industrial": [
+      "brutalist",
+      "industrial-loft",
+      "steampunk",
+      "warehouse-conversion"
+    ],
+    "modern": [
+      "bauhaus",
+      "contemporary-luxury",
+      "corporate-contemporary",
+      "italian-minimal",
+      "japandi",
+      "modern-minimalism",
+      "modernist-classic",
+      "scandinavian"
+    ],
+    "natural-organic": [
+      "biophilic",
+      "earth-adobe",
+      "mediterranean",
+      "organic-modern",
+      "rustic-natural",
+      "tropical-resort"
+    ],
+    "oriental": [
+      "chinese-neo-classical",
+      "chinese-traditional",
+      "japanese-zen",
+      "korean-minimal",
+      "southeast-asian-tropical",
+      "wabi-sabi"
+    ],
+    "regional": [
+      "african-contemporary",
+      "indian-contemporary",
+      "mexican-hacienda",
+      "middle-eastern-luxury",
+      "moroccan"
+    ]
+  },
+  "tags": {
+    "80s": [
+      "memphis",
+      "postmodern"
+    ],
+    "acoustic": [
+      "corporate-contemporary"
+    ],
+    "adaptive-reuse": [
+      "warehouse-conversion"
+    ],
+    "aged": [
+      "vintage-european"
+    ],
+    "algorithm": [
+      "parametric-futurism"
+    ],
+    "anti-rule": [
+      "memphis"
+    ],
+    "antique": [
+      "chinese-traditional"
+    ],
+    "arch": [
+      "mediterranean",
+      "moroccan"
+    ],
+    "bauhaus-derived": [
+      "modernist-classic"
+    ],
+    "blue-white": [
+      "mediterranean"
+    ],
+    "board-marked": [
+      "brutalist"
+    ],
+    "boiserie": [
+      "french-romantic"
+    ],
+    "bold": [
+      "african-contemporary"
+    ],
+    "bold-color": [
+      "memphis"
+    ],
+    "bold-pattern": [
+      "retro-70s"
+    ],
+    "brass": [
+      "american-classic",
+      "indian-contemporary",
+      "steampunk"
+    ],
+    "calm": [
+      "corporate-contemporary",
+      "japandi",
+      "organic-modern"
+    ],
+    "carved": [
+      "moroccan"
+    ],
+    "casual": [
+      "american-country"
+    ],
+    "clay": [
+      "earth-adobe"
+    ],
+    "clerestory": [
+      "warehouse-conversion"
+    ],
+    "cnc": [
+      "parametric-futurism"
+    ],
+    "colour": [
+      "indian-contemporary",
+      "moroccan"
+    ],
+    "colour-block": [
+      "postmodern"
+    ],
+    "column": [
+      "european-classical"
+    ],
+    "concrete": [
+      "industrial-loft"
+    ],
+    "contemporary": [
+      "chinese-neo-classical"
+    ],
+    "continuous": [
+      "parametric-futurism"
+    ],
+    "courtyard": [
+      "chinese-traditional",
+      "mexican-hacienda",
+      "moroccan"
+    ],
+    "cozy": [
+      "english-country"
+    ],
+    "craft": [
+      "african-contemporary",
+      "bauhaus",
+      "indian-contemporary",
+      "japandi"
+    ],
+    "curve": [
+      "french-romantic"
+    ],
+    "dark": [
+      "cyberpunk"
+    ],
+    "dark-wood": [
+      "victorian"
+    ],
+    "daylight": [
+      "biophilic"
+    ],
+    "delicate": [
+      "french-romantic"
+    ],
+    "dense": [
+      "victorian"
+    ],
+    "dreamlike": [
+      "surrealist-interior"
+    ],
+    "earth-tone": [
+      "african-contemporary"
+    ],
+    "eclectic": [
+      "victorian"
+    ],
+    "efficient": [
+      "corporate-contemporary"
+    ],
+    "elegant": [
+      "neoclassical"
+    ],
+    "engineered": [
+      "sci-fi-minimal"
+    ],
+    "exposed-brick": [
+      "industrial-loft"
+    ],
+    "family": [
+      "american-classic",
+      "korean-minimal"
+    ],
+    "flea-market": [
+      "vintage-european"
+    ],
+    "floral": [
+      "english-country"
+    ],
+    "fluid-surface": [
+      "parametric-futurism"
+    ],
+    "flush": [
+      "sci-fi-minimal"
+    ],
+    "formal": [
+      "european-classical"
+    ],
+    "fractured": [
+      "deconstructivism"
+    ],
+    "functional": [
+      "scandinavian"
+    ],
+    "gear": [
+      "steampunk"
+    ],
+    "geometric": [
+      "art-deco",
+      "memphis"
+    ],
+    "geometry": [
+      "bauhaus"
+    ],
+    "gilding": [
+      "european-classical"
+    ],
+    "glamour": [
+      "art-deco"
+    ],
+    "glass": [
+      "corporate-contemporary"
+    ],
+    "gold": [
+      "middle-eastern-luxury"
+    ],
+    "grand": [
+      "european-classical"
+    ],
+    "graphic": [
+      "contemporary-luxury"
+    ],
+    "green-wall": [
+      "biophilic"
+    ],
+    "handcraft": [
+      "rustic-natural"
+    ],
+    "handmade": [
+      "african-contemporary",
+      "american-country",
+      "wabi-sabi"
+    ],
+    "honest": [
+      "rustic-natural"
+    ],
+    "hotel": [
+      "contemporary-luxury"
+    ],
+    "humid": [
+      "southeast-asian-tropical"
+    ],
+    "hybrid": [
+      "japandi"
+    ],
+    "hygge": [
+      "scandinavian"
+    ],
+    "imperfection": [
+      "wabi-sabi"
+    ],
+    "ink": [
+      "chinese-neo-classical"
+    ],
+    "irony": [
+      "postmodern"
+    ],
+    "jaali": [
+      "indian-contemporary"
+    ],
+    "joinery": [
+      "chinese-traditional"
+    ],
+    "lacquer": [
+      "art-deco",
+      "chinese-traditional"
+    ],
+    "lattice": [
+      "chinese-neo-classical"
+    ],
+    "layered": [
+      "english-country",
+      "vintage-european"
+    ],
+    "layered-signage": [
+      "cyberpunk"
+    ],
+    "light": [
+      "scandinavian"
+    ],
+    "lime-plaster": [
+      "mediterranean"
+    ],
+    "low-saturation": [
+      "japandi"
+    ],
+    "luxury": [
+      "contemporary-luxury",
+      "italian-minimal"
+    ],
+    "majlis": [
+      "middle-eastern-luxury"
+    ],
+    "mass": [
+      "brutalist"
+    ],
+    "matte": [
+      "italian-minimal"
+    ],
+    "metallic": [
+      "art-deco"
+    ],
+    "minimal": [
+      "italian-minimal",
+      "japanese-zen",
+      "modern-minimalism"
+    ],
+    "mismatch": [
+      "vintage-european"
+    ],
+    "module": [
+      "modernist-classic"
+    ],
+    "monochrome": [
+      "sci-fi-minimal"
+    ],
+    "monumental": [
+      "brutalist"
+    ],
+    "motif": [
+      "postmodern"
+    ],
+    "moulding": [
+      "french-romantic",
+      "neoclassical"
+    ],
+    "natural": [
+      "japanese-zen"
+    ],
+    "natural-ventilation": [
+      "biophilic"
+    ],
+    "neon": [
+      "cyberpunk"
+    ],
+    "neutral": [
+      "modern-minimalism"
+    ],
+    "non-orthogonal": [
+      "deconstructivism"
+    ],
+    "open-duct": [
+      "industrial-loft"
+    ],
+    "optical": [
+      "surrealist-interior"
+    ],
+    "optimistic": [
+      "mid-century-modern"
+    ],
+    "opulent": [
+      "middle-eastern-luxury"
+    ],
+    "ordered": [
+      "neoclassical"
+    ],
+    "organic": [
+      "mid-century-modern"
+    ],
+    "oriental": [
+      "chinese-neo-classical"
+    ],
+    "ornament": [
+      "european-classical"
+    ],
+    "ornate": [
+      "victorian"
+    ],
+    "pale": [
+      "korean-minimal",
+      "scandinavian"
+    ],
+    "panelling": [
+      "american-classic"
+    ],
+    "pastel": [
+      "french-romantic"
+    ],
+    "pastiche": [
+      "postmodern"
+    ],
+    "patina": [
+      "english-country",
+      "vintage-european",
+      "wabi-sabi"
+    ],
+    "pattern": [
+      "african-contemporary",
+      "middle-eastern-luxury"
+    ],
+    "patterned": [
+      "victorian"
+    ],
+    "plants": [
+      "biophilic"
+    ],
+    "plaster": [
+      "neoclassical"
+    ],
+    "playful": [
+      "memphis"
+    ],
+    "porch": [
+      "american-country"
+    ],
+    "primary-colors": [
+      "bauhaus"
+    ],
+    "quiet": [
+      "wabi-sabi"
+    ],
+    "rammed-earth": [
+      "earth-adobe"
+    ],
+    "rational": [
+      "modernist-classic"
+    ],
+    "raw": [
+      "wabi-sabi"
+    ],
+    "raw-concrete": [
+      "brutalist"
+    ],
+    "raw-materials": [
+      "rustic-natural"
+    ],
+    "resort": [
+      "tropical-resort"
+    ],
+    "resort-lounge": [
+      "tropical-resort"
+    ],
+    "restraint": [
+      "modern-minimalism"
+    ],
+    "rivet": [
+      "steampunk"
+    ],
+    "rounded": [
+      "korean-minimal"
+    ],
+    "scale-shift": [
+      "surrealist-interior"
+    ],
+    "seamless": [
+      "sci-fi-minimal"
+    ],
+    "settled": [
+      "american-classic"
+    ],
+    "shade": [
+      "southeast-asian-tropical"
+    ],
+    "shag": [
+      "retro-70s"
+    ],
+    "shoji": [
+      "japanese-zen"
+    ],
+    "skewed": [
+      "deconstructivism"
+    ],
+    "soft": [
+      "korean-minimal"
+    ],
+    "soft-curve": [
+      "organic-modern"
+    ],
+    "statement": [
+      "contemporary-luxury"
+    ],
+    "steel": [
+      "industrial-loft"
+    ],
+    "steel-tube": [
+      "bauhaus"
+    ],
+    "stepped": [
+      "art-deco"
+    ],
+    "stone": [
+      "italian-minimal",
+      "middle-eastern-luxury"
+    ],
+    "sunken": [
+      "retro-70s"
+    ],
+    "symmetry": [
+      "chinese-neo-classical",
+      "chinese-traditional",
+      "neoclassical"
+    ],
+    "tactile": [
+      "organic-modern"
+    ],
+    "tapered-leg": [
+      "mid-century-modern"
+    ],
+    "tatami": [
+      "japanese-zen"
+    ],
+    "tech-density": [
+      "cyberpunk"
+    ],
+    "tension": [
+      "deconstructivism"
+    ],
+    "terracotta": [
+      "mediterranean",
+      "mexican-hacienda"
+    ],
+    "textile": [
+      "indian-contemporary"
+    ],
+    "thermal-mass": [
+      "earth-adobe"
+    ],
+    "thick-wall": [
+      "earth-adobe"
+    ],
+    "threshold": [
+      "japanese-zen"
+    ],
+    "tidy": [
+      "korean-minimal"
+    ],
+    "timber": [
+      "american-country",
+      "southeast-asian-tropical"
+    ],
+    "timber-beam": [
+      "mexican-hacienda"
+    ],
+    "timber-ceiling": [
+      "tropical-resort"
+    ],
+    "tropical": [
+      "southeast-asian-tropical"
+    ],
+    "truss": [
+      "warehouse-conversion"
+    ],
+    "unadorned": [
+      "modern-minimalism"
+    ],
+    "uneven": [
+      "rustic-natural"
+    ],
+    "unexpected": [
+      "surrealist-interior"
+    ],
+    "vast": [
+      "warehouse-conversion"
+    ],
+    "verandah": [
+      "southeast-asian-tropical"
+    ],
+    "victorian-machine": [
+      "steampunk"
+    ],
+    "vivid": [
+      "mexican-hacienda"
+    ],
+    "wallpaper": [
+      "english-country"
+    ],
+    "walnut": [
+      "mid-century-modern"
+    ],
+    "warm": [
+      "american-classic",
+      "american-country",
+      "italian-minimal"
+    ],
+    "warm-earth": [
+      "retro-70s"
+    ],
+    "warm-neutral": [
+      "organic-modern"
+    ],
+    "water": [
+      "tropical-resort"
+    ],
+    "white-box": [
+      "modernist-classic"
+    ],
+    "wood": [
+      "japandi",
+      "scandinavian"
+    ],
+    "workplace": [
+      "corporate-contemporary"
+    ],
+    "zellige": [
+      "moroccan"
+    ]
+  },
+  "stages": {
+    "S2": [
+      "african-contemporary",
+      "bauhaus",
+      "biophilic",
+      "brutalist",
+      "chinese-neo-classical",
+      "chinese-traditional",
+      "contemporary-luxury",
+      "corporate-contemporary",
+      "earth-adobe",
+      "european-classical",
+      "indian-contemporary",
+      "industrial-loft",
+      "italian-minimal",
+      "japandi",
+      "japanese-zen",
+      "mediterranean",
+      "mexican-hacienda",
+      "middle-eastern-luxury",
+      "modern-minimalism",
+      "modernist-classic",
+      "moroccan",
+      "neoclassical",
+      "organic-modern",
+      "postmodern",
+      "rustic-natural",
+      "scandinavian",
+      "sci-fi-minimal",
+      "southeast-asian-tropical",
+      "tropical-resort",
+      "warehouse-conversion"
+    ],
+    "S3": [
+      "african-contemporary",
+      "american-classic",
+      "american-country",
+      "art-deco",
+      "bauhaus",
+      "biophilic",
+      "brutalist",
+      "chinese-neo-classical",
+      "chinese-traditional",
+      "contemporary-luxury",
+      "corporate-contemporary",
+      "cyberpunk",
+      "deconstructivism",
+      "earth-adobe",
+      "english-country",
+      "european-classical",
+      "french-romantic",
+      "indian-contemporary",
+      "industrial-loft",
+      "italian-minimal",
+      "japandi",
+      "japanese-zen",
+      "korean-minimal",
+      "mediterranean",
+      "memphis",
+      "mexican-hacienda",
+      "mid-century-modern",
+      "middle-eastern-luxury",
+      "modern-minimalism",
+      "modernist-classic",
+      "moroccan",
+      "neoclassical",
+      "organic-modern",
+      "parametric-futurism",
+      "postmodern",
+      "retro-70s",
+      "rustic-natural",
+      "scandinavian",
+      "sci-fi-minimal",
+      "southeast-asian-tropical",
+      "steampunk",
+      "surrealist-interior",
+      "tropical-resort",
+      "victorian",
+      "vintage-european",
+      "wabi-sabi",
+      "warehouse-conversion"
+    ],
+    "S4": [
+      "african-contemporary",
+      "american-classic",
+      "american-country",
+      "art-deco",
+      "bauhaus",
+      "biophilic",
+      "brutalist",
+      "chinese-neo-classical",
+      "chinese-traditional",
+      "contemporary-luxury",
+      "corporate-contemporary",
+      "cyberpunk",
+      "deconstructivism",
+      "earth-adobe",
+      "english-country",
+      "european-classical",
+      "french-romantic",
+      "indian-contemporary",
+      "industrial-loft",
+      "italian-minimal",
+      "japandi",
+      "japanese-zen",
+      "korean-minimal",
+      "mediterranean",
+      "memphis",
+      "mexican-hacienda",
+      "mid-century-modern",
+      "middle-eastern-luxury",
+      "modern-minimalism",
+      "modernist-classic",
+      "moroccan",
+      "neoclassical",
+      "organic-modern",
+      "parametric-futurism",
+      "postmodern",
+      "retro-70s",
+      "rustic-natural",
+      "scandinavian",
+      "sci-fi-minimal",
+      "southeast-asian-tropical",
+      "steampunk",
+      "surrealist-interior",
+      "tropical-resort",
+      "victorian",
+      "vintage-european",
+      "wabi-sabi",
+      "warehouse-conversion"
+    ],
+    "S5": [
+      "african-contemporary",
+      "american-classic",
+      "american-country",
+      "art-deco",
+      "bauhaus",
+      "biophilic",
+      "brutalist",
+      "contemporary-luxury",
+      "corporate-contemporary",
+      "cyberpunk",
+      "deconstructivism",
+      "earth-adobe",
+      "english-country",
+      "french-romantic",
+      "indian-contemporary",
+      "industrial-loft",
+      "italian-minimal",
+      "japandi",
+      "korean-minimal",
+      "mediterranean",
+      "memphis",
+      "mexican-hacienda",
+      "mid-century-modern",
+      "middle-eastern-luxury",
+      "modern-minimalism",
+      "modernist-classic",
+      "moroccan",
+      "organic-modern",
+      "parametric-futurism",
+      "postmodern",
+      "retro-70s",
+      "rustic-natural",
+      "scandinavian",
+      "sci-fi-minimal",
+      "steampunk",
+      "surrealist-interior",
+      "tropical-resort",
+      "victorian",
+      "vintage-european",
+      "wabi-sabi",
+      "warehouse-conversion"
+    ],
+    "S6": [
+      "corporate-contemporary",
+      "cyberpunk",
+      "deconstructivism",
+      "parametric-futurism",
+      "surrealist-interior",
+      "warehouse-conversion"
+    ]
+  },
+  "applicable_spaces": {
+    "SPA 与康养空间": [
+      "indian-contemporary"
+    ],
+    "SPA 与洗浴空间": [
+      "moroccan"
+    ],
+    "spa 与理疗空间": [
+      "southeast-asian-tropical"
+    ],
+    "中式大宅与庭院住宅": [
+      "chinese-traditional"
+    ],
+    "主题体验与沉浸式空间": [
+      "victorian"
+    ],
+    "主题零售与体验空间": [
+      "retro-70s"
+    ],
+    "主题餐厅与咖啡空间": [
+      "retro-70s"
+    ],
+    "主题餐饮与酒吧": [
+      "steampunk"
+    ],
+    "主题餐饮与酒店": [
+      "surrealist-interior"
+    ],
+    "主题餐饮空间": [
+      "african-contemporary"
+    ],
+    "乡村住宅与度假屋": [
+      "american-country"
+    ],
+    "乡村住宅与民宿": [
+      "rustic-natural"
+    ],
+    "乡间别墅与住宅的起居、餐叙与书房": [
+      "english-country"
+    ],
+    "书店与咖啡馆": [
+      "bauhaus",
+      "mid-century-modern"
+    ],
+    "书店与阅读空间": [
+      "english-country"
+    ],
+    "交通与公共建筑中庭": [
+      "parametric-futurism"
+    ],
+    "亲子与儿童空间": [
+      "scandinavian"
+    ],
+    "亲子与家庭类商业空间": [
+      "american-classic"
+    ],
+    "企业会客与接待空间": [
+      "middle-eastern-luxury"
+    ],
+    "企业总部与办公": [
+      "corporate-contemporary"
+    ],
+    "会所与俱乐部": [
+      "american-classic"
+    ],
+    "会所与接待": [
+      "contemporary-luxury"
+    ],
+    "会议与培训中心": [
+      "corporate-contemporary"
+    ],
+    "住宅": [
+      "modernist-classic"
+    ],
+    "住宅 LOFT 与工作室": [
+      "warehouse-conversion"
+    ],
+    "住宅与公寓": [
+      "indian-contemporary",
+      "japandi",
+      "organic-modern",
+      "scandinavian"
+    ],
+    "住宅与别墅": [
+      "african-contemporary",
+      "mediterranean",
+      "moroccan"
+    ],
+    "住宅与和室": [
+      "japanese-zen"
+    ],
+    "住宅与工业建筑改造": [
+      "deconstructivism"
+    ],
+    "住宅与庄园别墅": [
+      "mexican-hacienda"
+    ],
+    "住宅与度假住宅": [
+      "earth-adobe"
+    ],
+    "住宅与高档公寓": [
+      "neoclassical"
+    ],
+    "住宅书房与收藏室": [
+      "steampunk"
+    ],
+    "住宅公寓": [
+      "chinese-neo-classical"
+    ],
+    "住宅客厅与书房": [
+      "vintage-european"
+    ],
+    "住宅局部（书房与工作室）": [
+      "bauhaus"
+    ],
+    "住宅平层与别墅": [
+      "italian-minimal"
+    ],
+    "住宅的公共区与楼梯间": [
+      "brutalist"
+    ],
+    "住宅起居与娱乐空间": [
+      "retro-70s"
+    ],
+    "住宅起居与工作一体化空间": [
+      "industrial-loft"
+    ],
+    "住宅起居与阳台过渡区": [
+      "biophilic"
+    ],
+    "住宅（公寓与别墅的起居、卧房与书房）": [
+      "french-romantic"
+    ],
+    "住宅（公寓与平层）": [
+      "modern-minimalism"
+    ],
+    "儿童与青少年空间": [
+      "memphis"
+    ],
+    "儿童房与亲子空间": [
+      "korean-minimal"
+    ],
+    "公共门厅与中庭": [
+      "brutalist"
+    ],
+    "公寓起居与餐厨": [
+      "mid-century-modern"
+    ],
+    "农庄与亲子研学空间": [
+      "american-country"
+    ],
+    "创意办公": [
+      "bauhaus"
+    ],
+    "创意办公与共享办公": [
+      "industrial-loft"
+    ],
+    "创意办公与工作室": [
+      "memphis"
+    ],
+    "创意办公与联合办公": [
+      "warehouse-conversion"
+    ],
+    "剧院与博物馆公共区": [
+      "european-classical"
+    ],
+    "办公与创意园区": [
+      "deconstructivism"
+    ],
+    "办公与创意工作室": [
+      "mid-century-modern"
+    ],
+    "办公与协作空间": [
+      "biophilic"
+    ],
+    "办公与机构空间": [
+      "brutalist"
+    ],
+    "办公与科技企业空间": [
+      "sci-fi-minimal"
+    ],
+    "办公与联合办公": [
+      "organic-modern"
+    ],
+    "办公前厅与接待区": [
+      "parametric-futurism"
+    ],
+    "办公前台与会议室": [
+      "chinese-neo-classical"
+    ],
+    "办公接待与会议室": [
+      "neoclassical"
+    ],
+    "办公空间": [
+      "modernist-classic"
+    ],
+    "办公（前厅与开敞工位）": [
+      "modern-minimalism"
+    ],
+    "医疗与疗愈环境": [
+      "biophilic"
+    ],
+    "历史住宅与老宅改造": [
+      "victorian"
+    ],
+    "古董与家具展厅": [
+      "victorian"
+    ],
+    "咖啡与零售空间": [
+      "japandi"
+    ],
+    "咖啡馆与亲子商业": [
+      "korean-minimal"
+    ],
+    "咖啡馆与烘焙店": [
+      "scandinavian"
+    ],
+    "售楼处与会所": [
+      "neoclassical"
+    ],
+    "商业中庭与品牌旗舰店": [
+      "parametric-futurism"
+    ],
+    "商业体验店与快闪空间": [
+      "surrealist-interior"
+    ],
+    "商业建筑外立面与入口": [
+      "postmodern"
+    ],
+    "商业服务与政务窗口": [
+      "corporate-contemporary"
+    ],
+    "商业样板间与展厅前厅": [
+      "contemporary-luxury"
+    ],
+    "商业空间与旗舰店": [
+      "deconstructivism"
+    ],
+    "商业门厅与电梯厅": [
+      "art-deco"
+    ],
+    "商业零售与快闪空间": [
+      "cyberpunk"
+    ],
+    "器物展厅与工作室": [
+      "wabi-sabi"
+    ],
+    "图书馆与公共空间": [
+      "modernist-classic"
+    ],
+    "大型别墅与会所": [
+      "european-classical"
+    ],
+    "大型零售与市集": [
+      "warehouse-conversion"
+    ],
+    "奢华酒店与宴会厅": [
+      "middle-eastern-luxury"
+    ],
+    "娱乐与夜间商业空间": [
+      "cyberpunk"
+    ],
+    "婚纱、摄影与人像类商业空间": [
+      "french-romantic"
+    ],
+    "宅邸与别墅": [
+      "middle-eastern-luxury"
+    ],
+    "家庭住宅与公寓": [
+      "korean-minimal"
+    ],
+    "小型住宅与茶室": [
+      "wabi-sabi"
+    ],
+    "小型办公与工作室": [
+      "korean-minimal",
+      "scandinavian"
+    ],
+    "小型餐饮与咖啡馆": [
+      "wabi-sabi"
+    ],
+    "小型餐饮与酒吧": [
+      "vintage-european"
+    ],
+    "展厅与画廊": [
+      "modern-minimalism"
+    ],
+    "展示与零售空间": [
+      "rustic-natural"
+    ],
+    "展览与展厅": [
+      "bauhaus"
+    ],
+    "展览与美术馆": [
+      "earth-adobe"
+    ],
+    "展览空间": [
+      "modernist-classic"
+    ],
+    "展陈与主题体验空间": [
+      "memphis"
+    ],
+    "展陈与体验空间": [
+      "steampunk"
+    ],
+    "展陈与实验室空间": [
+      "sci-fi-minimal"
+    ],
+    "展陈与纪念性空间": [
+      "brutalist"
+    ],
+    "展陈与艺术空间": [
+      "surrealist-interior"
+    ],
+    "工作室": [
+      "rustic-natural"
+    ],
+    "工作室与轻型生产空间": [
+      "industrial-loft"
+    ],
+    "庆典厅堂与大宴会厅": [
+      "european-classical"
+    ],
+    "度假乡村酒店": [
+      "rustic-natural"
+    ],
+    "度假住宅与别墅": [
+      "southeast-asian-tropical"
+    ],
+    "度假酒店与客房": [
+      "tropical-resort"
+    ],
+    "度假酒店与民宿": [
+      "mediterranean",
+      "moroccan"
+    ],
+    "度假酒店客房与泳池区": [
+      "southeast-asian-tropical"
+    ],
+    "庭院会所与泳池区": [
+      "mediterranean"
+    ],
+    "影剧院与娱乐空间": [
+      "art-deco"
+    ],
+    "影棚与场景搭建": [
+      "steampunk"
+    ],
+    "影音与休闲空间": [
+      "retro-70s"
+    ],
+    "接待与前台区域": [
+      "corporate-contemporary"
+    ],
+    "摄影与展陈空间": [
+      "vintage-european"
+    ],
+    "摄影与直播场景": [
+      "surrealist-interior"
+    ],
+    "教育与培训空间": [
+      "bauhaus"
+    ],
+    "教育与研究建筑": [
+      "modernist-classic"
+    ],
+    "教育与社区空间": [
+      "earth-adobe"
+    ],
+    "教育空间": [
+      "biophilic"
+    ],
+    "文化展示与庭院公共空间": [
+      "mexican-hacienda"
+    ],
+    "文化展览与艺术空间": [
+      "warehouse-conversion"
+    ],
+    "文化展陈与展厅": [
+      "parametric-futurism"
+    ],
+    "文化展陈与艺术空间": [
+      "african-contemporary"
+    ],
+    "文化展馆与书院": [
+      "chinese-traditional"
+    ],
+    "文化建筑与展览馆": [
+      "postmodern"
+    ],
+    "文化建筑与美术馆": [
+      "brutalist",
+      "deconstructivism"
+    ],
+    "样板间": [
+      "italian-minimal"
+    ],
+    "样板间与公寓入口": [
+      "art-deco"
+    ],
+    "样板间与展示空间": [
+      "american-classic",
+      "french-romantic"
+    ],
+    "民宿与客栈": [
+      "american-country"
+    ],
+    "民宿与度假住宅": [
+      "tropical-resort"
+    ],
+    "民宿与文化空间": [
+      "earth-adobe"
+    ],
+    "民宿与精品酒店": [
+      "vintage-european"
+    ],
+    "民宿与精品酒店客房": [
+      "wabi-sabi"
+    ],
+    "泳池会所与 SPA": [
+      "tropical-resort"
+    ],
+    "热带餐饮与酒吧": [
+      "southeast-asian-tropical"
+    ],
+    "独栋住宅与联排住宅的家庭起居与餐厨": [
+      "american-classic"
+    ],
+    "电竞与体验店": [
+      "cyberpunk"
+    ],
+    "禅修与冥想空间": [
+      "japanese-zen"
+    ],
+    "精品商业": [
+      "middle-eastern-luxury"
+    ],
+    "精品店与买手店": [
+      "vintage-european"
+    ],
+    "精品民宿与客栈": [
+      "english-country"
+    ],
+    "精品民宿与酒店客房": [
+      "japandi"
+    ],
+    "精品酒店与主题客房": [
+      "victorian"
+    ],
+    "精品酒店与展厅": [
+      "mid-century-modern"
+    ],
+    "精品酒店与度假村": [
+      "african-contemporary",
+      "indian-contemporary",
+      "mexican-hacienda"
+    ],
+    "精品酒店公共区": [
+      "chinese-traditional"
+    ],
+    "精品酒店公区": [
+      "american-classic",
+      "american-country",
+      "english-country"
+    ],
+    "精品酒店客房": [
+      "chinese-neo-classical",
+      "japanese-zen"
+    ],
+    "精品酒店客房与公区": [
+      "french-romantic"
+    ],
+    "精品零售": [
+      "italian-minimal",
+      "modern-minimalism"
+    ],
+    "精品零售与展厅": [
+      "indian-contemporary",
+      "moroccan"
+    ],
+    "精品零售空间": [
+      "organic-modern"
+    ],
+    "美式餐厅与早午餐空间": [
+      "american-country"
+    ],
+    "联合办公空间": [
+      "corporate-contemporary"
+    ],
+    "茶室与会所": [
+      "chinese-traditional"
+    ],
+    "茶室与冥想空间": [
+      "japandi"
+    ],
+    "茶室与日式餐饮": [
+      "japanese-zen"
+    ],
+    "茶馆与餐饮": [
+      "chinese-neo-classical"
+    ],
+    "豪宅与平层": [
+      "contemporary-luxury"
+    ],
+    "轻餐饮": [
+      "modern-minimalism"
+    ],
+    "郊野住宅与度假屋": [
+      "mid-century-modern"
+    ],
+    "酒吧与主题餐饮": [
+      "cyberpunk"
+    ],
+    "酒吧与俱乐部": [
+      "retro-70s"
+    ],
+    "酒店与办公公区": [
+      "postmodern"
+    ],
+    "酒店与康养空间": [
+      "biophilic"
+    ],
+    "酒店公区与客房": [
+      "contemporary-luxury"
+    ],
+    "酒店公区与酒吧": [
+      "art-deco"
+    ],
+    "酒店大堂与客房": [
+      "neoclassical",
+      "organic-modern"
+    ],
+    "酒店大堂与宴会空间": [
+      "european-classical"
+    ],
+    "酒店客房": [
+      "italian-minimal",
+      "sci-fi-minimal"
+    ],
+    "零售与展厅": [
+      "mediterranean"
+    ],
+    "零售与展陈空间": [
+      "industrial-loft",
+      "postmodern"
+    ],
+    "零售与快闪店": [
+      "memphis"
+    ],
+    "零售与陈列空间": [
+      "steampunk"
+    ],
+    "餐厅包间与咖啡馆": [
+      "french-romantic"
+    ],
+    "餐酒吧与下午茶空间": [
+      "victorian"
+    ],
+    "餐酒馆与下午茶空间": [
+      "english-country"
+    ],
+    "餐饮与咖啡厅": [
+      "industrial-loft"
+    ],
+    "餐饮与咖啡空间": [
+      "memphis"
+    ],
+    "餐饮与活动空间": [
+      "warehouse-conversion"
+    ],
+    "餐饮与酒吧": [
+      "mediterranean"
+    ],
+    "餐饮与酒吧空间": [
+      "rustic-natural"
+    ],
+    "餐饮空间": [
+      "earth-adobe",
+      "indian-contemporary",
+      "italian-minimal",
+      "mexican-hacienda",
+      "moroccan",
+      "organic-modern",
+      "postmodern"
+    ],
+    "餐饮露台与酒吧": [
+      "tropical-resort"
+    ],
+    "高端会所与接待厅": [
+      "middle-eastern-luxury"
+    ],
+    "高端住宅与公寓": [
+      "sci-fi-minimal"
+    ],
+    "高端康养空间": [
+      "tropical-resort"
+    ],
+    "高端零售与展厅": [
+      "art-deco"
+    ],
+    "高端餐饮": [
+      "contemporary-luxury"
+    ]
+  },
+  "invalid": {},
+  "styles": [
+    {
+      "style_id": "african-contemporary",
+      "display_name_zh": "非洲当代",
+      "display_name_en": "African Contemporary",
+      "family": "regional",
+      "tags": [
+        "earth-tone",
+        "craft",
+        "pattern",
+        "handmade",
+        "bold"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与别墅",
+        "精品酒店与度假村",
+        "文化展陈与艺术空间",
+        "主题餐饮空间"
+      ],
+      "compatible_styles": [
+        "earth-adobe",
+        "rustic-natural",
+        "moroccan",
+        "mediterranean",
+        "organic-modern",
+        "tropical-resort"
+      ],
+      "summary": "独立后的建设需要现代的结构与设备标准，但完全套用外来做法会抹掉地方识别性。于是这一取向把当地既有的生土墙体、棕榈与草编、木雕与陶砖做法保留下来，只替换掉不达标的部分——承重与防潮交给现代构造，…"
+    },
+    {
+      "style_id": "american-classic",
+      "display_name_zh": "美式古典",
+      "display_name_en": "American Classic",
+      "family": "classic",
+      "tags": [
+        "panelling",
+        "warm",
+        "family",
+        "brass",
+        "settled"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "独栋住宅与联排住宅的家庭起居与餐厨",
+        "会所与俱乐部",
+        "精品酒店公区",
+        "亲子与家庭类商业空间",
+        "样板间与展示空间"
+      ],
+      "compatible_styles": [
+        "neoclassical",
+        "european-classical",
+        "english-country",
+        "american-country",
+        "french-romantic"
+      ],
+      "summary": "美式古典解决的是大尺度家庭日常的问题。北美住宅开间与进深普遍大于英式，家庭成员习惯在同一空间长时间共处，于是英式对称语汇被简化为更方正、更耐用的做法：护墙板改为方正凹槽板、线脚层级减少、木材与…"
+    },
+    {
+      "style_id": "american-country",
+      "display_name_zh": "美式乡村",
+      "display_name_en": "American Country",
+      "family": "classic",
+      "tags": [
+        "timber",
+        "porch",
+        "handmade",
+        "casual",
+        "warm"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "乡村住宅与度假屋",
+        "民宿与客栈",
+        "美式餐厅与早午餐空间",
+        "农庄与亲子研学空间",
+        "精品酒店公区"
+      ],
+      "compatible_styles": [
+        "english-country",
+        "american-classic",
+        "rustic-natural",
+        "mediterranean",
+        "earth-adobe"
+      ],
+      "summary": "美式乡村形成于地广人稀、依赖自建的定居环境。大进深且可扩展的平面配合门廊（porch），用原木与本地松木等材料结合手作工艺完成建造，因此结构坦率、构件外露、节点可见。生活方式偏向户内户外贯通的…"
+    },
+    {
+      "style_id": "art-deco",
+      "display_name_zh": "装饰艺术",
+      "display_name_en": "Art Deco",
+      "family": "deco-retro",
+      "tags": [
+        "geometric",
+        "metallic",
+        "lacquer",
+        "glamour",
+        "stepped"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "商业门厅与电梯厅",
+        "酒店公区与酒吧",
+        "影剧院与娱乐空间",
+        "高端零售与展厅",
+        "样板间与公寓入口"
+      ],
+      "compatible_styles": [
+        "vintage-european",
+        "postmodern",
+        "modernist-classic",
+        "mid-century-modern",
+        "neoclassical"
+      ],
+      "summary": "装饰艺术回应的是工业化之后的机器美学。它把机械时代的几何、速度与强度转译为装饰语汇，用阶梯状轮廓、放射与锯齿母题、几何化的花叶纹替代历史样式，并以漆面、金属镶嵌与贵重石材制造戏剧性对比。它本质…"
+    },
+    {
+      "style_id": "bauhaus",
+      "display_name_zh": "包豪斯",
+      "display_name_en": "Bauhaus",
+      "family": "modern",
+      "tags": [
+        "primary-colors",
+        "geometry",
+        "craft",
+        "steel-tube"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "展览与展厅",
+        "教育与培训空间",
+        "创意办公",
+        "书店与咖啡馆",
+        "住宅局部（书房与工作室）"
+      ],
+      "compatible_styles": [
+        "modernist-classic",
+        "mid-century-modern",
+        "modern-minimalism",
+        "postmodern",
+        "industrial-loft"
+      ],
+      "summary": "包豪斯的出发点是「手艺与机器不必对立」：设计要用基本几何形和清晰的构成法则，让产品既好看又能批量生产。它因此形成了辨识度极高的语言——用方、圆、三角组织界面，用红黄蓝三原色加黑白灰建立色彩体系…"
+    },
+    {
+      "style_id": "biophilic",
+      "display_name_zh": "亲自然设计",
+      "display_name_en": "Biophilic Design",
+      "family": "natural-organic",
+      "tags": [
+        "plants",
+        "daylight",
+        "green-wall",
+        "natural-ventilation"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "办公与协作空间",
+        "住宅起居与阳台过渡区",
+        "酒店与康养空间",
+        "教育空间",
+        "医疗与疗愈环境"
+      ],
+      "compatible_styles": [
+        "japandi",
+        "scandinavian",
+        "wabi-sabi",
+        "industrial-loft",
+        "warehouse-conversion"
+      ],
+      "summary": "它回应的是人长期处于封闭人造环境中产生的注意力疲劳、压力升高与空气质量下降。亲自然设计并不是简单地摆几盆植物，而是把自然要素按可验证的方式编织进空间：把日照、通风、水体、绿量与天然材料分配到视…"
+    },
+    {
+      "style_id": "brutalist",
+      "display_name_zh": "粗野主义",
+      "display_name_en": "Brutalist",
+      "family": "industrial",
+      "tags": [
+        "raw-concrete",
+        "mass",
+        "board-marked",
+        "monumental"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "文化建筑与美术馆",
+        "公共门厅与中庭",
+        "办公与机构空间",
+        "展陈与纪念性空间",
+        "住宅的公共区与楼梯间"
+      ],
+      "compatible_styles": [
+        "industrial-loft",
+        "warehouse-conversion",
+        "modern-minimalism",
+        "bauhaus"
+      ],
+      "summary": "它回应的是战后大规模公共建设对「材料诚实、造价可控」的双重要求。清水混凝土浇筑即成最终表面，无需另做饰面，因此能同时压缩用材与工期；而把结构构件刻意放大并外露，又让建筑获得纪念碑式的公共表达。…"
+    },
+    {
+      "style_id": "chinese-neo-classical",
+      "display_name_zh": "新中式",
+      "display_name_en": "Chinese Neo-Classical",
+      "family": "oriental",
+      "tags": [
+        "oriental",
+        "lattice",
+        "ink",
+        "symmetry",
+        "contemporary"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅公寓",
+        "办公前台与会议室",
+        "精品酒店客房",
+        "茶馆与餐饮"
+      ],
+      "compatible_styles": [
+        "chinese-traditional",
+        "modern-minimalism",
+        "japandi",
+        "contemporary-luxury"
+      ],
+      "summary": "都市高密度住宅与办公普遍层高有限、开间规整、结构以框架为主，无法照搬以院落和木构体系为骨架的传统做法。新中式因此把传统语汇拆解成可二维化的构件——格栅、垭口、对称轴线、留白与水墨色阶，再用现代…"
+    },
+    {
+      "style_id": "chinese-traditional",
+      "display_name_zh": "中式古典",
+      "display_name_en": "Traditional Chinese",
+      "family": "oriental",
+      "tags": [
+        "courtyard",
+        "joinery",
+        "symmetry",
+        "lacquer",
+        "antique"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "中式大宅与庭院住宅",
+        "文化展馆与书院",
+        "茶室与会所",
+        "精品酒店公共区"
+      ],
+      "compatible_styles": [
+        "chinese-neo-classical",
+        "vintage-european",
+        "japanese-zen"
+      ],
+      "summary": "传统中式建筑以木构架承重、围护墙体不承重，因此空间可以按「间」为单位自由分隔，并以院落为基本单元向外生长。这一结构逻辑直接决定了室内做法：梁柱外露、藻井覆顶、隔扇与罩划分空间、家具随「间」的模…"
+    },
+    {
+      "style_id": "contemporary-luxury",
+      "display_name_zh": "当代奢华",
+      "display_name_en": "Contemporary Luxury",
+      "family": "modern",
+      "tags": [
+        "luxury",
+        "statement",
+        "graphic",
+        "hotel"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "酒店公区与客房",
+        "豪宅与平层",
+        "会所与接待",
+        "高端餐饮",
+        "商业样板间与展厅前厅"
+      ],
+      "compatible_styles": [
+        "italian-minimal",
+        "art-deco",
+        "neoclassical",
+        "middle-eastern-luxury",
+        "european-classical"
+      ],
+      "summary": "当代奢华解决的是「大体量空间如何在一进门就被记住」的问题。它把尺度、对比和图形当作手段：用加大的天花跌级、地面拼花和对称轴线制造视觉冲击，用高光石材与金属线条制造反射，用戏剧性的明暗对比把客人…"
+    },
+    {
+      "style_id": "corporate-contemporary",
+      "display_name_zh": "当代商务",
+      "display_name_en": "Corporate Contemporary",
+      "family": "modern",
+      "tags": [
+        "workplace",
+        "acoustic",
+        "glass",
+        "calm",
+        "efficient"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "企业总部与办公",
+        "联合办公空间",
+        "会议与培训中心",
+        "接待与前台区域",
+        "商业服务与政务窗口"
+      ],
+      "compatible_styles": [
+        "modernist-classic",
+        "modern-minimalism",
+        "contemporary-luxury",
+        "industrial-loft",
+        "scandinavian"
+      ],
+      "summary": "当代商务要解决的是开放办公带来的两个新问题：噪声干扰与专注缺失。它因此把声学分区当作平面组织的起点——协作区、专注区、会议区按噪声等级排布，用玻璃维持视线通透同时用吸声材料控制混响，用模数化家…"
+    },
+    {
+      "style_id": "cyberpunk",
+      "display_name_zh": "赛博朋克",
+      "display_name_en": "Cyberpunk",
+      "family": "experimental",
+      "tags": [
+        "neon",
+        "dark",
+        "tech-density",
+        "layered-signage"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "娱乐与夜间商业空间",
+        "电竞与体验店",
+        "商业零售与快闪空间",
+        "酒吧与主题餐饮"
+      ],
+      "compatible_styles": [
+        "industrial-loft",
+        "warehouse-conversion",
+        "brutalist",
+        "memphis"
+      ],
+      "summary": "它起源于一种对高密度技术城市的想象：人口与设备极度密集，自然光被遮挡，于是照明、标识、屏幕成为唯一的视觉秩序来源。搬进室内后，这套逻辑转化为可执行的做法——把环境照度压到很低，让霓虹、灯带与屏…"
+    },
+    {
+      "style_id": "deconstructivism",
+      "display_name_zh": "解构主义",
+      "display_name_en": "Deconstructivism",
+      "family": "experimental",
+      "tags": [
+        "fractured",
+        "skewed",
+        "non-orthogonal",
+        "tension"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "文化建筑与美术馆",
+        "商业空间与旗舰店",
+        "办公与创意园区",
+        "住宅与工业建筑改造"
+      ],
+      "compatible_styles": [
+        "brutalist",
+        "industrial-loft",
+        "parametric-futurism",
+        "postmodern",
+        "warehouse-conversion"
+      ],
+      "summary": "它针对的是现代主义长期建立的「正交、稳定、可预期」秩序：如果空间的稳定感只是习惯而非必然，那么把轴线打散、把体量错位、把结构露出来，就能让建筑重新变得有张力。做法上不靠装饰，而是靠几何本身的冲…"
+    },
+    {
+      "style_id": "earth-adobe",
+      "display_name_zh": "夯土与土坯",
+      "display_name_en": "Earth & Adobe",
+      "family": "natural-organic",
+      "tags": [
+        "rammed-earth",
+        "thick-wall",
+        "thermal-mass",
+        "clay"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与度假住宅",
+        "民宿与文化空间",
+        "展览与美术馆",
+        "餐饮空间",
+        "教育与社区空间"
+      ],
+      "compatible_styles": [
+        "rustic-natural",
+        "mediterranean",
+        "mexican-hacienda",
+        "african-contemporary",
+        "biophilic"
+      ],
+      "summary": "在缺乏烧制能源与运输条件的地区，就地取土是最经济的建材，于是发展出夯土与土坯两种成熟做法。土的蓄热能力强、传热慢，厚实的土墙能显著削峰填谷，使室内昼夜温差远小于室外，这正是干热气候最需要的性能…"
+    },
+    {
+      "style_id": "english-country",
+      "display_name_zh": "英式乡村",
+      "display_name_en": "English Country",
+      "family": "classic",
+      "tags": [
+        "floral",
+        "patina",
+        "wallpaper",
+        "cozy",
+        "layered"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "乡间别墅与住宅的起居、餐叙与书房",
+        "精品民宿与客栈",
+        "餐酒馆与下午茶空间",
+        "书店与阅读空间",
+        "精品酒店公区"
+      ],
+      "compatible_styles": [
+        "victorian",
+        "american-country",
+        "european-classical",
+        "rustic-natural",
+        "vintage-european"
+      ],
+      "summary": "英式乡村的做法来自气候与旧物两个约束。多雨阴冷的气候要求保温与心理上的暖意，于是房间做小而独立、天花压低、窗开小而深、壁炉成为每间房的几何中心；家族世代居住又使新物与旧物持续叠置，形成不刻意统…"
+    },
+    {
+      "style_id": "european-classical",
+      "display_name_zh": "欧式古典",
+      "display_name_en": "European Classical",
+      "family": "classic",
+      "tags": [
+        "ornament",
+        "column",
+        "gilding",
+        "formal",
+        "grand"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "庆典厅堂与大宴会厅",
+        "酒店大堂与宴会空间",
+        "剧院与博物馆公共区",
+        "大型别墅与会所"
+      ],
+      "compatible_styles": [
+        "neoclassical",
+        "victorian",
+        "french-romantic",
+        "american-classic"
+      ],
+      "summary": "欧式古典以完整古典秩序为骨架：柱式有明确的比例与收分规则，拱券与穹顶承担跨与纪念性，线脚、浮雕与镀金构成层层递进的装饰体系。这套做法源自需要表达权力与神圣感的宫廷与宗教建筑，其成立前提是大体量…"
+    },
+    {
+      "style_id": "french-romantic",
+      "display_name_zh": "法式浪漫",
+      "display_name_en": "French Romantic",
+      "family": "classic",
+      "tags": [
+        "curve",
+        "boiserie",
+        "pastel",
+        "moulding",
+        "delicate"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅（公寓与别墅的起居、卧房与书房）",
+        "精品酒店客房与公区",
+        "餐厅包间与咖啡馆",
+        "婚纱、摄影与人像类商业空间",
+        "样板间与展示空间"
+      ],
+      "compatible_styles": [
+        "neoclassical",
+        "european-classical",
+        "vintage-european",
+        "american-classic",
+        "mediterranean"
+      ],
+      "summary": "法式浪漫源自宫廷礼仪空间对展示性对称的需求：房间沿中轴排列、以垭口串联，使宾客的行进路线本身成为装饰。为在进深有限的巴黎公寓里维持这种仪式感，做法转向把装饰集中到垂直界面——窄板护墙板抬高地脚…"
+    },
+    {
+      "style_id": "indian-contemporary",
+      "display_name_zh": "印度当代",
+      "display_name_en": "Indian Contemporary",
+      "family": "regional",
+      "tags": [
+        "craft",
+        "jaali",
+        "brass",
+        "textile",
+        "colour"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与公寓",
+        "精品酒店与度假村",
+        "餐饮空间",
+        "SPA 与康养空间",
+        "精品零售与展厅"
+      ],
+      "compatible_styles": [
+        "moroccan",
+        "biophilic",
+        "contemporary-luxury",
+        "tropical-resort"
+      ],
+      "summary": "当地气候炎热且季节分明，传统民居用可通风的镂空石屏（jaali）、深出檐与可开敞的庭院来降温，同时对手工艺有极长的积累：木雕、石雕、黄铜器、手工织物与镶嵌工艺在生活与礼仪中长期并存。印度当代并…"
+    },
+    {
+      "style_id": "industrial-loft",
+      "display_name_zh": "工业 LOFT",
+      "display_name_en": "Industrial Loft",
+      "family": "industrial",
+      "tags": [
+        "exposed-brick",
+        "steel",
+        "open-duct",
+        "concrete"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅起居与工作一体化空间",
+        "创意办公与共享办公",
+        "餐饮与咖啡厅",
+        "零售与展陈空间",
+        "工作室与轻型生产空间"
+      ],
+      "compatible_styles": [
+        "warehouse-conversion",
+        "brutalist",
+        "mid-century-modern",
+        "modern-minimalism",
+        "steampunk"
+      ],
+      "summary": "它回应的是「开放大空间如何住人」这件事。早期使用者把廉价工业空间改作居住与工作场所时，发现不包封的结构与设备反而带来灵活性：不砌隔墙就能重组功能，暴露的管线随时可改。此后这套做法被抽离出来，成…"
+    },
+    {
+      "style_id": "italian-minimal",
+      "display_name_zh": "意式极简",
+      "display_name_en": "Italian Minimal",
+      "family": "modern",
+      "tags": [
+        "minimal",
+        "warm",
+        "stone",
+        "luxury",
+        "matte"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅平层与别墅",
+        "样板间",
+        "精品零售",
+        "餐饮空间",
+        "酒店客房"
+      ],
+      "compatible_styles": [
+        "modern-minimalism",
+        "japandi",
+        "contemporary-luxury",
+        "modernist-classic",
+        "scandinavian"
+      ],
+      "summary": "意式极简的出发点是：线条可以干净，但空间不能发冷。它保留平直的线条与收干净的面，却用整幅石材的连续纹理和暖色木饰面叠出质感层级，再以极少的接缝和精细收口体现工艺水平。与只做留白的极简不同，意式…"
+    },
+    {
+      "style_id": "japandi",
+      "display_name_zh": "日式北欧融合",
+      "display_name_en": "Japandi",
+      "family": "modern",
+      "tags": [
+        "hybrid",
+        "calm",
+        "craft",
+        "wood",
+        "low-saturation"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与公寓",
+        "茶室与冥想空间",
+        "精品民宿与酒店客房",
+        "咖啡与零售空间"
+      ],
+      "compatible_styles": [
+        "scandinavian",
+        "modern-minimalism",
+        "wabi-sabi",
+        "japanese-zen",
+        "italian-minimal"
+      ],
+      "summary": "日式北欧融合把两种都有「克制」传统的做法合并：一端是日本对留白、手工痕迹与不经意残缺的接受，另一端是北欧对功能、采光与舒适的处理。它解决的问题是——如何在低饱和、低刺激的环境里依然保持可用与宜…"
+    },
+    {
+      "style_id": "japanese-zen",
+      "display_name_zh": "日式禅意",
+      "display_name_en": "Japanese Zen",
+      "family": "oriental",
+      "tags": [
+        "tatami",
+        "shoji",
+        "minimal",
+        "natural",
+        "threshold"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与和室",
+        "禅修与冥想空间",
+        "精品酒店客房",
+        "茶室与日式餐饮"
+      ],
+      "compatible_styles": [
+        "wabi-sabi",
+        "japandi",
+        "modern-minimalism",
+        "scandinavian"
+      ],
+      "summary": "日式禅意室内不是靠删减装饰实现的，而是靠一套模数系统实现秩序：房间尺寸由榻榻米张数决定，柱与隔扇落在固定网格上，榻榻米与木地板的交接、门槛与回廊的高差构成明确的阈限。障子纸把直射光转为漫射光，…"
+    },
+    {
+      "style_id": "korean-minimal",
+      "display_name_zh": "韩式简约",
+      "display_name_en": "Korean Minimal",
+      "family": "oriental",
+      "tags": [
+        "soft",
+        "pale",
+        "rounded",
+        "tidy",
+        "family"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "家庭住宅与公寓",
+        "儿童房与亲子空间",
+        "小型办公与工作室",
+        "咖啡馆与亲子商业"
+      ],
+      "compatible_styles": [
+        "scandinavian",
+        "japandi",
+        "modern-minimalism",
+        "contemporary-luxury"
+      ],
+      "summary": "韩国城市住宅以小面积、高密度公寓为主，家庭共处时间长，室内需同时承担起居、聚餐、儿童活动与居家办公。韩式简约因此发展出以「隐藏收纳 + 圆角安全 + 低饱和米白」为核心的解法：用整面通高柜把杂…"
+    },
+    {
+      "style_id": "mediterranean",
+      "display_name_zh": "地中海",
+      "display_name_en": "Mediterranean",
+      "family": "natural-organic",
+      "tags": [
+        "lime-plaster",
+        "arch",
+        "terracotta",
+        "blue-white"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅与别墅",
+        "度假酒店与民宿",
+        "餐饮与酒吧",
+        "庭院会所与泳池区",
+        "零售与展厅"
+      ],
+      "compatible_styles": [
+        "rustic-natural",
+        "earth-adobe",
+        "moroccan",
+        "tropical-resort",
+        "french-romantic"
+      ],
+      "summary": "地中海沿岸夏季干热、日照强烈，传统民居由此形成一组以「遮阳与热惰性」为核心的构造：墙厚而蓄热，白天吸热夜间缓慢释放，使室内温度平缓；窗洞小而深，减少直射光进入；墙面用石灰抹面反射阳光并透气；屋…"
+    },
+    {
+      "style_id": "memphis",
+      "display_name_zh": "孟菲斯",
+      "display_name_en": "Memphis",
+      "family": "deco-retro",
+      "tags": [
+        "bold-color",
+        "playful",
+        "geometric",
+        "anti-rule",
+        "80s"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "零售与快闪店",
+        "餐饮与咖啡空间",
+        "儿童与青少年空间",
+        "创意办公与工作室",
+        "展陈与主题体验空间"
+      ],
+      "compatible_styles": [
+        "postmodern",
+        "retro-70s",
+        "mid-century-modern",
+        "art-deco"
+      ],
+      "summary": "孟菲斯回应的是战后现代主义对「正确品位」的垄断：当功能主义把家具与界面压成中性灰白的一套公式后，它干脆把设计还原成小尺度的几何游戏，让图像与色彩压过功能叙事。它之所以能在 1980 年代成形，…"
+    },
+    {
+      "style_id": "mexican-hacienda",
+      "display_name_zh": "墨西哥庄园",
+      "display_name_en": "Mexican Hacienda",
+      "family": "regional",
+      "tags": [
+        "courtyard",
+        "terracotta",
+        "timber-beam",
+        "vivid"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与庄园别墅",
+        "精品酒店与度假村",
+        "餐饮空间",
+        "文化展示与庭院公共空间"
+      ],
+      "compatible_styles": [
+        "mediterranean",
+        "earth-adobe",
+        "american-classic",
+        "rustic-natural",
+        "tropical-resort"
+      ],
+      "summary": "高原地区昼夜温差大、日照强、雨水集中，因此这套做法一开始就不是为观感而是为气候服务的：厚墙提供热惰性，小窗减少得热，回廊既遮阳又避雨，中央庭院收集与引导雨水并提供夜间凉意。殖民时期的建筑方法叠…"
+    },
+    {
+      "style_id": "mid-century-modern",
+      "display_name_zh": "中世纪现代",
+      "display_name_en": "Mid-Century Modern",
+      "family": "deco-retro",
+      "tags": [
+        "tapered-leg",
+        "walnut",
+        "organic",
+        "optimistic"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "郊野住宅与度假屋",
+        "公寓起居与餐厨",
+        "办公与创意工作室",
+        "书店与咖啡馆",
+        "精品酒店与展厅"
+      ],
+      "compatible_styles": [
+        "scandinavian",
+        "japandi",
+        "bauhaus",
+        "vintage-european",
+        "modernist-classic",
+        "art-deco"
+      ],
+      "summary": "中世纪现代是战后小住宅与量产制造共同作用的产物。战后住宅趋向开放平面与室内外连通，同时胶合板模压、钢管弯曲与胡桃木等新木种的工业供应，让家具第一次可以既轻又能量产。设计因此转向把结构做得可见而…"
+    },
+    {
+      "style_id": "middle-eastern-luxury",
+      "display_name_zh": "中东奢华",
+      "display_name_en": "Middle Eastern Luxury",
+      "family": "regional",
+      "tags": [
+        "majlis",
+        "opulent",
+        "pattern",
+        "stone",
+        "gold"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "宅邸与别墅",
+        "奢华酒店与宴会厅",
+        "高端会所与接待厅",
+        "企业会客与接待空间",
+        "精品商业"
+      ],
+      "compatible_styles": [
+        "moroccan",
+        "contemporary-luxury",
+        "neoclassical",
+        "art-deco"
+      ],
+      "summary": "当地社会以主客关系为重，宅邸中最重要的不是卧室而是待客空间——majlis。它需要同时容纳大量来客、体现主人的体面、并让男女宾分设或分区。由此形成了一套以「会客空间为核心、装饰密度极高、体量极…"
+    },
+    {
+      "style_id": "modern-minimalism",
+      "display_name_zh": "现代极简",
+      "display_name_en": "Modern Minimalism",
+      "family": "modern",
+      "tags": [
+        "minimal",
+        "neutral",
+        "unadorned",
+        "restraint"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅（公寓与平层）",
+        "办公（前厅与开敞工位）",
+        "展厅与画廊",
+        "精品零售",
+        "轻餐饮"
+      ],
+      "compatible_styles": [
+        "italian-minimal",
+        "japandi",
+        "scandinavian",
+        "modernist-classic",
+        "wabi-sabi"
+      ],
+      "summary": "现代极简针对的是装饰成本高、日常维护难、视觉噪声大这三个现实问题。它把可移动的装饰减到接近零，把收纳整体并入墙体，把材料压缩到少数几种并在大面积上做到无缝，于是空间靠比例、光线和留白成立，而不…"
+    },
+    {
+      "style_id": "modernist-classic",
+      "display_name_zh": "现代主义经典",
+      "display_name_en": "Modernist Classic",
+      "family": "modern",
+      "tags": [
+        "bauhaus-derived",
+        "module",
+        "rational",
+        "white-box"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅",
+        "办公空间",
+        "教育与研究建筑",
+        "图书馆与公共空间",
+        "展览空间"
+      ],
+      "compatible_styles": [
+        "bauhaus",
+        "modern-minimalism",
+        "scandinavian",
+        "italian-minimal",
+        "corporate-contemporary"
+      ],
+      "summary": "现代主义经典要解决的是「如何在有限造价与标准化建造下，仍然得到秩序良好的空间」。答案是把一切收进模数网格：柱网、隔墙、门窗、家具都按同一套尺寸排布，于是构件可预制、可复制、施工误差可控。它形成…"
+    },
+    {
+      "style_id": "moroccan",
+      "display_name_zh": "摩洛哥",
+      "display_name_en": "Moroccan",
+      "family": "regional",
+      "tags": [
+        "zellige",
+        "arch",
+        "courtyard",
+        "carved",
+        "colour"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与别墅",
+        "度假酒店与民宿",
+        "餐饮空间",
+        "SPA 与洗浴空间",
+        "精品零售与展厅"
+      ],
+      "compatible_styles": [
+        "mediterranean",
+        "middle-eastern-luxury",
+        "indian-contemporary",
+        "african-contemporary"
+      ],
+      "summary": "当地夏季炎热、城市居住密集，房屋由此向外封闭、向内开敞：外部只有小窗，内部围绕一个带水池与绿植的庭院（patio）组织，庭院成为采光、通风与家庭生活的中心。与此同时，伊斯兰装饰传统反对具象描绘…"
+    },
+    {
+      "style_id": "neoclassical",
+      "display_name_zh": "新古典",
+      "display_name_en": "Neoclassical",
+      "family": "classic",
+      "tags": [
+        "plaster",
+        "symmetry",
+        "moulding",
+        "elegant",
+        "ordered"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与高档公寓",
+        "酒店大堂与客房",
+        "办公接待与会议室",
+        "售楼处与会所"
+      ],
+      "compatible_styles": [
+        "european-classical",
+        "french-romantic",
+        "american-classic",
+        "modernist-classic",
+        "contemporary-luxury"
+      ],
+      "summary": "新古典起源于对过度繁复装饰的反思：它重新强调对称、比例与理性秩序，但相比完整古典体系已大幅简化，用石膏线脚、壁柱、简化壁炉与对称轴来提示古典来源，而不再堆叠柱式与雕花。它能适应层高有限的现代公…"
+    },
+    {
+      "style_id": "organic-modern",
+      "display_name_zh": "有机现代",
+      "display_name_en": "Organic Modern",
+      "family": "natural-organic",
+      "tags": [
+        "soft-curve",
+        "warm-neutral",
+        "tactile",
+        "calm"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "住宅与公寓",
+        "酒店大堂与客房",
+        "精品零售空间",
+        "办公与联合办公",
+        "餐饮空间"
+      ],
+      "compatible_styles": [
+        "japandi",
+        "modern-minimalism",
+        "biophilic",
+        "contemporary-luxury",
+        "scandinavian"
+      ],
+      "summary": "现代主义把空间做得干净高效，但直角、硬边与工业材料容易让居住者觉得冷硬。有机现代的做法是保留现代主义的简洁骨架，用连续的曲线、圆角与雕塑化体量柔化界面，同时把材料换成温润的天然品类，而加工精度…"
+    },
+    {
+      "style_id": "parametric-futurism",
+      "display_name_zh": "参数化未来主义",
+      "display_name_en": "Parametric Futurism",
+      "family": "experimental",
+      "tags": [
+        "algorithm",
+        "fluid-surface",
+        "cnc",
+        "continuous"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "商业中庭与品牌旗舰店",
+        "文化展陈与展厅",
+        "交通与公共建筑中庭",
+        "办公前厅与接待区"
+      ],
+      "compatible_styles": [
+        "sci-fi-minimal",
+        "contemporary-luxury",
+        "corporate-contemporary",
+        "modern-minimalism",
+        "organic-modern"
+      ],
+      "summary": "当曲面的表达可以用参数规则驱动、构件又可以被数控机床精确切出来之后，形式第一次摆脱了「直线更容易造」的约束。这套取向把天花、墙面、屏风当作一个连续的整体来求解，让孔径、密度、曲率沿路径连续变化…"
+    },
+    {
+      "style_id": "postmodern",
+      "display_name_zh": "后现代主义",
+      "display_name_en": "Postmodern",
+      "family": "deco-retro",
+      "tags": [
+        "irony",
+        "pastiche",
+        "motif",
+        "colour-block",
+        "80s"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "商业建筑外立面与入口",
+        "酒店与办公公区",
+        "零售与展陈空间",
+        "文化建筑与展览馆",
+        "餐饮空间"
+      ],
+      "compatible_styles": [
+        "memphis",
+        "art-deco",
+        "modernist-classic",
+        "neoclassical",
+        "mid-century-modern"
+      ],
+      "summary": "后现代主义回应的是现代主义「形式必须由功能推出」的教条。设计者发现公众识别一栋建筑靠的是可读的符号而不是结构逻辑，于是把历史样式拆成可引用的片段——山花、拱券、柱式、色带——贴回界面，让符号承…"
+    },
+    {
+      "style_id": "retro-70s",
+      "display_name_zh": "七十年代复古",
+      "display_name_en": "Retro 70s",
+      "family": "deco-retro",
+      "tags": [
+        "warm-earth",
+        "shag",
+        "bold-pattern",
+        "sunken"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅起居与娱乐空间",
+        "酒吧与俱乐部",
+        "主题餐厅与咖啡空间",
+        "影音与休闲空间",
+        "主题零售与体验空间"
+      ],
+      "compatible_styles": [
+        "vintage-european",
+        "mid-century-modern",
+        "postmodern",
+        "memphis",
+        "art-deco"
+      ],
+      "summary": "七十年代复古的做法来自舒适优先与新材料普及的叠加。能源与材料成本波动使住宅倾向于在有限面积内堆叠舒适度，于是出现下沉式坐区、厚重长绒地毯与大面积软包，用织物和体量替代平面对比；同时聚氨酯泡沫、…"
+    },
+    {
+      "style_id": "rustic-natural",
+      "display_name_zh": "质朴自然",
+      "display_name_en": "Rustic Natural",
+      "family": "natural-organic",
+      "tags": [
+        "raw-materials",
+        "handcraft",
+        "uneven",
+        "honest"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "乡村住宅与民宿",
+        "餐饮与酒吧空间",
+        "展示与零售空间",
+        "度假乡村酒店",
+        "工作室"
+      ],
+      "compatible_styles": [
+        "earth-adobe",
+        "wabi-sabi",
+        "english-country",
+        "american-country",
+        "mediterranean"
+      ],
+      "summary": "在工业化材料普及之前，乡村建造只能依赖本地可得材料与本地匠人，于是形成了一套「以材料本真与手工痕迹为核心」的做法：木料按可用尺寸走，不追求统一模数；墙面允许批刮不均；石材保留自然断口；家具由手…"
+    },
+    {
+      "style_id": "scandinavian",
+      "display_name_zh": "北欧风格",
+      "display_name_en": "Scandinavian",
+      "family": "modern",
+      "tags": [
+        "light",
+        "wood",
+        "hygge",
+        "functional",
+        "pale"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅与公寓",
+        "小型办公与工作室",
+        "咖啡馆与烘焙店",
+        "亲子与儿童空间"
+      ],
+      "compatible_styles": [
+        "japandi",
+        "modern-minimalism",
+        "modernist-classic",
+        "mid-century-modern",
+        "italian-minimal"
+      ],
+      "summary": "北欧风格源于对长冬与低日照的应对：既然天然光稀缺，就最大化采光并把室内做亮，用高明度浅色墙面与浅色木地板反射光线；既然冬季室内停留时间长，就把功能与舒适做实，让家具承担收纳与座位。它不追求贵重…"
+    },
+    {
+      "style_id": "sci-fi-minimal",
+      "display_name_zh": "太空极简",
+      "display_name_en": "Sci-Fi Minimal",
+      "family": "experimental",
+      "tags": [
+        "seamless",
+        "monochrome",
+        "flush",
+        "engineered"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "luxury",
+      "applicable_spaces": [
+        "高端住宅与公寓",
+        "办公与科技企业空间",
+        "展陈与实验室空间",
+        "酒店客房"
+      ],
+      "compatible_styles": [
+        "modern-minimalism",
+        "italian-minimal",
+        "parametric-futurism",
+        "corporate-contemporary",
+        "bauhaus"
+      ],
+      "summary": "把航天器内部当作参照，意味着所有界面都要服从同一套逻辑：没有多余的缝、没有外凸的构件、没有混杂的材料。做法上它追求的是「看不出来」——门与墙齐平、柜与墙同面、灯槽藏进构造层。它解决的是小空间里…"
+    },
+    {
+      "style_id": "southeast-asian-tropical",
+      "display_name_zh": "东南亚热带",
+      "display_name_en": "Southeast Asian Tropical",
+      "family": "oriental",
+      "tags": [
+        "tropical",
+        "timber",
+        "shade",
+        "verandah",
+        "humid"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "度假住宅与别墅",
+        "度假酒店客房与泳池区",
+        "热带餐饮与酒吧",
+        "spa 与理疗空间"
+      ],
+      "compatible_styles": [
+        "tropical-resort",
+        "biophilic",
+        "wabi-sabi",
+        "rustic-natural",
+        "japanese-zen"
+      ],
+      "summary": "湿热气候下的建筑必须同时解决遮阳、通风、防潮与防虫。东南亚传统民居由此形成一整套做法：房屋架空以防潮与通风，深出檐与大屋顶遮阳避雨，四周回廊（verandah）作为室内外的缓冲与生活主场，木与…"
+    },
+    {
+      "style_id": "steampunk",
+      "display_name_zh": "蒸汽朋克",
+      "display_name_en": "Steampunk",
+      "family": "industrial",
+      "tags": [
+        "brass",
+        "gear",
+        "rivet",
+        "victorian-machine"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "主题餐饮与酒吧",
+        "零售与陈列空间",
+        "展陈与体验空间",
+        "影棚与场景搭建",
+        "住宅书房与收藏室"
+      ],
+      "compatible_styles": [
+        "industrial-loft",
+        "warehouse-conversion",
+        "victorian",
+        "art-deco"
+      ],
+      "summary": "它回应的是「技术被隐形的现代生活失去可见机械感」这一失落。蒸汽朋克把维多利亚时代的机械语汇——黄铜管路、齿轮、铆钉、铸件——重新铺陈在日常空间里，让设备本身成为可读的装饰。它之所以能在室内落地…"
+    },
+    {
+      "style_id": "surrealist-interior",
+      "display_name_zh": "超现实空间",
+      "display_name_en": "Surrealist Interior",
+      "family": "experimental",
+      "tags": [
+        "scale-shift",
+        "dreamlike",
+        "unexpected",
+        "optical"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "展陈与艺术空间",
+        "商业体验店与快闪空间",
+        "摄影与直播场景",
+        "主题餐饮与酒店"
+      ],
+      "compatible_styles": [
+        "memphis",
+        "postmodern",
+        "art-deco",
+        "deconstructivism"
+      ],
+      "summary": "这套做法把艺术中「让熟悉之物变得陌生」的方法搬进了空间：不是加装饰，而是改变参照——把日常物件放大或缩小到不合常理的尺度，用镜面制造不存在的通道，放一段上不去人的楼梯。它解决的是观者在高度熟悉…"
+    },
+    {
+      "style_id": "tropical-resort",
+      "display_name_zh": "热带度假",
+      "display_name_en": "Tropical Resort",
+      "family": "natural-organic",
+      "tags": [
+        "resort",
+        "timber-ceiling",
+        "water",
+        "resort-lounge"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "度假酒店与客房",
+        "民宿与度假住宅",
+        "泳池会所与 SPA",
+        "餐饮露台与酒吧",
+        "高端康养空间"
+      ],
+      "compatible_styles": [
+        "southeast-asian-tropical",
+        "biophilic",
+        "mediterranean"
+      ],
+      "summary": "度假空间的成败不在单个房间，而在「到达—过渡—停留」的体验序列。热带度假由此把空间组织成一条明确的场景动线：入口以水面与绿植迎接，穿过多柱连廊进入半室外的接待区，木格栅顶滤下斑驳光影，视线始终…"
+    },
+    {
+      "style_id": "victorian",
+      "display_name_zh": "维多利亚",
+      "display_name_en": "Victorian",
+      "family": "classic",
+      "tags": [
+        "ornate",
+        "dark-wood",
+        "patterned",
+        "dense",
+        "eclectic"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "历史住宅与老宅改造",
+        "精品酒店与主题客房",
+        "餐酒吧与下午茶空间",
+        "主题体验与沉浸式空间",
+        "古董与家具展厅"
+      ],
+      "compatible_styles": [
+        "english-country",
+        "vintage-european",
+        "european-classical",
+        "american-classic"
+      ],
+      "summary": "维多利亚并非单一风格，而是工业量产与身份展示共同作用的结果。印刷壁纸、机制地毯、铸件五金与批量木作让装饰变得便宜而唾手可得，新兴中产于是用满来证明体面——墙面、地面、天花与家具各有一套图案，装…"
+    },
+    {
+      "style_id": "vintage-european",
+      "display_name_zh": "复古欧式旧物风",
+      "display_name_en": "Vintage European",
+      "family": "deco-retro",
+      "tags": [
+        "flea-market",
+        "patina",
+        "mismatch",
+        "aged",
+        "layered"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "住宅客厅与书房",
+        "小型餐饮与酒吧",
+        "精品店与买手店",
+        "民宿与精品酒店",
+        "摄影与展陈空间"
+      ],
+      "compatible_styles": [
+        "art-deco",
+        "english-country",
+        "french-romantic",
+        "european-classical",
+        "mid-century-modern"
+      ],
+      "summary": "它回应的是批量标准化家具把居住空间抹成同一副面孔的问题：当所有家具来自同一系列时，家就不再携带时间信息。这套做法不重建任何一个历史时期，而是把不同年代、不同来源的旧物混置在一个空间里，让彼此的…"
+    },
+    {
+      "style_id": "wabi-sabi",
+      "display_name_zh": "侘寂",
+      "display_name_en": "Wabi-Sabi",
+      "family": "oriental",
+      "tags": [
+        "imperfection",
+        "patina",
+        "handmade",
+        "raw",
+        "quiet"
+      ],
+      "stages": [
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "budget_tier": "mid",
+      "applicable_spaces": [
+        "小型住宅与茶室",
+        "民宿与精品酒店客房",
+        "器物展厅与工作室",
+        "小型餐饮与咖啡馆"
+      ],
+      "compatible_styles": [
+        "japanese-zen",
+        "japandi",
+        "organic-modern",
+        "rustic-natural",
+        "southeast-asian-tropical"
+      ],
+      "summary": "侘寂并非一种构造体系，而是一套关于「接受时间与不完美」的取舍原则。它诞生于资源有限的环境：与其用昂贵材料追求无瑕，不如使用土、木、石、纸这类会随时间变化的本土材料，让风化、裂纹、补痕成为可读的…"
+    },
+    {
+      "style_id": "warehouse-conversion",
+      "display_name_zh": "厂房改造",
+      "display_name_en": "Warehouse Conversion",
+      "family": "industrial",
+      "tags": [
+        "adaptive-reuse",
+        "truss",
+        "clerestory",
+        "vast"
+      ],
+      "stages": [
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "budget_tier": "premium",
+      "applicable_spaces": [
+        "创意办公与联合办公",
+        "文化展览与艺术空间",
+        "大型零售与市集",
+        "餐饮与活动空间",
+        "住宅 LOFT 与工作室"
+      ],
+      "compatible_styles": [
+        "industrial-loft",
+        "brutalist",
+        "biophilic",
+        "steampunk"
+      ],
+      "summary": "它回应的是城市工业外迁后留下的大体量厂房如何处理的问题。这类建筑最不可替代的价值在结构本体：大跨度桁架、连续高侧窗、厚实砌体与耐磨地坪，新建几乎无法复刻。做法因此以「保留结构、更新性能」为原则…"
+    }
+  ]
+}

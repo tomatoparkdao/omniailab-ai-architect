@@ -1,0 +1,273 @@
+{
+  "style_id": "southeast-asian-tropical",
+  "display_name_zh": "东南亚热带",
+  "display_name_en": "Southeast Asian Tropical",
+  "family": "oriental",
+  "tags": [
+    "tropical",
+    "timber",
+    "shade",
+    "verandah",
+    "humid"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "源自东南亚传统民居，当代在度假与住宅中持续演化",
+    "origin": "东南亚湿热地区，含马来、泰、印尼等地民居体系",
+    "summary": "湿热气候下的建筑必须同时解决遮阳、通风、防潮与防虫。东南亚传统民居由此形成一整套做法：房屋架空以防潮与通风，深出檐与大屋顶遮阳避雨，四周回廊（verandah）作为室内外的缓冲与生活主场，木与竹编制细密格栅既挡直射光又透气。当代室内沿用这套逻辑——把回廊当作真正的生活空间，用楼板抬升、可开合围护与遮阳格栅来对抗气候，而不是靠空调封闭空间。",
+    "key_movements": [
+      "东南亚传统高脚屋民居",
+      "热带现代主义（Tropical Modernism）",
+      "气候适应性建筑"
+    ]
+  },
+  "spatial_principles": [
+    "设置贯通的回廊或半室外平台作为主要生活场，室内与回廊连成一体，边界可开可合。",
+    "房屋地面抬升，室内地坪高于室外地坪 300–900mm（常见工程惯例区间），防潮并利于通风。",
+    "沿外墙布置遮阳格栅与百叶，形成被动遮阳层，控制直射光进入。",
+    "以可开启的大开口组织穿堂风，主要开口对位布置，形成南北或东西向的贯通气流。",
+    "将绿化与水体嵌入空间内部，作为降温与视觉焦点，而非仅作室外景观。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "出檐深度与层高比取 0.3–0.6（常见工程惯例区间），出檐越深遮阳越有效但采光越低。",
+      "遮阳格栅间距 60–150mm（常见工程惯例区间），兼顾遮阳与通风。",
+      "开口形式以横向通长为主，窗高与窗宽比约 1:2–1:3，强调水平展开。",
+      "屋顶坡度按 25°–45°（常见工程惯例区间），保证湿热地区快速排水。"
+    ],
+    "ratios": [
+      "出檐深度:层高约 0.3–0.6",
+      "遮阳格栅间距 60–150mm",
+      "开口宽高比约 2:1–3:1"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–3800mm；坡屋顶室内最高点可更高以助热压通风"
+  },
+  "color_palette": [
+    {
+      "name_zh": "柚木棕",
+      "name_en": "Teak Brown",
+      "hex": "#7A5230",
+      "usage": "木构件、地板与家具，占比约 30%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "藤编米",
+      "name_en": "Rattan Beige",
+      "hex": "#D9C9A8",
+      "usage": "格栅、编织面与软装，占比约 20%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "热带绿",
+      "name_en": "Tropical Green",
+      "hex": "#3E6B4F",
+      "usage": "植物与织物，占比约 15%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "火山石黑",
+      "name_en": "Volcanic Stone Black",
+      "hex": "#2E2A26",
+      "usage": "地面与基座，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "石灰白",
+      "name_en": "Lime White",
+      "hex": "#EDE6D8",
+      "usage": "墙面与天花，占比约 15%",
+      "role": "base"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "柚木与硬木",
+      "name_en": "Teak and hardwood",
+      "application": "结构、地板与家具",
+      "finish": "户外级木蜡油或油性涂料，半哑光",
+      "notes": "需选耐候耐白蚁品种，户外件定期保养"
+    },
+    {
+      "name_zh": "藤编与竹编",
+      "name_en": "Rattan and bamboo weave",
+      "application": "格栅、柜门与坐面",
+      "finish": "自然面，涂透明防护层",
+      "notes": "潮湿环境需防霉处理"
+    },
+    {
+      "name_zh": "天然石材",
+      "name_en": "Natural stone",
+      "application": "地面与台面",
+      "finish": "自然面或荔枝面，防滑",
+      "notes": "需做防滑与防污处理，避免返潮结露"
+    },
+    {
+      "name_zh": "石灰基涂料",
+      "name_en": "Lime-based coating",
+      "application": "墙面与天花",
+      "finish": "哑光，透气",
+      "notes": "透气性有利于湿热环境调湿"
+    },
+    {
+      "name_zh": "陶土瓦",
+      "name_en": "Clay roof tile",
+      "application": "坡屋面",
+      "finish": "自然烧制，色调不匀",
+      "notes": "利于排水与隔热"
+    }
+  ],
+  "furniture_language": [
+    "家具线条偏细长，多用藤编与木条拼构，体量轻透便于通风。",
+    "坐具低而宽，坐面高 350–420mm（常见工程惯例区间），常配可移动的编织或软垫。",
+    "家具结构多外露，以绑扎、榫接或藤条缠绕收口，不做全包覆。",
+    "以躺椅、吊床、编织坐凳等休闲坐具为主，耐用且便于户外使用。",
+    "储物家具尽量离地或架空，避免贴地受潮。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以自然光与穿堂风为主要光源，人工光仅作夜间补光，避免与白日强光对抗。",
+      "人工光以低色温暖光为主，与木材的暖调一致，营造夜晚的柔和氛围。",
+      "重点光落于植物、水景与编织细部，突出材质肌理。"
+    ],
+    "fixtures": [
+      "藤编吊灯",
+      "落地灯",
+      "外廊壁灯",
+      "水下或景观地埋灯"
+    ],
+    "color_temperature_k": [
+      2400,
+      2900
+    ],
+    "illuminance_lux": "常见工程惯例区间：室内 100–200lx，回廊 80–150lx，重点 200–300lx",
+    "layering": "白天以自然光为主，夜间环境光由壁灯与吊灯提供，重点光落于植物与水景，装饰光由景观地埋灯提供。"
+  },
+  "architectural_elements": [
+    "贯通回廊与半室外平台",
+    "深出檐与坡屋顶",
+    "木与藤编遮阳格栅与百叶",
+    "抬升地面与架空地板",
+    "可完全开启的通长折叠门或格栅门"
+  ],
+  "applicable_spaces": [
+    "度假住宅与别墅",
+    "度假酒店客房与泳池区",
+    "热带餐饮与酒吧",
+    "spa 与理疗空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "耐候实木与藤编的用量，户外耐用性直接决定材料等级",
+      "深出檐与坡屋顶的结构与屋面成本",
+      "防潮、防虫与排水做法的隐蔽工程投入"
+    ],
+    "saving_moves": [
+      "仅在回廊与主视线范围用真藤木，其余用仿藤木替代",
+      "遮阳格栅改用防腐木或铝木复合，兼顾耐久与成本",
+      "水景做小面积浅水盘，替代大型水池"
+    ],
+    "notes": "热带风格的长期成本在维护，材料耐候等级不宜为省钱而下调，否则两三年内即出现霉变与变形。"
+  },
+  "construction_considerations": [
+    "户外木构件需选用耐白蚁与耐候品种，并预留通风间隙避免含水率过高。",
+    "排水与防潮做法需在地面与屋面阶段一次到位，回廊找坡与落水口位置应提前确定。",
+    "藤竹制品需做防霉处理并远离持续潮湿部位，否则易发霉虫蛀。",
+    "大开口的折叠门与格栅门需核算风荷载与五金承重，标注待持证专业人员复核。",
+    "临水与泳池区域的电气做法需按潮湿场所处理，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "tropical-resort",
+    "biophilic",
+    "wabi-sabi",
+    "rustic-natural",
+    "japanese-zen"
+  ],
+  "incompatible_elements": [
+    "密闭小窗与低层高的封闭式布局",
+    "高饱和亮面瓷砖与镜面材料",
+    "厚重欧式雕花家具与地毯",
+    "全屋中央空调封闭运行、无自然通风开口"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "向回廊敞开的热带住宅，室内外以通长折叠格栅门连通，地面抬升 300–900mm，深出檐遮阳，室内嵌入绿植与浅水盘，坡屋顶露出木梁。",
+      "material": "柚木半哑光构件与地板、藤编格栅与柜门、自然面防滑石材地面、透气石灰基墙面、陶土瓦屋面，材料保留自然肌理与色差。",
+      "lighting": "白天以穿堂自然光为主，落地灯与藤编吊灯提供低色温暖光，景观地埋灯照亮植物与水景，色温 2400–2900K，营造黄昏柔和氛围。",
+      "furniture": "细长轻透的藤木家具，坐面高 350–420mm，结构外露以藤条缠绕收口，躺椅与编织坐凳为主，储物柜离地架空。",
+      "camera": "平视偏低的机位，镜头高度约 1200–1500mm，等效焦距 24–35mm，画面包含回廊、出檐与室内外过渡。",
+      "atmosphere": "通透、湿润、被绿意包围，光影斑驳柔和，室内外气息贯通。",
+      "keywords": [
+        "回廊",
+        "深出檐",
+        "藤编格栅",
+        "抬升地面",
+        "穿堂风",
+        "热带绿意"
+      ]
+    },
+    "en": {
+      "space": "Tropical residence open to a veranda, interior and exterior linked by full-length folding lattice doors, floor raised 300–900mm, deep eaves for shade, plants and a shallow water tray inside, timber beams exposed under a pitched roof.",
+      "material": "Semi-matte teak members and flooring, rattan lattice and cabinet fronts, slip-resistant natural stone floor, breathable lime-based wall finish, clay roof tile, retaining natural texture and tonal variation.",
+      "lighting": "Daylight and cross-ventilation as the primary source, floor lamps and rattan pendants giving warm low-color-temperature light, buried landscape lights on plants and water, 2400–2900K, evoking a soft dusk mood.",
+      "furniture": "Slender lightweight rattan and timber furniture, seat height 350–420mm, exposed structure lashed with rattan, loungers and woven stools dominant, storage kept off the ground.",
+      "camera": "Slightly low eye-level camera at 1200–1500mm, 24–35mm equivalent, framing veranda, deep eaves and the indoor-outdoor transition.",
+      "atmosphere": "Airy, humid, wrapped in greenery, dappled soft light, indoor and outdoor continuous.",
+      "keywords": [
+        "veranda",
+        "deep eaves",
+        "rattan lattice",
+        "raised floor",
+        "cross ventilation",
+        "tropical greenery"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持抬升地坪高度与外廊宽度关系不变，跨视角不得改变室内外高差。",
+    "保持主要开口位置、宽度与可开启方式不变，不得改为固定小窗。",
+    "保持坡屋顶坡度与出檐深度关系一致。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要密闭小窗与低层高的封闭房间",
+      "不要高饱和亮面瓷砖与镜面反射材质",
+      "不要厚重欧式雕花家具与满铺地毯",
+      "不要取消自然通风开口只留空调出风口"
+    ],
+    "en": [
+      "no sealed small windows or enclosed low-ceiling rooms",
+      "no high-saturation glossy tile or mirror-like surfaces",
+      "no heavy carved European furniture or wall-to-wall carpet",
+      "no layout that removes natural ventilation openings in favor of only air-conditioning outlets"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "遮阳与通风",
+      "criteria": "出檐深度:层高 ≥0.3，格栅间距 60–150mm，主要开口对位可形成穿堂风",
+      "stage": "S3"
+    },
+    {
+      "check": "室内外过渡",
+      "criteria": "回廊宽度 ≥1200mm（常见工程惯例区间），地坪高差 300–900mm",
+      "stage": "S3"
+    },
+    {
+      "check": "防潮防虫",
+      "criteria": "木构件离地通风、藤竹已防霉处理，材料耐候等级符合户外要求",
+      "stage": "S5"
+    },
+    {
+      "check": "夜间光环境",
+      "criteria": "色温 2400–2900K，无高照度冷白光与刺眼直射",
+      "stage": "S4"
+    }
+  ]
+}

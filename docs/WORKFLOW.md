@@ -1,7 +1,7 @@
 ---
 name: omniailab-workflow
 description: 八阶段专业工作流 —— 阶段推进项目进度，能力提供专业方法，门禁控制确认节奏
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

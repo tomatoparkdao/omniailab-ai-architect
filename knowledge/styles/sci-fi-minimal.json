@@ -1,0 +1,287 @@
+{
+  "style_id": "sci-fi-minimal",
+  "display_name_zh": "太空极简",
+  "display_name_en": "Sci-Fi Minimal",
+  "family": "experimental",
+  "tags": [
+    "seamless",
+    "monochrome",
+    "flush",
+    "engineered"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪 60 至 70 年代受太空想象影响形成视觉原型，21 世纪随精密加工普及进入实际建造",
+    "origin": "太空时代的设计想象与高精密工业制造传统的结合",
+    "summary": "把航天器内部当作参照，意味着所有界面都要服从同一套逻辑：没有多余的缝、没有外凸的构件、没有混杂的材料。做法上它追求的是「看不出来」——门与墙齐平、柜与墙同面、灯槽藏进构造层。它解决的是小空间里视觉噪声的问题：当界面被简化为极少数几种材质且全部齐平，空间会显得比实际更大更完整。代价是它对基层平整度与公差的要求极高，任何施工偏差都会以最明显的方式暴露出来。",
+    "key_movements": [
+      "未来主义",
+      "太空时代设计",
+      "极简主义",
+      "高精密工业设计"
+    ]
+  },
+  "spatial_principles": [
+    "界面极致平整，门缝、柜缝隐藏，可见拼缝宽度控制在 ≤2mm（常见工程惯例区间）",
+    "同一界面只用一种主材连续包覆，材质变化集中在功能交界处",
+    "无把手、无外凸五金，全部按压式或暗藏式开启",
+    "空间为规整正交体量，各界面严格对齐同一网格",
+    "主通道净宽 ≥1100mm，所有收口保持齐平而不做凸出线脚"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "所有拼缝对齐同一网格，常用模数 600mm（常见工程惯例区间）",
+      "缝宽统一，控制在 ≤2mm（常见工程惯例区间）",
+      "墙面与天花、地面交接做齐平或极浅凹缝，不做线脚",
+      "体量比例趋近整数关系，避免随意尺寸，同一空间重复尺寸保持一致",
+      "单一材质连续面在可见界面中占主要面积，避免零碎拼贴"
+    ],
+    "ratios": [
+      "单一主材连续面占比 ≥70%（常见工程惯例区间）",
+      "拼缝与网格对齐，偏差 ≤1mm/m（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3200mm（常见工程惯例区间）；做无主灯平顶，吊顶厚度 80–150mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "太空白",
+      "name_en": "Space White",
+      "hex": "#F2F3F4",
+      "usage": "墙、天花与柜体基调，占比约 55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "冷灰",
+      "name_en": "Cool Grey",
+      "hex": "#C9CDD1",
+      "usage": "地面与次要界面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "石墨灰",
+      "name_en": "Graphite Grey",
+      "hex": "#3A3D40",
+      "usage": "门框、台面与家具，占比约 12%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深空黑",
+      "name_en": "Deep Space Black",
+      "hex": "#141618",
+      "usage": "局部对比界面与屏幕区，占比 ≤5%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "冰蓝",
+      "name_en": "Ice Blue",
+      "hex": "#A9C6D8",
+      "usage": "背光与细节点缀，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "钛银",
+      "name_en": "Titanium Silver",
+      "hex": "#9EA6AC",
+      "usage": "金属收口与五金，占比 ≤3%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "无缝树脂与微水泥",
+      "name_en": "Seamless Resin and Microcement",
+      "application": "墙面与地面",
+      "finish": "齐平无缝哑光",
+      "notes": "需控制基层含水率与养护"
+    },
+    {
+      "name_zh": "阳极氧化铝",
+      "name_en": "Anodised Aluminium",
+      "application": "包板与暗藏门",
+      "finish": "细砂面阳极氧化，色差需分批控制"
+    },
+    {
+      "name_zh": "超白玻璃",
+      "name_en": "Ultra-clear Glass",
+      "application": "无框隔断",
+      "finish": "无框安装，接缝打磨抛光"
+    },
+    {
+      "name_zh": "冷色石英石与人造石",
+      "name_en": "Cool Quartz and Solid Surface",
+      "application": "台面与一体水槽",
+      "finish": "亚光，接缝无缝拼接"
+    },
+    {
+      "name_zh": "哑光漆面板",
+      "name_en": "Matte Lacquer Panel",
+      "application": "柜体与墙板",
+      "finish": "齐平按压式，同色同面"
+    },
+    {
+      "name_zh": "嵌入式线性灯",
+      "name_en": "Recessed Linear Lighting",
+      "application": "天花与墙槽",
+      "finish": "无缝嵌装，出光面与饰面齐平"
+    }
+  ],
+  "furniture_language": [
+    "方正几何体量，无可见把手，按压或暗藏开启",
+    "柜体与墙面齐平嵌入，柜面与墙同在一个平面",
+    "家具精确定位并与网格对齐，尺寸取整数关系",
+    "落地或悬浮（隐藏支撑），不出现外露节点与线脚",
+    "拉手为按压式或隐藏扣手，禁用外凸把手与装饰性五金"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "光被当作几何的一部分，线性光与洗墙用来勾出齐平的界面轮廓",
+      "无主灯设计，光源全部暗藏，出光面与饰面齐平",
+      "照度均匀且无眩光，避免强阴影破坏界面的纯净度"
+    ],
+    "fixtures": [
+      "线性暗藏灯带",
+      "无缝嵌入式筒灯",
+      "洗墙灯",
+      "背发光面板"
+    ],
+    "color_temperature_k": [
+      3000,
+      5000
+    ],
+    "illuminance_lux": "环境 200–350lx，任务面 300–500lx（常见工程惯例区间）",
+    "layering": "以均匀环境光为主，重点光克制，强调界面平整而非光影戏剧性"
+  },
+  "architectural_elements": [
+    "无门套隐藏门与齐平门缝",
+    "无主灯无缝连续天花",
+    "齐平踢脚或取消踢脚的墙地衔接",
+    "嵌入式线性灯槽",
+    "整面同材质墙板",
+    "隐藏柜体与暗藏把手"
+  ],
+  "applicable_spaces": [
+    "高端住宅与公寓",
+    "办公与科技企业空间",
+    "展陈与实验室空间",
+    "酒店客房"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "高平整度基层处理与无缝施工",
+      "定制嵌入构件与隐藏五金",
+      "单一材质的大面积统一采购与色差控制"
+    ],
+    "saving_moves": [
+      "仅主视线界面做无缝处理，次要墙面用同色哑光漆",
+      "隐藏门集中设置并减少数量，其余采用免漆门套",
+      "以同色哑光板材替代整面阳极氧化铝"
+    ],
+    "notes": "风格依靠「看不出构造」成立，因此造价主要花在误差控制上而非材料单价上"
+  },
+  "construction_considerations": [
+    "墙面与天花基层平整度需先验收，常见控制目标为 2m 靠尺偏差 ≤2mm（常见工程惯例区间）",
+    "隐藏门与齐平收口需专用五金并预留安装与调节空间",
+    "无缝地坪需控制基层含水率、分格与养护，防止开裂",
+    "线性灯槽需在封板前预埋，避免后期开槽破坏平整度",
+    "消防与电气隐蔽工程做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "modern-minimalism",
+    "italian-minimal",
+    "parametric-futurism",
+    "corporate-contemporary",
+    "bauhaus"
+  ],
+  "incompatible_elements": [
+    "可见拼缝与凸出把手",
+    "暖土色与手工肌理材料",
+    "繁复装饰与线脚",
+    "外露管线与工业风构件",
+    "高饱和霓虹色与强烈色光"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "规整正交的室内空间，墙面与天花为同一材质连续包覆，暗藏门与墙齐平，界面之间无可见线脚，柜体与墙同面",
+      "material": "无缝哑光白色树脂墙面，冷灰无缝地坪，细砂面阳极氧化铝收口，无框超白玻璃隔断，同色哑光柜体",
+      "lighting": "无主灯，线性暗藏灯带沿天花与墙槽连续出光，出光面与饰面齐平，整体均匀且无明显阴影",
+      "furniture": "方正无缝的白色柜体与隐藏门，家具按网格精确对齐，无可见把手与节点",
+      "camera": "1.5m 机位，35mm，取景强调界面齐平与拼缝对齐，画面干净无杂物",
+      "atmosphere": "洁净、精确、未来，界面被简化为极少数材质且全部齐平",
+      "keywords": [
+        "太空极简",
+        "无缝",
+        "齐平收口",
+        "隐藏门缝",
+        "单一材质",
+        "无主灯"
+      ]
+    },
+    "en": {
+      "space": "A strictly orthogonal interior with walls and ceiling wrapped in the same material, concealed doors flush with the wall, no visible mouldings at interfaces, cabinets coplanar with the wall",
+      "material": "Seamless matte white resin wall, cool grey seamless floor, fine-grain anodised aluminium trim, frameless ultra-clear glass partition, matching matte cabinets",
+      "lighting": "No central fixture, recessed linear lighting running continuously in ceiling and wall slots, light aperture flush with the finish, even and shadowless",
+      "furniture": "Rectilinear seamless white cabinets and concealed doors, furniture aligned precisely to the grid, no visible handles or joints",
+      "camera": "1.5 m position, 35mm, framing that emphasises flush planes and aligned joints, clean with no clutter",
+      "atmosphere": "Clean, precise, futuristic, surfaces reduced to a very small number of flush materials",
+      "keywords": [
+        "sci-fi minimal",
+        "seamless",
+        "flush detailing",
+        "hidden door joint",
+        "single material",
+        "no central fixture"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持全部拼缝与网格的对齐关系不变",
+    "保持齐平收口的构造关系，不新增线脚或凸出构件",
+    "保持界面平整度，不引入曲面或凹凸造型"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要可见拼缝与凸出把手",
+      "不要暖土色与手工肌理材料",
+      "不要繁复装饰与线脚",
+      "不要外露管线与工业风构件",
+      "不要高饱和霓虹色与强烈色光"
+    ],
+    "en": [
+      "no visible joints or protruding handles",
+      "no warm earth-tone or hand-made textured materials",
+      "no elaborate ornament or mouldings",
+      "no exposed services or industrial elements",
+      "no saturated neon or strong coloured light"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "基层平整度",
+      "criteria": "墙顶基层 2m 靠尺偏差 ≤2mm 后方可饰面（常见工程惯例区间）",
+      "stage": "construction"
+    },
+    {
+      "check": "拼缝控制",
+      "criteria": "可见拼缝宽度 ≤2mm 且与网格对齐，偏差 ≤1mm/m（常见工程惯例区间）",
+      "stage": "S5"
+    },
+    {
+      "check": "主材占比",
+      "criteria": "单一主材连续面占可见界面 ≥70%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "无外凸件",
+      "criteria": "可见界面上无任何外凸把手、线脚或五金，触摸面无凸起",
+      "stage": "construction"
+    }
+  ]
+}

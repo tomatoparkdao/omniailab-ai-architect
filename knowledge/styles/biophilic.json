@@ -1,0 +1,288 @@
+{
+  "style_id": "biophilic",
+  "display_name_zh": "亲自然设计",
+  "display_name_en": "Biophilic Design",
+  "family": "natural-organic",
+  "tags": [
+    "plants",
+    "daylight",
+    "green-wall",
+    "natural-ventilation"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "概念于 1980 年代提出，2000 年代后逐步成为主流的空间设计方法",
+    "origin": "环境心理学与建筑生物学研究，结合北欧与东南亚的当代建筑实践",
+    "summary": "它回应的是人长期处于封闭人造环境中产生的注意力疲劳、压力升高与空气质量下降。亲自然设计并不是简单地摆几盆植物，而是把自然要素按可验证的方式编织进空间：把日照、通风、水体、绿量与天然材料分配到视线上与动线上，让它们在一天中的多数时段持续起作用。它能成为方法的关键，是环境心理学与建筑生物学提供了可量化依据——视绿比例、日照时数、新风换气次数，使「自然」从装饰上升为性能指标，因此它的判据大多能落到具体数值。",
+    "key_movements": [
+      "亲自然设计理论",
+      "环境心理学",
+      "可持续建筑与健康建筑实践"
+    ]
+  },
+  "spatial_principles": [
+    "优先把工位、座位与主要动线安排在可直接看到室外绿量或天空的位置，视绿比例尽量高。",
+    "用通透隔断与低矮家具保持视线穿透，避免实墙切断与自然的视觉联系。",
+    "把自然通风路径纳入平面：形成进风面与排风面的对位，避免出现无对流的死端房间。",
+    "设置连续的过渡空间（门廊、凹阳台、带植物的缓冲区），让室内外是过渡关系而非硬切。",
+    "把绿量与水体沿动线布置为多点接触，而不是集中成一个景观节点供偶尔观看。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "人视线高度内（坐姿约 1.2m、站姿约 1.6m）的视绿比例常见 ≥25%，关键工位宜 ≥40%。",
+      "植物墙完成面厚度常见 100–300mm，含背衬、种植层与灌溉层。",
+      "可开启窗面积与该房间地面面积的比例由通风与热工计算确定，标注待持证专业人员复核。",
+      "天花不做全封闭吊顶，保留反射面与声学板之间的空隙，便于间接采光与气流组织。"
+    ],
+    "ratios": [
+      "坐姿视绿比例 ≥25%",
+      "关键工位视绿比例 ≥40%",
+      "植物墙厚度 100–300mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2800–4000mm；较高净高有利于间接采光与热压通风"
+  },
+  "color_palette": [
+    {
+      "name_zh": "苔绿",
+      "name_en": "Moss Green",
+      "hex": "#6E8B5A",
+      "usage": "主色系与软装织物，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "森林绿",
+      "name_en": "Forest Green",
+      "hex": "#33523E",
+      "usage": "深色背景与陈设，占比约 10–18%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅木色",
+      "name_en": "Light Timber",
+      "hex": "#C9A97B",
+      "usage": "地面、家具与格栅，占比约 20–30%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "天光白",
+      "name_en": "Daylight White",
+      "hex": "#F2F1EA",
+      "usage": "墙面与天花底色，占比约 25–35%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "陶土",
+      "name_en": "Terracotta",
+      "hex": "#B87A5A",
+      "usage": "地面砖与花器，占比约 6–12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "水蓝",
+      "name_en": "Water Blue",
+      "hex": "#7FA8A0",
+      "usage": "水体、饰面与织物点缀，占比约 4–10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "天然木材",
+      "name_en": "Natural Timber",
+      "application": "地面、墙面与家具",
+      "finish": "天然油蜡，保留木纹与可触感"
+    },
+    {
+      "name_zh": "植物墙与种植槽",
+      "name_en": "Living Wall and Planting Trough",
+      "application": "墙面与隔断",
+      "finish": "模块化种植，配滴灌与排水系统"
+    },
+    {
+      "name_zh": "陶土砖与烧结砖",
+      "name_en": "Clay and Fired Brick",
+      "application": "地面与墙面",
+      "finish": "自然面或哑光，透气不封闭"
+    },
+    {
+      "name_zh": "夯土与黏土抹面",
+      "name_en": "Rammed Earth and Clay Plaster",
+      "application": "墙面",
+      "finish": "手工抹面，具备调湿性能"
+    },
+    {
+      "name_zh": "天然纺织与麻织物",
+      "name_en": "Natural Textiles and Jute",
+      "application": "软装、帘幕与吸声面",
+      "finish": "未染色或植物染，保留纤维质感"
+    },
+    {
+      "name_zh": "回收木与竹材",
+      "name_en": "Reclaimed Timber and Bamboo",
+      "application": "家具与格栅遮阳",
+      "finish": "天然油面，用于遮阳与视线过滤"
+    }
+  ],
+  "furniture_language": [
+    "家具线条圆润、体量轻，多用实木与藤编，避免厚重封闭箱体。",
+    "尺度贴合人体，坐具开放透气，编织面与木框结合。",
+    "落地方式以细腿或圆润木脚落地，便于清洁且不阻碍气流。",
+    "拉手为木质圆钮或挖手，触感温润，尽量不用冷硬金属件。",
+    "家具布置避让窗与绿墙前方 600–900mm，维持视线与采光通道不被遮挡。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以自然采光为首要光源，人工光模拟日光的方向与色温变化并在夜间补足。",
+      "用间接与漫射照明减少眩光，避免直射光打断视绿与自然材质的关系。"
+    ],
+    "fixtures": [
+      "天窗与高侧窗采光",
+      "线性漫射灯具",
+      "间接灯槽",
+      "可调色温的工作面照明"
+    ],
+    "color_temperature_k": [
+      2700,
+      5000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，工作面 300–500lx；色温随日照时段渐变",
+    "layering": "环境层以自然采光与漫射灯具为主；任务层为可调色温工作面照明；重点层弱化，仅对植物做补充生长照明（按园艺补光波段另行配置）。"
+  },
+  "architectural_elements": [
+    "天窗、高侧窗与落地窗构成多层自然采光。",
+    "模块化植物墙与沿动线布置的种植槽。",
+    "可开启窗与风口形成穿堂通风路径。",
+    "木格栅或竖向百叶作为遮阳与视线过滤构件。",
+    "室内浅水盘或水景，配合气流调节湿度。"
+  ],
+  "applicable_spaces": [
+    "办公与协作空间",
+    "住宅起居与阳台过渡区",
+    "酒店与康养空间",
+    "教育空间",
+    "医疗与疗愈环境"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "植物墙的种植模块、灌溉与排水系统",
+      "天窗与高侧窗的采光构造",
+      "可开启窗与通风组织的机电配合"
+    ],
+    "saving_moves": [
+      "以盆栽与种植槽替代大面积植物墙",
+      "以增加开窗与遮阳格栅替代天窗采光",
+      "灌溉采用定时滴灌减少人工养护成本"
+    ],
+    "notes": "造价的关键不在植物本身而在配套：灌溉、排水、补光与结构荷载会累积；方案阶段应把养护方案一并确定，否则后期运维费用会反超建造费。"
+  },
+  "construction_considerations": [
+    "植物墙的荷载、排水与防水做法标注待持证专业人员复核，并须设检修与防漏措施",
+    "通风量、可开启窗面积与新风换气次数须由持证专业人员按规范与热工计算确定",
+    "天窗与高侧窗的隔热、防水与夏季遮阳须专项设计，避免过度得热",
+    "木质与天然纺织材料的防潮、防霉与防火处理标注待持证专业人员复核",
+    "种植区须预留灌溉水源与排水点，且不得破坏结构防水层"
+  ],
+  "compatible_styles": [
+    "japandi",
+    "scandinavian",
+    "wabi-sabi",
+    "industrial-loft",
+    "warehouse-conversion"
+  ],
+  "incompatible_elements": [
+    "完全无采光的封闭内部空间",
+    "大面积高光人造饰面与仿生塑料植物",
+    "厚实封闭墙体切断室内外视线",
+    "无自然通风的单向密闭房间"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "亲自然设计办公空间，净高约 3.2m，一侧整面落地窗引入室外绿量，另侧为模块化植物墙，天花保留反射面与声学板空隙，可开启窗与风口形成穿堂通风",
+      "material": "天然木材地面与家具配天然油蜡面，陶土砖地面，黏土抹面墙面，植物墙模块配滴灌，麻质帘幕与藤编坐面，木格栅遮阳",
+      "lighting": "落地窗与高侧窗引入自然光为主，线性漫射灯具补足，间接灯槽洗亮墙面，工作面照明色温可调 2700–5000K",
+      "furniture": "线条圆润的实木与藤编家具，细木脚落地，木质圆钮或挖手，窗与绿墙前方留出 600–900mm 通道",
+      "camera": "约 1.5m 视高，等效 24–28mm，机位使室外绿量与植物墙同时入画",
+      "atmosphere": "明亮通透、湿润自然，绿量与日光为主导，材质触感温润",
+      "keywords": [
+        "落地窗自然采光",
+        "模块化植物墙",
+        "穿堂通风",
+        "天然木材",
+        "藤编家具",
+        "木格栅遮阳"
+      ]
+    },
+    "en": {
+      "space": "Biophilic office space, clear height about 3.2 m, a full-height window wall on one side bringing in exterior greenery, a modular living wall on the other, exposed soffit with acoustic panels and gaps, openable windows aligned with vents to create cross ventilation",
+      "material": "natural timber floor and furniture with oil-wax finish, terracotta tile paving, clay-plaster walls, planting modules with drip irrigation, jute curtains and rattan seating, timber louvre shading",
+      "lighting": "daylight from the window wall and clerestory as the primary source, linear diffusing fixtures supplementing, concealed cove lighting washing the walls, tunable 2700–5000 K task lighting",
+      "furniture": "rounded solid timber and rattan furniture on slim timber legs, wooden knobs or cut-out pulls, leaving 600–900 mm clear in front of windows and living walls",
+      "camera": "eye level about 1.5 m, 24–28 mm equivalent, positioned so exterior greenery and the living wall are both in frame",
+      "atmosphere": "bright and permeable, verdant and softly humid, greenery and daylight dominant, materials warm to the touch",
+      "keywords": [
+        "full-height daylight windows",
+        "modular living wall",
+        "cross ventilation",
+        "natural timber",
+        "rattan furniture",
+        "timber louvre shading"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持采光开口的位置与面积不变。",
+    "保持通风进风面与排风面的路径及可开启扇位置不变。",
+    "保持植物墙与种植槽位置及视线通道不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现完全无采光的封闭内部空间",
+      "不要出现大面积高光人造饰面与仿生塑料植物",
+      "不要出现厚实封闭墙体切断室内外视线",
+      "不要出现无自然通风的单向密闭房间",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no fully enclosed interior with no daylight",
+      "no large high-gloss synthetic surfaces or artificial plastic plants",
+      "no thick sealed walls blocking indoor-outdoor sightlines",
+      "no single-sided sealed rooms without natural ventilation",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "视绿比例",
+      "criteria": "坐姿视线高度视绿比例 ≥25%，关键工位 ≥40%，实墙不阻断主要视线",
+      "stage": "S3"
+    },
+    {
+      "check": "自然采光",
+      "criteria": "主要使用区可获得直射或漫射自然光，环境照度 150–300lx，工作面 300–500lx",
+      "stage": "S4"
+    },
+    {
+      "check": "通风路径",
+      "criteria": "存在明确的进风面与排风面对位，无死端房间；换气量由持证专业人员核定后留档",
+      "stage": "S4"
+    },
+    {
+      "check": "植物系统",
+      "criteria": "植物墙厚度 100–300mm，滴灌与排水已接通并留检修口，荷载由持证专业人员核定",
+      "stage": "S5"
+    },
+    {
+      "check": "材质与触感",
+      "criteria": "硬装可见面中天然材料面积占比 ≥50%，金属冷硬五金件不占主导",
+      "stage": "S5"
+    }
+  ]
+}

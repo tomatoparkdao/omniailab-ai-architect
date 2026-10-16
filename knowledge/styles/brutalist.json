@@ -1,0 +1,283 @@
+{
+  "style_id": "brutalist",
+  "display_name_zh": "粗野主义",
+  "display_name_en": "Brutalist",
+  "family": "industrial",
+  "tags": [
+    "raw-concrete",
+    "mass",
+    "board-marked",
+    "monumental"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1950 至 1970 年代为建筑高峰期，当代作为室内语汇复兴",
+    "origin": "战后欧洲（尤其英、法）及日本、拉美的公共建筑实践",
+    "summary": "它回应的是战后大规模公共建设对「材料诚实、造价可控」的双重要求。清水混凝土浇筑即成最终表面，无需另做饰面，因此能同时压缩用材与工期；而把结构构件刻意放大并外露，又让建筑获得纪念碑式的公共表达。它的问题意识是「结构即形式」——体量、模板痕迹与构件尺度本身构成全部装饰。落到室内，核心并非贴一层仿混凝土皮，而是保留真实的浇筑面与粗大构件，用体量与光的关系而不是饰面堆叠来表达。",
+    "key_movements": [
+      "粗野主义建筑",
+      "材料诚实性主张",
+      "构成主义后期的混凝土实践"
+    ]
+  },
+  "spatial_principles": [
+    "以体量组织空间：用厚重的实体墙、粗大柱与梁划分区域，而非薄型隔断。",
+    "光从高处引入并在混凝土面上形成阴影，空间明暗由开口的形状与深浅决定。",
+    "动线沿体量转折形成有收放的行进序列，不做直线贯通的长走廊。",
+    "构件尺度统一偏大：柱、梁、栏板截面按结构需要放大，不做过细处理。",
+    "饰面即结构面：不做附加包覆，模板缝、螺栓孔与浇筑痕迹被保留为可见信息。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "结构构件按体量感放大：外露梁高常见跨度的 1/10–1/8，柱截面常见 400–900mm。",
+      "清水混凝土面按模板分格，分格尺寸常见 900–1800mm，对拉螺栓孔按分格规律排布。",
+      "开口取规则几何（矩形或圆洞），开口宽度常见墙段高度的 0.3–0.6 倍，形成厚重洞口。",
+      "净高配合粗大构件：常见净高 3200–5000mm，让压迫感与纪念感同时成立。"
+    ],
+    "ratios": [
+      "外露梁高 1/10–1/8 跨度",
+      "柱截面 400–900mm",
+      "模板分格 900–1800mm",
+      "开口宽 0.3–0.6 倍墙段高"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3200–5000mm；公共空间可更高以容纳粗大构件"
+  },
+  "color_palette": [
+    {
+      "name_zh": "清水灰",
+      "name_en": "Raw Concrete Grey",
+      "hex": "#A9A7A2",
+      "usage": "混凝土墙面、柱与天花的本色，占比约 40–55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "深灰",
+      "name_en": "Deep Grey",
+      "hex": "#6E6C68",
+      "usage": "地面与阴影面，占比约 15–25%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "浅米灰",
+      "name_en": "Light Warm Grey",
+      "hex": "#C9C5BC",
+      "usage": "局部提亮墙面与洞口内壁，占比约 10–20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "炭黑",
+      "name_en": "Charcoal",
+      "hex": "#34342F",
+      "usage": "钢构件、门窗框与灯具，占比约 10–18%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "锈红",
+      "name_en": "Rust Red",
+      "hex": "#8C4A32",
+      "usage": "外露钢件与局部点缀，占比约 3–8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "橄榄绿",
+      "name_en": "Olive",
+      "hex": "#5E6250",
+      "usage": "织物料与门扇点缀，占比约 3–8%",
+      "role": "secondary"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "清水混凝土",
+      "name_en": "Fair-faced Concrete",
+      "application": "墙面、柱、梁与天花",
+      "finish": "保留木纹模板痕迹、气孔与对拉螺栓孔，罩渗透型保护剂"
+    },
+    {
+      "name_zh": "露骨料混凝土",
+      "name_en": "Exposed Aggregate Concrete",
+      "application": "局部墙面与地面",
+      "finish": "水洗露骨料，颗粒感明显"
+    },
+    {
+      "name_zh": "厚钢板与耐候钢",
+      "name_en": "Thick Plate and Weathering Steel",
+      "application": "栏板、门扇与构件",
+      "finish": "自然锈面或喷砂，保留轧制痕迹"
+    },
+    {
+      "name_zh": "厚板实木",
+      "name_en": "Solid Thick Timber",
+      "application": "门扇、台面与家具",
+      "finish": "本色厚板，边缘不做线脚"
+    },
+    {
+      "name_zh": "厚玻璃与玻璃砖",
+      "name_en": "Thick Glass and Glass Block",
+      "application": "洞口与隔断",
+      "finish": "通透或半透，固定件外露"
+    },
+    {
+      "name_zh": "铸铝与铸铁件",
+      "name_en": "Cast Metal Fittings",
+      "application": "五金、灯具与栏板端部",
+      "finish": "哑光铸面，保留铸痕"
+    }
+  ],
+  "furniture_language": [
+    "家具体量优先：厚板拼装的箱体与块状坐具，几乎不做雕饰。",
+    "尺度偏大偏重，座面与台面厚度常见 40–80mm 的实体板。",
+    "落地方式为整体基座或粗大块体直接落地，不设细腿与滚轮。",
+    "拉手为整体开槽或粗金属条，尺度与构件截面相称。",
+    "表面保留浇筑、拉丝或锈面痕迹，不追求均匀一致。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以高处引入的自然光为主要光源，人工光补足空间深处的照度。",
+      "用窄光束洗亮混凝土面，强调体量转折与模板纹理的浮雕感。"
+    ],
+    "fixtures": [
+      "暗藏上照灯",
+      "筒灯与窄光束射灯",
+      "粗壮金属壁灯或吊灯",
+      "结构缝内嵌线型灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3500
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 100–250lx，重点墙面 300–500lx",
+    "layering": "环境层以自然光与暗藏上照为主；重点层用窄光束射灯勾勒体量边缘；装饰层极弱，灯具多隐藏或做成粗重的功能性构件。"
+  },
+  "architectural_elements": [
+    "木纹模板痕迹的清水混凝土墙面与天花。",
+    "粗大的外露梁柱与厚重洞口边框。",
+    "规则排布的对拉螺栓孔与模板分格缝。",
+    "厚实体栏板与无饰面的混凝土楼梯。",
+    "高侧窗与深窗洞，形成厚重的阴影边框。"
+  ],
+  "applicable_spaces": [
+    "文化建筑与美术馆",
+    "公共门厅与中庭",
+    "办公与机构空间",
+    "展陈与纪念性空间",
+    "住宅的公共区与楼梯间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "清水混凝土的模板体系与浇筑质量",
+      "表面保护剂与缺陷修补工艺",
+      "粗大构件的支模与混凝土用量"
+    ],
+    "saving_moves": [
+      "只在视觉主体范围做清水混凝土，其余用同色普通涂料",
+      "简化模板分格以减少对拉孔数量",
+      "以暗藏洗墙替代大量定制灯具构件"
+    ],
+    "notes": "造价几乎由模板体系与浇筑精度决定；浇筑完成后几乎没有低成本修正余地，方案阶段必须把分格与螺栓孔位置一次定准。"
+  },
+  "construction_considerations": [
+    "混凝土配合比、振捣与养护直接决定表面观感，须先做 1:1 实体样板墙并留存比对标准",
+    "模板分格与对拉螺栓孔位置须在支模前完整放样，错一处即成永久可见缺陷",
+    "清水混凝土面后期开凿留下不可修复痕迹，机电点位须在浇筑前预埋，标注待持证专业人员复核",
+    "构件截面与配筋须由持证专业人员确定，本条的尺度描述不构成结构结论",
+    "外露钢材的锈面处理与排水须考虑锈水对下游饰面的污染"
+  ],
+  "compatible_styles": [
+    "industrial-loft",
+    "warehouse-conversion",
+    "modern-minimalism",
+    "bauhaus"
+  ],
+  "incompatible_elements": [
+    "壁纸、木饰面与石膏线脚等附加饰面",
+    "薄型轻质隔断与细密分格",
+    "明亮粉彩与大面积镜面反射",
+    "繁复软包与成套古典家具"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "粗野主义美术馆中庭，净高约 4.5m，四周为清水混凝土厚墙与粗大外露梁柱，模板分格约 1.2m 并带规则螺栓孔，高处设连续高侧窗，深窗洞形成厚重阴影",
+      "material": "木纹模板痕迹的清水混凝土墙面与天花，磨光混凝土地面，炭黑厚钢板栏板与门扇，厚板实木台面，铸铝五金",
+      "lighting": "高侧窗引入自然天光并在混凝土面上形成明暗，暗藏上照灯洗亮墙面，窄光束射灯勾勒梁柱边缘，色温 2700–3500K",
+      "furniture": "厚板拼装块状箱体与坐具，整体基座落地，台面厚 40–80mm，整体开槽或粗金属条拉手",
+      "camera": "约 1.5m 视高，等效 24–28mm 广角，收入粗大梁柱与体量转折",
+      "atmosphere": "沉重、纪念性强、材料诚实，明暗对比明确，几乎没有附加装饰",
+      "keywords": [
+        "清水混凝土",
+        "木纹模板痕迹",
+        "对拉螺栓孔",
+        "粗大外露梁柱",
+        "高侧窗",
+        "厚钢板栏板"
+      ]
+    },
+    "en": {
+      "space": "Brutalist museum atrium, clear height about 4.5 m, surrounded by thick fair-faced concrete walls with oversized exposed beams and columns, board formwork grid about 1.2 m with regular tie-rod holes, a continuous clerestory high above, deep reveals casting heavy shadows",
+      "material": "wood-grain board-marked fair-faced concrete walls and ceiling, polished concrete floor, charcoal thick steel plate balustrades and doors, solid thick timber counter, cast metal fittings",
+      "lighting": "clerestory daylight modelling the concrete surfaces, concealed uplights washing the walls, narrow-beam spotlights tracing beam and column edges, 2700–3500 K",
+      "furniture": "blocky cabinets and seating built from thick boards, full plinth bases sitting on the floor, tops 40–80 mm thick, integrally recessed or heavy metal bar pulls",
+      "camera": "eye level about 1.5 m, 24–28 mm wide angle capturing the oversized beams and columns and the massing turns",
+      "atmosphere": "heavy, monumental and materially honest, strong chiaroscuro, almost no applied decoration",
+      "keywords": [
+        "fair-faced concrete",
+        "board-marked texture",
+        "tie-rod holes",
+        "oversized exposed beams",
+        "clerestory",
+        "thick steel plate balustrade"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持梁柱的位置与放大后的截面尺寸不变。",
+    "保持模板分格与对拉螺栓孔的排布规律不变。",
+    "保持洞口形状、位置与深度不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现壁纸、木饰面或石膏线脚等附加饰面",
+      "不要出现薄型轻质隔断与细密分格",
+      "不要出现明亮粉彩与大面积镜面反射",
+      "不要出现繁复软包与成套古典家具",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no applied finishes such as wallpaper, timber veneer or plaster mouldings",
+      "no thin lightweight partitions or fine slatted sub-divisions",
+      "no bright pastel palette or large mirror-like reflections",
+      "no elaborate upholstery or matching classical furniture sets",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "清水面质量",
+      "criteria": "1:1 样板墙已确认，1m 视距下无蜂窝麻面与明显色差，气孔与模板纹保留一致",
+      "stage": "S5"
+    },
+    {
+      "check": "分格与螺栓孔",
+      "criteria": "模板分格 900–1800mm，螺栓孔按分格对齐，位置与浇筑前放样一致",
+      "stage": "S4"
+    },
+    {
+      "check": "构件尺度",
+      "criteria": "外露梁高在跨度 1/10–1/8 区间，柱截面 400–900mm，与设计体量协调",
+      "stage": "S3"
+    },
+    {
+      "check": "照明与体量",
+      "criteria": "环境 100–250lx、重点墙 300–500lx，色温 2700–3500K，窄光可读出模板纹理",
+      "stage": "S6"
+    }
+  ]
+}

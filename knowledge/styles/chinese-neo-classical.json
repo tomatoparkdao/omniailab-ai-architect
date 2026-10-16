@@ -1,0 +1,272 @@
+{
+  "style_id": "chinese-neo-classical",
+  "display_name_zh": "新中式",
+  "display_name_en": "Chinese Neo-Classical",
+  "family": "oriental",
+  "tags": [
+    "oriental",
+    "lattice",
+    "ink",
+    "symmetry",
+    "contemporary"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 21 世纪初至今",
+    "origin": "中国大陆及东亚的都市住宅、办公与酒店",
+    "summary": "都市高密度住宅与办公普遍层高有限、开间规整、结构以框架为主，无法照搬以院落和木构体系为骨架的传统做法。新中式因此把传统语汇拆解成可二维化的构件——格栅、垭口、对称轴线、留白与水墨色阶，再用现代构造（轻质铝型材格栅、石膏板垭口、暗藏灯带）重新装配，让中式意象能在公寓与办公的常规层高和开间中成立。它处理的是「文化识别」与「现代建造条件」之间的矛盾，而不是复刻古建。",
+    "key_movements": [
+      "新中式（Neo-Chinese）",
+      "现代主义的地域性转译",
+      "东亚传统空间的当代再阐释"
+    ]
+  },
+  "spatial_principles": [
+    "以一条主轴线组织公共区，客厅—餐厅—茶区沿轴线依次展开，轴线两侧功能基本对称。",
+    "用垭口与格栅屏风分隔功能而不砌实体墙，隔而不断，保持视线可达。",
+    "公共区连通、不做长走廊；私密区以短过道串接，过道长度不宜超过 3m（常见工程惯例区间）。",
+    "至少留出一处完整空墙或空白端景作为「留白」面，不做满墙装饰。",
+    "窗前预留 600–900mm 进深（常见工程惯例区间）设低台，作为茶区或观景位。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "格栅分格按 300mm 或 400mm 模数排布，条宽与间隙比取 1:1 至 3:1（常见工程惯例区间）。",
+      "对称轴线所在墙面，两侧构件位置镜像对称，偏差控制在 ≤20mm（常见工程惯例区间）。",
+      "垭口净高按层高减去 200–300mm（常见工程惯例区间）控制，宽度与高度比取 1:2.2 至 1:2.6。",
+      "柜体分缝与格栅分格对齐，家具与格栅共用同一模数关系。"
+    ],
+    "ratios": [
+      "垭口宽高比 1:2.2–1:2.6",
+      "格栅间距 300mm 或 400mm 模数",
+      "主要家具高度占净高比例 ≤0.45"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2600–3000mm；做局部降板造型时保留净高 ≥2400mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "宣纸白",
+      "name_en": "Xuan Paper White",
+      "hex": "#F2EEE6",
+      "usage": "墙面与天花主色，占比约 55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "墨黑",
+      "name_en": "Ink Black",
+      "hex": "#1C1C1E",
+      "usage": "格栅、门套与家具框架，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "胡桃木棕",
+      "name_en": "Walnut Brown",
+      "hex": "#6B4A32",
+      "usage": "柜体、格栅与地面木饰面，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "青灰",
+      "name_en": "Slate Grey",
+      "hex": "#8A9199",
+      "usage": "布艺与软装点缀，占比约 7%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "黄铜",
+      "name_en": "Brass",
+      "hex": "#B08D57",
+      "usage": "五金与灯具细节，占比 ≤3%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "木饰面",
+      "name_en": "Wood veneer",
+      "application": "墙面、柜体与格栅包覆",
+      "finish": "哑光清漆，直纹拼",
+      "notes": "常用胡桃木、白蜡木染色，控制色差批次"
+    },
+    {
+      "name_zh": "铝格栅",
+      "name_en": "Aluminum lattice",
+      "application": "垭口、屏风与天花",
+      "finish": "氟碳喷涂哑光黑或木纹转印",
+      "notes": "轻质型材便于控制平整度与分格精度"
+    },
+    {
+      "name_zh": "微水泥",
+      "name_en": "Microcement",
+      "application": "地面与墙面",
+      "finish": "哑光、无缝",
+      "notes": "替代石材地面，减少分区拼缝"
+    },
+    {
+      "name_zh": "纸感硬包",
+      "name_en": "Paper-textured wall panel",
+      "application": "床头与端景墙",
+      "finish": "哑光、无光泽",
+      "notes": "纤维肌理接近纸面，避免高光布面"
+    },
+    {
+      "name_zh": "实木",
+      "name_en": "Solid wood",
+      "application": "家具与茶台",
+      "finish": "木蜡油、开放孔",
+      "notes": "控制含水率，避免后期开裂"
+    }
+  ],
+  "furniture_language": [
+    "线条以直线为主，转角小圆角 R5–R15mm（常见工程惯例区间），不出现繁复卷草纹。",
+    "体量偏薄，桌面厚度 20–35mm（常见工程惯例区间），柜体深度按 350/450mm 分级。",
+    "沙发与柜体多为落地或近落地，脚高 ≤120mm（常见工程惯例区间），强调水平延伸。",
+    "拉手以隐藏式、内嵌式或长条暗拉手为主，不做外凸雕花拉手。",
+    "坐具尺度收敛，单人位宽 700–850mm（常见工程惯例区间），成对对称布置。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以暗藏灯带洗墙制造均匀底光，弱化甚至取消主灯，形成柔和的画意面光。",
+      "重点光只落在端景、挂画与茶台上，光束角取 24°–36°（常见工程惯例区间）。",
+      "格栅后设背光，让格栅剪影可读，强化层次。"
+    ],
+    "fixtures": [
+      "暗藏线性灯带",
+      "磁吸轨道射灯",
+      "格栅背光灯",
+      "落地纸罩灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "常见工程惯例区间：公共区 150–300lx，端景重点 300–500lx，通道 50–100lx",
+    "layering": "环境光由洗墙灯带提供，任务光由餐桌与茶台吊灯提供，重点光由射灯落于端景，装饰光仅格栅背光；不做多色变化。"
+  },
+  "architectural_elements": [
+    "木格栅屏风与垭口，通高到顶或与柜体同高",
+    "对称垭口与门套，门套宽度 60–100mm（常见工程惯例区间）",
+    "水墨或留白端景墙",
+    "低台茶区与地台",
+    "暗藏灯带的洗墙凹槽与天花叠级"
+  ],
+  "applicable_spaces": [
+    "住宅公寓",
+    "办公前台与会议室",
+    "精品酒店客房",
+    "茶馆与餐饮"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "木饰面与格栅的面积，通高格栅与满墙木饰面是主要吃预算项",
+      "定制柜体的造型精度，尤其是与格栅分格对齐的收口",
+      "暗藏灯带的基层与走线，洗墙凹槽需要提前预留"
+    ],
+    "saving_moves": [
+      "格栅改用铝型材木纹转印替代实木格栅，视觉接近而单价更低",
+      "仅在主视面做通高格栅，次视面改为平板木饰面",
+      "地面用微水泥或复合木地板替代实木地板"
+    ],
+    "notes": "把预算集中在一条轴线的端景与垭口上，比平均铺开更符合新中式的语汇逻辑。"
+  },
+  "construction_considerations": [
+    "格栅与柜体分格必须在图纸阶段按 300/400mm 模数排定，避免现场二次切割导致分格不齐。",
+    "暗藏灯带的凹槽深度与出光口角度需在基层阶段预留，否则洗墙光斑不均。",
+    "木饰面含水率需与现场温湿度匹配，潮湿地区需留变形缝并提前确定转角收口做法。",
+    "垭口与门套的垂直度偏差控制在 ≤2mm/m（常见工程惯例区间），否则对称轴会明显失准。",
+    "涉及结构改动、消防与机电负荷的调整，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "chinese-traditional",
+    "modern-minimalism",
+    "japandi",
+    "contemporary-luxury"
+  ],
+  "incompatible_elements": [
+    "高饱和荧光色与大面积亮光金属",
+    "繁复的西式卷草雕花与洛可可曲线",
+    "外凸雕花拉手与具象龙纹装饰",
+    "多种木色混用导致主色失控"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "规整矩形公共区，一条对称主轴线贯穿客厅到茶区，垭口与通高木格栅分隔功能而不砌墙，一端留出完整空白端景墙。",
+      "material": "哑光胡桃木直纹饰面、氟碳喷涂哑光黑铝格栅、无缝微水泥地面、纸感哑光硬包，表面均为低反射。",
+      "lighting": "格栅上方暗藏线性灯带洗墙做底光，轨道射灯 24°–36° 落在端景与挂画，整体色温 2700–3000K，无主灯。",
+      "furniture": "薄板直边家具，桌面厚 20–35mm，转角小圆角，柜体近落地脚高 ≤120mm，隐藏式长条暗拉手，成对对称布置的单椅。",
+      "camera": "站在主轴线上、绝对正对称的一眼透视，镜头高度约 1400–1600mm，等效焦距 24–35mm，不倾斜。",
+      "atmosphere": "克制、安静、留白，木色与墨色对比清晰，光线柔和均匀。",
+      "keywords": [
+        "对称轴",
+        "格栅",
+        "留白",
+        "水墨色阶",
+        "哑光",
+        "暗藏灯带"
+      ]
+    },
+    "en": {
+      "space": "Regular rectangular public zone with a single symmetrical main axis running from living area to tea area, lattice screens and openings instead of solid partitions, one fully blank feature wall at the end.",
+      "material": "Matte walnut straight-grain veneer, matte black fluorocarbon-coated aluminum lattice, seamless microcement floor, paper-textured matte panel, all low-reflection surfaces.",
+      "lighting": "Concealed linear cove light washing the walls as ambient base, track spots at 24°–36° on the feature wall and artwork, 2700–3000K, no central fixture.",
+      "furniture": "Thin straight-edged furniture, 20–35mm tops, small radii, near-floor cabinets with ≤120mm legs, concealed long pull handles, symmetrical pairing of lounge chairs.",
+      "camera": "Perfectly symmetrical one-point perspective on the main axis, camera height 1400–1600mm, 24–35mm equivalent, no tilt.",
+      "atmosphere": "Restrained, quiet, generous white space, clear walnut-and-ink contrast, soft even light.",
+      "keywords": [
+        "symmetry axis",
+        "lattice screen",
+        "negative space",
+        "ink tonal range",
+        "matte finish",
+        "concealed cove light"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持垭口、格栅与柜体分格的模数一致，跨视角不得改变分格数量与位置。",
+    "保持主轴线与对称关系不变，两侧构件镜像位置不得偏移。",
+    "丁字与转角节点收口方式在所有视角保持一致。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要繁复雕花、卷草纹和具象龙凤纹饰",
+      "不要高饱和彩色与亮光金属大面积反射",
+      "不要欧式拱券、罗马柱与石膏浮雕线脚",
+      "不要满墙装饰导致没有留白面"
+    ],
+    "en": [
+      "no dense carving, scrollwork or figurative dragon-phoenix ornament",
+      "no high-saturation colors or large glossy metal reflections",
+      "no European arches, classical columns or plaster relief mouldings",
+      "no fully covered walls that eliminate negative space"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "对称轴线校验",
+      "criteria": "主视面对称构件左右位置偏差 ≤20mm，正对称一眼透视不倾斜",
+      "stage": "S3"
+    },
+    {
+      "check": "格栅模数一致性",
+      "criteria": "格栅与柜体分格同属 300mm 或 400mm 模数，分格数列图纸可对上",
+      "stage": "S3"
+    },
+    {
+      "check": "留白面存在性",
+      "criteria": "至少一处完整空墙或空白端景，宽度 ≥1200mm（常见工程惯例区间）",
+      "stage": "S4"
+    },
+    {
+      "check": "照明分层",
+      "criteria": "无主灯，环境光/任务光/重点光三层可分辨，色温落在 2700–3000K",
+      "stage": "S4"
+    }
+  ]
+}

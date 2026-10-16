@@ -1,0 +1,283 @@
+{
+  "style_id": "indian-contemporary",
+  "display_name_zh": "印度当代",
+  "display_name_en": "Indian Contemporary",
+  "family": "regional",
+  "tags": [
+    "craft",
+    "jaali",
+    "brass",
+    "textile",
+    "colour"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中期随本地现代建筑实践起步，21 世纪在住宅与酒店中形成明确的当代取向",
+    "origin": "南亚地区，融合地方乡土建造、宫廷与寺庙手工艺传统以及现代主义空间方法",
+    "summary": "当地气候炎热且季节分明，传统民居用可通风的镂空石屏（jaali）、深出檐与可开敞的庭院来降温，同时对手工艺有极长的积累：木雕、石雕、黄铜器、手工织物与镶嵌工艺在生活与礼仪中长期并存。印度当代并不简单复刻传统，而是用现代主义的平面与结构搭出干净的骨架，再把工艺当作空间的主角——镂空屏风既分隔又不封闭、黄铜与手工织物提供触感与色彩，从而让大规模建造的空间仍保有手作密度与文化识别度。",
+    "key_movements": [
+      "印度乡土建筑",
+      "现代主义在印度的实践",
+      "南亚手工艺传统",
+      "热带现代主义"
+    ]
+  },
+  "spatial_principles": [
+    "以镂空屏风（jaali）替代实墙划分区域，保持视线与气流的半通透分隔",
+    "设置深出檐或外廊形成遮阳过渡，室内外以可开敞界面相连",
+    "在平面中嵌入小型内院或天井，作为采光通风口与视觉焦点",
+    "开放式起居与半开放公共区相连，用地面高差与铺装变化而非硬墙分区",
+    "以连续的坐榻、台阶与地台组织座位，形成非正式的社交布局，减少规矩的成套沙发"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "镂空屏风（jaali）按几何单元重复，开孔率常见 30%–60%（常见工程惯例区间），兼顾遮蔽与通风",
+      "屏风与门洞分格对齐，常见按 300–600mm 模数分格（常见工程惯例区间）",
+      "拱形或薄型门洞多做尖拱或花瓣拱，高宽比常见约 2:1–3:1（常见工程惯例区间）",
+      "地台高度差常见 150–450mm（常见工程惯例区间），以两级以内台阶过渡"
+    ],
+    "ratios": [
+      "镂空界面面积占隔断总面积常见 30%–60%（常见工程惯例区间）",
+      "可见手工工艺构件（雕刻、黄铜、织物）面积占比建议 ≥25%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2900–3600mm（常见工程惯例区间）；主要公共区可挑高并做木或石膏装饰天花"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石灰白",
+      "name_en": "Chuna Lime White",
+      "hex": "#EDE6D8",
+      "usage": "墙面与天花基调，占比约 35%",
+      "role": "base"
+    },
+    {
+      "name_zh": "姜黄",
+      "name_en": "Turmeric Yellow",
+      "hex": "#C89A24",
+      "usage": "织物与墙面局部，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "靛青",
+      "name_en": "Indigo Blue",
+      "hex": "#2C4A6E",
+      "usage": "织物、软包与屏风描边，占比约 15%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "砖红",
+      "name_en": "Brick Red",
+      "hex": "#9E4A34",
+      "usage": "砖砌与地砖，占比约 15%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "黄铜金",
+      "name_en": "Brass Gold",
+      "hex": "#B08D3C",
+      "usage": "灯具、五金与镶嵌件，占比约 10%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "深木褐",
+      "name_en": "Dark Rosewood Brown",
+      "hex": "#553527",
+      "usage": "家具与木作，占比约 10%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "镂空石屏与混凝土屏",
+      "name_en": "Jaali Stone and Cast Screen",
+      "application": "隔断、外墙与栏板",
+      "finish": "手工雕刻或浇铸成孔，边缘打磨",
+      "notes": "以几何花纹重复，兼具通风与遮蔽"
+    },
+    {
+      "name_zh": "手工砖与陶土砖",
+      "name_en": "Handmade and Terracotta Brick",
+      "application": "砌体、地面与护墙",
+      "finish": "自然烧结，砖缝暴露或勾缝"
+    },
+    {
+      "name_zh": "黄铜与金属镶嵌",
+      "name_en": "Brass and Metal Inlay",
+      "application": "灯具、五金、家具镶嵌与饰边",
+      "finish": "手工锤打、拉丝或抛光"
+    },
+    {
+      "name_zh": "手工织物与织毯",
+      "name_en": "Handloom Fabric and Rug",
+      "application": "软包、窗帘与地毯",
+      "finish": "天然染色，可略有色差与手工织纹"
+    },
+    {
+      "name_zh": "硬木与木雕",
+      "name_en": "Hardwood and Wood Carving",
+      "application": "家具、门与柱头",
+      "finish": "雕刻或镶嵌，擦油哑光"
+    }
+  ],
+  "furniture_language": [
+    "低矮但轻盈，多见木框架与编织面，形制介于传统与现代之间",
+    "以单人椅、绳编躺椅、低桌与矮凳组合，减少成套的大体量沙发",
+    "木雕或镶嵌作为局部重点，出现在柜面、门板与框边而非满铺",
+    "金属与织物交叠使用：黄铜边几、手工靠垫与层叠织毯"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以镂空屏风与灯笼投射的图案光影为特色，光穿过屏风形成斑驳层次",
+      "人工光偏低照度暖黄，通过不同高度灯具交错布置制造层次"
+    ],
+    "fixtures": [
+      "黄铜吊灯与灯笼",
+      "镂空屏风内衬灯",
+      "编织罩台灯与落地灯",
+      "地灯与低位埋地灯"
+    ],
+    "color_temperature_k": [
+      2400,
+      3000
+    ],
+    "illuminance_lux": "起居环境 120–250lx，餐桌面与工作区 300–400lx（常见工程惯例区间）",
+    "layering": "环境光低位打底，任务光落在餐桌与书桌，重点光穿屏风与打亮黄铜与雕刻构件"
+  },
+  "architectural_elements": [
+    "镂空石屏（jaali）隔断与栏板",
+    "尖拱或花瓣拱门洞",
+    "外廊、深出檐与阴影平台",
+    "小型内院天井与水池",
+    "地台、连续坐榻与嵌入式壁龛"
+  ],
+  "applicable_spaces": [
+    "住宅与公寓",
+    "精品酒店与度假村",
+    "餐饮空间",
+    "SPA 与康养空间",
+    "精品零售与展厅"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "手工镂空屏风的雕刻或定制浇铸",
+      "黄铜构件与镶嵌工艺的加工",
+      "手工织物、织毯与木雕件"
+    ],
+    "saving_moves": [
+      "屏风以浇铸或数控切割的仿石屏替代全手工雕刻，保留图案与开孔率",
+      "黄铜集中用在灯具与把手等近人尺度构件，避免大面积金属饰面",
+      "手工织毯与靠垫作为重点单品少量使用，用现代织物补齐面积"
+    ],
+    "notes": "手工艺密度是风格的识别核心，降本应减少工艺构件数量而不是用工业仿品全面替换；外廊与内院做法需持证专业人员复核"
+  },
+  "construction_considerations": [
+    "镂空屏风需先做样板确认开孔率与结构强度，薄壁处易崩边，做法标注待持证专业人员复核",
+    "屏风作为隔断的固定与抗震连接方式标注待持证专业人员复核",
+    "黄铜构件需做防氧化处理并预留色变预期，湿区慎用",
+    "手工砖与地砖需按批次混铺以控制色差，避免局部色斑",
+    "内院天井的排水与防水做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "moroccan",
+    "biophilic",
+    "contemporary-luxury",
+    "tropical-resort"
+  ],
+  "incompatible_elements": [
+    "大面积纯白极简留白与无工艺界面",
+    "高光泽冷调金属与镜面玻璃",
+    "大面积灰调工业风与裸露管线",
+    "繁复欧式古典线脚与水晶吊灯",
+    "单一低饱和配色、完全无彩色"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "开放式起居与半开放外廊相连的空间，一组镂空石屏隔断分隔区域，侧面有小型内院天井，地台以两级台阶过渡",
+      "material": "石灰白墙面，镂空几何石屏，手工砖与陶土砖地面，硬木家具与木雕柜面，黄铜灯具与镶嵌，手工织毯与靛青布料",
+      "lighting": "日光穿过镂空屏风在地面投出图案光斑，黄铜灯笼发出低位暖光，内院天井引入侧向自然光",
+      "furniture": "低矮轻盈的绳编躺椅与木框单椅，低桌与矮凳组合，层叠手工织毯与绣纹靠垫，黄铜边几",
+      "camera": "人眼高度，24–35mm，略侧向以呈现屏风层叠与光影图案",
+      "atmosphere": "明亮通透而有手作温度，色彩丰富但克制",
+      "keywords": [
+        "印度当代",
+        "镂空屏风",
+        "jaali",
+        "黄铜",
+        "手工织物",
+        "内院"
+      ]
+    },
+    "en": {
+      "space": "An open living area connected to a semi-open veranda, a screen of pierced stone dividing zones, a small internal courtyard to one side, a floor platform stepped up over two levels",
+      "material": "Lime white walls, pierced geometric stone screens, handmade brick and terracotta flooring, hardwood furniture with carved panels, brass light fittings and inlay, handloom rugs and indigo fabric",
+      "lighting": "Daylight through the perforated screen casting patterned patches on the floor, a brass lantern giving low warm light, the courtyard bringing in side daylight",
+      "furniture": "Low lightweight rope-weave loungers and wooden armchairs, a low table with stools, layered handloom rugs and embroidered cushions, a brass side table",
+      "camera": "Eye level, 24–35mm, slightly angled to show the layered screens and light patterns",
+      "atmosphere": "Bright and airy with craft warmth, colourful yet restrained",
+      "keywords": [
+        "indian contemporary",
+        "jaali",
+        "pierced screen",
+        "brass",
+        "handloom textile",
+        "courtyard"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持镂空屏风的图案单元、开孔率与排列方向不变",
+    "保持地台的高度差与台阶级数不变",
+    "保持内院天井的位置与视线穿通关系不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积纯白极简留白与无工艺界面",
+      "不要高光泽冷调金属与镜面玻璃",
+      "不要大面积灰调工业风与裸露管线",
+      "不要繁复欧式古典线脚与水晶吊灯",
+      "不要完全无彩色的单一低饱和配色"
+    ],
+    "en": [
+      "no large plain white minimalist craft-free surfaces",
+      "no high-gloss cool-toned metal or mirrored glass",
+      "no large grey industrial surfaces or exposed services",
+      "no elaborate European classical mouldings or crystal chandeliers",
+      "no fully colourless single low-saturation palette"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "镂空界面",
+      "criteria": "存在至少一处镂空屏风隔断，开孔率 30%–60%，且非全封闭实墙",
+      "stage": "schematic"
+    },
+    {
+      "check": "工艺密度",
+      "criteria": "可见手工工艺构件（雕刻、黄铜、织物）面积占比 ≥25%",
+      "stage": "schematic"
+    },
+    {
+      "check": "光影图案",
+      "criteria": "日光或内衬灯可穿过屏风形成可辨认的图案光影",
+      "stage": "construction"
+    },
+    {
+      "check": "色彩数量",
+      "criteria": "主色不少于 3 种且含至少 2 个中高饱和色，无大面积灰调",
+      "stage": "S4"
+    },
+    {
+      "check": "坐具布局",
+      "criteria": "以低矮非成套坐具为主，成套大体量沙发占座面积 ≤40%",
+      "stage": "schematic"
+    }
+  ]
+}

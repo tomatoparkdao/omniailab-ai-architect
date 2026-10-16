@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.3.0-1f6feb?style=flat-square" alt="版本 1.3.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6%E4%B8%BB%E6%96%87%E6%A1%A3-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -36,7 +36,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.3.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.4.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
@@ -64,6 +64,7 @@
 | **④ 判断有出处** | 九组**设计判据**：美学控制基线、概念图解语言、意向板迭代闭环、机电空间影响、批注台账、提案版式、项目适配、量价分离、工具安全分级。每条都写成可判定的句子（"暖材 ≤40%""黑 3–8%""全场只留一条主导线"），不是形容词。 |
 | **⑤ 真的会出文件** | 可编辑 DXF（方案深度与施工深度分开）、OBJ 三维网格、示意图、可编辑 PPTX 提案、Markdown 与打印就绪 HTML、工程量与造价估算 JSON、变更影响报告。**写出的文件都用独立实现复核**，读不回即判失败。 |
 | **⑥ 不假装做到** | 没装 Blender / FreeCAD / IfcOpenShell → 输出**可直接运行的脚本**并标 `degraded`；平台未配置 → 标 `NOT_CONFIGURED` 并列出缺什么；DXF 不会改名成 DWG，网格不会说成参数化 BIM，效果图不会当尺寸依据。 |
+| **⑦ 设计风格系统** | **47 种建筑与室内设计风格**的结构化知识库（八族：现代 / 东方 / 经典 / 装饰复古 / 工业 / 自然有机 / 地域性 / 实验性），每种含 20 个专业字段（历史脉络、空间原则、比例几何、色板、材料、家具语汇、照明策略、适用空间、造价与施工注意、相容与冲突、正向提示词组、几何保持规则、负向约束、质检清单）。**索引与数据分离**：先查 `catalog.json`（179 个标签），再按需加载单条，不会把 47 条全读进上下文。附三方案推荐引擎与中英双语提示词编译器（8 种目标：概念图 / 情绪板 / 室内效果图 / 建筑外观图 / 材料特写 / 局部改造 / 多视角 / 漫游视频）。 |
 
 ### 能力清单（30 项，按服务阶段）
 
@@ -225,14 +226,14 @@ python -m omniarchitect present --project projects/demo-120 --kind plan-comparis
 | 阶段 | 名称 | 阶段产出 | 门禁 |
 |---|---|---|---|
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
-| S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念确认 |
-| S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面确认 |
+| S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念方案确认 |
+| S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面方案确认 |
 | S3·后 | **概念效果图**（G3 门禁后置动作） | AI 概念效果图、画布任务包、概念效果图汇报 | 附属于 G3 |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
-| S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现确认 |
+| S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现成果确认 |
 | S6 | 设计定稿与技术协调 | 确认版方案、深化依据 | G6 设计锁定 |
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
-| S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付确认 |
+| S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付验收 |
 
 **八阶段是流程，30 项能力是岗位——不要混为一谈。** 一项能力可以服务多个阶段：灯光设计同时在
 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；设计汇报横跨 S2–S8。
@@ -354,7 +355,8 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 ├── CHANGELOG.md                 版本变更记录
 ├── LICENSE / THIRD_PARTY_NOTICES.md / LICENSES/
 │                                许可、第三方许可证与署名的唯一集中登记处
-├── docs/                        架构、流程、判据、平台接入、工具、安装、品牌策略、操作手册
+├── docs/                        架构、流程、判据、平台接入、工具、安装、品牌策略、
+│                                操作手册、设计风格数据规范
 │   └── MANUAL.md                ★ 操作手册（离线可用，与飞书 / Notion 同步）
 ├── omniarchitect/               ★ Python 包（内部引擎代号）= 全部可执行代码
 │   ├── model.py planner.py      统一空间模型与方案生成
@@ -366,11 +368,13 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 │   ├── presentation/            汇报 → PPTX / MD / HTML / PDF
 │   ├── integration/ installer/  Agent Skills 校验与安装
 │   ├── brand_policy.py          品牌与供应商策略 + 创作能力独占裁决
+│   ├── style/                   设计风格系统（47 种风格 / 推荐 / 提示词编译 / 八阶段挂钩）
 │   └── tests/                   测试模块（全量回归）
 ├── knowledge/                   13 个原创设计知识域（渐进式加载）
+│   └── styles/                  47 种设计风格的结构化数据 + catalog.json 索引
 ├── skills/                      30 项专业能力说明（文件名 = 能力名，可直接按名加载）
 ├── cases/                       通用项目类型案例判据
-├── schemas/                     空间模型 / 案例 / 工具能力 / 汇报 Schema
+├── schemas/                     空间模型 / 案例 / 工具能力 / 汇报 / 设计风格 Schema
 ├── workflows/                   阶段流程定义
 ├── adapters/specs/              MCP / 外部工具适配规范
 ├── compatibility/               各运行环境兼容说明

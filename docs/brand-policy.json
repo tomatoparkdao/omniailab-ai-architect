@@ -2,8 +2,8 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-16 23:21:35",
-  "files_scanned": 157,
+  "scanned_at": "2026-10-17 02:16:42",
+  "files_scanned": 230,
   "by_disposition": {
     "authorized-dependency": 30
   },
@@ -26,7 +26,7 @@
       "disposition": "authorized-dependency",
       "path": "AGENTS.md",
       "token": "Codex",
-      "line": 147,
+      "line": 149,
       "excerpt": "\"底层模型提供方\"，**不得宣称模型由 OmniAiLab 自研**。 - **Codex 等本地 Agent Skills 宿主**只作为运行环境兼容，不得因此推广外部 Agent 服务。 - **专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf 等）",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -35,7 +35,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Codex",
-      "line": 40,
+      "line": 117,
       "excerpt": "ilab-ai-director`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -44,7 +44,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Claude",
-      "line": 40,
+      "line": 117,
       "excerpt": "tor`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -53,7 +53,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "WorkBuddy",
-      "line": 40,
+      "line": 117,
       "excerpt": "*：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从哪来（三选一）→ 三、启动指令 →   四、启",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -62,7 +62,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Cursor",
-      "line": 238,
+      "line": 315,
       "excerpt": "l，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域**（`image",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -143,7 +143,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Codex",
-      "line": 306,
+      "line": 347,
       "excerpt": "*：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -152,7 +152,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Claude",
-      "line": 306,
+      "line": 347,
       "excerpt": "ckup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、消防、无障碍、机电",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -161,7 +161,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Cursor",
-      "line": 306,
+      "line": 347,
       "excerpt": "先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -170,7 +170,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "WorkBuddy",
-      "line": 306,
+      "line": 347,
       "excerpt": "与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -216,7 +216,7 @@
       "path": "compatibility/codex.md",
       "token": "Codex",
       "line": 3,
-      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.3.0 author: OmniAiLab developer: Mochiball agen",
+      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.4.0 author: OmniAiLab developer: Mochiball agen",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -298,7 +298,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "midjourney",
-      "line": 142,
+      "line": 144,
       "excerpt": "账号、下载地址、   商业推广链接或自动回退路径；不得集成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awai",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -307,7 +307,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "krea",
-      "line": 143,
+      "line": 145,
       "excerpt": "径；不得集成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -316,7 +316,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "higgsfield",
-      "line": 143,
+      "line": 145,
       "excerpt": "成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -325,7 +325,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "runway",
-      "line": 143,
+      "line": 145,
       "excerpt": "Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供应商**。允许经平台内",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -334,7 +334,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "sora",
-      "line": 143,
+      "line": 145,
       "excerpt": "Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供应商**。允许经平台内部依法授权并已配置的模型",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -343,7 +343,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "midjourney",
-      "line": 275,
+      "line": 316,
       "excerpt": "atus = awaiting_platform`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -352,7 +352,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "krea",
-      "line": 275,
+      "line": 316,
       "excerpt": "`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canv",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -361,7 +361,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "higgsfield",
-      "line": 275,
+      "line": 316,
       "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -370,7 +370,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "runway",
-      "line": 275,
+      "line": 316,
       "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -379,7 +379,7 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "sora",
-      "line": 275,
+      "line": 316,
       "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image2.5）——这是**平台服务**",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },

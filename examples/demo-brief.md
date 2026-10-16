@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-demo-brief
 description: Example design request —— 120 m² 公寓的示例设计请求（英文原文）
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -31,7 +31,7 @@ Produce 2 concept directions, then one annotated plan proposal for approval; onl
 |---|---|
 | 需求写具体 | 面积、房间数、风格各一句，不写"高级一点"这类形容词 |
 | 明确交代不确定性 | "不要推断承重墙"——避免把推断值当实测值（`uncertain = true`） |
-| 明确门禁顺序 | "只有确认之后才生成模型与效果图"——对应 G3 平面确认门禁 |
+| 明确门禁顺序 | "只有确认之后才生成模型与效果图"——对应 G3 平面方案确认门禁 |
 | 明确要什么产物 | 概念 / 平面 / 模型 / 效果图 / 图纸初稿，按需取用 |
 
 ---

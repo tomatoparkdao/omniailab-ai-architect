@@ -2,7 +2,7 @@
 name: omniailab-third-party-notices
 description: 第三方许可证与署名集中登记 —— 本仓唯一的第三方版权声明、许可证标识与来源链接存放处；普通设计成果与营销材料中不出现。
 scope: 许可证与署名登记（唯一处）
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -45,6 +45,27 @@ agent_created: true
 
 上述项目的许可证全文与完整版权声明，请以其官方发布包内 `LICENSE` 文件为准；
 如需再分发其代码或二进制，必须随附其许可证全文与版权声明。
+
+## 设计风格系统的参考项目审计
+
+设计风格库在立项时研究过五个公开项目，用于**技术组织方法**的参考。
+**所有 47 条风格内容均由本项目独立撰写**，未复用其中任何提示词文本、案例描述、
+品牌名或宣传语。逐项审计结论如下。
+
+| 项目 | 许可证 | 处理方式 |
+|---|---|---|
+| `jac2020-2020/architectural-visualization-prompt-library` | `MIT`（版权 ArchOne AI） | 仅借鉴目录分层与来源记录的做法；**未复用任何内容** |
+| `ur-grue/autopunk-media-skills` | `MIT`（版权 ur-grue） | 仅借鉴"实现与测试分离"的组织方式；**未复用任何内容** |
+| `yanliudesign/design-style-skill` | **无 LICENSE** | **未读取、未复制**任何内容 |
+| `RyanZhang10/interior-design-visualizer` | **无 LICENSE** | **未读取、未复制**任何内容 |
+| `chrzamz/ui-styles-skill` | `MIT` ＋ **上游镜像声明** | **未读其 `prompts/`**——该目录的著作权依其声明属上游作者，非该仓库作者 |
+
+三个采用 MIT 许可的项目，其 `LICENSE` 原文留档于 `LICENSES/`（仅作审计留档；
+本仓库不分发它们的任何作品内容）。
+
+完整审计记录见 `docs/STYLE_REFERENCE_AUDIT.md`。
+
+---
 
 ## 未随本仓分发的宿主软件与库
 

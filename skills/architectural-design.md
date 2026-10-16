@@ -3,7 +3,7 @@ name: omniailab-architectural-design
 description: 建筑设计 —— 把功能、场地与朝向组织成自洽的体量、立面和楼层策略（建筑项目启用，室内项目不启用）
 capability: architectural-design
 stages: [S1, S4]
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

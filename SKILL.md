@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -56,14 +56,14 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 阶段 | 名称 | 阶段产出 | 门禁 |
 |---|---|---|---|
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
-| S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念确认 |
-| S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面确认 |
+| S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念方案确认 |
+| S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面方案确认 |
 | S3·门禁后 | **概念效果图**（G3 通过后自动执行） | 概念效果图 + 画布任务包 + 汇报 PPTX | 无（附属于 G3） |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
-| S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现确认 |
+| S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现成果确认 |
 | S6 | 设计定稿与技术协调 | 确认版方案、深化依据 | G6 设计锁定 |
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
-| S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付确认 |
+| S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付验收 |
 
 细节 → `docs/WORKFLOW.md`；阶段与能力完整映射 → `python -m omniarchitect registry`。
 
@@ -100,6 +100,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
 | 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
 | 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
+| **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
 | 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
 
@@ -164,6 +165,46 @@ python -m omniarchitect canvas-models      # 模型声明与选择规则
 3. 提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。
 
 细节 → `docs/CONCEPT_RENDER.md`、`knowledge/ai-concept-visualization.md`。
+
+## 4c. 设计风格系统（内部专业模块）
+
+**47 种建筑与室内设计风格**的结构化知识库 + 推荐引擎 + 中英双语提示词编译器。
+它是本 Skill 的**内部模块**（`omniarchitect/style/`），不是第二个 Skill ——
+不需要额外安装、也不存在第二个目录。
+
+它挂在六个阶段上（**S1 需求接单与 S6 设计冻结不挂**）：
+
+| 阶段 | 风格系统做什么 | 产物 |
+|---|---|---|
+| S2 概念 | 三套方向不同的方案 → 业主指定 → **锁定** | `style-recommendation.md`、`style-lock-r*` |
+| S3 平面 | 风格的空间原则逐条对照平面，冲突项给两条可选路径 | `style-space-check.md` |
+| S4 初步设计 | 材料体系、色板、家具语汇、照明策略（含材料替换理由） | `style-material-spec.json` |
+| S5 效果表现 | 编译中英双语提示词；多机位共用一致性指纹；提交或延后 | `style-jobs.json`、`style-jobs-brief.md` |
+| S7 施工深化 | 材料规格化；核对深化图是否偏离风格意图 | `style-construction-spec.md` |
+| S8 交付汇报 | 生成风格对比数据 | `style-comparison.json` |
+
+**按需加载**：`knowledge/styles/catalog.json` 是索引（179 个标签 + 族/阶段/空间），
+**先搜索引再加载单条**，不要一次读入 47 条。
+
+```bash
+python -m omniarchitect style catalog                      # 索引总览
+python -m omniarchitect style search --tags minimal,warm    # 按标签搜
+python -m omniarchitect style show italian-minimal          # 读单条（按需加载）
+python -m omniarchitect style recommend --space-type 住宅 --area 120 --budget mid
+python -m omniarchitect style hooks                          # 六个阶段介入点
+```
+
+三条不可越过的线：
+
+1. **风格未锁定不进入深化**；锁定后若需求或几何改变，必须重新评估是否解锁。
+2. **提示词不承载几何**：纯提示词无法保证精确几何一致，必须结合已确认模型与参考图校核；
+   产出的图像是非权威成果，不得作为施工尺寸依据。
+3. **生成能力只经 OmniAiLab 平台**：平台不可用时任务标 `awaiting_platform` 并保留，
+   **不改道任何第三方平台**、不写占位图。
+
+细节 → `docs/DESIGN_STYLES.md`（数据规范）、`docs/STYLE_INTEGRATION.md`（与主流程的衔接）。
+
+---
 
 ## 5. 命令速查
 
@@ -331,11 +372,14 @@ LICENSES/               第三方许可证原文归档
 omniarchitect/          Python 包（内部引擎代号）：模型 / 规划 / 阶段 / 变更 / 适配器 /
                         provider / 工具注册表 / 汇报 / 安装 /
                         brand_policy（品牌与供应商策略 + 创作独占裁决）
+                        style/（设计风格系统：风格库 / 推荐 / 提示词编译 / 八阶段挂钩）
 knowledge/  cases/      原创知识体系与通用案例
+knowledge/styles/       47 种设计风格的结构化数据 + catalog.json 索引
 skills/                 30 项专业能力说明
 schemas/  workflows/    数据模型与阶段流程
 adapters/specs/         MCP / 外部工具适配规范
-docs/                   架构、流程、平台接入、工具、安装、合规与品牌策略审计
+docs/                   架构、流程、平台接入、工具、安装、合规、品牌策略审计、
+                        设计风格数据规范与集成说明
 installer/  compatibility/  安装脚本与兼容说明
 ```
 

@@ -1,0 +1,286 @@
+{
+  "style_id": "parametric-futurism",
+  "display_name_zh": "参数化未来主义",
+  "display_name_en": "Parametric Futurism",
+  "family": "experimental",
+  "tags": [
+    "algorithm",
+    "fluid-surface",
+    "cnc",
+    "continuous"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪末随数字建模工具普及起步，21 世纪初随数控加工成熟而扩散",
+    "origin": "欧美建筑教育与数字建造研究领域，后进入商业与展陈空间",
+    "summary": "当曲面的表达可以用参数规则驱动、构件又可以被数控机床精确切出来之后，形式第一次摆脱了「直线更容易造」的约束。这套取向把天花、墙面、屏风当作一个连续的整体来求解，让孔径、密度、曲率沿路径连续变化。它解决的是大空间中如何用单一连续界面同时完成导向、遮光与识别的问题——代价是几乎所有构件都成为非标件，深化与加工深度必须提前锁定。",
+    "key_movements": [
+      "参数化主义",
+      "数字建造运动",
+      "计算性设计",
+      "拓扑几何在建筑中的应用"
+    ]
+  },
+  "spatial_principles": [
+    "以连续曲面组织天花与主要墙面，界面之间不做硬转折，转角处做圆滑过渡",
+    "镂空或渐变图案沿设计路径连续变化，孔径或密度不出现突跳",
+    "动线以切线方式衔接，不做 90° 直角转折，人流由曲面起伏自然引导",
+    "功能分区靠曲面起伏与地台高差区分，尽量减少落地隔墙",
+    "主通道净宽 ≥1000mm，曲面构件与人体活动范围保持 ≥50mm 安全间隙（常见工程惯例区间）"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "曲面以连续曲率变化生成，避免出现可见折角与突变的拼缝",
+      "镂空密度由疏到密连续过渡，同一构件内孔径变化比常见 1:3 至 1:6（常见工程惯例区间）",
+      "构件分块按数控板幅与运输尺寸控制，单块最长边常见 ≤2400mm（常见工程惯例区间）",
+      "曲面与平面交接处用渐变收口过渡，不做材质直接对碰",
+      "同一空间的曲面构件共用同一套参数规则，保证语言一致"
+    ],
+    "ratios": [
+      "曲面构件最小曲率半径通常不小于板厚的 60 倍（常见工程惯例区间，用于避免热弯或成型开裂）",
+      "镂空开口率常见 20%–60%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 3000–4500mm（常见工程惯例区间）；曲面天花的构造层通常占用 300–800mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "冷白面漆",
+      "name_en": "Cool White Finish",
+      "hex": "#E8EAEC",
+      "usage": "曲面天花与主墙基调，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅银灰",
+      "name_en": "Light Silver Grey",
+      "hex": "#B9BFC4",
+      "usage": "次要界面与金属板，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "石墨黑",
+      "name_en": "Graphite Black",
+      "hex": "#2B2E31",
+      "usage": "地面、下部柜体与对比界面，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "渐变蓝",
+      "name_en": "Gradient Blue",
+      "hex": "#3C6FB5",
+      "usage": "背发光与渐变涂装，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "渐变紫",
+      "name_en": "Gradient Violet",
+      "hex": "#7A5BC4",
+      "usage": "局部渐变印刷与光色，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "拉丝铝",
+      "name_en": "Brushed Aluminium",
+      "hex": "#9AA3AA",
+      "usage": "穿孔板与收口件，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "玻璃纤维增强石膏板",
+      "name_en": "Glass-fibre Reinforced Gypsum",
+      "application": "曲面天花与曲面墙",
+      "finish": "无缝哑光喷涂，打磨后无接缝",
+      "notes": "适合复杂双曲面成型"
+    },
+    {
+      "name_zh": "数控加工板材",
+      "name_en": "CNC-milled Panel",
+      "application": "渐变镂空屏风与包板",
+      "finish": "数控切割后喷涂哑光或金属漆"
+    },
+    {
+      "name_zh": "热弯玻璃与热弯有机板",
+      "name_en": "Thermoformed Glass and Acrylic",
+      "application": "曲面隔断与透光屏",
+      "finish": "热弯成型，边缘抛光"
+    },
+    {
+      "name_zh": "穿孔金属板",
+      "name_en": "Perforated Metal Sheet",
+      "application": "屏风、包板与栏板",
+      "finish": "拉丝或粉末喷涂，孔径渐变"
+    },
+    {
+      "name_zh": "无缝树脂地坪",
+      "name_en": "Seamless Resin Floor",
+      "application": "地面",
+      "finish": "浇注无缝，哑光或半光"
+    }
+  ],
+  "furniture_language": [
+    "一体化连续曲面座椅，与地台或墙面直接融合成整体",
+    "柜体无可见拉手，接缝对齐所在曲面的走向",
+    "家具形态与空间曲面呼应，避免出现直角方盒体量",
+    "以落地件为主，悬浮件通过隐藏支撑实现，不露节点",
+    "拉手为隐藏扣手或通长凹槽，不出现外凸五金"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "用擦墙光与洗顶光强化曲面起伏，让几何形态被光线读出来",
+      "镂空与透光界面采用背发光，形成由中心向边缘的明暗渐变",
+      "避免均匀漫射压平曲面，光的走向应与曲面纹理方向一致"
+    ],
+    "fixtures": [
+      "曲面暗藏灯带",
+      "线性洗墙灯",
+      "背发光透光面板",
+      "可编程调光系统"
+    ],
+    "color_temperature_k": [
+      2700,
+      4500
+    ],
+    "illuminance_lux": "公共区 150–300lx，重点曲面 300–500lx（常见工程惯例区间）",
+    "layering": "以暗藏灯带构成连续光带作环境光，重点光强化曲面形态，功能光全部隐藏"
+  },
+  "architectural_elements": [
+    "连续曲面天花",
+    "渐变镂空屏风与穿孔金属板",
+    "无缝曲面墙与一体化收口",
+    "曲面地台与流线型楼梯",
+    "热弯玻璃曲面隔断",
+    "隐藏式暗藏灯槽"
+  ],
+  "applicable_spaces": [
+    "商业中庭与品牌旗舰店",
+    "文化展陈与展厅",
+    "交通与公共建筑中庭",
+    "办公前厅与接待区"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "参数化建模与加工图深化的工作量",
+      "数控加工、热弯模具与成型试验",
+      "曲面构件的运输、吊装与现场打磨"
+    ],
+    "saving_moves": [
+      "曲面集中在主视线界面（天花与主墙），其余保持平面",
+      "以数控雕刻的板材替代整面成型的构件",
+      "用可重复的模具单元拼接曲面，降低单件成本"
+    ],
+    "notes": "造价与曲面面积、分块数量、收口复杂度的关系远大于与材料单价的关系，应尽早锁定曲面范围"
+  },
+  "construction_considerations": [
+    "曲面需先制作样板段（缩尺或 1:1），确认曲率、拼缝与观感后再批量加工",
+    "成型构件需预留伸缩缝与吊挂点，吊挂与自重标注待持证专业人员复核",
+    "数控分块需先完成编号与放样，现场按编号安装，避免错拼",
+    "无缝地坪与曲面墙交接处需设柔性收口，防止应力开裂",
+    "材料的燃烧性能与消防要求标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "sci-fi-minimal",
+    "contemporary-luxury",
+    "corporate-contemporary",
+    "modern-minimalism",
+    "organic-modern"
+  ],
+  "incompatible_elements": [
+    "以直角方盒组织体量、界面硬转折",
+    "繁复古典线脚与柱式",
+    "可见粗糙拼缝与未打磨的收口",
+    "以暖土色与手工肌理为主调",
+    "外露的工业化管线与设备"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以连续曲面天花组织的中庭式空间，墙面与天花之间圆滑过渡，一侧为渐变镂空金属屏，地面为无缝树脂并随曲面起伏",
+      "material": "无缝哑光白色曲面构件，拉丝穿孔铝板，热弯玻璃曲面隔断，石墨黑下部柜体，无缝树脂地坪",
+      "lighting": "暗藏灯带沿曲面走向形成连续光带，镂空屏背面透光形成由密到疏的明暗渐变，重点光强化曲面起伏",
+      "furniture": "与地台融合的一体化连续曲面座椅，无可见拉手的无缝柜体，形态随空间曲面展开",
+      "camera": "1.6m 机位沿曲面走向取景，24mm 广角，强调天花到墙面的连续过渡与长弧线",
+      "atmosphere": "未来、流动、高度一体化，几何由算法生成而非手工绘制",
+      "keywords": [
+        "参数化",
+        "连续曲面",
+        "渐变镂空",
+        "数控加工",
+        "无缝",
+        "流线型"
+      ]
+    },
+    "en": {
+      "space": "An atrium-like space organised by a continuous curved ceiling, smooth transition between wall and ceiling, a gradient perforated metal screen on one side, seamless resin floor following the surface",
+      "material": "Seamless matte white formed panels, brushed perforated aluminium, thermoformed glass partition, graphite black lower cabinets, seamless resin floor",
+      "lighting": "Concealed linear lighting forming a continuous band along the curve, backlit perforated screen producing a dense-to-sparse gradient, accent light revealing the surface relief",
+      "furniture": "Continuous curved seating fused with the platform, seamless handleless cabinets shaped to follow the surface",
+      "camera": "1.6 m position framing along the curve direction, 24mm wide angle, emphasising the continuous ceiling-to-wall transition and long arcs",
+      "atmosphere": "Futuristic, flowing, highly integrated, geometry generated by algorithm rather than drawn by hand",
+      "keywords": [
+        "parametric",
+        "continuous curved surface",
+        "gradient perforation",
+        "cnc milled",
+        "seamless",
+        "streamlined"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持曲面天花的整体走向与高低起伏关系不变",
+    "保持镂空屏的开口分布与渐变方向不变，不新增或移动开孔",
+    "保持地台与曲面的交接位置不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要直角方盒体量与界面硬转折",
+      "不要古典线脚与柱式",
+      "不要可见的粗糙拼缝与未打磨收口",
+      "不要以暖土色手工肌理为主调",
+      "不要外露的管线与设备"
+    ],
+    "en": [
+      "no rectilinear box volumes or hard interface breaks",
+      "no classical mouldings or orders",
+      "no visible rough joints or unfinished edges",
+      "no warm earth-tone hand-made texture as the dominant tone",
+      "no exposed services or equipment"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "曲面连续性",
+      "criteria": "主视线曲面上无可见折角，样板段实测曲率过渡连续",
+      "stage": "S5"
+    },
+    {
+      "check": "分块尺寸",
+      "criteria": "单块构件最长边 ≤2400mm，编号与放样图一致（常见工程惯例区间）",
+      "stage": "construction"
+    },
+    {
+      "check": "开口率",
+      "criteria": "镂空屏开口率在 20%–60% 区间内，且沿路径单调渐变（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "收口处理",
+      "criteria": "曲面与平面交接处无外露拼缝，收口宽度 ≤5mm 且连续",
+      "stage": "construction"
+    },
+    {
+      "check": "照明走向",
+      "criteria": "暗藏灯带走向与曲面纹理方向夹角 ≤15°，无均匀漫射泛光",
+      "stage": "S4"
+    }
+  ]
+}

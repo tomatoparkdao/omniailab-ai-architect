@@ -1,0 +1,276 @@
+{
+  "style_id": "contemporary-luxury",
+  "display_name_zh": "当代奢华",
+  "display_name_en": "Contemporary Luxury",
+  "family": "modern",
+  "tags": [
+    "luxury",
+    "statement",
+    "graphic",
+    "hotel"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "21 世纪初期成型，随高端酒店公区与豪宅需求扩张而普及",
+    "origin": "国际酒店与高端住宅公区实践，承接现代主义之后对仪式感与到达体验的商业化需求",
+    "summary": "当代奢华解决的是「大体量空间如何在一进门就被记住」的问题。它把尺度、对比和图形当作手段：用加大的天花跌级、地面拼花和对称轴线制造视觉冲击，用高光石材与金属线条制造反射，用戏剧性的明暗对比把客人引向焦点。它的逻辑是商业性的——为公区与到达区服务，因此更强调场面而不是日常居住的松弛。",
+    "key_movements": [
+      "现代主义建筑运动",
+      "后现代主义设计思潮",
+      "装饰艺术设计传统"
+    ]
+  },
+  "spatial_principles": [
+    "入口设置到达序列：门厅 → 过渡通道 → 主空间，用体量收放与光线明暗递进制造仪式感",
+    "大尺度连贯空间，天花与地面做图形化处理（跌级、拼花、灯膜），形成整体画面",
+    "以对称或强轴线安排主家具与背景墙，让视线自然落到焦点墙",
+    "公共面用高光与金属提升反射，私密面用软包与织物降低刺激",
+    "主通道净宽 ≥1200mm（常见工程惯例区间），保证大尺度家具周边环行"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "天花跌级深度与灯槽宽度随空间尺度放大，主厅优先保证净高",
+      "地面拼花按对称图形排版，接缝落在轴线上并与天花造型对位",
+      "背景墙按黄金比或大比例分幅，金属分缝强化图形",
+      "柱与包柱做成造型体量，兼作灯具与展示载体"
+    ],
+    "ratios": [
+      "主空间地面拼花长宽比 2:1 或 3:1（常见工程惯例区间）",
+      "背景墙分幅按 1:1、2:3 或黄金比（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "主厅净高常见 3000–4500mm（常见工程惯例区间）；客房与次级空间可压至 2700mm 上下"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石墨深棕",
+      "name_en": "Graphite Brown",
+      "hex": "#1E1C1A",
+      "usage": "墙体与天花基调，占比约 40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "暖米金",
+      "name_en": "Warm Beige Gold",
+      "hex": "#C9A86A",
+      "usage": "背景墙与软包，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "米白",
+      "name_en": "Ivory",
+      "hex": "#EDE6D9",
+      "usage": "石材浅色面与天花局部，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "酒红",
+      "name_en": "Wine Red",
+      "hex": "#5A2A33",
+      "usage": "软装织物与单椅点缀，占比 ≤10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "古铜金属",
+      "name_en": "Antique Bronze",
+      "hex": "#B08D57",
+      "usage": "线条、五金与灯具，占比 ≤10%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "高光石材大板",
+      "name_en": "Polished Stone Slab",
+      "application": "地面、背景墙与立柱",
+      "finish": "抛光或半抛面",
+      "notes": "反射会放大基层平整度问题"
+    },
+    {
+      "name_zh": "金属饰面",
+      "name_en": "Metal Cladding",
+      "application": "线条、柜体与造型面",
+      "finish": "拉丝、古铜或镀钛"
+    },
+    {
+      "name_zh": "丝绒与提花织物",
+      "name_en": "Velvet and Jacquard Fabric",
+      "application": "软包、窗帘与单椅",
+      "finish": "哑光吸光面"
+    },
+    {
+      "name_zh": "高光烤漆",
+      "name_en": "High-gloss Lacquer",
+      "application": "柜门与造型面",
+      "finish": "高光（光泽度 >80 度）"
+    },
+    {
+      "name_zh": "透光石材与灯膜",
+      "name_en": "Backlit Stone and Stretch Ceiling Film",
+      "application": "天花与背景墙",
+      "finish": "背发光面"
+    }
+  ],
+  "furniture_language": [
+    "大尺度软体，深色织物与皮革，配金属脚或整体底座",
+    "造型醒目的单椅与茶几作为焦点单品，雕塑感强",
+    "柜体带金属线条与造型门板，拉手为装饰性五金",
+    "讲究对称与中轴摆放，成组家具形成画面"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "戏剧性照明，明暗对比强，用重点光把视线引向背景与焦点",
+      "装饰灯具本身作为视觉中心，允许外露并成为构图元素"
+    ],
+    "fixtures": [
+      "金属或水晶装饰吊灯",
+      "洗墙射灯",
+      "天花灯槽",
+      "透光灯膜",
+      "造型壁灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "公区环境 200–400lx，重点与展示区 500–800lx（常见工程惯例区间）",
+    "layering": "低亮度环境光打底 → 重点照明塑造焦点 → 装饰灯具制造视觉中心"
+  },
+  "architectural_elements": [
+    "地面图形拼花与波打线",
+    "对称背景墙与金属分缝",
+    "跌级天花与内嵌灯槽",
+    "透光灯膜与造型门洞",
+    "高光石材立柱与造型包柱"
+  ],
+  "applicable_spaces": [
+    "酒店公区与客房",
+    "豪宅与平层",
+    "会所与接待",
+    "高端餐饮",
+    "商业样板间与展厅前厅"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "石材与金属饰面的用量与加工精度",
+      "定制装饰灯具与造型构件",
+      "地面拼花与造型收口的人工工艺"
+    ],
+    "saving_moves": [
+      "以岩板替代天然对纹石材，降低选料与损耗成本",
+      "以涂料仿石材、仿金属质感用于次要墙面",
+      "减少装饰灯具数量，把预算集中在主焦点一处"
+    ],
+    "notes": "造价随「图形化程度」陡增，削减拼花与造型面积是最有效的降本手段，而非替换主材"
+  },
+  "construction_considerations": [
+    "高光石材与镜面金属会放大基层误差，需先完成高精度找平再铺贴",
+    "地面拼花与天花造型需共用一套排版基准线，否则对位错位明显",
+    "透光灯膜与背发光石材需预留检修口与散热空间",
+    "装饰灯具的重量与吊点需提前核算，天花内龙骨另行加强",
+    "结构安全、消防、机电负荷与疏散宽度等判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "italian-minimal",
+    "art-deco",
+    "neoclassical",
+    "middle-eastern-luxury",
+    "european-classical"
+  ],
+  "incompatible_elements": [
+    "极简留白与刻意裸露的未处理材料",
+    "低饱和日式或侘寂的克制处理",
+    "卡通、波普与高饱和玩具色",
+    "廉价仿金塑料贴面与劣质电镀",
+    "无造型、无分缝的素面大白墙"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "双层层高的酒店式到达大厅，对称布局，天花带跌级与内嵌灯槽，正对一面造型背景墙",
+      "material": "抛光高光石材地面带对称图形拼花，背景墙分幅并嵌金属分缝，古铜金属线条收口，丝绒软包点缀",
+      "lighting": "低亮度环境光打底，洗墙射灯突出背景墙，天花灯槽与透光面形成层次，明暗对比强烈",
+      "furniture": "大体量深色沙发沿中轴对称摆放，造型醒目的单椅与金属茶几构成焦点",
+      "camera": "一点透视居中对称构图，镜头略低于人眼，24–35mm，强调纵深与轴线",
+      "atmosphere": "隆重、戏剧性、有到达感，场面感强于日常松弛",
+      "keywords": [
+        "当代奢华",
+        "对称构图",
+        "地面拼花",
+        "金属分缝",
+        "跌级天花",
+        "重点照明"
+      ]
+    },
+    "en": {
+      "space": "A double-height hotel-style arrival hall, symmetrical layout, stepped ceiling with recessed coves, facing a sculpted feature wall",
+      "material": "Polished high-gloss stone floor with symmetrical graphic inlay, panelled feature wall with metal joints, antique bronze reveal lines, velvet upholstery accents",
+      "lighting": "Low ambient base, wall-washing spotlights on the feature wall, cove lighting and backlit panels for layering, strong light-to-dark contrast",
+      "furniture": "Large dark sofas arranged on a central axis, statement armchair and metal coffee table as focal points",
+      "camera": "One-point perspective with central symmetry, camera slightly below eye level, 24–35mm, emphasising depth and axis",
+      "atmosphere": "Ceremonial, dramatic, a sense of arrival, spectacle over everyday ease",
+      "keywords": [
+        "contemporary luxury",
+        "symmetry",
+        "floor inlay",
+        "metal joints",
+        "stepped ceiling",
+        "accent lighting"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持主空间的对称轴线与背景墙位置不变",
+    "保持地面拼花的图形与接缝排版关系",
+    "保持天花跌级与灯槽的位置关系，不改变层高关系"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要极简留白与未处理的裸露材料",
+      "不要低饱和的侘寂式克制处理",
+      "不要卡通、波普与高饱和玩具色",
+      "不要廉价仿金塑料与劣质电镀饰面",
+      "不要无造型、无分缝的素面大白墙"
+    ],
+    "en": [
+      "no minimalist blankness or exposed untreated material",
+      "no low-saturation wabi-sabi restraint",
+      "no cartoon, pop or saturated toy colours",
+      "no cheap gold-effect plastic or poor electroplating",
+      "no plain unmodulated white walls without joints or shaping"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "对称与轴线",
+      "criteria": "主空间家具与天花以中轴对称，轴线偏移 ≤10mm",
+      "stage": "schematic"
+    },
+    {
+      "check": "地面拼花对位",
+      "criteria": "拼花接缝与天花造型对位，错位 ≤5mm",
+      "stage": "construction"
+    },
+    {
+      "check": "高光面平整度",
+      "criteria": "抛光石材与镜面金属下无可见波浪，基层平整度按 mm 级控制",
+      "stage": "construction"
+    },
+    {
+      "check": "照明对比度",
+      "criteria": "重点区与环境照度比不低于 4:1，焦点明确（常见工程惯例区间）",
+      "stage": "S5"
+    },
+    {
+      "check": "金属一致性",
+      "criteria": "全空间金属色调统一为一种，用量不超过可见面 10%",
+      "stage": "schematic"
+    }
+  ]
+}

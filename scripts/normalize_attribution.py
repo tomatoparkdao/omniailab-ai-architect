@@ -363,6 +363,13 @@ def run(check: bool = False, root: Path = ROOT) -> Dict[str, object]:
                 changed.append({"path": rel, "changes": "；".join(ch)})
 
     for p, rel in _iter(root, "*.json"):
+        # 受 schema 严格约束的数据文件不加署名注释。
+        #
+        # `knowledge/styles/*.json` 由 `design-style.schema.json` 校验，而该 schema 是
+        # `additionalProperties: false` —— 多一个 `$comment` 键就会让**每一条风格**校验
+        # 失败。这类文件的署名在 catalog 与文档层，不在数据本身。
+        if rel.startswith("knowledge/styles/"):
+            continue
         report["total"] = int(report["total"]) + 1
         ch = normalize_json(p, check)
         if ch:

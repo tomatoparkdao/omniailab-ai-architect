@@ -1,0 +1,291 @@
+{
+  "style_id": "postmodern",
+  "display_name_zh": "后现代主义",
+  "display_name_en": "Postmodern",
+  "family": "deco-retro",
+  "tags": [
+    "irony",
+    "pastiche",
+    "motif",
+    "colour-block",
+    "80s"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1960 年代末萌芽，1970 年代中至 1980 年代末盛行",
+    "origin": "欧美建筑与设计界，作为对现代主义与国际式正统话语的质疑",
+    "summary": "后现代主义回应的是现代主义「形式必须由功能推出」的教条。设计者发现公众识别一栋建筑靠的是可读的符号而不是结构逻辑，于是把历史样式拆成可引用的片段——山花、拱券、柱式、色带——贴回界面，让符号承担叙事而不承担结构职责。它之所以在这时成立，是因为幕墙、轻质装饰构件与耐久外墙涂料使「非承重的历史外衣」在技术与成本上都可实施。因此它的做法集中在立面与公共界面的符号层，而非居住舒适度或空间效率。",
+    "key_movements": [
+      "后现代主义建筑",
+      "波普艺术",
+      "符号学与建筑类型学"
+    ]
+  },
+  "spatial_principles": [
+    "空间序列按叙事组织：入口设夸张的符号节点（门头、拱券、山花），行进中逐段出现新母题。",
+    "功能分区不追求平面纯净，允许形状各异、尺度跳跃的房间并置，形成空间嵌套。",
+    "用色彩与材质分幕区分楼层与功能，替代单一立面语言。",
+    "符号表达只放在公共界面（外立面、门厅、共享中庭），私密与后勤区退为常规中性处理。",
+    "把结构构件「模型化」为装饰构件，独立柱、桁架可缩小或放大到非结构尺度。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "古典母题按放大或缩小引用，比例偏离原制式，常见放大 1.2–2 倍或缩至原比例 1/2。",
+      "开口取夸张比例：拱券或门洞高宽比常见 1.5:1–2.5:1，且相邻开口不共用一个模数。",
+      "立面按高度带分层：基座、中段、顶部，高度带比例常见 1:2:1 或 1:3:1。",
+      "母题间距不做严格对称，允许 1/4–1/3 幅面的偏置以制造张力。"
+    ],
+    "ratios": [
+      "高度带比例 1:2:1 至 1:3:1",
+      "母题放大 1.2–2 倍或缩至 1/2",
+      "开口高宽比 1.5:1–2.5:1"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–4500mm；公共中庭不受此限可显著更高"
+  },
+  "color_palette": [
+    {
+      "name_zh": "米灰基色",
+      "name_en": "Pale Greige",
+      "hex": "#E4DED2",
+      "usage": "中段墙体与大面积底面，占比约 25–35%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "灰粉",
+      "name_en": "Dusty Rose",
+      "hex": "#D9A6A2",
+      "usage": "色带与次要墙面，占比约 12–20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "蓝绿",
+      "name_en": "Teal",
+      "hex": "#2F6E6A",
+      "usage": "主要色带与构件，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "芥末黄",
+      "name_en": "Ochre Yellow",
+      "hex": "#C9A227",
+      "usage": "母题强调与门套，占比约 8–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "赭红",
+      "name_en": "Terracotta Red",
+      "hex": "#A6432E",
+      "usage": "点缀色带与基座，占比约 6–12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "深炭",
+      "name_en": "Charcoal",
+      "hex": "#2A2C30",
+      "usage": "基座、门窗框与轮廓勾边，占比约 10–18%",
+      "role": "base"
+    },
+    {
+      "name_zh": "银灰金属",
+      "name_en": "Chrome Grey",
+      "hex": "#B9BDC2",
+      "usage": "门套、扶手与檐口饰带，占比约 3–8%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "彩色矿物涂料与灰泥",
+      "name_en": "Mineral Render and Paint",
+      "application": "立面与内墙色块",
+      "finish": "哑光，硬边分色"
+    },
+    {
+      "name_zh": "石膏线与轻质装饰构件",
+      "name_en": "Gypsum Mouldings and Lightweight Ornaments",
+      "application": "山花、拱券、柱头与檐口",
+      "finish": "涂料饰面，可整体喷彩色"
+    },
+    {
+      "name_zh": "饰面砖与砖贴面",
+      "name_en": "Ceramic and Brick Veneer",
+      "application": "基座与局部立面",
+      "finish": "哑光或丝光，按色带拼贴"
+    },
+    {
+      "name_zh": "不锈钢与镀铬金属",
+      "name_en": "Stainless and Chrome Metal",
+      "application": "门套、扶手与檐口饰带",
+      "finish": "抛光或拉丝"
+    },
+    {
+      "name_zh": "磨光石材",
+      "name_en": "Polished Stone",
+      "application": "门厅地面与台面",
+      "finish": "抛光，色带拼花"
+    },
+    {
+      "name_zh": "玻璃砖",
+      "name_en": "Glass Block",
+      "application": "隔断与采光墙",
+      "finish": "透光，规则几何纹理"
+    }
+  ],
+  "furniture_language": [
+    "家具做「建筑化」处理：柜体带山花轮廓，床头做拱形，开放龛做成门洞形式。",
+    "体量中等偏大，强调轮廓线而非细部雕饰，边角一律硬边。",
+    "落地方式以整体基座或粗壮支腿落地，支腿常做锥形或方形收分。",
+    "拉手为几何条状或半圆形，尺度夸张，可与立面母题同形。",
+    "家具色彩与界面形成色块呼应，常按同色系成组出现而非单件跳色。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "用上照与洗墙光强调立面色带的层次与高度带分界。",
+      "灯具造型回应建筑母题（拱形、圆形、几何组合），作为符号的一部分而非隐蔽元件。"
+    ],
+    "fixtures": [
+      "几何造型吊灯",
+      "拱形或半圆壁灯",
+      "立面上照灯",
+      "隐藏檐口灯带"
+    ],
+    "color_temperature_k": [
+      2700,
+      3200
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，立面与展示面 300–600lx",
+    "layering": "环境层保证基础亮度；重点层以洗墙强调色带与母题轮廓；装饰层由造型灯具构成并参与符号表达。"
+  },
+  "architectural_elements": [
+    "放大的古典山花与拱券母题，做成非承重的装饰构件。",
+    "按高度带划分的立面色块，基座与顶部各成一色。",
+    "拱形或异形门洞与夸张门套。",
+    "装饰性独立柱，尺度刻意偏离结构柱的常规。",
+    "彩色饰面砖基座与磨光石材门厅拼花地面。"
+  ],
+  "applicable_spaces": [
+    "商业建筑外立面与入口",
+    "酒店与办公公区",
+    "零售与展陈空间",
+    "文化建筑与展览馆",
+    "餐饮空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "定制山花与拱券构件的模具与制作",
+      "立面色块分色的多道涂装与放样",
+      "磨光石材与金属饰面的加工"
+    ],
+    "saving_moves": [
+      "装饰构件改用轻质成品线条现场拼接",
+      "色块分色用耐久外墙涂料替代饰面砖",
+      "金属饰面只在入口与主界面范围使用"
+    ],
+    "notes": "造价主要由定制装饰构件的模具成本与种类数决定；方案阶段应把母题控制在少量几种并重复使用，种类越多单价越难摊薄。"
+  },
+  "construction_considerations": [
+    "装饰构件为附加荷载，其固定方式与基层做法标注待持证专业人员复核",
+    "立面色块分色须按放样弹线施工，避免色带在转角与窗洞处错位",
+    "室外石膏类与轻质构件须考虑伸缩与防水，接缝做法先做样板确认",
+    "拱形与异形开口涉及过梁与结构安全，标注待持证专业人员复核",
+    "外墙饰面的防火、保温与防水构造标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "memphis",
+    "art-deco",
+    "modernist-classic",
+    "neoclassical",
+    "mid-century-modern"
+  ],
+  "incompatible_elements": [
+    "无装饰的纯白国际式立面",
+    "严格模数与严格对称的古典重演",
+    "裸露管线与清水混凝土粗野体量",
+    "高饱和荧光色的流行系撞色"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "后现代主义建筑入口门厅，层高约 4.2m，立面按基座、中段、顶部三带分色，拱形门洞上方设放大的山花母题，一侧有细长的装饰性独立柱",
+      "material": "哑光矿物涂料彩色墙面，涂料饰面的石膏山花与拱券构件，饰面砖基座，抛光不锈钢门套与扶手，磨光石材拼花地面",
+      "lighting": "檐口隐藏灯带做环境光，立面上照灯洗出色带层次，拱券后设暖白背光突出轮廓",
+      "furniture": "带山花轮廓的柜体，拱形床头与门洞式开放龛，细长收分支腿落地，条状大尺度拉手",
+      "camera": "约 1.6m 视高，等效 24–28mm 略仰视正视，收入入口完整立面色带与拱券母题",
+      "atmosphere": "符号感强、略带戏谑的庄重，色彩分区清晰，公共界面具有叙事性",
+      "keywords": [
+        "高度带分色",
+        "放大山花",
+        "拱券母题",
+        "装饰性独立柱",
+        "磨光石材拼花",
+        "抛光金属门套"
+      ]
+    },
+    "en": {
+      "space": "Postmodern building entrance foyer, ceiling about 4.2 m, facade divided into base, middle and top colour bands, an oversized pediment motif above an arched doorway, a slender non-structural decorative column to one side",
+      "material": "matte mineral-render colour-blocked walls, painted gypsum pediment and arch ornaments, brick veneer base, polished stainless door surrounds and handrails, polished stone patterned floor",
+      "lighting": "concealed cove lighting at the cornice for ambient light, wall-grazing uplights washing the colour bands, warm-white backlight behind the arch highlighting its silhouette",
+      "furniture": "cabinets with pediment silhouettes, arched headboards and doorway-shaped open niches, slender tapered legs sitting on the floor, large linear pulls",
+      "camera": "eye level about 1.6 m, 24–28 mm equivalent, frontal view with slight upward tilt capturing the full colour bands and arch motif",
+      "atmosphere": "symbolic and quietly ironic in its monumentality, clearly zoned by colour, narrative on the public face",
+      "keywords": [
+        "colour banded facade",
+        "oversized pediment",
+        "arched motif",
+        "decorative free-standing column",
+        "polished stone pattern",
+        "polished metal door surround"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持高度带与色块划分的高度位置不变。",
+    "保持拱券与山花母题的位置与相对尺度关系不变。",
+    "保持开口位置与拱形轮廓不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现无装饰的纯白国际式立面",
+      "不要出现严格模数与严格对称的古典重演",
+      "不要出现裸露管线或清水混凝土的粗野体量",
+      "不要出现高饱和荧光色的流行系撞色",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no undecorated pure-white International Style facade",
+      "no strictly modular, strictly symmetrical classical revival",
+      "no exposed services or raw board-formed concrete brutalism",
+      "no saturated fluorescent pop colour clashes",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "母题引用",
+      "criteria": "山花或拱券母题按 1.2–2 倍放大或 1/2 缩小引用，且明确不承重，与结构构件可区分",
+      "stage": "S3"
+    },
+    {
+      "check": "立面分带",
+      "criteria": "高度带比例为 1:2:1 或 1:3:1，色带在转角与窗洞处不出现错位，偏差 ≤10mm",
+      "stage": "S4"
+    },
+    {
+      "check": "色块与开口",
+      "criteria": "相邻开口不共用同一模数，拱券高宽比 1.5:1–2.5:1 区间内",
+      "stage": "S4"
+    },
+    {
+      "check": "照明层次",
+      "criteria": "环境 150–300lx、立面 300–600lx，色温 2700–3200K，色带分界在洗墙光下可读",
+      "stage": "S6"
+    }
+  ]
+}

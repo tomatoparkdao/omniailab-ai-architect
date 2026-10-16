@@ -1,0 +1,275 @@
+{
+  "style_id": "victorian",
+  "display_name_zh": "维多利亚",
+  "display_name_en": "Victorian",
+  "family": "classic",
+  "tags": [
+    "ornate",
+    "dark-wood",
+    "patterned",
+    "dense",
+    "eclectic"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "1837 至 1901 年英国维多利亚时期，并延续至 20 世纪初",
+    "origin": "英国工业城市住宅与新兴中产家庭，后传入北美",
+    "summary": "维多利亚并非单一风格，而是工业量产与身份展示共同作用的结果。印刷壁纸、机制地毯、铸件五金与批量木作让装饰变得便宜而唾手可得，新兴中产于是用满来证明体面——墙面、地面、天花与家具各有一套图案，装饰密度极高。房间按社交与家庭角色细分，会客、餐叙、起居与书房各自独立；深色硬木与厚重织物承担遮光与保暖，最终形成明暗对比强烈、层次密集、陈设堆叠的室内。",
+    "key_movements": [
+      "维多利亚时期风格（Victorian style）",
+      "哥特复兴（Gothic Revival）",
+      "工艺美术运动（Arts and Crafts Movement）"
+    ]
+  },
+  "spatial_principles": [
+    "房间高度细分，会客、餐叙、起居与书房各自独立，以门串联，单间面积常见 14–28㎡。",
+    "公共房间沿走廊或门厅展开，门厅本身作为展示空间做密集陈设。",
+    "每间房有明确视觉中心：壁炉、凸窗或大柜，其余家具围绕其堆叠。",
+    "天花较高（常见 3000–3800mm），便于垂挂吊灯与厚重窗帘。",
+    "表面不留空，墙面、地面、天花三面均有图案，靠统一色系避免混乱。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "墙面按四段组织：踢脚、墙裙、壁纸墙身与檐口线脚，比例约 1:1.5:6:1。",
+      "壁纸图案单元偏大且重复，常见 200–600mm，对花接缝明显。",
+      "踢脚与檐口线脚宽厚（常见 150–300mm）且层数多，形成暗部线条。",
+      "凸窗（bay window）出挑常见 600–900mm，作为坐卧与陈列区。"
+    ],
+    "ratios": [
+      "墙面四段比例约 1:1.5:6:1",
+      "踢脚与檐口线脚宽 150–300mm",
+      "天花高度 3000–3800mm",
+      "壁纸图案单元 200–600mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–3800mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "深木棕",
+      "name_en": "Dark Wood Brown",
+      "hex": "#3E2C22",
+      "usage": "木作、地板与家具，占比约 25–40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "勃艮第红",
+      "name_en": "Burgundy Red",
+      "hex": "#5E2B2B",
+      "usage": "壁纸底色或局部色块，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "森林深绿",
+      "name_en": "Forest Green",
+      "hex": "#2F4436",
+      "usage": "壁纸与织物，占比约 12–20%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "古金",
+      "name_en": "Antique Gold",
+      "hex": "#A98A4C",
+      "usage": "线脚、五金与镜框，占比约 6–12%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "紫红",
+      "name_en": "Plum",
+      "hex": "#5A3A4A",
+      "usage": "天鹅绒织物点缀，占比 ≤10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "深色硬木",
+      "name_en": "Dark Hardwood",
+      "application": "地板、门与家具",
+      "finish": "高光泽亮漆或深色抛光"
+    },
+    {
+      "name_zh": "大图案印花壁纸",
+      "name_en": "Large-pattern Wallpaper",
+      "application": "墙面满铺",
+      "finish": "哑光或丝光，图案单元大"
+    },
+    {
+      "name_zh": "机制图案地毯",
+      "name_en": "Patterned Carpet",
+      "application": "地面",
+      "finish": "短绒、密织图案"
+    },
+    {
+      "name_zh": "铸件黄铜五金",
+      "name_en": "Cast Brass Hardware",
+      "application": "门锁、拉手与灯具底座",
+      "finish": "古金色，可见纹样与浮雕"
+    },
+    {
+      "name_zh": "天鹅绒与厚缎",
+      "name_en": "Velvet and Heavy Satin",
+      "application": "窗帘、坐具与屏风",
+      "finish": "丝光、深色、垂坠感强"
+    }
+  ],
+  "furniture_language": [
+    "家具体量与装饰量同时放大，椅背与柜门带雕刻或车木构件。",
+    "坐具深陷、坐垫厚并带绗缝，扶手与椅背轮廓曲线明显。",
+    "柜体高大、带顶冠与勒脚，常兼作陈列与展示。",
+    "拉手为铸件圆钮或带浮雕的长条，体量大、纹样清晰。",
+    "室内允许同类家具（多把椅、多个边几、多面镜）重复堆叠，形成装饰密度。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以吊灯与壁灯做多层点光，允许照度不均与强烈明暗对比。",
+      "灯具本身是装饰品，灯罩与支架带纹样，参与整体构图。"
+    ],
+    "fixtures": [
+      "多臂吊灯",
+      "壁灯",
+      "台灯与油灯造型灯",
+      "镜前灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      2700
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 50–150lx（有意压低），任务面 200–300lx",
+    "layering": "以点光源为主，装饰性灯具与烛台共同构成光景；明暗比常见 >10:1，阴影浓重。"
+  },
+  "architectural_elements": [
+    "四段式墙面：厚踢脚、墙裙、大图案壁纸与多层檐口线脚。",
+    "凸窗或飘窗，配坐垫与陈列。",
+    "带瓷砖饰面与木雕壁炉架的壁炉。",
+    "高门带气窗，门扇带嵌板与雕饰。",
+    "天花带中央灯盘与宽檐口，局部有装饰角花。"
+  ],
+  "applicable_spaces": [
+    "历史住宅与老宅改造",
+    "精品酒店与主题客房",
+    "餐酒吧与下午茶空间",
+    "主题体验与沉浸式空间",
+    "古董与家具展厅"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "壁纸与地毯满铺且图案对花",
+      "雕饰木作与铸件五金",
+      "灯具与织物的装饰性投入"
+    ],
+    "saving_moves": [
+      "只在公共房间满铺图案，次要房间用单色",
+      "以印花面料替代部分天鹅绒",
+      "用成品线脚拼接替代现场雕刻"
+    ],
+    "notes": "造价集中在图案覆盖面积与装饰性木作，可按房间社交权重分级。"
+  },
+  "construction_considerations": [
+    "大图案壁纸须先做整墙对花排版，接缝位置与阳角处理在贴前确认",
+    "深色亮漆木作对基层平整度敏感，需先做样板确认漆膜与流平效果",
+    "老宅改造中承重构件、烟道与消防疏散的做法与合规性标注待持证专业人员复核",
+    "多层线脚与灯盘拼装接缝多，需做防裂处理并控制基层含水率",
+    "厚重窗帘与吊灯的承重与预埋件需提前预留，固定荷载标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "english-country",
+    "vintage-european",
+    "european-classical",
+    "american-classic"
+  ],
+  "incompatible_elements": [
+    "裸露混凝土与极简金属框架",
+    "无图案的大面白墙与通顶平板柜",
+    "冷白色高照度顶部均布筒灯",
+    "极简单色软装与大面积留白构图"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "维多利亚式住宅会客厅，层高约 3.4m，带凸窗与厚檐口线脚，壁炉位于墙面中轴，四周陈设密集",
+      "material": "四段式墙面，大图案印花壁纸满铺，深色硬木高光地板与图案地毯，铸件黄铜五金，天鹅绒窗帘与绗缝坐具",
+      "lighting": "夜晚，多臂吊灯与壁灯形成多层点光，明暗对比强烈，阴影浓重，局部台灯补充",
+      "furniture": "深陷绗缝扶手椅与高背沙发，雕刻车木柜体带顶冠，铸件浮雕拉手，多面镜与边几重复堆叠",
+      "camera": "约 1.4m 视高、正视或轻俯，等效 28–35mm，画面信息密度高",
+      "atmosphere": "浓密、沉郁、层次繁复，明暗对比强，材质以丝光与深色为主",
+      "keywords": [
+        "大图案壁纸",
+        "深色硬木木作",
+        "铸件黄铜五金",
+        "图案地毯",
+        "天鹅绒窗帘",
+        "堆叠陈设"
+      ]
+    },
+    "en": {
+      "space": "Victorian drawing room, ceiling about 3.4 m, a bay window and deep cornice mouldings, a fireplace on the wall axis, densely furnished all around",
+      "material": "four-band wall with large-pattern printed wallpaper throughout, high-gloss dark hardwood flooring with patterned carpet, cast brass hardware, velvet drapery and quilted upholstery",
+      "lighting": "night; a multi-arm chandelier and wall lights create layered points of light with strong contrast and deep shadows, aided by local table lamps",
+      "furniture": "deep quilted armchairs and high-back sofas, carved turned-wood cabinets with a cornice, cast relief pulls, repeated mirrors and side tables",
+      "camera": "eye level about 1.4 m, frontal or slightly high angle, 28–35 mm equivalent, information-dense frame",
+      "atmosphere": "dense, moody and richly layered, strong light-dark contrast, satin and dark materials",
+      "keywords": [
+        "large-pattern wallpaper",
+        "dark hardwood joinery",
+        "cast brass hardware",
+        "patterned carpet",
+        "velvet drapery",
+        "layered clutter"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持凸窗出挑尺寸与位置不变。",
+    "保持房间细分与门洞位置不变，不做打通。",
+    "保持天花标高与檐口线脚层级不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现裸露混凝土或极简金属框架",
+      "不要出现无图案的大面白墙与通顶平板柜",
+      "不要出现冷白色高照度顶部均布筒灯",
+      "不要出现极简单色留白构图",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no exposed concrete or minimalist metal frames",
+      "no large undecorated white walls or slab-front full-height cabinetry",
+      "no cold-white high-illuminance uniform downlights",
+      "no minimal single-colour blank composition",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "装饰密度",
+      "criteria": "墙面、地面与天花三面均有图案，配色统一在同一深色系",
+      "stage": "S4"
+    },
+    {
+      "check": "墙面分段",
+      "criteria": "四段比例约 1:1.5:6:1，踢脚与檐口线脚宽 150–300mm",
+      "stage": "S5"
+    },
+    {
+      "check": "图案对花",
+      "criteria": "壁纸与地毯图案接缝避开阳角与视线中心，无明显错位",
+      "stage": "S5"
+    },
+    {
+      "check": "照明对比",
+      "criteria": "环境 50–150lx、任务 200–300lx，明暗比 >10:1，色温 2200–2700K",
+      "stage": "S6"
+    },
+    {
+      "check": "房间独立性",
+      "criteria": "公共房间独立成间，单间 14–28㎡，天花 3000–3800mm",
+      "stage": "S3"
+    }
+  ]
+}

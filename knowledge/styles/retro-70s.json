@@ -1,0 +1,275 @@
+{
+  "style_id": "retro-70s",
+  "display_name_zh": "七十年代复古",
+  "display_name_en": "Retro 70s",
+  "family": "deco-retro",
+  "tags": [
+    "warm-earth",
+    "shag",
+    "bold-pattern",
+    "sunken"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1968 至 1982 年",
+    "origin": "欧美，在能源与材料价格波动、室内转向舒适优先的背景下成型",
+    "summary": "七十年代复古的做法来自舒适优先与新材料普及的叠加。能源与材料成本波动使住宅倾向于在有限面积内堆叠舒适度，于是出现下沉式坐区、厚重长绒地毯与大面积软包，用织物和体量替代平面对比；同时聚氨酯泡沫、染色玻璃纤维、亚克力与铬金属让厚重造型配合高饱和色可以低成本实现。色彩因而转向日晒褪色般的暖土色系，照明则主动压低照度，用台灯与壁灯营造室内安全感的包围氛围。",
+    "key_movements": [
+      "后现代主义前奏（Early Postmodernism）",
+      "有机现代主义（Organic Modern）",
+      "波普与大众化室内风潮（Pop-influenced domestic interiors）"
+    ]
+  },
+  "spatial_principles": [
+    "公共区以下沉式坐区为特征，坐区比地面低 1–2 级台阶（常见 200–400mm），家具沿边缘围合。",
+    "开放平面与环形动线结合，房间以矮柜、织物屏风或地毯边界划分，少用实墙。",
+    "地面大面积铺设长绒地毯，形成连续的柔软基调。",
+    "坐区与交谈区尺度偏大，围合边长常见 3.0–4.2m，鼓励就地坐下。",
+    "天花以木条、格栅或深色饰面压低，配合低照度形成包裹感。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "下沉式坐区高差取 1–2 级台阶，单级常见 150–200mm，边缘做软包或坐垫。",
+      "家具体量厚重低矮，坐面高度常见 350–420mm，坐深偏大。",
+      "地毯至墙边留缝常见 100–300mm，或满铺至墙。",
+      "木条天花间距常见 80–150mm，形成横向或方格秩序。"
+    ],
+    "ratios": [
+      "下沉坐区高差 200–400mm",
+      "坐面高度 350–420mm",
+      "木条天花间距 80–150mm",
+      "交谈区围合边长 3.0–4.2m"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2400–2800mm（刻意压低）；挑高处 3200–3800mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "暖土棕",
+      "name_en": "Earth Brown",
+      "hex": "#6B4A2F",
+      "usage": "木作与地毯底色，占比约 25–40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "砖橙",
+      "name_en": "Terracotta Orange",
+      "hex": "#C1622E",
+      "usage": "织物与墙面色块，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "芥末黄",
+      "name_en": "Mustard Yellow",
+      "hex": "#C89B3C",
+      "usage": "软装与灯罩，占比约 8–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "牛油果绿",
+      "name_en": "Avocado Green",
+      "hex": "#7A7A3C",
+      "usage": "局部墙面与坐具，占比约 8–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "铬银",
+      "name_en": "Chrome Silver",
+      "hex": "#B8BCC0",
+      "usage": "灯具与家具支架，占比 ≤8%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "长绒地毯",
+      "name_en": "Shag Carpet",
+      "application": "地面满铺",
+      "finish": "高绒、蓬松，暖土纯色或低调粗纹"
+    },
+    {
+      "name_zh": "染色玻璃纤维与亚克力",
+      "name_en": "Dyed Fiberglass and Acrylic",
+      "application": "灯罩、装饰构件与椅壳",
+      "finish": "半透明、染色、光泽表面"
+    },
+    {
+      "name_zh": "铬金属支架",
+      "name_en": "Chrome Tubular Metal",
+      "application": "家具支架与灯具",
+      "finish": "镜面抛光，反光明显"
+    },
+    {
+      "name_zh": "灯芯绒与天鹅绒",
+      "name_en": "Corduroy and Velvet",
+      "application": "坐具、靠垫与软包",
+      "finish": "光泽随角度变化，绒面明显"
+    },
+    {
+      "name_zh": "木条与木格栅",
+      "name_en": "Timber Slats and Grille",
+      "application": "天花与隔断",
+      "finish": "哑光染色，深棕或暖棕"
+    }
+  ],
+  "furniture_language": [
+    "体量厚重低矮、坐深大，靠背与扶手圆润饱满，承接身体。",
+    "模块化与拼组为主，可自由组合成长沙发或环形坐区。",
+    "平台式或无腿设计常见，家具几乎贴地，减弱腿部存在感。",
+    "圆形与管状构件常见，桌椅边缘倒圆，避免直角。",
+    "柜体带染色玻璃或塑料面板，金属与皮革拉手放大体量。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "主动压低照度，以台灯、壁灯与落地灯构成暖色包围光，不设顶部主灯。",
+      "光色偏暖，允许灯具本身成为造型重点，反射与绒面共同呈现光泽。"
+    ],
+    "fixtures": [
+      "染色玻璃灯罩吊灯",
+      "圆形壁灯与台灯",
+      "落地阅读灯",
+      "木格栅内嵌灯带"
+    ],
+    "color_temperature_k": [
+      2200,
+      2700
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 50–150lx，任务面 200–300lx",
+    "layering": "任务与装饰层为主，环境层压低；明暗比常见 8:1–12:1，强调阴影与绒面光晕。"
+  },
+  "architectural_elements": [
+    "下沉式坐区与台阶边缘软包。",
+    "木条或方格格栅天花，压低层高。",
+    "通铺长绒地毯与织物边界划分。",
+    "弧角门洞与圆角墙垛，避免硬直角。",
+    "内嵌式长条坐凳或平台式卡座。"
+  ],
+  "applicable_spaces": [
+    "住宅起居与娱乐空间",
+    "酒吧与俱乐部",
+    "主题餐厅与咖啡空间",
+    "影音与休闲空间",
+    "主题零售与体验空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "长绒地毯的铺装面积",
+      "下沉坐区的结构降板与台阶处理",
+      "铬金属与亚克力定制构件"
+    ],
+    "saving_moves": [
+      "地毯只做坐区，其余用砖或木地板",
+      "下沉做含地台的假高差替代结构降板",
+      "铬金属改用镀铬饰面金属件"
+    ],
+    "notes": "造价集中在地毯面积与下沉区做法，后者在既有楼板上需评估结构，标注待持证专业人员复核。"
+  },
+  "construction_considerations": [
+    "下沉式坐区若涉及结构降板，其可行性与做法标注待持证专业人员复核，不得仅按装饰假定",
+    "长绒地毯需在干燥平整的基层上铺装，接缝避开主要视线，并预留压条收边",
+    "铬金属与亚克力构件的固定需预埋，避免后期钻孔破坏完成面",
+    "木格栅天花需与灯具、检修口同步排版，避免开孔错位",
+    "低位照明回路与插座位置应在软装进场前确认，避免被厚重家具遮挡"
+  ],
+  "compatible_styles": [
+    "vintage-european",
+    "mid-century-modern",
+    "postmodern",
+    "memphis",
+    "art-deco"
+  ],
+  "incompatible_elements": [
+    "极简无装饰的大面留白墙",
+    "冷白色高照度顶部均布光",
+    "纤细金属腿与轻巧透明家具",
+    "高光黑金几何饰面的大面积使用"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "七十年代复古风格起居室，带下沉式坐区，比地面低两级台阶，木条格栅天花压低至约 2.6m，局部挑高",
+      "material": "通铺暖棕长绒地毯，灯芯绒与天鹅绒软包，染色玻璃灯罩，铬金属家具支架，木格栅天花",
+      "lighting": "夜晚，台灯与圆形壁灯提供低色温暖光形成包围感，无顶部主灯，绒面与玻璃反射出柔和光晕，阴影明显",
+      "furniture": "厚重低矮模块化沙发围合下沉坐区，坐面高约 380mm，圆润饱满靠背，圆角桌椅，平台式柜体带染色玻璃门",
+      "camera": "约 1.2m 视高、微俯视，等效 35mm，强调下沉高差与织物肌理",
+      "atmosphere": "温暖、浓稠、有年代感的包围氛围，照度低，色温暖，材质厚重",
+      "keywords": [
+        "下沉式坐区",
+        "长绒地毯",
+        "暖土色系",
+        "铬金属支架",
+        "木格栅天花",
+        "灯芯绒软包"
+      ]
+    },
+    "en": {
+      "space": "Retro 1970s living room with a sunken lounge two steps below floor level, slatted timber ceiling dropped to about 2.6 m with a locally raised section",
+      "material": "wall-to-wall warm-brown shag carpet, corduroy and velvet upholstery, dyed glass lamp shades, chrome tubular frames, timber slat ceiling",
+      "lighting": "night; table and round wall lamps give low-temperature warm light with an enveloping feel, no ceiling pendant, soft glow on velvet and glass, pronounced shadows",
+      "furniture": "heavy low modular sofa wrapping the sunken lounge, seat height about 380 mm, plump rounded backs, rounded-edge tables, plinth cabinets with dyed glass doors",
+      "camera": "eye level about 1.2 m, slightly high angle, 35 mm equivalent, emphasising the sunken level change and textile texture",
+      "atmosphere": "warm, thick and nostalgic, enveloping, low illuminance, warm colour temperature, heavy materials",
+      "keywords": [
+        "sunken lounge",
+        "shag carpet",
+        "warm earth palette",
+        "chrome tubular frame",
+        "slatted ceiling",
+        "corduroy upholstery"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持下沉式坐区的高差与台阶级数不变。",
+    "保持木格栅天花的间距与走向不变。",
+    "保持公共区的环形动线关系不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现极简无装饰的大面留白墙",
+      "不要出现冷白色高照度顶部均布光",
+      "不要出现纤细金属腿与轻巧透明家具",
+      "不要出现高光黑金几何饰面的大面积使用",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no large undecorated minimal blank walls",
+      "no cold-white high-illuminance uniform ceiling light",
+      "no slender metal legs or light transparent furniture",
+      "no large areas of high-gloss black-and-gold geometric finishes",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "下沉区高差",
+      "criteria": "坐区比地面低 200–400mm，台阶 1–2 级，边缘设软包或坐垫",
+      "stage": "S4"
+    },
+    {
+      "check": "照度与色温",
+      "criteria": "环境 50–150lx、任务 200–300lx，色温 2200–2700K，无顶部主灯",
+      "stage": "S6"
+    },
+    {
+      "check": "色彩比例",
+      "criteria": "暖土色系（橙、棕、芥末、牛油果绿）合计占软装面积 >70%",
+      "stage": "S3"
+    },
+    {
+      "check": "地毯收边",
+      "criteria": "长绒地毯接缝避开主要视线，至墙留缝 100–300mm 或满铺至墙",
+      "stage": "S5"
+    },
+    {
+      "check": "合规复核",
+      "criteria": "下沉区结构做法已由持证专业人员复核",
+      "stage": "S5"
+    }
+  ]
+}

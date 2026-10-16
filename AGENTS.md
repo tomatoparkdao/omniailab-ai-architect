@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -52,9 +52,11 @@ python -m omniarchitect doctor
 | `omniarchitect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
 | `omniarchitect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
 | `omniarchitect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
+| `omniarchitect/style/` | **设计风格系统**：47 种风格知识库 / 推荐引擎 / 占位提示词编译 / 八阶段挂钩。是内部模块，**不是第二个 Skill** | 不得另建独立包或安装流程；平台探测必须委托 `providers/` |
 | `omniarchitect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
 | `THIRD_PARTY_NOTICES.md` · `LICENSES/` | 第三方许可证、版权声明、来源链接与署名的唯一集中落点 | 不得删除署名；不得出现在普通成果与营销材料中 |
 | `knowledge/` | **原创** 13 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
+| `knowledge/styles/` | **原创** 47 种设计风格结构化数据 + `catalog.json` 索引 | schema 为 `additionalProperties: false`，不得增添字段；索引与数据分离 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
 | `skills/` | 30 份专业能力说明（**文件名 = 能力名**，可直接按名加载；能力 ≠ 流程步骤） | 只增不改语义；文件名必须等于能力 slug |
 | `adapters/specs/` | MCP 适配规范 | 文档 |

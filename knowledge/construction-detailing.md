@@ -4,7 +4,7 @@ name: 构造与施工深化
 stage_affinity: [S6, S7]
 loads_when: 当任务涉及节点大样、收口做法、基层构造、防水防潮或材料交接时加载
 load_cost: heavy
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

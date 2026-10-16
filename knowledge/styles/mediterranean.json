@@ -1,0 +1,277 @@
+{
+  "style_id": "mediterranean",
+  "display_name_zh": "地中海",
+  "display_name_en": "Mediterranean",
+  "family": "natural-organic",
+  "tags": [
+    "lime-plaster",
+    "arch",
+    "terracotta",
+    "blue-white"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "承自地中海沿岸乡土民居，20 世纪初起复兴并于当代持续流行",
+    "origin": "地中海沿岸（南欧、北非与近东沿海）的乡土建造传统",
+    "summary": "地中海沿岸夏季干热、日照强烈，传统民居由此形成一组以「遮阳与热惰性」为核心的构造：墙厚而蓄热，白天吸热夜间缓慢释放，使室内温度平缓；窗洞小而深，减少直射光进入；墙面用石灰抹面反射阳光并透气；屋面与铺地取当地陶土。这种做法的目标是让房子不依赖设备也能在炎热中保持凉爽，因此它的判据是墙体厚度、开口大小与遮阳构造，而不是装饰图案的多寡。",
+    "key_movements": [
+      "地中海乡土建筑",
+      "地中海复兴风格",
+      "西班牙殖民地建筑",
+      "气候适应性建筑"
+    ]
+  },
+  "spatial_principles": [
+    "以厚墙形成热惰性围护，外墙厚度常见 400–600mm（常见工程惯例区间），窗口做成深凹",
+    "窗洞偏小且数量受控，开口以竖向为主，配合百叶或内衬遮阳，减少直射光进入",
+    "内部空间围绕院子或内庭组织，主要房间朝向内院以获得私密与荫凉",
+    "以拱券、连拱廊与柱廊形成有遮蔽的过渡空间，兼作遮阳与外廊",
+    "地面与墙面以连续抹面处理，减少接缝与热桥，界面简单不堆叠"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "窗洞宽高比偏竖向，常见 1:1.5–1:3（常见工程惯例区间），洞口进深随墙厚形成凹龛",
+      "拱券以半圆拱为主，跨度常见 900–2400mm（常见工程惯例区间），起拱高度约为跨度的一半",
+      "柱廊柱距常见 1800–3000mm（常见工程惯例区间），柱高与柱距比约 1:1–1:1.5",
+      "层高偏高以利热压通风，净高常见 2800–3400mm（常见工程惯例区间）"
+    ],
+    "ratios": [
+      "外墙厚常见 400–600mm（常见工程惯例区间）",
+      "窗地面积比偏低，常见 1:8–1:6（常见工程惯例区间）",
+      "拱券高跨比约 1:2（半圆）至 1:1.5（略高）"
+    ],
+    "ceiling_height_mm": "净高常见 2800–3400mm（常见工程惯例区间）；外露木梁天花以梁底为准"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石灰白",
+      "name_en": "Lime White",
+      "hex": "#F1EBDF",
+      "usage": "内外墙面基调，占比约 55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "天空蓝",
+      "name_en": "Aegean Sky Blue",
+      "hex": "#4C7FA6",
+      "usage": "门窗框与局部柜体，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "陶土赭",
+      "name_en": "Terracotta Ochre",
+      "hex": "#B5714B",
+      "usage": "地砖与屋面，占比约 15%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "橄榄绿",
+      "name_en": "Olive Green",
+      "hex": "#6E7250",
+      "usage": "百叶、绿植与软装点缀，占比 ≤10%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "深锻铁黑",
+      "name_en": "Wrought Iron Black",
+      "hex": "#33322E",
+      "usage": "铁艺灯具与栏杆，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "石灰抹面",
+      "name_en": "Lime Plaster",
+      "application": "内外墙面与天花",
+      "finish": "手工批刮哑光，略带起伏",
+      "notes": "透气性好，适合干热气候"
+    },
+    {
+      "name_zh": "陶土砖与筒瓦",
+      "name_en": "Terracotta Tile and Barrel Tile",
+      "application": "地面与屋面",
+      "finish": "自然烧结面，轻微色差"
+    },
+    {
+      "name_zh": "天然石材与洞石",
+      "name_en": "Natural Stone and Travertine",
+      "application": "地面、台阶与台面",
+      "finish": "哑光或粗磨，不抛光"
+    },
+    {
+      "name_zh": "实木与木梁",
+      "name_en": "Solid Timber and Beams",
+      "application": "天花梁、门窗与家具",
+      "finish": "擦油或轻蜡，保留木纹"
+    },
+    {
+      "name_zh": "锻铁与陶土器皿",
+      "name_en": "Wrought Iron and Terracotta Ware",
+      "application": "栏杆、灯具与器物",
+      "finish": "氧化或自然烧成面"
+    }
+  ],
+  "furniture_language": [
+    "形制简朴厚重，以实木与藤编为主，边角略作倒圆",
+    "常见梯形座面的木椅、长条木桌与陶质矮凳",
+    "以藤编与锻铁结合，家具偏轻便于搬动以适应季节",
+    "柜体以木与抹面砌体结合，做法朴素，不追求精细五金"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以自然光为主，深窗凹产生明暗对比，室内保持较暗以形成荫凉感",
+      "人工光低位暖黄，用铁艺与陶质灯具，避免大面积均光"
+    ],
+    "fixtures": [
+      "锻铁吊灯",
+      "陶质壁灯",
+      "藤编罩吊灯",
+      "烛台式灯具"
+    ],
+    "color_temperature_k": [
+      2200,
+      2900
+    ],
+    "illuminance_lux": "起居环境 100–200lx，餐桌面 250–350lx（常见工程惯例区间）",
+    "layering": "环境光低调，任务光集中在餐桌面，重点光打亮拱券与抹面墙的厚度感"
+  },
+  "architectural_elements": [
+    "半圆拱券与连拱廊",
+    "深凹小窗与百叶窗扇",
+    "厚墙抹面与拱形门洞",
+    "外露木梁天花与陶土铺地",
+    "内院、柱廊与铺砌露台"
+  ],
+  "applicable_spaces": [
+    "住宅与别墅",
+    "度假酒店与民宿",
+    "餐饮与酒吧",
+    "庭院会所与泳池区",
+    "零售与展厅"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "厚墙砌筑与结构带来的工程量",
+      "石灰抹面的手工批刮人工",
+      "拱券模板与陶土筒瓦的铺装"
+    ],
+    "saving_moves": [
+      "拱券只做在主要门洞与连廊，次要开口用方洞加抹面收边",
+      "以仿陶土砖替代整批手工筒瓦，保留色彩与排布",
+      "厚墙效果通过双层抹面与墙裙加厚呈现，避免全屋真砌厚墙"
+    ],
+    "notes": "厚墙与遮阳是风格成立的构造基础，降本时应保住窗洞深度与遮阳构造；墙体与结构做法需持证专业人员复核"
+  },
+  "construction_considerations": [
+    "石灰抹面需分层并控制养护湿度，快速干燥易开裂，做法标注待持证专业人员复核",
+    "窗洞深凹处的防水与滴水线需专门设计，避免雨水沿洞口内侧倒流",
+    "拱券砌筑需按跨度设模板与起拱，起拱高度不足会导致拱顶开裂，做法标注待持证专业人员复核",
+    "陶土砖铺装需留伸缩缝并做防泛碱处理，避免返潮起皮",
+    "湿区抹面与排水坡度做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "rustic-natural",
+    "earth-adobe",
+    "moroccan",
+    "tropical-resort",
+    "french-romantic"
+  ],
+  "incompatible_elements": [
+    "大面积玻璃幕墙与落地通窗",
+    "高光不锈钢与镜面饰面",
+    "密集几何图案马赛克拼贴",
+    "繁复金色雕饰与水晶吊灯",
+    "大面积高饱和霓虹色"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "一间厚墙抹面的起居室，一侧为半圆拱券通往柱廊，深凹小窗内衬木百叶，天花外露木梁",
+      "material": "石灰白抹面墙与天花，陶土砖地面，木梁与实木门窗，锻铁灯具，陶质器皿与藤编座椅",
+      "lighting": "日光穿过深窗凹在抹面墙上切出明亮光斑，室内整体偏暗，铁艺吊灯发出低位暖光",
+      "furniture": "厚重实木长桌与陶质矮凳，藤编靠椅，梯形座面木椅，家具简洁可搬动",
+      "camera": "人眼高度，28–35mm，穿过拱券向柱廊取景以体现墙厚与纵深",
+      "atmosphere": "荫凉、朴厚、明亮与阴翳并置，有慢下来的夏日感",
+      "keywords": [
+        "地中海",
+        "石灰抹面",
+        "拱券",
+        "厚墙小窗",
+        "陶土",
+        "蓝白"
+      ]
+    },
+    "en": {
+      "space": "A living room with thick plastered walls, a semicircular arch opening onto a colonnade, a small deep-set window with timber shutters, and exposed timber beams",
+      "material": "Lime white plastered walls and ceiling, terracotta tile floor, timber beams and solid wood doors, wrought iron fittings, terracotta ware and rattan seating",
+      "lighting": "Daylight cutting bright patches on the plaster wall through the deep window recess, the room overall dim, a wrought iron pendant giving low warm light",
+      "furniture": "A heavy solid wood table with terracotta stools, rattan armchairs, a trapezoidal-seated wooden chair, plain furniture easy to move",
+      "camera": "Eye level, 28–35mm, framed through the arch toward the colonnade to show wall thickness and depth",
+      "atmosphere": "Shaded, sturdy, bright light against deep shade, a slowed-down summer feel",
+      "keywords": [
+        "mediterranean",
+        "lime plaster",
+        "arch",
+        "thick wall small window",
+        "terracotta",
+        "blue and white"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持拱券的跨度、起拱高度与位置不变",
+    "保持窗洞的大小与凹进深度关系不变，不加大或扩宽洞口",
+    "保持厚墙的厚度关系与视线穿越关系不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积玻璃幕墙与落地通窗",
+      "不要高光不锈钢与镜面饰面",
+      "不要密集几何图案马赛克拼贴",
+      "不要繁复金色雕饰与水晶吊灯",
+      "不要大面积高饱和霓虹色"
+    ],
+    "en": [
+      "no large glazed curtain walls or full-height picture windows",
+      "no high-gloss stainless steel or mirrored finishes",
+      "no dense geometric mosaic patterning",
+      "no elaborate gilded ornament or crystal chandeliers",
+      "no large saturated neon colour blocks"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "墙厚与洞口",
+      "criteria": "外墙厚 ≥400mm 或等效加厚处理，主要窗洞进深 ≥250mm 形成深凹",
+      "stage": "schematic"
+    },
+    {
+      "check": "窗地比",
+      "criteria": "窗地面积比落在 1:8–1:6（常见工程惯例区间），开口以竖向为主",
+      "stage": "schematic"
+    },
+    {
+      "check": "拱券比例",
+      "criteria": "半圆拱起拱高度约为跨度的一半，拱顶无开裂",
+      "stage": "construction"
+    },
+    {
+      "check": "抹面完成度",
+      "criteria": "墙面为哑光石灰抹面，可见轻微批刮起伏，无高光罩面",
+      "stage": "construction"
+    },
+    {
+      "check": "色彩控制",
+      "criteria": "蓝白与陶土为主，任一高饱和色块占比 ≤15%，无霓虹色",
+      "stage": "S4"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ name: omniailab-cad-drafting
 description: CAD 制图 —— 把统一空间模型翻译成统一制图标准下的成套图纸，分 schematic / construction 两个深度
 capability: cad-drafting
 stages: [S4, S7]
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

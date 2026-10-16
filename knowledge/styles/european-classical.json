@@ -1,0 +1,273 @@
+{
+  "style_id": "european-classical",
+  "display_name_zh": "欧式古典",
+  "display_name_en": "European Classical",
+  "family": "classic",
+  "tags": [
+    "ornament",
+    "column",
+    "gilding",
+    "formal",
+    "grand"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "17 至 19 世纪形成体系，当代用于殿堂级空间与复刻工程",
+    "origin": "欧洲宫廷与宗教建筑传统，后由近代建筑教育系统化传播",
+    "summary": "欧式古典以完整古典秩序为骨架：柱式有明确的比例与收分规则，拱券与穹顶承担跨与纪念性，线脚、浮雕与镀金构成层层递进的装饰体系。这套做法源自需要表达权力与神圣感的宫廷与宗教建筑，其成立前提是大体量与高净空——柱式比例需要足够高度才能成立，穹顶与藻井需要结构跨度支撑。因此它不像简化古典那样能压缩进普通公寓，一旦层高与体量不足，柱式比例与装饰层次便会失衡。",
+    "key_movements": [
+      "古典主义（Classicism）",
+      "巴洛克（Baroque）",
+      "洛可可（Rococo）",
+      "学院派古典（Academic Classicism）"
+    ]
+  },
+  "spatial_principles": [
+    "以门厅、阶梯厅、长廊构成序列，公共空间沿主轴线依次抬高秩序感与装饰等级。",
+    "公共区采用高净空与大体量，柱式与拱券参与空间分隔，而非仅作装饰。",
+    "以对景与轴线尽端组织视线，尽端设雕像壁龛、拱窗或穹顶空间。",
+    "装饰等级自外向内逐级提升，门厅最简，主厅最繁。",
+    "房间进深与体量偏大，主要厅堂开间按柱距成倍数排布。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "柱式比例按柱高与柱径比控制，常见 1:7 至 1:10（常见工程惯例区间），柱头与柱础做完整线脚。",
+      "拱券半圆或分段拱，券随柱式模数取整，券高与跨度比约 1:2–1:2.5（常见工程惯例区间）。",
+      "天花做多层叠级与浮雕，叠级深度按层高等分，穹顶或藻井位于中心对称位置。",
+      "线脚体系多层叠加，自踢脚至檐口可含五道以上水平线脚（常见工程惯例区间），保持上下对位。"
+    ],
+    "ratios": [
+      "柱高:柱径约 1:7–1:10",
+      "券高:跨度约 1:2–1:2.5",
+      "厅堂开间按柱距整数倍排布"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3800–6000mm；施加柱式与穹顶时不低于 4200mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "象牙白",
+      "name_en": "Ivory White",
+      "hex": "#F3EEE2",
+      "usage": "墙面、线脚与柱式，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "深酒红",
+      "name_en": "Burgundy",
+      "hex": "#6B2C34",
+      "usage": "软包、窗帘与重点墙面，占比约 15%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "镀金",
+      "name_en": "Gilt Gold",
+      "hex": "#C9A227",
+      "usage": "线脚描金、五金与雕饰，占比约 10%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "皇家蓝",
+      "name_en": "Royal Blue",
+      "hex": "#2C3E63",
+      "usage": "织物与局部墙面，占比约 10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "深胡桃木",
+      "name_en": "Dark Walnut",
+      "hex": "#4A3627",
+      "usage": "家具、门窗与地面收边，占比约 20%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "石膏与石材浮雕",
+      "name_en": "Plaster and stone relief",
+      "application": "天花、柱头与墙面装饰",
+      "finish": "哑光涂装，局部描金",
+      "notes": "雕饰需工厂预制或工艺翻模，现场对接要求高"
+    },
+    {
+      "name_zh": "天然大理石",
+      "name_en": "Natural marble",
+      "application": "地面、柱身与台面",
+      "finish": "抛光或丝光，可做拼花",
+      "notes": "拼花石材需排版编号并预拼"
+    },
+    {
+      "name_zh": "硬木与木饰面",
+      "name_en": "Hardwood and veneer",
+      "application": "门窗、墙裙与家具",
+      "finish": "半哑光或丝光，深色为主",
+      "notes": "深胡桃或樱桃木色系"
+    },
+    {
+      "name_zh": "锦缎与丝绒",
+      "name_en": "Brocade and velvet",
+      "application": "窗帘、软包与家具",
+      "finish": "哑光丝绒或提花",
+      "notes": "以酒红与深蓝为主，配金色滚边"
+    },
+    {
+      "name_zh": "镀金与青铜",
+      "name_en": "Gilt and bronze",
+      "application": "五金、灯具与雕饰描边",
+      "finish": "抛光或做旧镀金",
+      "notes": "用量集中于线脚与灯具，形成视觉焦点"
+    }
+  ],
+  "furniture_language": [
+    "家具线条带弧度并常有雕饰，腿足多为弯曲或兽足形，配镀金或铜质饰件。",
+    "体量厚重，坐面高 430–480mm（常见工程惯例区间），柜体多带束腰、线脚与雕花檐板。",
+    "以成套成组的扶手椅、长桌、边柜与写字柜为主，形制统一。",
+    "软包采用丝绒或提花面料，配金属滚边与雕饰框架。",
+    "拉手以雕花金属拉手为主，与整体雕饰体系呼应。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以大型枝形吊灯为空间视觉中心，亮度与体量相匹配，形成庄重感。",
+      "用重点光洗亮浮雕、镀金与穹顶，强调装饰的立体层次。",
+      "以成对壁灯与烛台式台灯补充暖光，营造仪式性氛围。"
+    ],
+    "fixtures": [
+      "大型枝形吊灯",
+      "成对壁灯",
+      "洗墙射灯",
+      "烛台式台灯"
+    ],
+    "color_temperature_k": [
+      2400,
+      2900
+    ],
+    "illuminance_lux": "常见工程惯例区间：厅堂 150–300lx，重点雕饰 300–500lx，长廊 80–150lx",
+    "layering": "环境光由枝形吊灯与筒灯提供，重点光洗亮浮雕与镀金，任务光由台灯提供，装饰光由壁灯与烛台灯补充，整体明暗层次强、有仪式感。"
+  },
+  "architectural_elements": [
+    "完整柱式与列柱廊",
+    "半圆拱券与券廊",
+    "多层叠级天花与穹顶或藻井",
+    "大理石拼花地面与墙裙",
+    "浮雕线脚与镀金雕饰"
+  ],
+  "applicable_spaces": [
+    "庆典厅堂与大宴会厅",
+    "酒店大堂与宴会空间",
+    "剧院与博物馆公共区",
+    "大型别墅与会所"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "石膏与石材浮雕的造型复杂度与人工工时",
+      "柱式、拱券与穹顶的结构与施工成本",
+      "大理石拼花排版与镀金工艺的材料与工艺成本"
+    ],
+    "saving_moves": [
+      "雕饰集中在主厅与视线焦点，次要空间用简化线脚",
+      "拼花地面仅做局部图案，其余用素色石材",
+      "镀金改用做旧金属漆替代真金箔，控制用量于线脚与灯具"
+    ],
+    "notes": "欧式古典的成立前提是高净空与大体量，若层高与开间不足，应降级为简化古典语汇而非强行施加柱式。"
+  },
+  "construction_considerations": [
+    "柱式与拱券的位置、比例与结构受力必须提前核算，标注待持证专业人员复核。",
+    "浮雕与雕饰建议工厂预制或翻模，现场堆塑难以保证立体层次的一致。",
+    "大理石拼花需逐块编号并预拼验收，地面基层平整度直接影响拼缝与反光。",
+    "镀金与描金需在洁净环境下完成，金箔与油漆分层施工并控制温湿度。",
+    "高净空空间的吊顶、吊灯与穹顶需核算荷载与吊装方案，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "neoclassical",
+    "victorian",
+    "french-romantic",
+    "american-classic"
+  ],
+  "incompatible_elements": [
+    "极简白墙与无装饰平面",
+    "工业风裸管、锈铁与清水混凝土裸露",
+    "低净空空间内的完整柱式与穹顶",
+    "塑料亮面材质与高饱和荧光色"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "高净空的仪式性厅堂，一侧为完整柱式列柱廊，墙面设半圆拱券壁龛，天花为多层叠级并含穹顶或藻井，大理石拼花地面沿中轴展开，空间沿主轴线递进。",
+      "material": "抛光大理石拼花地面、石膏浮雕线脚与柱头、深胡桃木门窗与墙裙、酒红丝绒软包窗帘、镀金五金与灯具，装饰层次丰富。",
+      "lighting": "中央大型枝形吊灯为视觉中心，洗墙射灯照亮浮雕与镀金，成对壁灯与烛台式台灯补充暖光，色温 2400–2900K，重点雕饰可达 300–500lx。",
+      "furniture": "带弧度与雕饰的成套家具，体量厚重，坐面高 430–480mm，丝绒与提花软包配金属滚边，雕花金属拉手，成组对称布置。",
+      "camera": "正对称的广角透视，镜头高度约 1500–1700mm，等效焦距 20–28mm，画面收入柱式、拱券与天花穹顶。",
+      "atmosphere": "庄重、华丽、仪式感强，装饰密度高，暖金色调与深色对比明显。",
+      "keywords": [
+        "柱式",
+        "拱券",
+        "穹顶",
+        "镀金",
+        "拼花地面",
+        "仪式性空间"
+      ]
+    },
+    "en": {
+      "space": "High-ceiling ceremonial hall with a full classical colonnade on one side, semicircular arched niches in the walls, multi-step coffered ceiling with a dome, marble patterned floor along the central axis, space unfolding in sequence.",
+      "material": "Polished marble patterned floor, gypsum relief mouldings and capitals, dark walnut doors and wainscot, burgundy velvet upholstery and drapery, gilt hardware and light fittings, rich ornamental layering.",
+      "lighting": "Large central chandelier as the visual anchor, wall-washing spots on relief and gilding, paired sconces and candelabra table lamps as warm fill, 2400–2900K, accent ornament up to 300–500lx.",
+      "furniture": "Curved and carved matched furniture sets, heavy volumes, seat height 430–480mm, velvet and brocade upholstery with metal trim, carved metal pulls, arranged in symmetrical groups.",
+      "camera": "Symmetrical wide-angle perspective at 1500–1700mm, 20–28mm equivalent, framing columns, arches and ceiling dome.",
+      "atmosphere": "Formal, opulent, strongly ceremonial, high ornament density, warm gilt tones against deep colors.",
+      "keywords": [
+        "classical order",
+        "arch and vault",
+        "dome",
+        "gilding",
+        "patterned stone floor",
+        "ceremonial space"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持柱式、拱券与穹顶的位置、比例与模数关系不变，跨视角不得改变柱距或券形。",
+    "保持中轴对称与序列递进关系，装饰等级分布不得颠倒。",
+    "保持天花叠级层数与穹顶中心位置一致。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要极简白墙与无装饰平面",
+      "不要工业风裸管、锈铁与清水混凝土",
+      "不要在低净空空间强行施加完整柱式与穹顶",
+      "不要塑料亮面材质与高饱和荧光色"
+    ],
+    "en": [
+      "no minimalist bare walls or undecorated planes",
+      "no industrial exposed ducts, rusted iron or raw concrete",
+      "no full classical orders or domes forced into low-ceiling spaces",
+      "no glossy plastic materials or high-saturation fluorescent colors"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "柱式比例",
+      "criteria": "柱高:柱径落在 1:7–1:10，柱头柱础线脚完整，模数在图纸上取整",
+      "stage": "S3"
+    },
+    {
+      "check": "层高适配",
+      "criteria": "施加柱式与穹顶区域净高 ≥4200mm（常见工程惯例区间）",
+      "stage": "S3"
+    },
+    {
+      "check": "浮雕层次",
+      "criteria": "浮雕与线脚立体层次清晰，拼接无明显错台与裂缝",
+      "stage": "S5"
+    },
+    {
+      "check": "石材拼花",
+      "criteria": "拼花编号对位，拼缝 ≤1mm，图案沿中轴对称不偏位",
+      "stage": "S4"
+    }
+  ]
+}

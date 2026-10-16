@@ -1,0 +1,287 @@
+{
+  "style_id": "surrealist-interior",
+  "display_name_zh": "超现实空间",
+  "display_name_en": "Surrealist Interior",
+  "family": "experimental",
+  "tags": [
+    "scale-shift",
+    "dreamlike",
+    "unexpected",
+    "optical"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪初受超现实主义艺术运动影响，20 世纪中后期进入室内与展陈设计",
+    "origin": "欧洲超现实主义艺术与达达主义，后扩展至全球展陈、摄影与商业体验空间",
+    "summary": "这套做法把艺术中「让熟悉之物变得陌生」的方法搬进了空间：不是加装饰，而是改变参照——把日常物件放大或缩小到不合常理的尺度，用镜面制造不存在的通道，放一段上不去人的楼梯。它解决的是观者在高度熟悉的环境里失去注意力的问题，用尺度与透视的错置强行让人重新观看。因为核心是错觉而不是材料，所以它的成败取决于现场是否真的产生了「不合理」，而不取决于用了多贵的面材。",
+    "key_movements": [
+      "超现实主义运动",
+      "达达主义",
+      "观念艺术",
+      "沉浸式空间艺术"
+    ]
+  },
+  "spatial_principles": [
+    "以尺度错置制造视觉意外，常规物件放大或缩小 1.5–5 倍（常见工程惯例区间）",
+    "使用镜面与错觉界面制造视觉穿透，出现实际不存在的通道或进深",
+    "设置无功能构件（不可上人的楼梯、无洞口的门框）作为视觉装置",
+    "动线可设计为循环或轻微误导，不追求最短路径",
+    "主通道净宽 ≥900mm，全部错觉构件不得妨碍通行与疏散，且需保证结构安全"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "核心物件刻意偏离人体工学常值，形成明显的大小对比（1.5–5 倍，常见工程惯例区间）",
+      "放大或缩小的构件仍需满足自身结构安全与稳定",
+      "透视可做拉伸或压缩处理（如渐变地坪、斜向收分），但须保持可达与可辨方向",
+      "比例参照被刻意打破，同一空间内可同时出现不可能共存的比例关系",
+      "错觉构件数量克制，同一视域内不超过 2 处，避免变成游乐场"
+    ],
+    "ratios": [
+      "反常尺度构件为核心装置，每个空间建议 1–3 件（常见工程惯例区间）",
+      "镜面与高反射面占比 ≤25%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2600–3600mm（常见工程惯例区间）；可做镜面天花或错视彩绘天花延展高度感受"
+  },
+  "color_palette": [
+    {
+      "name_zh": "雾粉灰",
+      "name_en": "Mist Pink Grey",
+      "hex": "#E4D6D8",
+      "usage": "墙面与天花基调，占比约 40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "沙丘米",
+      "name_en": "Dune Beige",
+      "hex": "#D9C9AE",
+      "usage": "地面与软包，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深墨蓝",
+      "name_en": "Deep Ink Blue",
+      "hex": "#2B3A55",
+      "usage": "重点界面与家具，占比约 15%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "天空蓝",
+      "name_en": "Sky Blue",
+      "hex": "#7FA8CC",
+      "usage": "装置与彩绘点缀，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "静谧绿",
+      "name_en": "Quiet Green",
+      "hex": "#7A9A83",
+      "usage": "织物与植物点缀，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "镜面银",
+      "name_en": "Mirror Silver",
+      "hex": "#B7BEC6",
+      "usage": "镜面与金属反射面，占比 ≤9%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "镜面不锈钢与镜面玻璃",
+      "name_en": "Mirror Stainless Steel and Mirror Glass",
+      "application": "墙、天花与地面局部",
+      "finish": "高反射，需背衬与防碎处理"
+    },
+    {
+      "name_zh": "无缝哑光涂料",
+      "name_en": "Seamless Matte Coating",
+      "application": "墙与天花",
+      "finish": "无肌理、无接缝，减少真实材质暗示"
+    },
+    {
+      "name_zh": "绒面与软包织物",
+      "name_en": "Velvet and Upholstery Fabric",
+      "application": "墙面软包与家具",
+      "finish": "丝光或哑光，吸收光线减少阴影"
+    },
+    {
+      "name_zh": "树脂与玻璃钢成型件",
+      "name_en": "Resin and Fibreglass Forming",
+      "application": "超尺度与微缩物件",
+      "finish": "喷涂哑光，表面无缝"
+    },
+    {
+      "name_zh": "无缝地坪",
+      "name_en": "Seamless Floor",
+      "application": "地面",
+      "finish": "半光，可做渐变或错视图案"
+    },
+    {
+      "name_zh": "亚克力与透光板",
+      "name_en": "Acrylic and Light Diffuser",
+      "application": "错觉构件与背光装置",
+      "finish": "透明或半透"
+    }
+  ],
+  "furniture_language": [
+    "以超尺度或微缩家具作为核心装置，比例异常但形态熟悉",
+    "出现无功能的家具或用具（超大座椅、无门柜体）",
+    "软包圆润体量，边缘柔和，弱化家具的机械感",
+    "常规使用家具与装置性家具并存，二者比例形成对比",
+    "拉手为异形或隐藏式，避免出现工业化理性五金"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "用光制造错觉，可借背光与镜面反射扩展空间的视觉进深",
+      "以均匀漫射为主，弱化真实阴影，让空间显得不那么「真实」",
+      "装置性物件用重点光单独照亮，作为视觉锚点"
+    ],
+    "fixtures": [
+      "暗藏漫射灯带",
+      "无缝嵌入筒灯",
+      "背发光装置",
+      "镜面天花反射照明"
+    ],
+    "color_temperature_k": [
+      2700,
+      4000
+    ],
+    "illuminance_lux": "环境 150–300lx，装置重点 300–500lx（常见工程惯例区间）",
+    "layering": "环境光均匀消除阴影作为底，重点光强化错觉装置，形成虚与实的对照"
+  },
+  "architectural_elements": [
+    "镜面墙与镜面天花",
+    "无功能楼梯与无洞口的门框",
+    "超尺度门框与画框",
+    "错视彩绘界面与渐变地坪",
+    "无缝圆形或异形洞口",
+    "隐藏支撑的悬浮体量"
+  ],
+  "applicable_spaces": [
+    "展陈与艺术空间",
+    "商业体验店与快闪空间",
+    "摄影与直播场景",
+    "主题餐饮与酒店"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "镜面与无缝工艺的施工与找平",
+      "定制异形装置的制作与吊装",
+      "错觉与灯光一体化设计的深化"
+    ],
+    "saving_moves": [
+      "错觉集中在入口或主景一处，其余空间保持常规",
+      "以镜面板拼装替代整面镜墙，降低加工与安全成本",
+      "装置以轻质树脂或夹芯材料替代实心材料"
+    ],
+    "notes": "设计可以大胆，但错觉构件不得误导疏散方向与安全出口，这一点优先于效果"
+  },
+  "construction_considerations": [
+    "镜面与玻璃安装需背衬加固并做防碎处理，安全要求标注待持证专业人员复核",
+    "超尺度构件的自重、吊挂与连接标注待持证专业人员复核",
+    "无缝涂料与地坪需控制基层与养护，避免开裂破坏错觉完整度",
+    "错觉不得遮挡或干扰疏散标识与安全出口，消防要求标注待持证专业人员复核",
+    "反射面位置需控制眩光与光污染"
+  ],
+  "compatible_styles": [
+    "memphis",
+    "postmodern",
+    "art-deco",
+    "deconstructivism"
+  ],
+  "incompatible_elements": [
+    "严格遵循人体工学的常规尺度",
+    "朴素田园材料与手工陶砖",
+    "工业外露管线与粗犷构造",
+    "完全无错觉的无缝白色极简空间",
+    "大面积自然材质本色堆叠"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以尺度错置为核心装置的室内空间，墙面为无缝雾粉色，一处镜面天花延展进深，角落放一把超尺度座椅，旁边是不能上人的无功能楼梯",
+      "material": "无缝哑光涂料墙顶，半光无缝地坪，绒面软包家具，镜面不锈钢与透光亚克力装置",
+      "lighting": "均匀漫射的暗藏灯带铺满环境光以弱化阴影，重点光单独照亮超尺度装置，镜面反射出重复的进深",
+      "furniture": "一把放大到 3 倍的熟悉座椅作为装置，与常规尺度软包座椅并置，边缘圆润柔和",
+      "camera": "1.5m 机位略带仰视，24–35mm，利用镜面反射在画面中出现重复的空间层次",
+      "atmosphere": "如梦、安静而荒诞，熟悉的物件以不合理的尺度出现",
+      "keywords": [
+        "超现实",
+        "尺度错置",
+        "镜面错觉",
+        "无功能楼梯",
+        "梦幻",
+        "视觉欺骗"
+      ]
+    },
+    "en": {
+      "space": "An interior centred on a scale-displacement installation, seamless mist-pink walls, a mirrored ceiling extending the apparent depth, an oversized chair in the corner beside a decorative stair that leads nowhere",
+      "material": "Seamless matte coated walls and ceiling, semi-gloss seamless floor, velvet upholstered pieces, mirror stainless steel and translucent acrylic elements",
+      "lighting": "Even diffused concealed lighting filling the ambient layer to soften shadows, accent light isolating the oversized object, mirror reflections repeating the depth",
+      "furniture": "A familiar chair enlarged to about three times as a installation, placed alongside normal-scale velvet seating, all with soft rounded edges",
+      "camera": "1.5 m position with a slight upward angle, 24–35mm, using the mirror to repeat spatial layers within the frame",
+      "atmosphere": "Dreamlike, quiet yet absurd, familiar objects appearing at impossible scale",
+      "keywords": [
+        "surrealist interior",
+        "scale shift",
+        "mirror illusion",
+        "non-functional stair",
+        "dreamlike",
+        "optical trick"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持核心错觉装置的位置与尺度不变",
+    "保持镜面的安装面与反射方向不变",
+    "保持错觉不遮挡疏散路径与出口的关系不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要严格遵循人体工学的常规尺度",
+      "不要朴素田园材料与手工陶砖",
+      "不要工业外露管线与粗犷构造",
+      "不要没有任何错觉的无缝白色极简空间",
+      "不要大面积自然材质本色堆叠",
+      "不要让错觉遮挡疏散标识"
+    ],
+    "en": [
+      "no strictly ergonomic standard scale throughout",
+      "no rustic plain materials or hand-made terracotta",
+      "no exposed industrial services or rough construction",
+      "no seamless white minimal space without any optical illusion",
+      "no large areas of raw natural materials",
+      "no illusion obscuring escape signage"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "尺度错置",
+      "criteria": "核心装置尺度偏离常规 1.5–5 倍，同一视域内错觉点 ≤2 处（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "镜面占比",
+      "criteria": "镜面与高反射面占比 ≤25%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "安全可达",
+      "criteria": "错觉构件不阻塞 ≥900mm 净宽通道，锐角已钝化处理",
+      "stage": "S5"
+    },
+    {
+      "check": "疏散不受干扰",
+      "criteria": "所有错觉不遮挡疏散标识与出口视线，标注待持证专业人员复核",
+      "stage": "construction"
+    }
+  ]
+}

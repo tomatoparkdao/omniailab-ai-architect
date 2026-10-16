@@ -1,0 +1,271 @@
+{
+  "style_id": "chinese-traditional",
+  "display_name_zh": "中式古典",
+  "display_name_en": "Traditional Chinese",
+  "family": "oriental",
+  "tags": [
+    "courtyard",
+    "joinery",
+    "symmetry",
+    "lacquer",
+    "antique"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "明清以来的成熟体系，当代多用于复原与新建大宅",
+    "origin": "中国，以院落式木构建筑为原型",
+    "summary": "传统中式建筑以木构架承重、围护墙体不承重，因此空间可以按「间」为单位自由分隔，并以院落为基本单元向外生长。这一结构逻辑直接决定了室内做法：梁柱外露、藻井覆顶、隔扇与罩划分空间、家具随「间」的模数成堂布置。它解决的是礼制秩序、气候适应（深出檐遮阳、院落通风）与木构耐久（榫卯可拆卸更换）三件事，因而体量偏大、用料厚重、装饰与陈设体系完整。",
+    "key_movements": [
+      "明清官式与民居木构体系",
+      "院落式空间组织",
+      "榫卯构造传统"
+    ]
+  },
+  "spatial_principles": [
+    "以「间」为基本单元横向展开，空间沿院落轴线递进，室内外通过廊与檐下过渡相连。",
+    "用隔扇、罩、屏门划分「间」内空间，隔而不断，视觉可达而功能分区明确。",
+    "明间居中、次间与梢间对称递减，主要陈设沿中轴成堂布置。",
+    "以廊、檐、天井组织采光通风，进深较大时依赖天井与侧窗，不做整面落地玻璃。",
+    "地面与台基抬升，室内地坪高于室外地坪 150–450mm（常见工程惯例区间）。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以「间」为模数，开间宽度按 3000–4800mm（常见工程惯例区间）分级，明间略宽于次间。",
+      "梁柱外露并构成主要比例框架，柱径与柱高比大致 1:10 至 1:12（常见工程惯例区间）。",
+      "藻井与天花以方形或八角形逐层收缩，层数与收缩步距按格盘模数排定。",
+      "隔扇分格上下有别：上部棂格疏、下部裙板实，棂格间距按 60–120mm（常见工程惯例区间）排布。"
+    ],
+    "ratios": [
+      "明间:次间宽度比约 1.1–1.2:1",
+      "柱径:柱高约 1:10–1:12",
+      "棂格间距 60–120mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3200–4500mm；藻井区域起拱后净高不低于 3600mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "朱红",
+      "name_en": "Vermilion Red",
+      "hex": "#9E2B25",
+      "usage": "梁柱、门窗框与重点构件，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "墨绿",
+      "name_en": "Deep Green",
+      "hex": "#2F4A3C",
+      "usage": "梁枋彩画与软装，占比约 12%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "金箔黄",
+      "name_en": "Gilt Yellow",
+      "hex": "#C9A227",
+      "usage": "彩画描金与五金，占比 ≤6%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "青灰石",
+      "name_en": "Bluestone Grey",
+      "hex": "#7C8286",
+      "usage": "地面与台基，占比约 30%",
+      "role": "base"
+    },
+    {
+      "name_zh": "生漆黑",
+      "name_en": "Raw Lacquer Black",
+      "hex": "#1A1512",
+      "usage": "漆器家具与隔扇裙板，占比约 20%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "硬木",
+      "name_en": "Hardwood",
+      "application": "梁柱、隔扇与家具",
+      "finish": "生漆或烫蜡，半哑光",
+      "notes": "常用榆木、楠木、红木类，控制含水率"
+    },
+    {
+      "name_zh": "青砖",
+      "name_en": "Grey brick",
+      "application": "地面与墙面",
+      "finish": "磨砖对缝或自然面",
+      "notes": "可用仿古砖替代但需保留砖缝节奏"
+    },
+    {
+      "name_zh": "石材",
+      "name_en": "Stone",
+      "application": "台基、柱础与地面",
+      "finish": "荔枝面或剁斧面",
+      "notes": "柱础用于隔绝木柱与地面湿气"
+    },
+    {
+      "name_zh": "生漆",
+      "name_en": "Raw lacquer",
+      "application": "家具与构件涂层",
+      "finish": "推光或半哑光",
+      "notes": "多层髹涂，潮湿环境需延长干燥周期"
+    },
+    {
+      "name_zh": "织物",
+      "name_en": "Textile",
+      "application": "帘、幔与坐垫",
+      "finish": "素色提花",
+      "notes": "以棉麻丝为主，避免高光化纤"
+    }
+  ],
+  "furniture_language": [
+    "家具成堂成套布置，沿中轴对称排列，形制统一不混搭。",
+    "线条有弧度但收束克制，常见三弯腿、马蹄足与束腰，不做巴洛克式夸张曲线。",
+    "体量厚重，桌面厚 30–50mm（常见工程惯例区间），坐具高 450–500mm（常见工程惯例区间）。",
+    "多带雕花与线脚，但集中于牙板、腿足与背板局部，不做满雕。",
+    "柜架类多为明式格架或多宝格，门板以铜活铰链与面叶装饰。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以宫灯、壁灯等点式灯具为主，光源位置低而分散，营造层次而非均匀照度。",
+      "重点照亮藻井、梁枋彩画与陈设品，光束角收窄至 15°–24°（常见工程惯例区间）。",
+      "避免冷白光直射，光的色温与红木、生漆的暖调一致。"
+    ],
+    "fixtures": [
+      "宫灯式吊灯",
+      "木框壁灯",
+      "藏于檐下的暗灯",
+      "陈设柜内藏灯"
+    ],
+    "color_temperature_k": [
+      2400,
+      2900
+    ],
+    "illuminance_lux": "常见工程惯例区间：厅堂 100–200lx，重点陈设 200–400lx，廊下 50–80lx",
+    "layering": "环境光由宫灯与壁灯提供，重点光落于藻井与陈设，柜内藏灯做展示，整体照度偏低、明暗对比强。"
+  },
+  "architectural_elements": [
+    "外露梁柱与榫卯节点，可见木构逻辑",
+    "藻井或叠级井口天花",
+    "隔扇、罩与屏门作为活动分隔",
+    "柱础与台基抬升",
+    "廊、檐下灰空间与天井采光口"
+  ],
+  "applicable_spaces": [
+    "中式大宅与庭院住宅",
+    "文化展馆与书院",
+    "茶室与会所",
+    "精品酒店公共区"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "硬木用量与榫卯工艺，梁柱与隔扇的实木体量是主要成本项",
+      "手工雕花与彩画描金，人工工时占比高",
+      "藻井与井口天花的制作与吊装"
+    ],
+    "saving_moves": [
+      "结构柱与梁用混凝土或钢结构外包木质饰面，仅节点保留真榫卯做法",
+      "雕花集中在视线可达的牙板与背板，次要构件改为素面",
+      "藻井改用轻质复合材料仿木制作并做表面处理"
+    ],
+    "notes": "风格成立的关键是木构逻辑与模数秩序，而非满屋雕花，可优先保证柱梁比例与隔扇分格。"
+  },
+  "construction_considerations": [
+    "木构件的防火处理必须先于饰面施工完成，涉及消防要求的做法标注待持证专业人员复核。",
+    "实木含水率需与当地平衡含水率匹配，柱础与地面间需设隔潮层，否则易霉变。",
+    "藻井吊装需与结构预留吊点协同，提前核算荷载，标注待持证专业人员复核。",
+    "榫卯节点需在工厂试装，现场勿用铁件随意替代，否则影响外观与耐久。",
+    "漆面推光需在洁净环境控制温湿度分层完成，工期不宜压缩。"
+  ],
+  "compatible_styles": [
+    "chinese-neo-classical",
+    "vintage-european",
+    "japanese-zen"
+  ],
+  "incompatible_elements": [
+    "大面积通高落地玻璃幕墙",
+    "极简白墙与无梁柱净空",
+    "高饱和荧光色与亚克力亮面材质",
+    "工业风裸管、集装箱与锈铁构件"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "明间居中、次间对称的大进深厅堂，外露木梁柱构成比例框架，藻井覆盖顶部，后侧以隔扇裙板分隔内室，一侧天井引入天光。",
+      "material": "硬木生漆饰面梁柱、磨砖对缝青砖地面、荔枝面石材柱础、素色提花织物帘幔，表面半哑光。",
+      "lighting": "宫灯式吊灯低位分散照明，窄光束射灯 15°–24° 重点照亮藻井与梁枋彩画，色温 2400–2900K，整体偏暗。",
+      "furniture": "成堂对称布置的漆木家具，三弯腿马蹄足、束腰牙板局部雕花，坐具高 450–500mm，铜活面叶铰链。",
+      "camera": "沿中轴正对称的低机位透视，镜头高度约 1200–1400mm，等效焦距 24–35mm，画面包含藻井与梁柱。",
+      "atmosphere": "庄重、幽深、礼制秩序明确，暖调低照度，明暗层次丰富。",
+      "keywords": [
+        "院落轴线",
+        "外露木构",
+        "藻井",
+        "隔扇",
+        "生漆",
+        "榫卯"
+      ]
+    },
+    "en": {
+      "space": "Deep hall with a central bay flanked by symmetrical side bays, exposed timber columns and beams framing the proportions, coffered ceiling above, screen partitions at the rear, a small light well on one side.",
+      "material": "Hardwood with raw-lacquer finish on columns and beams, grey brick floor with tight joints, bush-hammered stone plinth, plain matte jacquard fabric curtains.",
+      "lighting": "Palace-lantern pendants giving low, dispersed light, narrow 15°–24° spots on the coffered ceiling and painted beams, 2400–2900K, overall dim.",
+      "furniture": "Matched symmetrical sets of lacquered wood furniture, cabriole legs with hoof feet, carved apron panels, seats 450–500mm high, brass leaf hinges.",
+      "camera": "Symmetrical low-angle perspective along the central axis, camera height 1200–1400mm, 24–35mm equivalent, framing both ceiling and columns.",
+      "atmosphere": "Formal, deep, clearly ordered by ritual hierarchy, warm and dim with rich tonal contrast.",
+      "keywords": [
+        "courtyard axis",
+        "exposed timber frame",
+        "coffered ceiling",
+        "screen partition",
+        "raw lacquer",
+        "mortise-and-tenon"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持开间数量、梁柱位置与天花分格模数不变，跨视角不得增减开间或移动柱位。",
+    "保持中轴对称与成堂布置关系，左右陈设位置镜像对应。",
+    "保持抬升台基高度与地面高差关系一致。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要通高落地玻璃幕墙与大跨度无柱空间",
+      "不要极简白墙与隐藏梁柱的现代净空",
+      "不要亮面亚克力、荧光色与西式巴洛克曲线",
+      "不要工业风裸露管线与锈蚀金属"
+    ],
+    "en": [
+      "no full-height glazed curtain walls or large column-free spans",
+      "no minimalist white walls that conceal the timber frame",
+      "no glossy acrylic, fluorescent colors or Baroque curves",
+      "no industrial exposed ductwork or rusted metal"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "木构逻辑可见性",
+      "criteria": "梁柱与榫卯节点外露且比例符合柱径:柱高约 1:10–1:12",
+      "stage": "S3"
+    },
+    {
+      "check": "开间对称性",
+      "criteria": "明间居中、次间对称，左右偏差 ≤20mm（常见工程惯例区间）",
+      "stage": "S3"
+    },
+    {
+      "check": "隔扇分格",
+      "criteria": "上部棂格间距落在 60–120mm，下部裙板为实面",
+      "stage": "S4"
+    },
+    {
+      "check": "陈设成套性",
+      "criteria": "家具形制统一、沿中轴对称排列，混搭件为 0",
+      "stage": "S4"
+    }
+  ]
+}

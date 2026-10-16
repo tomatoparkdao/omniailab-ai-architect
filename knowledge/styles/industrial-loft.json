@@ -1,0 +1,291 @@
+{
+  "style_id": "industrial-loft",
+  "display_name_zh": "工业 LOFT",
+  "display_name_en": "Industrial Loft",
+  "family": "industrial",
+  "tags": [
+    "exposed-brick",
+    "steel",
+    "open-duct",
+    "concrete"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1970 年代在欧美大城市兴起，1990 年代后成为可复制的通用室内语汇",
+    "origin": "北美与西欧城市对旧工业空间居住方式的借用，后脱离原型成为室内风格",
+    "summary": "它回应的是「开放大空间如何住人」这件事。早期使用者把廉价工业空间改作居住与工作场所时，发现不包封的结构与设备反而带来灵活性：不砌隔墙就能重组功能，暴露的管线随时可改。此后这套做法被抽离出来，成为可以直接植入常规公寓与商业体的室内语汇——在普通层高里用砖墙、钢构、明装管线与可移动隔断复现开放感。关键区别在于：它是在新建成常规结构内做的室内改造，设备与结构的外露是刻意组织的装饰手法；而厂房改造是既有工业建筑本体的适应性再利用。",
+    "key_movements": [
+      "工业遗产再利用思潮",
+      "LOFT 居住运动",
+      "极简主义与材料诚实性主张"
+    ]
+  },
+  "spatial_principles": [
+    "平面尽量开放：用可移动隔断、家具与地面高差划分功能区，少砌固定墙。",
+    "结构外露优先：柱、梁、管道、桥架不包不封，作为空间的秩序线被组织。",
+    "设备与管线集中成线：管线沿结构走、横向成组，避免杂乱交错。",
+    "层高是核心资源：保留尽可能大的净高，不做整体吊顶，只做局部遮挡。",
+    "功能弹性：隔断、工作台与储物按模组插接，便于随用途重组。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "开放区跨度常见 4.5–8m，柱网沿用建筑既有布置，不为造型人为加柱。",
+      "净高常见 3000–4000mm，梁下净高宜保持 ≥2600mm 以保证使用舒适。",
+      "明装管线成组沿结构走，管线组内间距常见 300–600mm，水平段保持对齐。",
+      "可移动隔断高度常见 2400–3000mm，顶部留 200–400mm 透空带以维持连通感。"
+    ],
+    "ratios": [
+      "开放跨度 4.5–8m",
+      "梁下净高 ≥2600mm",
+      "隔断顶部透空带 200–400mm",
+      "管线组间距 300–600mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–4000mm；梁下净高宜保持 ≥2600mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "砖红",
+      "name_en": "Brick Red",
+      "hex": "#9E5B45",
+      "usage": "砖墙面主体色，占比约 20–30%",
+      "role": "base"
+    },
+    {
+      "name_zh": "混凝土灰",
+      "name_en": "Concrete Grey",
+      "hex": "#9EA0A0",
+      "usage": "地面、柱面与天花底，占比约 25–35%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深铁黑",
+      "name_en": "Iron Black",
+      "hex": "#2B2D2E",
+      "usage": "钢构、门窗框与灯具，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "暖木色",
+      "name_en": "Warm Timber",
+      "hex": "#8A6748",
+      "usage": "台面、地板与家具，占比约 10–18%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "皮革棕",
+      "name_en": "Leather Brown",
+      "hex": "#6B4A33",
+      "usage": "坐具与软装，占比约 6–12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "锈色",
+      "name_en": "Rust",
+      "hex": "#7A4B2E",
+      "usage": "局部旧金属与装饰构件，占比约 3–8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "拉丝钢",
+      "name_en": "Brushed Steel",
+      "hex": "#B4B7B9",
+      "usage": "五金、桥架与灯具配件，占比约 3–8%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "饰面砖墙与砖贴面",
+      "name_en": "Brick Wall and Brick Veneer",
+      "application": "墙面",
+      "finish": "原砖面或清漆封护，保留砌筑缝与轻微色差"
+    },
+    {
+      "name_zh": "型钢构件",
+      "name_en": "Structural Steel Members",
+      "application": "柱、梁与隔断框架",
+      "finish": "防锈底漆加哑光面漆，或发黑处理"
+    },
+    {
+      "name_zh": "清水与装饰混凝土",
+      "name_en": "Raw and Decorative Concrete",
+      "application": "地面与柱面",
+      "finish": "磨光或密封剂罩面，保留气孔与模板痕迹"
+    },
+    {
+      "name_zh": "明装镀锌钢管",
+      "name_en": "Galvanised Steel Conduit",
+      "application": "桥架、线槽与管组",
+      "finish": "本色镀锌或同色喷涂"
+    },
+    {
+      "name_zh": "实木与回收木",
+      "name_en": "Solid and Salvaged Timber",
+      "application": "台面、地板与家具",
+      "finish": "蜡面，保留节疤与纹理"
+    },
+    {
+      "name_zh": "皮革与帆布",
+      "name_en": "Leather and Canvas",
+      "application": "坐具与隔断帘",
+      "finish": "哑光，允许保留使用痕迹"
+    }
+  ],
+  "furniture_language": [
+    "家具线条方正、体量大，以箱体型柜体与工作台式桌案为主。",
+    "坐具厚重低矮，多为深座面配金属框架，强调承重感而非轻盈。",
+    "落地方式为金属方管腿或整体金属框架直接落地，不做封闭基座与裙板。",
+    "拉手为长条金属拉手或外露铰链，五金外显不做隐藏。",
+    "家具可移动可重组，工作台与货架按模组插接，符合空间弹性要求。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以可见的明装灯具与轨道灯为主，灯具与管线一起构成天花秩序。",
+      "大进深空间靠分层布光保证均匀度，避免只做中央主灯。"
+    ],
+    "fixtures": [
+      "轨道射灯",
+      "金属罩工业吊灯",
+      "线性明装灯管",
+      "落地灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3500
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，工作面 300–500lx",
+    "layering": "环境层由线性明装灯提供；任务层覆盖工作台与操作面；重点层用轨道射灯洗墙照砖面；装饰层由金属罩吊灯构成，灯具本身即造型元素。"
+  },
+  "architectural_elements": [
+    "裸露砖墙与钢柱钢梁，作为空间秩序线被组织而非杂乱外露。",
+    "成组水平走线的明装管道、桥架与线槽。",
+    "大面积钢框或黑框玻璃隔断，以及可移动隔断与帘幕。",
+    "清水混凝土或磨光混凝土地面。",
+    "层高允许时植入局部钢构夹层或架空平台。"
+  ],
+  "applicable_spaces": [
+    "住宅起居与工作一体化空间",
+    "创意办公与共享办公",
+    "餐饮与咖啡厅",
+    "零售与展陈空间",
+    "工作室与轻型生产空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "原砖墙面与清水混凝土的清理与封护",
+      "钢构件的加工与防锈涂装",
+      "明装管线的排布设计与安装人工"
+    ],
+    "saving_moves": [
+      "砖墙用砖贴面或艺术涂料替代实心砌筑",
+      "钢构只做局部外露，其余用普通型材与涂料",
+      "管线集中走线以减少支管根数"
+    ],
+    "notes": "造价主要由设备与管线的组织方式而非材料单价决定；把管线排布在方案阶段定死，可显著减少后期返工与拆改。"
+  },
+  "construction_considerations": [
+    "明装管线的走向与标高须与结构、消防及暖通一次协调，相关结论标注待持证专业人员复核",
+    "清水混凝土与砖表面的处理须先做样板，密封剂种类会影响色泽与透气性",
+    "外露钢构的防火涂装与耐火要求标注待持证专业人员复核",
+    "可移动隔断与钢框玻璃隔断的固定与稳定性做法标注待持证专业人员复核",
+    "地面打磨抛光产生大量粉尘，须与其它工序错开并设置围挡"
+  ],
+  "compatible_styles": [
+    "warehouse-conversion",
+    "brutalist",
+    "mid-century-modern",
+    "modern-minimalism",
+    "steampunk"
+  ],
+  "incompatible_elements": [
+    "包封管线与整体全包吊顶",
+    "壁纸、线脚与护墙板",
+    "大面积高光饰面与软包墙面",
+    "成套古典家具与繁复雕饰"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "工业 LOFT 住宅起居与工作一体化空间，净高约 3.6m，一侧为裸露砖墙，钢柱钢梁外露，明装管线成组水平走线，中部以黑框玻璃可移动隔断划分工作区",
+      "material": "原砖墙清漆封护，磨光混凝土地面，发黑处理的型钢构件，镀锌钢管桥架，回收木工作台面，皮革坐具与帆布帘",
+      "lighting": "轨道射灯洗墙照砖面，金属罩吊灯悬挂于工作台上方，线性明装灯管提供环境光，色温 2700–3500K",
+      "furniture": "箱体型大尺度柜体与工作台，金属方管腿直接落地，深座面低矮坐具，长条金属拉手与外露铰链",
+      "camera": "约 1.5m 视高，等效 24–28mm 广角收入完整进深与天花管线秩序",
+      "atmosphere": "开阔、材料诚实、略带粗粝，结构秩序清晰而光线分层明确",
+      "keywords": [
+        "裸露砖墙",
+        "外露钢梁",
+        "明装管线",
+        "黑框玻璃隔断",
+        "磨光混凝土地面",
+        "金属罩吊灯"
+      ]
+    },
+    "en": {
+      "space": "Industrial loft living-and-working space, clear height about 3.6 m, an exposed brick wall on one side, exposed steel columns and beams, grouped surface-mounted conduit running horizontally, a black-framed movable glass partition dividing the work zone",
+      "material": "sealed raw brick, polished concrete floor, blackened structural steel, galvanised steel cable trays, reclaimed timber worktop, leather seating and canvas curtains",
+      "lighting": "track spotlights washing the brickwork, metal-shade pendants above the worktop, linear surface-mounted tubes for ambient light, 2700–3500 K",
+      "furniture": "large boxy cabinets and worktables, square steel tube legs sitting directly on the floor, low deep-seated chairs, long metal pulls and exposed hinges",
+      "camera": "eye level about 1.5 m, 24–28 mm wide angle capturing the full depth and the ceiling service order",
+      "atmosphere": "open, materially honest and slightly raw, clear structural order with strongly layered light",
+      "keywords": [
+        "exposed brick",
+        "exposed steel beams",
+        "surface-mounted conduit",
+        "black-framed glass partition",
+        "polished concrete floor",
+        "metal-shade pendant"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持柱网位置与梁下净高不变。",
+    "保持管线的成组走向与标高关系不变。",
+    "保持隔断位置与顶部透空带的高度关系不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现包封管线的整体吊顶",
+      "不要出现壁纸、线脚或护墙板",
+      "不要出现大面积高光饰面与软包墙",
+      "不要出现成套古典家具与繁复雕饰",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no full suspended ceiling concealing the services",
+      "no wallpaper, mouldings or wall panelling",
+      "no large high-gloss surfaces or upholstered walls",
+      "no matching classical furniture sets or elaborate carving",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "管线组织",
+      "criteria": "管线成组沿结构走线，组内间距 300–600mm，水平段目视对齐无交叉",
+      "stage": "S4"
+    },
+    {
+      "check": "净高控制",
+      "criteria": "整体净高 3000–4000mm，梁下净高 ≥2600mm，无整体吊顶",
+      "stage": "S3"
+    },
+    {
+      "check": "开放跨度",
+      "criteria": "开放区跨度处于 4.5–8m，未新增非必要柱体",
+      "stage": "S2"
+    },
+    {
+      "check": "照明分层",
+      "criteria": "环境 150–300lx、工作面 300–500lx，色温 2700–3500K，天花灯具与管线共同构成秩序",
+      "stage": "S6"
+    }
+  ]
+}

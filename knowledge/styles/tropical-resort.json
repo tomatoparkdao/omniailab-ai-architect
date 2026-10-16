@@ -1,0 +1,274 @@
+{
+  "style_id": "tropical-resort",
+  "display_name_zh": "热带度假",
+  "display_name_en": "Tropical Resort",
+  "family": "natural-organic",
+  "tags": [
+    "resort",
+    "timber-ceiling",
+    "water",
+    "resort-lounge"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中期随热带度假地建设兴起，此后在酒店与住宅中长期沿用",
+    "origin": "湿热气候区的度假酒店与海滨居住实践，综合了热带遮阳做法与酒店化服务体系",
+    "summary": "度假空间的成败不在单个房间，而在「到达—过渡—停留」的体验序列。热带度假由此把空间组织成一条明确的场景动线：入口以水面与绿植迎接，穿过多柱连廊进入半室外的接待区，木格栅顶滤下斑驳光影，视线始终被引导向水池或海景。它解决的是如何在炎热气候下让人愿意长时间待在室内外之间，而不是把人赶进空调房。因此它的判据是场景与序列，而不是能耗或健康指标。",
+    "key_movements": [
+      "热带现代主义",
+      "度假地建筑",
+      "东南亚与太平洋地区民居传统",
+      "气候适应性建筑"
+    ]
+  },
+  "spatial_principles": [
+    "以「到达—连廊—半室外—室内」组织空间序列，每一段有明确的停留点与对景",
+    "设置多柱连廊或外廊贯穿，允许两侧开敞，形成有遮蔽的行走体验",
+    "公共区采用半室外形式，室内外之间不做严实分隔，可开合或直接通透",
+    "水面（泳池、浅水池或水景）作为视觉与动线核心，主要空间环绕或朝向水面",
+    "以木格栅顶或出檐形成遮蔽层，顶部不封闭，保持通风"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "连廊净宽常见 1800–3000mm（常见工程惯例区间），一侧留出停留与座椅空间",
+      "木格栅间距常见 60–150mm（常见工程惯例区间），在顶面投下规则条纹阴影",
+      "木格栅顶与视线关系以「抬头见格栅、平视见远景」控制，格栅底高常见 2800–4000mm（常见工程惯例区间）",
+      "泳池与建筑外缘间距常见 ≥1500mm（常见工程惯例区间），保证池畔通行"
+    ],
+    "ratios": [
+      "半室外面积 : 室内面积常见约 1:2–1:1（常见工程惯例区间）",
+      "木格栅覆盖率（投影占地比例）常见 40%–70%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "室内净高常见 2800–4000mm（常见工程惯例区间）；格栅顶与坡屋顶以结构底为准"
+  },
+  "color_palette": [
+    {
+      "name_zh": "椰壳白",
+      "name_en": "Coconut White",
+      "hex": "#EFE9DD",
+      "usage": "墙面与天花基调，占比约 35%",
+      "role": "base"
+    },
+    {
+      "name_zh": "柚木棕",
+      "name_en": "Teak Brown",
+      "hex": "#7A5B3A",
+      "usage": "格栅顶、家具与地板，占比约 30%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "潟湖绿蓝",
+      "name_en": "Lagoon Teal",
+      "hex": "#3E7F82",
+      "usage": "水面与软装呼应，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "沙岩米",
+      "name_en": "Sandstone Beige",
+      "hex": "#CFBFA3",
+      "usage": "铺装与墙面，占比约 15%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "黄铜",
+      "name_en": "Brass",
+      "hex": "#A8873F",
+      "usage": "灯具与五金细件，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "耐候实木与柚木",
+      "name_en": "Weather-resistant and Teak Timber",
+      "application": "格栅顶、连廊与户外家具",
+      "finish": "户外木油，保留木纹",
+      "notes": "湿润气候下需选耐腐木种并定期维护"
+    },
+    {
+      "name_zh": "天然石材与防滑铺装",
+      "name_en": "Natural Stone and Slip-resistant Paving",
+      "application": "地面与池畔",
+      "finish": "自然面或火烧面，湿区做防滑处理"
+    },
+    {
+      "name_zh": "藤编与椰纤",
+      "name_en": "Rattan and Coir",
+      "application": "家具与顶面饰面",
+      "finish": "天然编织，保留纤维感"
+    },
+    {
+      "name_zh": "防水涂料与石材抹面",
+      "name_en": "Waterproof Coating and Stone Plaster",
+      "application": "墙面与水池池壁",
+      "finish": "哑光或细砂面"
+    },
+    {
+      "name_zh": "亚麻与户外织物",
+      "name_en": "Linen and Outdoor Fabric",
+      "application": "沙发、躺椅与布艺",
+      "finish": "透气、防霉处理"
+    }
+  ],
+  "furniture_language": [
+    "低矮宽大，以躺椅、日床与软包长凳为主，强调可长时间停留",
+    "藤与木框架外露，坐垫厚实可拆洗，避免纤细金属腿",
+    "成组布置形成 lounge 组团，桌椅围绕小桌成环或成对朝向景观",
+    "户外与室内家具形制统一，可跨室内外流动使用"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "白天以格栅与出檐过滤的漫射日光为主，室内补充低照度局部光",
+      "夜间以低位暖光与水面反射营造层次，避免顶部单一均匀强光"
+    ],
+    "fixtures": [
+      "格栅下吊装筒灯",
+      "水上与池畔埋地灯",
+      "藤编罩落地灯",
+      "景观庭园灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      3000
+    ],
+    "illuminance_lux": "半室外休闲区 100–200lx，阅读与餐桌面 250–350lx（常见工程惯例区间）",
+    "layering": "环境光藏在格栅与铺装中，任务光落在躺椅与餐桌，重点光打亮水面、绿植与景墙"
+  },
+  "architectural_elements": [
+    "多柱木连廊与外廊",
+    "木格栅顶与遮阳百叶",
+    "半室外无门厅与可开合界面",
+    "泳池与浅水景",
+    "坡屋顶与深出檐"
+  ],
+  "applicable_spaces": [
+    "度假酒店与客房",
+    "民宿与度假住宅",
+    "泳池会所与 SPA",
+    "餐饮露台与酒吧",
+    "高端康养空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "耐候实木格栅顶的用材量与户外防腐处理",
+      "水池的建造、防水与循环设备",
+      "半室外界面的防雨构造与大型开口系统"
+    ],
+    "saving_moves": [
+      "格栅集中在主要连廊与停留点上空，非关键段用出檐替代",
+      "以仿木铝格栅替代部分实木，仅在近距离可触处用真木",
+      "水景从泳池改为浅水池或无水镜面景墙，保留视觉核心"
+    ],
+    "notes": "场景序列与水面是造价大头，降本应优先压缩格栅覆盖面而非取消水景；水池与结构做法需持证专业人员复核"
+  },
+  "construction_considerations": [
+    "户外木材需按气候选用耐腐木种并做六面封边处理，否则易发霉变形",
+    "木格栅顶的排水坡度与滴水构造需先行设计，避免雨水沿格栅下沿反流",
+    "半室外与湿区铺装的防滑等级与排水找坡需实样确认，做法标注待持证专业人员复核",
+    "水池的防水、结构与循环过滤系统做法标注待持证专业人员复核",
+    "大面积可开合界面与无门厅的抗风压与气密做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "southeast-asian-tropical",
+    "biophilic",
+    "mediterranean"
+  ],
+  "incompatible_elements": [
+    "封闭无窗的均匀空调盒子空间",
+    "高光金属与镜面饰面板",
+    "厚重深色古典家具与繁复雕饰",
+    "全程吊顶封闭、看不到结构与格栅",
+    "大面积荧光色与塑料家具"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "半室外度假连廊，多柱木构，顶部为木格栅顶，前方是浅色水池，室内外之间无门通透",
+      "material": "柚木格栅与地板，防滑天然石材铺装，椰纤与藤编顶面，亚麻坐垫与厚软包",
+      "lighting": "日光穿过木格栅在铺装上投下规则条纹阴影，池畔低位埋地灯与藤编落地灯发出暖光",
+      "furniture": "低矮日床与躺椅成组布置，藤木结合，坐垫厚实可拆洗，小圆桌置于组内",
+      "camera": "略高于人眼，24–35mm 广角，从连廊向水面方向取景以展现明暗过渡",
+      "atmosphere": "松弛、通透、有水与荫凉，适合长时间停留",
+      "keywords": [
+        "热带度假",
+        "木格栅顶",
+        "连廊",
+        "水面",
+        "半室外",
+        "度假躺椅"
+      ]
+    },
+    "en": {
+      "space": "A semi-outdoor resort veranda with multiple timber columns, a timber slatted ceiling above, a pale plunge pool ahead, and an open threshold with no door between inside and outside",
+      "material": "Teak slats and decking, slip-resistant natural stone paving, coir and rattan ceiling lining, linen cushions and thick upholstery",
+      "lighting": "Daylight casting regular striped shadows through the slats onto the paving, low poolside in-ground lights and a rattan floor lamp glowing warm",
+      "furniture": "Low daybeds and loungers grouped in clusters, rattan and timber frames, thick removable cushions, a small round table within each group",
+      "camera": "Slightly above eye level, 24–35mm wide angle, framed from the veranda toward the water to show the transition of light",
+      "atmosphere": "Relaxed, airy, shaded with water, made for long lingering",
+      "keywords": [
+        "tropical resort",
+        "timber slatted ceiling",
+        "veranda",
+        "water",
+        "semi-outdoor",
+        "lounge"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持连廊柱网的位置与间距不变，不新增或删减柱子",
+    "保持木格栅的排列方向与间距关系不变",
+    "保持水池边界与主要视线通廊的位置不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要封闭无窗的均匀空调盒式空间",
+      "不要高光金属与镜面饰面板",
+      "不要厚重深色古典家具与繁复雕饰",
+      "不要全程封闭吊顶、遮挡结构与格栅",
+      "不要荧光色与塑料户外家具"
+    ],
+    "en": [
+      "no sealed windowless uniformly conditioned box space",
+      "no high-gloss metal or mirrored panels",
+      "no heavy dark classical furniture or elaborate carving",
+      "no fully closed ceiling hiding structure and slats",
+      "no fluorescent colours or plastic outdoor furniture"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "场景序列完整",
+      "criteria": "存在到达—连廊—停留—对景四段可辨认的空间序列，至少一处对景指向水面或远景",
+      "stage": "schematic"
+    },
+    {
+      "check": "半室外比例",
+      "criteria": "半室外面积与室内面积之比落在 1:2–1:1（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "格栅阴影",
+      "criteria": "顶部木格栅间距在 60–150mm，可见规则条纹投影且非全覆盖",
+      "stage": "construction"
+    },
+    {
+      "check": "湿区防滑",
+      "criteria": "池畔与半室外铺装为防滑面，潮湿状态下无镜面反光",
+      "stage": "construction"
+    },
+    {
+      "check": "夜间照度",
+      "criteria": "半室外休闲区照度 100–200lx，色温落在 2200–3000K",
+      "stage": "S4"
+    }
+  ]
+}

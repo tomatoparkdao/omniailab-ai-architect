@@ -1,0 +1,276 @@
+{
+  "style_id": "modern-minimalism",
+  "display_name_zh": "现代极简",
+  "display_name_en": "Modern Minimalism",
+  "family": "modern",
+  "tags": [
+    "minimal",
+    "neutral",
+    "unadorned",
+    "restraint"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中后期成型，21 世纪随定制柜体与无缝地面工艺普及而稳定",
+    "origin": "欧洲现代主义建筑传统，后经东亚高密度城市住宅大量实践与收敛",
+    "summary": "现代极简针对的是装饰成本高、日常维护难、视觉噪声大这三个现实问题。它把可移动的装饰减到接近零，把收纳整体并入墙体，把材料压缩到少数几种并在大面积上做到无缝，于是空间靠比例、光线和留白成立，而不是靠摆件。这与单纯的「东西少」不同，它的代价是更高的墙面找平、收口与定制加工精度——做好极简往往比拼装饰更费工。",
+    "key_movements": [
+      "现代主义建筑运动",
+      "功能主义",
+      "国际式风格",
+      "极简主义设计思潮"
+    ]
+  },
+  "spatial_principles": [
+    "公共区一体化连通：起居、餐厨置于同一开敞空间，用家具与地材变化划分区域，不做隔墙切分",
+    "分隔逻辑外显为简单正交网格，不出现弧形墙、斜墙与多余阴阳角",
+    "收纳全部入墙，柜体完成面与墙面齐平，可见台面只保留高频使用物",
+    "留白优先于填满：主通道净宽 ≥900mm（常见工程惯例区间），家具占地不超过所在区域 60%",
+    "私密区以串接短走道到达，走廊长度尽量压到单向一跨以内"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以矩形为唯一母题，所有可见分缝（柜门缝、板缝、门洞边）对齐同一套竖向导线",
+      "天花不做二级叠级，采用平顶或单层窄边吊，灯具嵌入以维持顶面连续平面",
+      "柜体做通高处理，横向分缝数量最小化，缝宽统一且均匀",
+      "地面与墙面在同一转角上直角直拼，不使用收边条掩盖公差"
+    ],
+    "ratios": [
+      "墙面与地面分割以 1:1、3:2 矩形为主（常见工程惯例区间）",
+      "柜门模数按 300mm 递增、600mm 成组（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2600–3000mm（常见工程惯例区间）；层高不足时优先维持平顶而不做局部压低"
+  },
+  "color_palette": [
+    {
+      "name_zh": "乳白",
+      "name_en": "Off White",
+      "hex": "#F4F2ED",
+      "usage": "墙面与天花满铺，占比约 50–60%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅灰",
+      "name_en": "Light Grey",
+      "hex": "#D8D6D1",
+      "usage": "地面与次要墙面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "中灰",
+      "name_en": "Mid Grey",
+      "hex": "#8C8C88",
+      "usage": "织物、门板与踢脚，占比约 10–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "炭黑",
+      "name_en": "Charcoal",
+      "hex": "#2B2B2B",
+      "usage": "五金、框线、灯具收口，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "浅橡木",
+      "name_en": "Pale Oak",
+      "hex": "#C8AE8C",
+      "usage": "柜体饰面与地板，占比约 10%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "微水泥",
+      "name_en": "Microcement",
+      "application": "地面与湿区墙面",
+      "finish": "哑光无缝，表面平整度要求高",
+      "notes": "大面积施工需预留伸缩缝并做同色处理"
+    },
+    {
+      "name_zh": "哑光乳胶漆",
+      "name_en": "Matte Latex Paint",
+      "application": "墙面与天花大面积",
+      "finish": "哑光（光泽度 <5 度）",
+      "notes": "底色越浅，对墙面找平误差越敏感"
+    },
+    {
+      "name_zh": "浅色木饰面",
+      "name_en": "Pale Wood Veneer",
+      "application": "柜体、门与墙板",
+      "finish": "开放漆或木蜡油哑光"
+    },
+    {
+      "name_zh": "拉丝不锈钢",
+      "name_en": "Brushed Stainless Steel",
+      "application": "五金、踢脚与收口线条",
+      "finish": "拉丝哑光"
+    },
+    {
+      "name_zh": "超白玻璃",
+      "name_en": "Low-iron Glass",
+      "application": "隔断与柜门",
+      "finish": "无框或极窄边框"
+    }
+  ],
+  "furniture_language": [
+    "线条平直，体量低矮方正，几乎不使用曲线与雕饰",
+    "柜体无拉手，采用按弹或暗藏指扣，门板与墙面齐平",
+    "软体低背、无裙边、无褶皱，外露细金属腿或直接落地",
+    "单件家具尺度克制，高度与体量保持系列一致，不出现抢视觉的单品"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "光以洗墙与嵌顶为主，不出现外露灯具造型",
+      "压低明暗对比，阴影柔和连续，避免在平整墙面上形成硬边光斑"
+    ],
+    "fixtures": [
+      "磁吸轨道射灯",
+      "线性暗藏灯带",
+      "防眩深杯筒灯（嵌入顶面）"
+    ],
+    "color_temperature_k": [
+      2700,
+      3500
+    ],
+    "illuminance_lux": "起居环境 150–300lx，阅读与操作区局部 300–500lx（常见工程惯例区间）",
+    "layering": "环境光打底 → 洗墙光塑造面 → 柜下与桌面任务光，灯具尽量隐藏于顶面与柜体"
+  },
+  "architectural_elements": [
+    "无门套暗门与齐平墙面做法的门洞",
+    "通高无框柜体与墙面齐平",
+    "平顶或极窄边吊的连续天花",
+    "暗藏线性灯槽与无边框风口",
+    "大板无缝地面与直角直拼的墙地收口"
+  ],
+  "applicable_spaces": [
+    "住宅（公寓与平层）",
+    "办公（前厅与开敞工位）",
+    "展厅与画廊",
+    "精品零售",
+    "轻餐饮"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "墙面与天花的找平精度（误差会直接暴露在洗墙光下）",
+      "隐形五金与全定制柜体的加工与安装成本",
+      "无缝地面的大面积施工与美缝处理"
+    ],
+    "saving_moves": [
+      "以高品质哑光乳胶漆替代大面积微水泥，仅在局部保留无缝材料",
+      "以成品系统柜加同色门板替代全屋定制，控制缝宽一致性",
+      "减少灯具种类，用同一款磁吸灯具覆盖洗墙与重点照明"
+    ],
+    "notes": "极简的造价集中在「看不见的精度」上，降本时应优先减材料种类，而不是降低找平与收口标准"
+  },
+  "construction_considerations": [
+    "墙面与天花找平误差需控制在 mm 级，否则洗墙光会放大所有起伏",
+    "无框柜门铰链与暗拉手需在柜体加工前预埋，柜体与墙面缝宽需统一排版",
+    "无缝地面与墙面的收口及伸缩缝位置必须事先排版，避免缝落在视觉中心",
+    "嵌入灯具与风口的开孔需与天花排版同步，先定灯位再封板",
+    "涉及结构安全、消防、无障碍与机电负荷的判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "italian-minimal",
+    "japandi",
+    "scandinavian",
+    "modernist-classic",
+    "wabi-sabi"
+  ],
+  "incompatible_elements": [
+    "雕花线脚、护墙板与任何古典装饰构件",
+    "高饱和色块与强花纹大理石",
+    "繁复吊灯、水晶与外露装饰灯具",
+    "罗马帘、流苏、抱枕堆叠等软装层级",
+    "可见拉手与彩色五金"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "一个方正、无多余隔断的开敞起居空间，所有墙面齐平，天花为连续平顶、无二级吊顶",
+      "material": "大面积哑光乳白色墙面与无缝浅灰微水泥地面，局部浅橡木通高柜体与墙面齐平，拉丝不锈钢细线收口",
+      "lighting": "顶面嵌入防眩筒灯做洗墙，柜下暗藏线性灯带，光影柔和、墙面上无硬边光斑",
+      "furniture": "低背无裙边沙发、方正低矮茶几、细金属腿座椅，柜体无拉手、门板与墙面齐平",
+      "camera": "一至二点透视，镜头水平置于人眼高度，24–35mm 广角，画面保留大量留白",
+      "atmosphere": "安静、克制、秩序清晰，靠比例与光线而非摆件成立",
+      "keywords": [
+        "极简",
+        "齐平墙面",
+        "无缝地面",
+        "留白",
+        "嵌入灯具",
+        "平顶天花"
+      ]
+    },
+    "en": {
+      "space": "A rectangular open living volume with no partition walls, all wall faces flush, a continuous flat ceiling with no stepped cove",
+      "material": "Large matte off-white wall planes, seamless light-grey microcement floor, pale oak full-height cabinetry flush with walls, brushed stainless reveal lines",
+      "lighting": "Recessed anti-glare downlights washing the walls, hidden linear LED under cabinetry, soft continuous shadow with no hard light patches",
+      "furniture": "Low-back skirtless sofa, square low coffee table, thin-metal-leg chair, handleless fronts flush to wall",
+      "camera": "One- or two-point perspective, eye-level horizontal camera, 24–35mm wide angle, generous negative space",
+      "atmosphere": "Quiet, restrained, ordered, defined by proportion and light rather than objects",
+      "keywords": [
+        "minimal",
+        "flush wall",
+        "seamless floor",
+        "negative space",
+        "recessed light",
+        "flat ceiling"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持墙、地、顶之间的正交直角关系，不改动门洞位置与数量",
+    "保持柜体与墙面的齐平关系以及各条分缝的对齐关系",
+    "保持天花为连续平面，不新增叠级与凸出构件"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要雕花线脚、护墙板与古典装饰构件",
+      "不要高饱和色块与强纹理大理石",
+      "不要繁复吊灯与外露装饰灯具",
+      "不要可见拉手与彩色五金",
+      "不要曲面墙、斜墙与多余阴阳角"
+    ],
+    "en": [
+      "no mouldings, panelling or classical ornament",
+      "no saturated colour blocks or heavily veined marble",
+      "no ornate pendants or exposed decorative fixtures",
+      "no visible handles or coloured hardware",
+      "no curved or angled walls, no redundant corners"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "可见分缝对齐",
+      "criteria": "柜门缝、板缝、门洞边线落在同一竖向导线上，相邻缝宽差 ≤2mm",
+      "stage": "construction"
+    },
+    {
+      "check": "墙面平整度",
+      "criteria": "洗墙灯下墙面无可见起伏与波浪纹，找平误差按 mm 级控制",
+      "stage": "construction"
+    },
+    {
+      "check": "留白比例",
+      "criteria": "家具与柜体外凸物占所在区域面积 ≤60%，主通道净宽 ≥900mm（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "灯具隐藏度",
+      "criteria": "顶面无外露灯具造型，风口与检修口做无边框处理",
+      "stage": "S4"
+    },
+    {
+      "check": "色彩数量",
+      "criteria": "全屋主色不超过 3 个色系，强调色使用面积 ≤5%",
+      "stage": "schematic"
+    }
+  ]
+}

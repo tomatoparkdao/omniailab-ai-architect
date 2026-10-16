@@ -467,6 +467,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     _register_v11(sub)
 
+    # v1.4 surface: the design-style module (47 styles, recommendation,
+    # bilingual prompt compilation, material & lighting extraction).
+    from .style.cli import register as _register_style
+
+    _register_style(sub)
+
     return p
 
 

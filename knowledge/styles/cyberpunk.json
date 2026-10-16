@@ -1,0 +1,288 @@
+{
+  "style_id": "cyberpunk",
+  "display_name_zh": "赛博朋克",
+  "display_name_en": "Cyberpunk",
+  "family": "experimental",
+  "tags": [
+    "neon",
+    "dark",
+    "tech-density",
+    "layered-signage"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪 80 年代随赛博朋克文学与影像兴起，21 世纪被商业空间大量引用",
+    "origin": "东亚高密度都市的未来想象与西方科幻文化相互叠加形成的视觉传统",
+    "summary": "它起源于一种对高密度技术城市的想象：人口与设备极度密集，自然光被遮挡，于是照明、标识、屏幕成为唯一的视觉秩序来源。搬进室内后，这套逻辑转化为可执行的做法——把环境照度压到很低，让霓虹、灯带与屏幕承担可见度与识别；同时把线缆、线槽、设备外露，用「技术密度」本身构成装饰。它解决的问题是让空间在暗环境中依然具备强烈的可辨识性与商业识别度，代价是高度依赖灯光控制系统且必须额外处理消防与疏散。",
+    "key_movements": [
+      "赛博朋克文化运动",
+      "科幻未来主义",
+      "高密度都市主义",
+      "技术暴露美学"
+    ]
+  },
+  "spatial_principles": [
+    "以暗色为底，霓虹、灯带与屏幕是唯一亮源，形成极高明暗对比",
+    "管线、线槽、屏幕与标识密集外露并成组排列，构成可读的技术层叠",
+    "空间层次靠人造光与发光标识切分，不依赖自然采光组织秩序",
+    "平台与夹层叠加使用，垂直方向堆叠出多层活动面",
+    "主通道净宽 ≥900mm，所有机电管线需预留可达的检修口"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以暗色界面为大面积底，发光面占比 ≤25%（常见工程惯例区间）",
+      "标识与屏幕按统一网格密集排布，缝宽与间距保持一致",
+      "管线成组平行排布，同组间距均匀，不做杂乱散布",
+      "体量偏方正工业化，靠光与标识的分割来切分界面而非靠造型",
+      "发光元素集中在人的视线高度（900–1800mm）以确保被读到"
+    ],
+    "ratios": [
+      "发光面积与反射面合计 ≤30%（常见工程惯例区间）",
+      "网格模数以 300mm 与 600mm 组合组织（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2600–3600mm（常见工程惯例区间）；吊顶内需预留 300–600mm 设备与管线层"
+  },
+  "color_palette": [
+    {
+      "name_zh": "近黑炭灰",
+      "name_en": "Near-Black Charcoal",
+      "hex": "#141414",
+      "usage": "墙面与天花基调，占比约 50%",
+      "role": "base"
+    },
+    {
+      "name_zh": "深青灰",
+      "name_en": "Dark Teal Grey",
+      "hex": "#1E2A2E",
+      "usage": "次要界面与金属板，占比约 20%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "霓虹洋红",
+      "name_en": "Neon Magenta",
+      "hex": "#FF1E8A",
+      "usage": "发光标识与灯带，占比 ≤8%；仅在环境照度 ≤50lx 时使用",
+      "role": "accent"
+    },
+    {
+      "name_zh": "霓虹青",
+      "name_en": "Neon Cyan",
+      "hex": "#00E5FF",
+      "usage": "灯带与屏幕主色，占比 ≤8%；依赖暗环境与自发光",
+      "role": "accent"
+    },
+    {
+      "name_zh": "电光紫",
+      "name_en": "Electric Violet",
+      "hex": "#8A2BE2",
+      "usage": "局部光色与背光，占比 ≤5%；作为装饰光不承担照度",
+      "role": "accent"
+    },
+    {
+      "name_zh": "暗拉丝金属",
+      "name_en": "Dark Brushed Metal",
+      "hex": "#4A4E52",
+      "usage": "包板、家具与五金，占比约 12%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "哑光黑色饰面板",
+      "name_en": "Matte Black Panel",
+      "application": "墙面与柜体",
+      "finish": "哑光吸光，减少环境反射"
+    },
+    {
+      "name_zh": "拉丝金属与不锈钢",
+      "name_en": "Brushed Metal and Stainless Steel",
+      "application": "包板与家具",
+      "finish": "拉丝或暗色氧化，可局部镜面"
+    },
+    {
+      "name_zh": "穿孔金属与金属网",
+      "name_en": "Perforated Metal and Metal Mesh",
+      "application": "屏风与天花",
+      "finish": "穿孔或编织，原色或哑光喷涂"
+    },
+    {
+      "name_zh": "亚克力与透光板",
+      "name_en": "Acrylic and Light Panel",
+      "application": "标识、灯箱与灯带罩",
+      "finish": "透光或乳白漫射"
+    },
+    {
+      "name_zh": "环氧与微水泥地坪",
+      "name_en": "Epoxy and Microcement Floor",
+      "application": "地面",
+      "finish": "哑光或半光，耐污耐磨"
+    },
+    {
+      "name_zh": "明装线缆与线槽",
+      "name_en": "Exposed Cable and Conduit",
+      "application": "墙面与天花明装",
+      "finish": "成组平行排布，统一色"
+    }
+  ],
+  "furniture_language": [
+    "工业化方正体量，金属与暗色板材为主，体量偏硬",
+    "家具边缘嵌入发光灯带或屏幕，成为光源的一部分",
+    "模块化堆叠，可组合成多层或多向使用",
+    "结构关系可见，线缆收纳以束线槽统一隐藏成组",
+    "拉手为外露金属构件或按压式隐藏扣手"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以霓虹、灯带与屏幕自发光为主要光色来源，形成强烈色彩层次",
+      "环境照度严格压低至 ≤50lx，霓虹与荧光色只在此条件下使用，否则会失去对比",
+      "利用镜面与金属反射面叠加光的层次，形成重复的光带与倒影"
+    ],
+    "fixtures": [
+      "霓虹管与霓虹灯带",
+      "RGB 线性灯带",
+      "发光标识与灯箱",
+      "屏幕墙与投影",
+      "暗藏洗墙灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      6500
+    ],
+    "illuminance_lux": "环境 30–80lx，任务面与标识 150–300lx（常见工程惯例区间）；霓虹作为装饰光不承担主要照度",
+    "layering": "暗底、强色光、屏幕自发光三层叠加，环境光压到最低以维持对比"
+  },
+  "architectural_elements": [
+    "明装管线与线槽",
+    "发光标识与霓虹灯带",
+    "屏幕墙与灯箱",
+    "穿孔金属与金属网屏",
+    "隐藏夹层与多层地台",
+    "拉丝金属包板与暗色镜面"
+  ],
+  "applicable_spaces": [
+    "娱乐与夜间商业空间",
+    "电竞与体验店",
+    "商业零售与快闪空间",
+    "酒吧与主题餐饮"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "定制发光标识与灯箱制作",
+      "屏幕与灯光控制系统的集成",
+      "金属与亚克力定制加工"
+    ],
+    "saving_moves": [
+      "霓虹集中在一面主标识墙，其余用普通 LED 灯带",
+      "以大尺寸投影或拼接屏替代超大整块 LED",
+      "管线明装以减少吊顶工程量（隐蔽工程仍需满足合规要求）"
+    ],
+    "notes": "风格高度依赖暗环境与灯光控制，在环境光较强的白天或通透空间会明显失效"
+  },
+  "construction_considerations": [
+    "电气负荷、线路敷设与灯光控制系统标注待持证专业人员复核",
+    "发光标识与灯箱需预留驱动散热空间与检修口",
+    "消防疏散指示与材料燃烧性能标注待持证专业人员复核，暗环境下疏散标识必须清晰可读",
+    "镜面与反光材料需控制眩光与光污染",
+    "明装管线需横平竖直、成组排布，避免与灯光争夺视觉焦点"
+  ],
+  "compatible_styles": [
+    "industrial-loft",
+    "warehouse-conversion",
+    "brutalist",
+    "memphis"
+  ],
+  "incompatible_elements": [
+    "明亮自然采光主导的界面",
+    "暖土色田园材料与手工陶砖",
+    "大面积纯白与柔和米色基调",
+    "古典线脚与对称构图",
+    "无缝白色极简的洁净空间语言"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "暗色基调的夜间室内空间，墙顶为哑光黑，管线成组明装，一侧为密集发光标识与屏幕墙，地台与夹层叠加出多层活动面",
+      "material": "哑光黑饰面板，拉丝暗金属包板，穿孔金属屏，乳白亚克力灯箱，环氧半光地坪，成组线槽",
+      "lighting": "暗环境下环境照度极低，霓虹洋红与霓虹青灯带是主要光源，屏幕自发光并在地面金属上反射出重复光带",
+      "furniture": "方正金属与暗色板材模块家具，边缘嵌发光灯带，按网格整齐排列",
+      "camera": "1.4m 机位，24mm 广角贴近发光标识，低曝光高对比，纳含管线与屏幕的层叠",
+      "atmosphere": "暗、密、技术感强，霓虹在暗底上形成强烈色彩冲击",
+      "keywords": [
+        "赛博朋克",
+        "暗底霓虹",
+        "技术层叠",
+        "发光标识",
+        "屏幕墙",
+        "明装管线"
+      ]
+    },
+    "en": {
+      "space": "A dark-toned night-time interior with matte black walls and ceiling, grouped exposed conduits, a dense wall of illuminated signage and screens on one side, platforms and mezzanines stacked into multiple levels",
+      "material": "Matte black panels, dark brushed metal cladding, perforated metal screens, milky acrylic light boxes, semi-gloss epoxy floor, grouped cable trunking",
+      "lighting": "Very low ambient light in a dark environment, neon magenta and cyan strips as the main light source, self-lit screens reflected in the metal floor as repeating bands",
+      "furniture": "Rectangular metal and dark panel modular pieces with edge lighting, aligned to the grid",
+      "camera": "1.4 m position, 24mm wide angle close to illuminated signage, low exposure and high contrast, framing layered conduits and screens",
+      "atmosphere": "Dark, dense, highly technological, neon striking hard against the dark base",
+      "keywords": [
+        "cyberpunk",
+        "neon on dark",
+        "tech density",
+        "illuminated signage",
+        "screen wall",
+        "exposed conduit"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持网格化的标识与屏幕排布关系不变",
+    "保持夹层与地台的层级与标高关系不变",
+    "保持管线成组走向与间距不变，不改为散乱布置"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要明亮自然采光主导的界面",
+      "不要暖土色田园材料与手工陶砖",
+      "不要大面积纯白与柔和米色基调",
+      "不要古典线脚与对称构图",
+      "不要无缝白色极简的洁净空间语言",
+      "不要在明亮环境下使用高饱和霓虹"
+    ],
+    "en": [
+      "no daylight-dominated bright surfaces",
+      "no warm earth-tone rustic materials or hand-made terracotta",
+      "no large areas of pure white or soft beige",
+      "no classical mouldings or symmetrical composition",
+      "no seamless white minimal clean-room language",
+      "no saturated neon used under bright ambient light"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "环境照度",
+      "criteria": "环境照度 ≤50lx，霓虹作为装饰光源使用而非主照明",
+      "stage": "S4"
+    },
+    {
+      "check": "发光面占比",
+      "criteria": "发光面占比 ≤25%，发光与反射面合计 ≤30%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "管线排布",
+      "criteria": "明装管线成组平行，组内间距偏差 ≤10mm",
+      "stage": "construction"
+    },
+    {
+      "check": "疏散可读",
+      "criteria": "暗环境下疏散标识在任何使用时段均可清晰识别，标注待持证专业人员复核",
+      "stage": "construction"
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.3.0-1f6feb?style=flat-square" alt="版本 1.3.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6%E4%B8%BB%E6%96%87%E6%A1%A3-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -36,7 +36,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
 | Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.3.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
+| Version | v1.4.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
@@ -64,6 +64,7 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 | **④ Judgements have a source** | Nine **design-criteria** sets: aesthetic control baseline, concept-diagram language, moodboard iteration loop, MEP spatial impact, annotation ledger, proposal layout, project fit, cost-quantity separation, tool safety tiers. Each is written as a decidable statement ("warm surfaces ≤40%", "black 3–8%", "one dominant line for the whole space") — not an adjective. |
 | **⑤ It really writes files** | Editable DXF (schematic and construction depth kept apart), OBJ 3D meshes, schematics, editable PPTX proposals, Markdown and print-ready HTML, quantity and cost-estimate JSON, change-impact reports. **Every written file is re-read by an independent implementation**; if it cannot be read back, the step is failed. |
 | **⑥ It does not pretend** | No Blender / FreeCAD / IfcOpenShell → it outputs **runnable scripts** and marks the stage `degraded`; platform not configured → `NOT_CONFIGURED` plus exactly what is missing; DXF is never renamed to DWG, a mesh is never called parametric BIM, a render is never used as a dimensional basis. |
+| **⑦ Design style system** | A structured library of **47 architectural and interior design styles** (eight families: modern / oriental / classic / deco-retro / industrial / natural-organic / regional / experimental), each with 20 professional fields (history, spatial principles, proportion, palette, materials, furniture language, lighting, applicable spaces, cost and construction notes, compatible and conflicting elements, positive prompt components, geometry preservation rules, negative constraints, quality checklist). **Index and data are separate**: query `catalog.json` (179 tags) first, then load a single style on demand — never all 47 at once. Ships a three-option recommender and a bilingual prompt compiler (8 targets: concept, moodboard, interior render, exterior render, material close-up, partial renovation, multi-view, walkthrough video). |
 
 ### Capability list (30, grouped by stage served)
 
@@ -225,14 +226,14 @@ Change the master-bedroom wardrobe from 600 deep to 550 deep
 | Stage | Name | Stage deliverable | Gate |
 |---|---|---|---|
 | S1 | Project start and design brief | Design brief, existing-conditions report | G1 brief confirmed |
-| S2 | Concept design | Concept options, style moodboard | G2 concept confirmed |
-| S3 | Plan layout design | Two to three layouts, comparison analysis | G3 layout confirmed |
+| S2 | Concept design | Concept options, style moodboard | G2 concept scheme confirmed |
+| S3 | Plan layout design | Two to three layouts, comparison analysis | G3 layout scheme confirmed |
 | S3·post | **Concept renderings** (post-gate action of G3) | AI concept renderings, canvas task package, concept-render deck | Attached to G3 |
 | S4 | Preliminary design and scheme development | Preliminary design drawings, material and lighting scheme | G4 preliminary design confirmed |
-| S5 | 3D modelling and visualisation | 3D model, spatial renderings, walkthrough | G5 visualisation confirmed |
+| S5 | 3D modelling and visualisation | 3D model, spatial renderings, walkthrough | G5 visualisation deliverables confirmed |
 | S6 | Design freeze and technical coordination | Confirmed scheme, basis for detailing | G6 design locked |
 | S7 | CAD / BIM construction-drawing development | Construction drawings, BIM model, review record | G7 construction drawings reviewed |
-| S8 | Material schedule and design delivery | Material schedule, quantity list, delivery documents | G8 delivery confirmed |
+| S8 | Material schedule and design delivery | Material schedule, quantity list, delivery documents | G8 delivery acceptance |
 
 **The eight stages are the process; the 30 capabilities are the roles — do not conflate them.** One capability can serve several stages: lighting design appears in
 S2 (concept lighting direction), S4 (lighting scheme) and S7 (fixture positioning); design presentation spans S2–S8.
@@ -366,8 +367,10 @@ omniailab-ai-architect/          ← Skill root (this repository)
 │   ├── presentation/            Presentation → PPTX / MD / HTML / PDF
 │   ├── integration/ installer/  Agent Skills verification and installation
 │   ├── brand_policy.py          Brand and vendor policy + creative-capability exclusivity ruling
-│   └── tests/                   16 test modules (full regression)
+│   ├── style/                   Design style system (library / recommendation / prompt compiler / stage hooks)
+│   └── tests/                   test modules (full regression)
 ├── knowledge/                   13 original design knowledge domains (progressive loading)
+│   └── styles/                  47 design styles, structured + catalog.json index
 ├── skills/                      30 professional capability briefs (filename = capability name, loadable by name)
 ├── cases/                       Case criteria for generic project types
 ├── schemas/                     Spatial model / case / tool-capability / presentation schemas

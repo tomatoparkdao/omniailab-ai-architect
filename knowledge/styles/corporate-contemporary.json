@@ -1,0 +1,280 @@
+{
+  "style_id": "corporate-contemporary",
+  "display_name_zh": "当代商务",
+  "display_name_en": "Corporate Contemporary",
+  "family": "modern",
+  "tags": [
+    "workplace",
+    "acoustic",
+    "glass",
+    "calm",
+    "efficient"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "21 世纪初期成型，随开放办公、混合办公与员工体验需求发展",
+    "origin": "国际商务办公与联合办公实践，源于对效率、声学与品牌形象的综合要求",
+    "summary": "当代商务要解决的是开放办公带来的两个新问题：噪声干扰与专注缺失。它因此把声学分区当作平面组织的起点——协作区、专注区、会议区按噪声等级排布，用玻璃维持视线通透同时用吸声材料控制混响，用模数化家具与工位系统保证高效复用。它的空间是机构性的：前台体现品牌，工位讲求效率，会议讲求可达，整体色调冷静克制，服务于长时间使用而非视觉冲击。",
+    "key_movements": [
+      "现代主义建筑运动",
+      "功能主义",
+      "开放式办公空间运动"
+    ]
+  },
+  "spatial_principles": [
+    "按声学分区组织平面：高噪声协作区与需专注的静音区分离，缓冲带置于两者之间",
+    "开敞办公结合玻璃隔断的会议空间，保持视线通透，同时以吸声构造控制混响",
+    "前台与接待构成到达序列，用材质与照度体现机构形象",
+    "动线等级分明，主干道直通，避免穿越工作区",
+    "主通道净宽 ≥1200mm（常见工程惯例区间），双人并行不干扰工位"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "工位按模数排布，柱网与工位、灯具、风口对齐形成统一网格",
+      "天花为声学吊顶，界面规整，灯具与风口按网格布置",
+      "玻璃隔断按模数分格，分格线与地面、天花对位",
+      "地毯与地面分区与功能分区边界对应，收口平直"
+    ],
+    "ratios": [
+      "工位模数常见 1200 / 1400 / 1600mm（常见工程惯例区间）",
+      "玻璃隔断分格按 900mm 与 1200mm 组合（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3200mm（常见工程惯例区间）；设备层需预留以满足机电与吸声吊顶"
+  },
+  "color_palette": [
+    {
+      "name_zh": "冷白",
+      "name_en": "Cool White",
+      "hex": "#F3F4F5",
+      "usage": "墙面与天花基调，占比约 50%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅灰",
+      "name_en": "Light Grey",
+      "hex": "#D5D8DA",
+      "usage": "地面与隔断框，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "中灰蓝",
+      "name_en": "Slate Grey Blue",
+      "hex": "#6E7B85",
+      "usage": "织物与次要墙面，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "暖木色",
+      "name_en": "Warm Wood",
+      "hex": "#C2A277",
+      "usage": "前台与接待区木饰面，占比约 10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "机构强调色",
+      "name_en": "Corporate Accent",
+      "hex": "#2E6F6B",
+      "usage": "品牌墙与导向标识，占比 ≤5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "声学吸音板与软包",
+      "name_en": "Acoustic Panel and Fabric Wall",
+      "application": "天花、会议墙面与静音舱",
+      "finish": "穿孔或织物软包",
+      "notes": "吸声位置需结合混响时间目标布置"
+    },
+    {
+      "name_zh": "玻璃隔断与渐变膜",
+      "name_en": "Glass Partition and Gradient Film",
+      "application": "会议与电话间",
+      "finish": "超白或夹渐变膜",
+      "notes": "视线通透与私密性需平衡"
+    },
+    {
+      "name_zh": "木饰面",
+      "name_en": "Wood Veneer",
+      "application": "前台、接待与品牌墙",
+      "finish": "哑光清漆"
+    },
+    {
+      "name_zh": "方块地毯与商用地毯",
+      "name_en": "Carpet Tile",
+      "application": "办公与通道地面",
+      "finish": "圈绒或低绒面",
+      "notes": "兼顾吸声与耐磨、便于局部更换"
+    },
+    {
+      "name_zh": "穿孔金属与金属网",
+      "name_en": "Perforated Metal and Mesh",
+      "application": "吊顶与装饰面",
+      "finish": "粉末喷涂哑光"
+    }
+  ],
+  "furniture_language": [
+    "模块化工位系统，简洁方正，可快速重排与扩展",
+    "人体工学座椅，简洁扶手与中性配色",
+    "会议与协作家具集线缆管理于一体，桌面整洁",
+    "收纳与白板、显示设备整合进固定体块，减少散件"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "均匀照度并严格控制眩光，保证长时间用眼舒适",
+      "任务照明与调光结合，支持不同功能区的照度需求"
+    ],
+    "fixtures": [
+      "线性办公吊灯",
+      "面板灯",
+      "轨道射灯",
+      "工位台灯",
+      "会议区重点照明"
+    ],
+    "color_temperature_k": [
+      3500,
+      4000
+    ],
+    "illuminance_lux": "开放办公与会议 300–500lx，通道与辅助区 150–200lx（常见工程惯例区间）",
+    "layering": "环境均匀照明打底 → 工位任务照明补强 → 前台与接待区重点照明塑造形象"
+  },
+  "architectural_elements": [
+    "玻璃隔断与玻璃门",
+    "声学天花与穿孔吸音构造",
+    "前台与品牌形象墙",
+    "开敞或造型吊顶",
+    "地毯分区与地面收口"
+  ],
+  "applicable_spaces": [
+    "企业总部与办公",
+    "联合办公空间",
+    "会议与培训中心",
+    "接待与前台区域",
+    "商业服务与政务窗口"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "声学材料与吸声构造的用量",
+      "玻璃隔断及其五金系统",
+      "模块化家具与机电点位配合"
+    ],
+    "saving_moves": [
+      "以成品模块隔断替代全定制隔断，缩短工期",
+      "吸声处理集中在会议与静音区，开放区靠地毯与吊顶消化",
+      "家具采用可复用的标准件，减少造型定制"
+    ],
+    "notes": "当代商务的造价弹性主要来自隔断与家具系统，声学与照明作为使用体验的核心不建议大幅削减"
+  },
+  "construction_considerations": [
+    "机电点位（照明、风口、喷淋、弱电）需与天花网格统一排版，避免相互打架",
+    "玻璃隔断的放线与地脚预埋需在地面完成前确认，收边不得现场切割",
+    "声学材料与构造需按声学目标定位，施工中不得随意替换或覆盖",
+    "地毯与地面分区收口需平直，办公区与通道交界处理需耐磨",
+    "消防、疏散、机电负荷与无障碍等判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "modernist-classic",
+    "modern-minimalism",
+    "contemporary-luxury",
+    "industrial-loft",
+    "scandinavian"
+  ],
+  "incompatible_elements": [
+    "大面积高饱和色块与撞色",
+    "过于家居化的厚重软装与布艺堆叠",
+    "无任何吸声处理的硬质开敞空间",
+    "繁复古典装饰与水晶吊灯",
+    "杂乱外露的线缆与设备"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "开敞办公空间，一侧为玻璃隔断围合的会议区，天花为穿孔吸声吊顶，界面按网格排布",
+      "material": "冷白墙面与穿孔金属吸声天花，方块地毯地面，木饰面前台与品牌墙，超白玻璃隔断带渐变膜",
+      "lighting": "线性办公吊灯与面板灯提供均匀低眩光照度，会议区局部重点照明，整体明亮而不刺眼",
+      "furniture": "模块化工位系统与人体工学座椅，会议桌集成线缆管理，收纳与显示设备整合入固定体块",
+      "camera": "水平人眼高度，广角 24–35mm，展现开敞纵深与玻璃隔断的通透层次",
+      "atmosphere": "冷静、高效、有序，安静而专业，适合长时间使用",
+      "keywords": [
+        "当代商务",
+        "声学吊顶",
+        "玻璃隔断",
+        "模块工位",
+        "低眩光",
+        "网格排布"
+      ]
+    },
+    "en": {
+      "space": "An open-plan workplace with a glazed meeting zone to one side, perforated acoustic ceiling, interfaces laid out on a grid",
+      "material": "Cool-white walls with perforated metal acoustic ceiling, carpet tile floor, wood-veneer reception and brand wall, low-iron glass partitions with gradient film",
+      "lighting": "Linear pendants and panel lights giving even low-glare illuminance, local accent lighting in the meeting zone, bright but not harsh",
+      "furniture": "Modular workstation system with ergonomic task chairs, meeting table with integrated cable management, storage and displays built into fixed blocks",
+      "camera": "Eye-level horizontal camera, 24–35mm wide angle, showing the open depth and layered transparency of the glass partitions",
+      "atmosphere": "Calm, efficient, ordered, quiet and professional, suited to long hours of use",
+      "keywords": [
+        "corporate contemporary",
+        "acoustic ceiling",
+        "glass partition",
+        "modular workstation",
+        "low glare",
+        "grid layout"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持天花网格与工位、灯具、风口、喷淋的对位关系",
+    "保持玻璃隔断的分格模数与位置不变",
+    "保持功能分区边界与地面收口线的对应关系"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积高饱和色块与撞色",
+      "不要过于家居化的厚重软装与布艺堆叠",
+      "不要无任何吸声处理的硬质开敞空间",
+      "不要繁复古典装饰与水晶吊灯",
+      "不要杂乱外露的线缆与设备"
+    ],
+    "en": [
+      "no large saturated colour blocks or clashing colours",
+      "no heavy domestic soft furnishing or layered fabrics",
+      "no hard open space without any acoustic treatment",
+      "no ornate classical decoration or crystal chandeliers",
+      "no exposed cable clutter or unmanaged equipment"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "声学分区",
+      "criteria": "高噪声区与静音区之间有缓冲或隔断，静音区混响时间按目标控制（标注待专职声学复核）",
+      "stage": "S3"
+    },
+    {
+      "check": "眩光控制",
+      "criteria": "工位视线范围内灯具统一眩光值按标准控制，屏幕无明显反射（常见工程惯例区间）",
+      "stage": "S4"
+    },
+    {
+      "check": "天花对位",
+      "criteria": "灯具、风口、喷淋、烟感均落在同一网格，偏移 ≤50mm",
+      "stage": "construction"
+    },
+    {
+      "check": "通道净宽",
+      "criteria": "主干道净宽 ≥1200mm，通过工作区的次级动线 ≥900mm（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "工位复用性",
+      "criteria": "工位为模块化标准件，可在不改造隔断的前提下重排",
+      "stage": "S3"
+    }
+  ]
+}

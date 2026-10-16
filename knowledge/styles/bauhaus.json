@@ -1,0 +1,276 @@
+{
+  "style_id": "bauhaus",
+  "display_name_zh": "包豪斯",
+  "display_name_en": "Bauhaus",
+  "family": "modern",
+  "tags": [
+    "primary-colors",
+    "geometry",
+    "craft",
+    "steel-tube"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪 20 年代兴起，20 世纪中后期经设计教育与工业化生产扩散",
+    "origin": "德国，由设计与工艺相结合的教育运动发展而来，主张艺术与工业化生产结合",
+    "summary": "包豪斯的出发点是「手艺与机器不必对立」：设计要用基本几何形和清晰的构成法则，让产品既好看又能批量生产。它因此形成了辨识度极高的语言——用方、圆、三角组织界面，用红黄蓝三原色加黑白灰建立色彩体系，用弯曲钢管的家具体系实现轻、薄、可复制的坐具，并主动让结构外显。它与国际式白盒子的区别在于：白盒子靠模数与秩序，包豪斯靠几何构成与色彩，家具与工艺才是它的主角。",
+    "key_movements": [
+      "包豪斯设计教育运动",
+      "现代主义设计运动",
+      "构成主义",
+      "风格派"
+    ]
+  },
+  "spatial_principles": [
+    "以基本几何形（方、圆、三角）组织空间与界面，构成元素直接可读",
+    "采用非对称但平衡的构图，避免完全居中对称，靠体量与色彩块面配重",
+    "功能决定形式，空间按实际使用排布，不做与功能无关的装饰",
+    "横向带状窗与规则立面开窗，明确室内外关系",
+    "主通道净宽 ≥900mm（常见工程惯例区间），家具布置留出构成感的空场"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "强调基本几何体与网格，圆与方并置，构图可出现对角线与圆形切分",
+      "界面与家具按标准件与模数组织，尺寸成系列以便复制",
+      "彩色块面按几何边界划分，边界平直锐利，不做渐变过渡",
+      "家具与灯具的结构外显，弯曲钢管与几何体作为造型主体"
+    ],
+    "ratios": [
+      "构图中使用正方形、圆与黄金比，块面按 1:1、1:2 排布（常见工程惯例区间）",
+      "家具标准件按 400mm 与 500mm 模数组合（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3400mm（常见工程惯例区间），横向开窗比例与层高联动"
+  },
+  "color_palette": [
+    {
+      "name_zh": "浅灰白",
+      "name_en": "Pale Grey White",
+      "hex": "#EDEBE6",
+      "usage": "墙面与天花基底，占比约 55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "包豪斯红",
+      "name_en": "Bauhaus Red",
+      "hex": "#C0392B",
+      "usage": "几何色块与家具点缀，占比约 12%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "包豪斯蓝",
+      "name_en": "Bauhaus Blue",
+      "hex": "#1F4E9C",
+      "usage": "几何色块与软装，占比约 10%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "包豪斯黄",
+      "name_en": "Bauhaus Yellow",
+      "hex": "#E3B505",
+      "usage": "小面积色块与配件，占比约 8%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "结构黑",
+      "name_en": "Structural Black",
+      "hex": "#1A1A1A",
+      "usage": "钢管家具框架与线条，占比约 10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "弯曲钢管",
+      "name_en": "Bent Steel Tube",
+      "application": "家具框架与灯具",
+      "finish": "镀铬、黑色或白色烤漆",
+      "notes": "悬臂与单管结构是标志性做法"
+    },
+    {
+      "name_zh": "皮革与帆布",
+      "name_en": "Leather and Canvas",
+      "application": "座面与靠背",
+      "finish": "哑光自然面"
+    },
+    {
+      "name_zh": "平板玻璃与钢框",
+      "name_en": "Flat Glass and Steel Frame",
+      "application": "窗与隔断",
+      "finish": "透明或压花玻璃"
+    },
+    {
+      "name_zh": "白色抹灰与混凝土",
+      "name_en": "White Render and Concrete",
+      "application": "墙面与地面",
+      "finish": "平整哑光"
+    },
+    {
+      "name_zh": "胶合板与实木",
+      "name_en": "Plywood and Solid Wood",
+      "application": "家具与柜体",
+      "finish": "清漆或彩色涂装"
+    }
+  ],
+  "furniture_language": [
+    "钢管骨架家具，悬臂或细管腿，配皮带、帆布或皮革座面",
+    "几何块体的圆与方组合，造型可简化为基本形",
+    "标准化、可批量生产，结构外显且连接件可见",
+    "色彩以黑、白与三原色为主，涂装平直无纹样"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "功能照明为主，照度充足，服务使用优先于氛围",
+      "灯具本身是几何造型，允许外露并成为构成的一部分"
+    ],
+    "fixtures": [
+      "球形吊灯",
+      "钢管壁灯",
+      "几何造型台灯",
+      "简洁筒灯"
+    ],
+    "color_temperature_k": [
+      3000,
+      4000
+    ],
+    "illuminance_lux": "使用环境 200–500lx（常见工程惯例区间）",
+    "layering": "功能性照明结合造型灯具，允许明暗对比，不做无灯具的纯隐藏式照明"
+  },
+  "architectural_elements": [
+    "基本几何形墙面与洞口",
+    "横向带状窗与规则开窗",
+    "细钢框玻璃隔断",
+    "几何彩色墙面或地面拼块",
+    "外显的金属结构件与简洁楼梯栏杆"
+  ],
+  "applicable_spaces": [
+    "展览与展厅",
+    "教育与培训空间",
+    "创意办公",
+    "书店与咖啡馆",
+    "住宅局部（书房与工作室）"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "钢制家具与定制几何构件的加工",
+      "彩色涂装的平直度与色差控制",
+      "钢框玻璃与金属线条的做法"
+    ],
+    "saving_moves": [
+      "以标准钢管成品家具替代全定制，保留体系感",
+      "彩色块面改用可重涂的涂料而非整体定制面材",
+      "减少金属隔断面积，用几何墙面分色替代部分材质分区"
+    ],
+    "notes": "包豪斯的价值来自几何纯度，色块边界与家具体系一旦走形，风格辨识度会迅速丢失"
+  },
+  "construction_considerations": [
+    "彩色块面的边界需弹线并做模板，锐利直线与圆边是风格的关键，误差需控制在 mm 级",
+    "钢制家具与固定件的连接节点需在加工前确认，外露结构不允许用收边遮盖",
+    "钢框玻璃隔断的放线与预埋需提前完成，避免现场二次开凿",
+    "钢管涂装需控制色差与流挂，弧形件应工厂完成喷涂",
+    "结构安全、消防与机电负荷等判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "modernist-classic",
+    "mid-century-modern",
+    "modern-minimalism",
+    "postmodern",
+    "industrial-loft"
+  ],
+  "incompatible_elements": [
+    "古典线脚与繁复雕饰",
+    "自然植物纹样与洛可可式装饰",
+    "随机、不规则、无构成逻辑的造型",
+    "厚重欧式家具与水晶吊灯",
+    "大面积高光大理石与金箔"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以基本几何形构成的空间，墙面有色块分区，一侧为横向带状窗，天花平整",
+      "material": "白色抹灰墙面，平整混凝土或浅色地面，镀铬弯曲钢管家具，皮革与帆布座面，细钢框玻璃",
+      "lighting": "球形与几何造型灯具外露，功能性照明充足，明暗对比清晰",
+      "furniture": "钢管骨架悬臂椅与几何块体桌，结构外显，红黄蓝白黑的涂装平直无纹样",
+      "camera": "水平人眼高度，28–35mm，构图非对称但平衡，突出几何色块边界",
+      "atmosphere": "理性、明快、有构成感，手工艺与工业化并存",
+      "keywords": [
+        "包豪斯",
+        "几何构成",
+        "三原色",
+        "钢管家具",
+        "色块分区",
+        "带状窗"
+      ]
+    },
+    "en": {
+      "space": "A space composed of basic geometric forms, walls divided into colour blocks, a horizontal ribbon window on one side, flat ceiling",
+      "material": "White rendered walls, flat concrete or pale floor, chrome bent-steel-tube furniture, leather and canvas seating, slim steel and glass",
+      "lighting": "Exposed spherical and geometric fixtures, ample functional lighting with clear light-to-dark contrast",
+      "furniture": "Steel-tube cantilever chairs and geometric block tables, structure exposed, flat unpatterned finishes in red yellow blue black and white",
+      "camera": "Eye-level horizontal camera, 28–35mm, asymmetric yet balanced composition emphasising the geometry of colour blocks",
+      "atmosphere": "Rational, crisp, compositional, craft and industry together",
+      "keywords": [
+        "bauhaus",
+        "geometric composition",
+        "primary colours",
+        "steel tube",
+        "colour blocking",
+        "ribbon window"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持色块的几何边界与位置关系不变，边界保持平直锐利",
+    "保持带状窗与规则开窗的位置与比例",
+    "保持钢管家具的结构与尺度关系，不改动体量"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要古典线脚与繁复雕饰",
+      "不要自然植物纹样与洛可可式装饰",
+      "不要随机、不规则、无构成逻辑的造型",
+      "不要厚重欧式家具与水晶吊灯",
+      "不要大面积高光大理石与金箔"
+    ],
+    "en": [
+      "no classical mouldings or ornate carving",
+      "no botanical patterns or rococo decoration",
+      "no random, irregular or compositionally unjustified forms",
+      "no heavy traditional European furniture or crystal chandeliers",
+      "no large polished marble or gold leaf"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "几何边界精度",
+      "criteria": "彩色块面边界平直，直线度误差 ≤2mm，圆边连续无接痕",
+      "stage": "construction"
+    },
+    {
+      "check": "三原色用量",
+      "criteria": "红黄蓝合计占比 20%–35%，且以黑灰白为基底（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "家具体系一致",
+      "criteria": "家具至少 2 件为钢管结构体系，连接件外显不遮盖",
+      "stage": "S3"
+    },
+    {
+      "check": "构图平衡",
+      "criteria": "视线内块面呈非对称平衡，无单侧大面积空白或拥堵",
+      "stage": "schematic"
+    },
+    {
+      "check": "色差控制",
+      "criteria": "同色不同材质的涂装色差不超肉眼可辨范围",
+      "stage": "construction"
+    }
+  ]
+}

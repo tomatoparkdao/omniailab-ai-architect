@@ -1,0 +1,276 @@
+{
+  "style_id": "middle-eastern-luxury",
+  "display_name_zh": "中东奢华",
+  "display_name_en": "Middle Eastern Luxury",
+  "family": "regional",
+  "tags": [
+    "majlis",
+    "opulent",
+    "pattern",
+    "stone",
+    "gold"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "承自海湾与黎凡特地区的宫廷与宅邸传统，20 世纪末以来随大型城市化建设而现代化",
+    "origin": "海湾与黎凡特地区，融合伊斯兰建筑空间传统与当代大体量建造与装修工艺",
+    "summary": "当地社会以主客关系为重，宅邸中最重要的不是卧室而是待客空间——majlis。它需要同时容纳大量来客、体现主人的体面、并让男女宾分设或分区。由此形成了一套以「会客空间为核心、装饰密度极高、体量极大」的做法：主厅层高挑高，地面做石材拼花，墙面用大理石与石膏装饰、局部贴金箔，天花嵌入大型灯具，家具沿墙长排布置以容纳众多宾客。它解决的是大规模社交接待的仪式感与地位表达，判据是尺度、装饰密度与材料档次，而不是庭院生活或手工拼贴。",
+    "key_movements": [
+      "伊斯兰建筑传统",
+      "海湾地区当代奢华室内",
+      "摩尔式建筑",
+      "古典主义室内装饰"
+    ]
+  },
+  "spatial_principles": [
+    "以大型会客厅（majlis）为空间核心，独立设置、可直接对外接待，尺度与装饰等级高于其他空间",
+    "会客厅与餐叙区分设，主厅居中挑高，形成集中的大体量仪式空间",
+    "家具沿墙长排环绕布置，中央留出大面积空地以容纳人数众多的聚会",
+    "以门厅、过厅与层层递进的门洞组织到达序列，强化进入主厅的仪式感",
+    "可设置分设或可分隔的接待空间以适应不同宾客组合，界面用双开高门或可折叠隔断"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "主会客厅挑高显著，净高常见 4000–7000mm（常见工程惯例区间），并做大型装饰天花",
+      "中央空地尺寸以容纳聚会为准，主厅开间常见 ≥6000mm（常见工程惯例区间）",
+      "门洞高大，主门洞高度常见 2400–3600mm（常见工程惯例区间），做双开或带亮子形式",
+      "地面石材拼花以中心图案加边带组织，图案分格与墙柱模数对齐"
+    ],
+    "ratios": [
+      "主会客厅面积占宅邸室内面积常见 15%–30%（常见工程惯例区间）",
+      "装饰墙面（拼花、贴金、雕饰）占比常见 ≥50%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "主会客厅净高常见 4000–7000mm（常见工程惯例区间）；次要与私密空间可降至 2800–3400mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "象牙米白",
+      "name_en": "Ivory Cream",
+      "hex": "#F0E7D6",
+      "usage": "石材与墙面基调，占比约 35%",
+      "role": "base"
+    },
+    {
+      "name_zh": "暖金",
+      "name_en": "Warm Gold",
+      "hex": "#C9A227",
+      "usage": "金箔、线条与五金，占比约 15%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "深胡桃褐",
+      "name_en": "Deep Walnut Brown",
+      "hex": "#4E3A28",
+      "usage": "木作与家具，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "孔雀蓝",
+      "name_en": "Peacock Blue",
+      "hex": "#1F5A6B",
+      "usage": "织物、台面与局部墙面，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "酒红",
+      "name_en": "Burgundy",
+      "hex": "#6E2432",
+      "usage": "软包与地毯，占比约 10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "大理石拼花",
+      "name_en": "Marble Inlay and Waterjet Stone",
+      "application": "主厅地面与墙面",
+      "finish": "抛光或丝光拼花，图案对缝精细",
+      "notes": "以几何与植物卷草纹样分格"
+    },
+    {
+      "name_zh": "金箔与金属饰面",
+      "name_en": "Gold Leaf and Metal Veneer",
+      "application": "线脚、天花与装饰构件",
+      "finish": "手工贴箔或镀金属，哑光或亮光并用"
+    },
+    {
+      "name_zh": "石膏雕饰与装饰线条",
+      "name_en": "Gypsum Carving and Mouldings",
+      "application": "天花、墙面与门套",
+      "finish": "浅浮雕与凹线脚组合"
+    },
+    {
+      "name_zh": "硬木与木饰面",
+      "name_en": "Hardwood and Wood Veneer",
+      "application": "家具、护墙板与门",
+      "finish": "半光或丝光，纹理连续拼花"
+    },
+    {
+      "name_zh": "丝绒与提花织物",
+      "name_en": "Velvet and Jacquard Fabric",
+      "application": "软包、窗帘与地毯",
+      "finish": "厚实有光泽，几何或卷草纹样"
+    }
+  ],
+  "furniture_language": [
+    "大体量、低矮且宽深，沿墙长排布置，以容纳众多宾客并排而坐",
+    "软包为主，坐垫厚实，扶手与框架做装饰线条或局部贴金",
+    "金属与石材细部显著，桌面常见石材拼花或镶嵌",
+    "单件尺度大、数量多，以密度而非留白传达丰盛感"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以大型中心吊灯作为主厅视觉核心，配合天花周边灯槽形成层层光晕",
+      "照度偏高且均匀，突出石材与金箔的反射质感，避免昏暗"
+    ],
+    "fixtures": [
+      "大型水晶或金属吊灯",
+      "天花灯槽与筒灯",
+      "金色壁灯",
+      "落地与台面装饰灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3500
+    ],
+    "illuminance_lux": "主会客厅 200–400lx，重点装饰面 400–600lx（常见工程惯例区间）",
+    "layering": "环境光由灯槽与筒灯提供高均匀度，重点光打亮吊灯、拼花地面与贴金装饰，装饰光补充墙面壁灯"
+  },
+  "architectural_elements": [
+    "挑高会客大厅与大型装饰天花",
+    "大理石拼花地面与墙面",
+    "高大双开门洞与多层次门厅序列",
+    "贴金线脚与石膏雕饰",
+    "沿墙通长固定软包坐具"
+  ],
+  "applicable_spaces": [
+    "宅邸与别墅",
+    "奢华酒店与宴会厅",
+    "高端会所与接待厅",
+    "企业会客与接待空间",
+    "精品商业"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "大理石拼花的选料、切割与对缝铺装",
+      "金箔与金属饰面的手工施工",
+      "挑高大厅的结构、天花与大型灯具"
+    ],
+    "saving_moves": [
+      "拼花集中在主厅地面与主视墙面，次要空间用整版石材加装饰边带",
+      "金箔用于线条与构件而非大面积满贴，避免整体造价失控",
+      "大型吊灯以定制金属骨架配仿水晶件替代全天然水晶，保留体量与光效"
+    ],
+    "notes": "装饰密度与尺度是风格成立的关键，降本应压缩装饰面积而不是降低主厅层高与主视面工艺；结构与人流疏散做法需持证专业人员复核"
+  },
+  "construction_considerations": [
+    "大理石拼花需先做平面排版与编号，切割与铺装顺序错误会导致图案无法闭合",
+    "大面积贴金需控制基层平整度与湿度，否则易起皮泛碱",
+    "挑高大厅的天花、吊灯基座与检修马道做法标注待持证专业人员复核",
+    "石材上墙需做背栓与防坠落固定，做法标注待持证专业人员复核",
+    "大型吊灯的荷载预埋与检修方式需在结构阶段预留，做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "moroccan",
+    "contemporary-luxury",
+    "neoclassical",
+    "art-deco"
+  ],
+  "incompatible_elements": [
+    "大面积留白的极简界面",
+    "裸露混凝土与二手工业材料",
+    "廉价塑料与薄壁板材饰面",
+    "低矮平天花与低照度昏暗空间",
+    "大面积高饱和荧光色"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "挑高的会客大厅，尽端为高大双开门洞，天花为大型装饰花顶并悬挂大型吊灯，地面为石材拼花，家具沿墙长排布置",
+      "material": "象牙米白大理石拼花地面与墙面，金箔线脚与石膏雕饰，深胡桃木作与丝绒软包，孔雀蓝与酒红织物",
+      "lighting": "大型吊灯为视觉核心，天花灯槽层层泛光，金色壁灯洗亮装饰面，整体照度偏高而均匀",
+      "furniture": "沿墙通长低矮宽深软包坐具，石材拼花面的长几，金色装饰线条，单件尺度大且数量多",
+      "camera": "人眼至略低高度，20–28mm 广角，居中构图以强调对称与挑高",
+      "atmosphere": "隆重、丰盛、金碧而不失秩序，强调待客的体面",
+      "keywords": [
+        "中东奢华",
+        "会客厅",
+        "石材拼花",
+        "金箔",
+        "挑高",
+        "大体量"
+      ]
+    },
+    "en": {
+      "space": "A double-height reception hall with a tall double-leaf doorway at the far end, a large ornamental ceiling with a grand pendant below, stone inlay flooring, seating arranged in long rows along the walls",
+      "material": "Ivory cream marble inlay floor and walls, gold leaf mouldings and gypsum ornament, deep walnut joinery and velvet upholstery, peacock blue and burgundy textiles",
+      "lighting": "A large chandelier as the visual centre, ceiling coves glowing in layers, gilded wall lights washing the ornament, overall bright and even",
+      "furniture": "A long low deep bench running along the wall, a long stone-inlaid table, gilded trim, large pieces in generous numbers",
+      "camera": "Eye level or slightly lower, 20–28mm wide angle, centred composition emphasising symmetry and height",
+      "atmosphere": "Ceremonial, abundant, gilded yet ordered, expressing hospitality and status",
+      "keywords": [
+        "middle eastern luxury",
+        "majlis",
+        "stone inlay",
+        "gold leaf",
+        "double height",
+        "large scale"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持主厅挑高与大型装饰天花的形状与高度不变",
+    "保持石材拼花的图案分格与对称轴不变，不改变拼花分格线",
+    "保持高大双开门洞的位置与尺寸关系不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积留白的极简界面",
+      "不要裸露混凝土与二手工业材料",
+      "不要廉价塑料与薄壁板材饰面",
+      "不要低矮平天花与低照度昏暗空间",
+      "不要大面积高饱和荧光色"
+    ],
+    "en": [
+      "no large plain minimalist white surfaces",
+      "no exposed concrete or reclaimed industrial materials",
+      "no cheap plastic or thin panel cladding",
+      "no low flat ceilings or dim low-illuminance space",
+      "no large saturated fluorescent colour blocks"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "会客空间核心",
+      "criteria": "主会客厅独立设置且面积占室内 15%–30%，装饰等级高于其他空间",
+      "stage": "schematic"
+    },
+    {
+      "check": "挑高与尺度",
+      "criteria": "主厅净高 ≥4000mm，开间 ≥6000mm，中央留出可容纳聚会的空地",
+      "stage": "schematic"
+    },
+    {
+      "check": "拼花对缝",
+      "criteria": "石材拼花图案对缝误差 ≤0.5mm，中心线与对称轴偏差 ≤2mm",
+      "stage": "construction"
+    },
+    {
+      "check": "装饰密度",
+      "criteria": "主视墙面装饰（拼花、贴金、雕饰）覆盖 ≥50%",
+      "stage": "schematic"
+    },
+    {
+      "check": "照度均匀度",
+      "criteria": "主会客厅照度 200–400lx，重点装饰面 400–600lx，无明显暗角",
+      "stage": "S4"
+    }
+  ]
+}

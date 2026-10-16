@@ -1,0 +1,285 @@
+{
+  "style_id": "deconstructivism",
+  "display_name_zh": "解构主义",
+  "display_name_en": "Deconstructivism",
+  "family": "experimental",
+  "tags": [
+    "fractured",
+    "skewed",
+    "non-orthogonal",
+    "tension"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪 70 年代末至 90 年代形成并盛行，此后作为手法持续被引用",
+    "origin": "欧美建筑界，受结构主义与后结构主义哲学思潮及早期构成主义形式语言影响",
+    "summary": "它针对的是现代主义长期建立的「正交、稳定、可预期」秩序：如果空间的稳定感只是习惯而非必然，那么把轴线打散、把体量错位、把结构露出来，就能让建筑重新变得有张力。做法上不靠装饰，而是靠几何本身的冲突——倾斜的墙、错开的板、非正交的交接。它解决的问题是在成熟的城市环境中制造「不安定的纪念性」，因此对误差的要求比常规做法更严，任何收口偏差都会把冲突变成瑕疵。",
+    "key_movements": [
+      "解构主义建筑",
+      "后结构主义思潮",
+      "构成主义",
+      "新构成主义形式探索"
+    ]
+  },
+  "spatial_principles": [
+    "轴线被打断与错位，功能块以旋转、倾斜、叠置方式组合，不共用统一网格",
+    "墙面、天花、地面之间为非正交交接，界面之间保留可见的角度冲突",
+    "结构与构造节点外露，构件的错位关系直接可见而不被饰面掩盖",
+    "空间不做序列化递进，采用并置与碰撞组织前后关系",
+    "主通道净宽 ≥1000mm，异形构件边缘做钝化处理以避免锐角伤人"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以倾斜界面打破水平与垂直参照，界面倾角常见 5°–25°（常见工程惯例区间）",
+      "体量错位叠置，偏移与悬挑关系在立面上可见",
+      "板材分缝允许不刻意对齐，错缝幅度常见 50–200mm（常见工程惯例区间）",
+      "构件连接处外露节点，不做包边隐藏",
+      "非正交界面占可见界面比例常见 30%–60%（常见工程惯例区间）"
+    ],
+    "ratios": [
+      "倾斜与偏移尺寸取设计网格的非整数倍，避免与常规模数重合",
+      "悬挑长度与支撑跨度之比建议 ≤1:3（常见工程惯例区间，承载力标注待持证专业人员复核）"
+    ],
+    "ceiling_height_mm": "净高常见 3000–5000mm（常见工程惯例区间）；可做斜天花与错层，形成高度上的不平衡"
+  },
+  "color_palette": [
+    {
+      "name_zh": "清水混凝土灰",
+      "name_en": "Fair-faced Concrete Grey",
+      "hex": "#9C9C98",
+      "usage": "墙、天花与结构面基调，占比约 40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "粉笔白",
+      "name_en": "Chalk White",
+      "hex": "#E6E6E2",
+      "usage": "次要墙面与局部平涂，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深钢灰",
+      "name_en": "Steel Charcoal",
+      "hex": "#3C3F42",
+      "usage": "外露钢构、门窗与家具，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "耐候锈红",
+      "name_en": "Corten Rust",
+      "hex": "#8A4B2A",
+      "usage": "包板与构件点缀，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "氧化铜绿",
+      "name_en": "Patina Green",
+      "hex": "#5C7A6B",
+      "usage": "金属收口与细节点缀，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "原色钢",
+      "name_en": "Raw Steel",
+      "hex": "#8B9299",
+      "usage": "外露梁柱与五金，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "清水混凝土",
+      "name_en": "Fair-faced Concrete",
+      "application": "墙、天花与结构构件",
+      "finish": "素面留模板纹与对拉螺栓孔"
+    },
+    {
+      "name_zh": "耐候钢与锈蚀钢板",
+      "name_en": "Corten Steel",
+      "application": "立面包板与构件",
+      "finish": "自然锈蚀，不做封闭涂装"
+    },
+    {
+      "name_zh": "外露钢结构",
+      "name_en": "Exposed Structural Steel",
+      "application": "梁柱与连接节点",
+      "finish": "防火涂装后喷漆，节点外露"
+    },
+    {
+      "name_zh": "玻璃",
+      "name_en": "Glass",
+      "application": "错位窗与幕墙",
+      "finish": "透明或半反，按体量错位分格"
+    },
+    {
+      "name_zh": "金属网与格栅",
+      "name_en": "Metal Mesh and Grille",
+      "application": "屏风与栏板",
+      "finish": "原色或哑光喷漆"
+    }
+  ],
+  "furniture_language": [
+    "与建筑语言呼应的倾斜或错位家具，台面与支撑不垂直",
+    "大体量混凝土或金属家具，语言偏重不偏轻",
+    "支撑与节点外露，把结构关系当作造型的一部分",
+    "以落地件为主，体量厚重，不追求纤细腿件",
+    "拉手为外露金属构件，造型方正不外凸装饰"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "用定向光强化倾斜界面与错缝产生的阴影，让几何冲突被看见",
+      "结构构件用重点光单独照亮，突出其外露与错位",
+      "避免均匀漫射光，均匀光会把冲突抹平为普通的灰色空间"
+    ],
+    "fixtures": [
+      "可调角度轨道射灯",
+      "线性洗墙灯",
+      "外露明装灯具轨道",
+      "地埋上照灯"
+    ],
+    "color_temperature_k": [
+      3000,
+      5000
+    ],
+    "illuminance_lux": "环境 150–300lx，重点结构 300–500lx（常见工程惯例区间）",
+    "layering": "环境光保持低照度，重点光突出体量与节点，形成强烈明暗与硬阴影"
+  },
+  "architectural_elements": [
+    "倾斜墙面与斜面天花",
+    "错位叠置的体量块",
+    "外露钢结构与节点",
+    "非正交门洞与斜洞口",
+    "悬挑与错层楼梯",
+    "清水混凝土与耐候钢外壳"
+  ],
+  "applicable_spaces": [
+    "文化建筑与美术馆",
+    "商业空间与旗舰店",
+    "办公与创意园区",
+    "住宅与工业建筑改造"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "异形模板与大量非标构件",
+      "清水混凝土施工与后期修补",
+      "钢结构节点与异形构件的定制加工"
+    ],
+    "saving_moves": [
+      "以饰面板拼贴模拟倾斜与错缝观感，减少异形土建量",
+      "清水混凝土集中在主界面，其余用仿清水涂料",
+      "对非承载的造型构件使用轻质板材替代实心材料"
+    ],
+    "notes": "张力来自几何冲突，因此对收口精度的要求高于常规做法，非标构件应尽早深化并统一公差"
+  },
+  "construction_considerations": [
+    "倾斜界面与错缝需 1:1 放样，避免现场凭经验施工造成视线误差",
+    "清水混凝土的模板分缝与对拉螺栓孔位需预先排版设计",
+    "外露钢结构的防火处理与承载能力标注待持证专业人员复核",
+    "非标构件加工精度与现场安装公差需在深化阶段统一约定",
+    "尖锐边角需钝化处理，楼地面防滑做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "brutalist",
+    "industrial-loft",
+    "parametric-futurism",
+    "postmodern",
+    "warehouse-conversion"
+  ],
+  "incompatible_elements": [
+    "光滑无缝的连续曲面",
+    "对称古典构图与线脚装饰",
+    "暖土色田园材料与手工陶砖",
+    "全部隐藏式收口、不留任何节点",
+    "密集的装饰摆件与满墙挂画"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以倾斜墙面与错位体量构成的室内空间，天花与墙面非正交交接，一侧外露钢结构梁柱，楼梯悬挑并错层",
+      "material": "清水混凝土留模板纹与螺栓孔，耐候钢锈蚀包板，外露碳钢构件，错位分格玻璃，原色金属网",
+      "lighting": "定向射灯斜切过倾斜墙面形成硬阴影，重点光单独照亮外露钢节点，环境光保持低照度",
+      "furniture": "倾斜台面的混凝土与金属家具，支撑节点外露，体量厚重方正",
+      "camera": "1.5m 机位并略作倾斜构图，24–35mm，画面同时包含倾斜界面与错缝关系",
+      "atmosphere": "紧张、不稳定、几何冲突明确，结构被直接呈现",
+      "keywords": [
+        "解构主义",
+        "倾斜界面",
+        "错位叠置",
+        "非正交",
+        "外露结构",
+        "清水混凝土"
+      ]
+    },
+    "en": {
+      "space": "An interior formed by skewed walls and displaced volumes, non-orthogonal junction between ceiling and wall, exposed steel framing on one side, cantilevered split-level stair",
+      "material": "Fair-faced concrete with formwork marks and tie holes, corten steel cladding, exposed carbon steel members, offset glass panels, raw metal mesh",
+      "lighting": "Directional spotlights raking across the skewed wall producing hard shadows, accent light isolating the exposed steel nodes, ambient light kept low",
+      "furniture": "Concrete and metal pieces with tilted surfaces, exposed structural supports, heavy and rectilinear in mass",
+      "camera": "1.5 m position with a slight tilt, 24–35mm, framing both the skewed interface and the offset joint relation",
+      "atmosphere": "Tense, unstable, geometry in open conflict, structure presented directly",
+      "keywords": [
+        "deconstructivism",
+        "skewed walls",
+        "displaced volumes",
+        "non-orthogonal",
+        "exposed structure",
+        "fair-faced concrete"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持倾斜界面的倾角与坡向不变",
+    "保持体量块之间的错位与悬挑关系不变",
+    "保持外露结构节点的位置与可见性，不新增包板遮盖"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要光滑无缝的连续曲面",
+      "不要对称古典构图与线脚装饰",
+      "不要暖土色田园材料与手工陶砖",
+      "不要把节点全部隐藏包边",
+      "不要密集装饰摆件与满墙挂画"
+    ],
+    "en": [
+      "no smooth seamless continuous curved surface",
+      "no symmetrical classical composition or mouldings",
+      "no warm earth-tone rustic materials or hand-made terracotta",
+      "no fully concealed detailing with all nodes covered",
+      "no densely clustered ornaments or wall-to-wall framed art"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "倾角区间",
+      "criteria": "主要倾斜界面倾角落在 5°–25°，样板放样与图纸一致（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "节点外露",
+      "criteria": "结构连接节点在主视线上可见，无包板或收边遮盖",
+      "stage": "construction"
+    },
+    {
+      "check": "错缝幅度",
+      "criteria": "板材错缝幅度在 50–200mm 区间内，且方向一致（常见工程惯例区间）",
+      "stage": "construction"
+    },
+    {
+      "check": "界面占比",
+      "criteria": "非正交可见界面占比 30%–60%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "安全钝化",
+      "criteria": "所有可触及锐角做钝化处理，边缘半径 ≥5mm",
+      "stage": "S5"
+    }
+  ]
+}

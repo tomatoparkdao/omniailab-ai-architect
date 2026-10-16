@@ -1,7 +1,7 @@
 ---
 name: omniailab-adapters-specs-index
 description: 外部工具适配规范索引 —— 每个适配器声明能力、权限与降级路径
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

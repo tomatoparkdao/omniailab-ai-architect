@@ -1,0 +1,276 @@
+{
+  "style_id": "french-romantic",
+  "display_name_zh": "法式浪漫",
+  "display_name_en": "French Romantic",
+  "family": "classic",
+  "tags": [
+    "curve",
+    "boiserie",
+    "pastel",
+    "moulding",
+    "delicate"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "17 世纪成型，18 世纪洛可可时期转向轻盈纤细，19 世纪在住宅中固化为简化古典语汇",
+    "origin": "法国宫廷建筑与巴黎公寓（apartment）居住传统",
+    "summary": "法式浪漫源自宫廷礼仪空间对展示性对称的需求：房间沿中轴排列、以垭口串联，使宾客的行进路线本身成为装饰。为在进深有限的巴黎公寓里维持这种仪式感，做法转向把装饰集中到垂直界面——窄板护墙板抬高地脚线、石膏线脚把墙顶与天花咬合，从而在不增加进深的前提下抬高视觉层高。墙面以柔和粉彩打底，柱式与线脚做浅浮雕，家具则保持轻巧可移动，让同一房间能按社交场合重新排布。",
+    "key_movements": [
+      "巴洛克晚期（Late Baroque）",
+      "洛可可（Rococo）",
+      "新古典主义（Neoclassicism）"
+    ]
+  },
+  "spatial_principles": [
+    "公共区沿一条主中轴左右对称布置，门窗洞口在轴两侧镜像，左右偏差量控制在 20mm 以内。",
+    "会客、餐叙、起居以带弧形垭口的宽阔门洞串联，不设长走廊，相邻房间透过门洞形成对景。",
+    "房间尺度偏小、数量偏多，单间常见使用面积 12–25㎡，靠房间数量而非单间面积组织功能。",
+    "固定家具靠墙布置，中央留出可重新排布的空白地面，主通道净宽常见做法 ≥900mm。",
+    "护墙板与地脚线在整层统一标高，使各房间的水平线在视觉上连续贯通。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "墙面按三段式组织：地脚线、护墙板、墙身与檐口线脚，护墙板顶标高常见做法 900–1100mm。",
+      "护墙板取窄板做法，单板宽度常见 300–450mm，板间留 6–10mm 凹槽。",
+      "门洞高宽比取 2:1–2.3:1，洞口上沿对齐墙身中段而非天花线脚。",
+      "线脚自下而上由大到小分层叠加，单层厚度常见 20–60mm，最上层檐口出挑不超过 120mm。"
+    ],
+    "ratios": [
+      "门洞高宽比 2:1–2.3:1",
+      "护墙板顶标高与层高之比约 1:2.6–1:3.2",
+      "板缝模数 300mm 与 450mm 两档",
+      "墙面三段横向分割大约 1:2:1"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2600–3200mm；旧宅改造可低于 2600mm，需相应减少线脚层数"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石膏白",
+      "name_en": "Plaster White",
+      "hex": "#F3EDE2",
+      "usage": "墙面与天花基层，占比约 55–65%",
+      "role": "base"
+    },
+    {
+      "name_zh": "玫瑰粉彩",
+      "name_en": "Rose Pastel",
+      "hex": "#E3C3BE",
+      "usage": "卧室与书房墙面、织物，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "灰调蓝",
+      "name_en": "Powder Blue",
+      "hex": "#A9BCC7",
+      "usage": "护墙板或柜体饰面，占比约 10–20%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "烛台金",
+      "name_en": "Candle Gold",
+      "hex": "#C6A46A",
+      "usage": "五金、线脚与镜框点缀，占比 ≤5%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "灰米",
+      "name_en": "Greige",
+      "hex": "#D8CFC2",
+      "usage": "木地板与地毯基调，占比约 20–30%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "实木护墙板",
+      "name_en": "Wood Boiserie",
+      "application": "墙面（护墙板与门套）",
+      "finish": "哑光或丝光涂料饰面，板缝做明缝"
+    },
+    {
+      "name_zh": "石膏线脚",
+      "name_en": "Gypsum Moulding",
+      "application": "天花檐口、墙面腰线与中央灯盘",
+      "finish": "白色哑光，现场拼接后补缝打磨"
+    },
+    {
+      "name_zh": "人字拼与鱼骨拼实木地板",
+      "name_en": "Herringbone and Chevron Oak Flooring",
+      "application": "地面",
+      "finish": "哑光硬蜡油，木色偏浅"
+    },
+    {
+      "name_zh": "天然大理石",
+      "name_en": "Natural Marble",
+      "application": "壁炉台面与玄关地面",
+      "finish": "自然面或柔光抛光面"
+    },
+    {
+      "name_zh": "轻薄丝质织物",
+      "name_en": "Light Silk Fabric",
+      "application": "窗帘、坐垫与床头软包",
+      "finish": "丝光、自然垂坠并带轻微褶皱"
+    }
+  ],
+  "furniture_language": [
+    "家具以曲线细腿为主，椅腿常见 S 形弯腿或直锥形，腿部细而收分，落地面小。",
+    "坐具靠背偏低并带轻微弧度，扶手向外扩，体量控制在不遮挡对视视线的高度。",
+    "柜体多带线脚门板与顶部冠饰，不做通顶高柜，以维持可移动家具的比例关系。",
+    "拉手为细杆、小圆钮或水晶钮，五金纤细，不用整片长条拉手。",
+    "桌面与几面多为轻薄石板或薄木饰面，避免厚重叠板堆砌体量。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以中轴吊灯定调、壁灯成对补足对称，避免顶部均布筒灯破坏轴线关系。",
+      "重点照明只落在墙面线脚与挂画上，用洗墙光展示浮雕的起伏层次。"
+    ],
+    "fixtures": [
+      "水晶或玻璃吊灯",
+      "成对壁灯",
+      "可调角度射灯洗墙",
+      "台灯与落地灯作局部光源"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境照度 100–200lx，桌面与梳妆任务面 300–500lx，洗墙重点 200–300lx",
+    "layering": "环境层（吊灯与壁灯）打底，任务层（台灯、梳妆灯）补足，重点层（洗墙射灯）强调线脚与挂画；不设顶部满铺筒灯。"
+  },
+  "architectural_elements": [
+    "三段式护墙板墙面，含地脚线、腰线与檐口线脚，阳角处设竖向护角条。",
+    "弧形或半圆拱垭口，洞口两侧带壁柱式收边。",
+    "带大理石台面的壁炉体，位于会客区或餐叙区墙面中轴。",
+    "天花线脚圈与中央圆形灯盘，线脚层层递进。",
+    "双开或带气窗的落地门，通向阳台或露台。"
+  ],
+  "applicable_spaces": [
+    "住宅（公寓与别墅的起居、卧房与书房）",
+    "精品酒店客房与公区",
+    "餐厅包间与咖啡馆",
+    "婚纱、摄影与人像类商业空间",
+    "样板间与展示空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "石膏线脚与护墙板为现场定制安装，人工与损耗占比高",
+      "人字拼与鱼骨拼地板的铺贴工费明显高于直铺",
+      "面料与五金需成对、成组采购以保证一致性"
+    ],
+    "saving_moves": [
+      "只在视线高度的主墙做满护墙板，其余墙面用腰线加涂料模拟分段",
+      "石膏线脚选成品模数件拼接，减少现场造型量",
+      "以质感涂料替代部分石材与丝质面料"
+    ],
+    "notes": "造价差异主要来自线脚层级数与地板拼法两项，建议在方案深度阶段先锁定这两项再计价。"
+  },
+  "construction_considerations": [
+    "线脚与护墙板须在墙面找平、门窗洞口收边完成后放线安装，避免墙不平造成板缝不均",
+    "人字拼与鱼骨拼地板须先定基准中线并做试铺，减少端头出现小于三分之一板宽的窄条",
+    "壁炉重量、灯具吊点与预埋件需在结构阶段预留，承载力与固定方式标注待持证专业人员复核",
+    "石膏线脚转角与吊灯盘在基层验收后再拼装，接缝处易开裂，应做防裂处理",
+    "门洞改动若涉及承重墙、消防与疏散，其做法与合规性标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "neoclassical",
+    "european-classical",
+    "vintage-european",
+    "american-classic",
+    "mediterranean"
+  ],
+  "incompatible_elements": [
+    "裸露混凝土、砖墙或明装管道等未饰面工业构件大面积入镜",
+    "无任何线脚与墙面分段的通高大白墙",
+    "高饱和荧光色或镜面不锈钢的大面积使用",
+    "通顶平板柜体取代带线脚的移动家具"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "巴黎式公寓会客厅，沿主中轴左右对称，两间房以弧形垭口相连，天花带圈层线脚与中央灯盘，层高约 3m",
+      "material": "窄板实木护墙板哑光涂料饰面，石膏腰线与檐口线脚，浅色人字拼橡木地板，大理石壁炉台面",
+      "lighting": "傍晚，吊灯与成对壁灯提供暖白环境光，洗墙射灯自上而下掠过线脚，窗侧有柔和自然光",
+      "furniture": "曲线细腿扶手椅成对摆放，低靠背带弧度，细杆与小圆钮拉手，轻薄石面边几，丝质窗帘自然垂坠",
+      "camera": "中轴对称正视机位，视线高度约 1.5m，略带广角（等效 24–28mm），强调垂直方向的分段线",
+      "atmosphere": "柔和、克制而有仪式感，明暗过渡平缓，材质以哑光为主",
+      "keywords": [
+        "护墙板",
+        "细密石膏线脚",
+        "弯腿细腿",
+        "人字拼橡木地板",
+        "粉彩色系",
+        "中轴对称"
+      ]
+    },
+    "en": {
+      "space": "Parisian apartment salon on a central symmetrical axis, two rooms linked by a curved-cased opening, layered cornice moulding with a central ceiling rose, ceiling height about 3 m",
+      "material": "narrow-profile wood boiserie with matte paint, gypsum waist and cornice mouldings, pale herringbone oak flooring, marble fireplace surround",
+      "lighting": "late afternoon; a chandelier and paired wall sconces give warm-white ambient light, wall-wash spots rake downward across the mouldings, soft daylight from the window side",
+      "furniture": "paired curved-leg armchairs with low backs, slender rod and small round-knob hardware, slim stone-topped side tables, silk drapery with natural fall",
+      "camera": "symmetrical frontal view, eye level about 1.5 m, slightly wide at 24–28 mm equivalent, emphasising the vertical articulation",
+      "atmosphere": "soft, restrained and ceremonial, gentle light gradients, predominantly matte surfaces",
+      "keywords": [
+        "boiserie panelling",
+        "thin moulding profiles",
+        "curved cabriole legs",
+        "herringbone oak floor",
+        "pastel palette",
+        "symmetrical axis"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持门窗洞口的位置、数量与高宽比不变，不新增或合并洞口。",
+    "保持三段式水平线（地脚线、腰线、檐口）在整层连续且标高一致。",
+    "保持中轴对称关系与护墙板分板模数不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现裸露混凝土、明装管道或未饰面的工业结构件",
+      "不要出现高饱和荧光色或镜面不锈钢",
+      "不要出现无分段的通高大白墙",
+      "不要出现通顶平板柜或厚重落地布艺沙发",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no exposed concrete, surface-mounted ducts or raw industrial structure",
+      "no high-saturation fluorescent colour or mirrored stainless steel",
+      "no large unarticulated blank wall",
+      "no full-height slab-front cabinetry or heavy floor-length upholstery",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "中轴对称一致性",
+      "criteria": "门窗与壁灯成对镜像，左右偏差 ≤20mm；轴线两侧护墙板分板数一致",
+      "stage": "S4"
+    },
+    {
+      "check": "线脚层级与厚度",
+      "criteria": "线脚自下而上由大到小递减，单层厚 20–60mm，檐口出挑 ≤120mm",
+      "stage": "S5"
+    },
+    {
+      "check": "墙面三段比例",
+      "criteria": "护墙板顶标高 900–1100mm，且与层高比落在 1:2.6–1:3.2 区间",
+      "stage": "S4"
+    },
+    {
+      "check": "照度与色温",
+      "criteria": "环境 100–200lx、任务 300–500lx，色温 2700–3000K，无顶部均布筒灯",
+      "stage": "S6"
+    },
+    {
+      "check": "造价项锁定",
+      "criteria": "线脚层级数与地板拼法在方案阶段已确认，未在施工阶段新增",
+      "stage": "S3"
+    }
+  ]
+}

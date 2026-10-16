@@ -1,0 +1,273 @@
+{
+  "style_id": "wabi-sabi",
+  "display_name_zh": "侘寂",
+  "display_name_en": "Wabi-Sabi",
+  "family": "oriental",
+  "tags": [
+    "imperfection",
+    "patina",
+    "handmade",
+    "raw",
+    "quiet"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "源自日本中世的美学观念，当代在室内设计中被重新系统化",
+    "origin": "日本，茶道与草庵文化语境",
+    "summary": "侘寂并非一种构造体系，而是一套关于「接受时间与不完美」的取舍原则。它诞生于资源有限的环境：与其用昂贵材料追求无瑕，不如使用土、木、石、纸这类会随时间变化的本土材料，让风化、裂纹、补痕成为可读的痕迹。当代室内实践把它转译为可执行的做法——保留手工刮抹的肌理、控制色彩对比、用旧物与修补件替代新制装饰，从而用较低的材料成本换取安静的厚重感。",
+    "key_movements": [
+      "草庵茶道美学",
+      "民艺运动（Mingei）",
+      "物哀与侘寂观念"
+    ]
+  },
+  "spatial_principles": [
+    "空间尺度偏小、以退为进，用低矮与紧凑强化包围感，主要坐姿视线高度落在 600–900mm（常见工程惯例区间）。",
+    "不做满布置，一处空间只保留一到两个主体物件，其余留空。",
+    "以不对称构图替代对称，主体物件偏置于视觉支点。",
+    "保留材料与结构的原始状态，墙面与顶面避免过度找平与包覆。",
+    "视线终点多为一件手工器物或一处窗洞，而非整墙装饰。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "主体物件占所在墙面宽度 ≤40%（常见工程惯例区间），其余留白。",
+      "立面构图遵循不对称三分，重心偏置在约 1/3 或 2/3 位置（常见工程惯例区间）。",
+      "开口与窗洞尺度偏小，窗宽 600–1500mm（常见工程惯例区间），强调墙体的厚实感。",
+      "避免绝对直角与绝对平整，转角与收口保留手工误差，允许 3–8mm 的自然起伏（常见工程惯例区间）。"
+    ],
+    "ratios": [
+      "墙面留白面积占比 ≥60%",
+      "不对称三分构图 1:2",
+      "窗高与窗宽比约 1:1–1:1.5"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2400–3000mm；刻意压低局部至 2200mm 强化包围感"
+  },
+  "color_palette": [
+    {
+      "name_zh": "灰泥米",
+      "name_en": "Mortar Beige",
+      "hex": "#C9C1B4",
+      "usage": "墙面与天花主色，占比约 50%",
+      "role": "base"
+    },
+    {
+      "name_zh": "陶土褐",
+      "name_en": "Clay Brown",
+      "hex": "#8A6A52",
+      "usage": "地面与器物，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "风化木灰",
+      "name_en": "Weathered Wood Grey",
+      "hex": "#9A9086",
+      "usage": "家具与木构件，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "苔绿",
+      "name_en": "Moss Green",
+      "hex": "#6E7360",
+      "usage": "植物与织物点缀，占比约 8%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "焦茶黑",
+      "name_en": "Charcoal Brown",
+      "hex": "#3B322B",
+      "usage": "器物与金属细节，占比约 7%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "手工抹灰",
+      "name_en": "Hand-troweled plaster",
+      "application": "墙面与天花",
+      "finish": "手工刮抹，保留抹痕，哑光",
+      "notes": "天然石灰基，允许细微色差与开裂"
+    },
+    {
+      "name_zh": "粗陶与素砖",
+      "name_en": "Coarse ceramic and plain tile",
+      "application": "地面与器物",
+      "finish": "未上釉或哑光釉",
+      "notes": "可用手工砖，接受自然色差"
+    },
+    {
+      "name_zh": "风化实木",
+      "name_en": "Weathered solid wood",
+      "application": "家具、梁与搁板",
+      "finish": "无漆或木蜡油，保留毛刺与裂纹",
+      "notes": "老料或做旧料，纹理不必一致"
+    },
+    {
+      "name_zh": "和纸",
+      "name_en": "Washi paper",
+      "application": "灯具、隔断与柜门",
+      "finish": "手工纸，透光均匀",
+      "notes": "纤维可见，避免印刷花纹"
+    },
+    {
+      "name_zh": "亚麻与麻绳",
+      "name_en": "Linen and jute rope",
+      "application": "织物与细节",
+      "finish": "素色、粗糙手感",
+      "notes": "不做高光处理，允许自然褶皱"
+    }
+  ],
+  "furniture_language": [
+    "家具尺度低矮，坐面高 300–420mm（常见工程惯例区间），以席地或低坐为主。",
+    "线条自然不规则，保留手工切削的起伏，不做严格对称与精密倒角。",
+    "体量轻薄、结构外露，榫接与绑扎痕迹保留可见。",
+    "以旧木器、手工陶器与残缺修补件替代成套新家具，件数刻意减少。",
+    "不用外凸金属拉手，柜门以推拉、插销或布带开启。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以低照度、低对比为基调，明暗过渡柔和，避免锐利光影。",
+      "光源层次少而集中，多用纸罩灯具形成均匀柔散光。",
+      "让自然光成为主光，通过小窗洞形成可控的高光面。"
+    ],
+    "fixtures": [
+      "和纸罩吊灯",
+      "纸罩落地灯",
+      "暗藏间接灯",
+      "窄窗洞自然光"
+    ],
+    "color_temperature_k": [
+      2200,
+      2700
+    ],
+    "illuminance_lux": "常见工程惯例区间：整体 50–150lx，器物重点 150–250lx，避免超过 300lx",
+    "layering": "以环境光为主，纸罩灯提供柔散底光，重点光极弱地落在手工器物上，不做装饰光与彩色光。"
+  },
+  "architectural_elements": [
+    "手工抹灰墙与刻意保留的抹痕",
+    "小尺度窗洞与厚墙形成的深窗侧",
+    "外露的原木梁与粗加工构件",
+    "和纸隔断与纸罩灯具",
+    "修补可见的旧地面与残砖铺装"
+  ],
+  "applicable_spaces": [
+    "小型住宅与茶室",
+    "民宿与精品酒店客房",
+    "器物展厅与工作室",
+    "小型餐饮与咖啡馆"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "手工抹灰与手工砖的人工工时，肌理越自然越依赖熟练工",
+      "风化老料与手工器物的采购难度与单价",
+      "小尺度窗洞与厚墙做法带来的结构配合成本"
+    ],
+    "saving_moves": [
+      "用手工抹灰局部点缀，其余墙面用哑光涂料仿抹灰质感",
+      "以少量真旧物作为焦点，其余用做旧工艺处理的新料",
+      "减少灯具数量，用纸罩灯替代多点射灯"
+    ],
+    "notes": "侘寂的成本不在材料贵，而在手工工时；控制肌理面积比堆叠器物更能省钱且不破风格。"
+  },
+  "construction_considerations": [
+    "手工抹灰需分层施工并控制每层厚度，避免开裂与空鼓，潮湿区域需做防潮基层。",
+    "刻意保留的起伏与裂缝位置应在样板阶段确认，否则易被当作施工缺陷返工。",
+    "小窗洞与厚墙涉及墙体开洞与保温，标注待持证专业人员复核。",
+    "旧木料使用前需做杀虫与含水率检测，避免虫蛀与变形。",
+    "和纸与纸罩灯具需远离热源并做阻燃处理，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "japanese-zen",
+    "japandi",
+    "organic-modern",
+    "rustic-natural",
+    "southeast-asian-tropical"
+  ],
+  "incompatible_elements": [
+    "高饱和彩色与荧光色",
+    "亮面石材与镜面不锈钢",
+    "成套统一的现代成套家具与精密倒角",
+    "繁复装饰性线脚与镀金构件"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "紧凑的小尺度房间，厚墙上一处 600–1500mm 宽的小窗洞，主体器物偏置于墙面约 1/3 处，其余大面积留空，局部天花压低。",
+      "material": "手工石灰抹灰墙保留抹痕与细微色差、旧陶砖地面、风化木搁板、和纸灯罩、粗麻织物，全部为哑光粗糙表面。",
+      "lighting": "和纸罩吊灯提供低照度柔散底光，小窗洞引入自然侧光在墙面形成一块高光，色温 2200–2700K，明暗过渡柔和无锐影。",
+      "furniture": "低矮旧木家具，坐面高 300–420mm，手工切削的不规则线条，结构外露，无金属拉手，柜门以推拉或布带开启。",
+      "camera": "平视或略低的机位，镜头高度约 900–1200mm，等效焦距 35–50mm，构图不对称，主体物件偏置于三分线。",
+      "atmosphere": "安静、朴素、有时间感，低对比、低照度，器物显出使用与修补的痕迹。",
+      "keywords": [
+        "手工抹灰",
+        "风化痕迹",
+        "不对称",
+        "留白",
+        "和纸",
+        "低对比"
+      ]
+    },
+    "en": {
+      "space": "Compact small-scale room with a single 600–1500mm wide window opening in a thick wall, one main object set off-center at about the one-third line, the rest left empty, ceiling locally lowered.",
+      "material": "Hand-troweled lime plaster walls retaining trowel marks and subtle tonal variation, old clay tile floor, weathered wood shelf, washi paper lampshade, coarse linen, all matte and rough.",
+      "lighting": "Washi-shade pendant giving dim, diffuse base light, daylight through the small window casting one soft highlight patch on the wall, 2200–2700K, gentle transitions with no hard shadows.",
+      "furniture": "Low old-wood furniture, seat height 300–420mm, irregular hand-hewn lines, exposed joinery, no metal handles, doors opened by sliding or fabric straps.",
+      "camera": "Eye-level or slightly low camera at 900–1200mm, 35–50mm equivalent, asymmetric composition with the main object on a third line.",
+      "atmosphere": "Quiet, humble, timeworn, low contrast and low illuminance, objects showing wear and repair.",
+      "keywords": [
+        "hand-troweled plaster",
+        "weathered patina",
+        "asymmetry",
+        "negative space",
+        "washi paper",
+        "low contrast"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持窗洞位置、尺寸与墙体厚度关系不变，跨视角不得增减窗洞或改变开口比例。",
+    "保持主体物件的偏置位置与留白区域不变，不得改为居中对称。",
+    "保留天花压低区域的范围与高度差，不得拉平为统一层高。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高饱和彩色、荧光色与亮面反光材质",
+      "不要精密倒角、成套统一与严格对称的现代家具",
+      "不要镀金、繁复线脚与装饰性浮雕",
+      "不要高照度均匀照明与锐利硬影"
+    ],
+    "en": [
+      "no high-saturation or fluorescent colors, no glossy reflective surfaces",
+      "no precision-chamfered, uniform modern furniture sets or strict symmetry",
+      "no gilding, elaborate mouldings or decorative relief",
+      "no high uniform illuminance or harsh directional shadows"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "留白占比",
+      "criteria": "主要墙面留白面积 ≥60%，主体物件占墙宽 ≤40%",
+      "stage": "S4"
+    },
+    {
+      "check": "材质手工感",
+      "criteria": "抹灰或木作可见手工痕迹，无精密机械倒角",
+      "stage": "S5"
+    },
+    {
+      "check": "光环境对比度",
+      "criteria": "整体照度 50–150lx，明暗过渡无锐利边界，无彩色光",
+      "stage": "S4"
+    },
+    {
+      "check": "器件数量控制",
+      "criteria": "单处空间主体物件 ≤2 件，陈设件总数受控",
+      "stage": "S5"
+    }
+  ]
+}

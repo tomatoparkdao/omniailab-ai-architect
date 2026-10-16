@@ -1,0 +1,285 @@
+{
+  "style_id": "mexican-hacienda",
+  "display_name_zh": "墨西哥庄园",
+  "display_name_en": "Mexican Hacienda",
+  "family": "regional",
+  "tags": [
+    "courtyard",
+    "terracotta",
+    "timber-beam",
+    "vivid"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "16 至 19 世纪在美洲形成庄园居住类型，20 世纪被现代度假与住宅建筑重新演绎",
+    "origin": "墨西哥及中美洲高原地区的庄园居住传统，融合伊比利亚庭院住宅与地方材料做法",
+    "summary": "高原地区昼夜温差大、日照强、雨水集中，因此这套做法一开始就不是为观感而是为气候服务的：厚墙提供热惰性，小窗减少得热，回廊既遮阳又避雨，中央庭院收集与引导雨水并提供夜间凉意。殖民时期的建筑方法叠加在本地砌筑与饰面工艺之上，最终形成以庭院为中心、以回廊串联房间、以陶砖与原木梁为骨架的居住模型。后来的现代演绎保留这套空间骨架，只把设备与防水标准更新。",
+    "key_movements": [
+      "伊比利亚庭院住宅传统",
+      "西班牙殖民时期美洲建筑",
+      "地域性热带高原建筑",
+      "庭院住宅类型学"
+    ]
+  },
+  "spatial_principles": [
+    "房间围绕中央庭院布置，室内之间经回廊（portal）串联，不做长内走廊",
+    "回廊净宽常见 2400–3600mm（常见工程惯例区间），作为室内外之间的气候缓冲层",
+    "厚墙小窗，窗洞进深体现墙厚，窗台高度常见 900–1100mm（常见工程惯例区间）",
+    "以单层或低层为主，体量围绕庭院向外展开，不做高层堆叠",
+    "主通道净宽 ≥1100mm，回廊地面与庭院地面保持近似标高并以排水坡过渡"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "门窗洞口以拱券或过梁形式，高宽比常见 1:1 至 1.2:1（常见工程惯例区间）",
+      "房间跨度与外露木梁对应，木梁间距常见 600–900mm（常见工程惯例区间）",
+      "墙体厚度常见 300–450mm（常见工程惯例区间），门窗洞口的侧壁同时成为坐凳或壁龛",
+      "庭院平面接近方形或略长方形，进深宽比常用 1:1 至 1.5:1（常见工程惯例区间）",
+      "门窗洞口面积占对应墙面 ≤20%（常见工程惯例区间），以保持小窗特征"
+    ],
+    "ratios": [
+      "庭院面积占建筑占地 15%–30%（常见工程惯例区间）",
+      "回廊宽度与房间净高之比常见 1:1.2 至 1:1.5（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 3000–4000mm（常见工程惯例区间）；回廊天花外露木梁，梁下净高不低于 2400mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石灰暖白",
+      "name_en": "Lime Warm White",
+      "hex": "#EDE3D0",
+      "usage": "墙面与回廊天花基调，占比约 40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "陶土砖红",
+      "name_en": "Terracotta Brick Red",
+      "hex": "#B35433",
+      "usage": "地面、墙裙与庭院铺地，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深木梁棕",
+      "name_en": "Deep Timber Brown",
+      "hex": "#5A3A26",
+      "usage": "外露木梁、门窗与家具，占比约 20%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "钴蓝瓷砖",
+      "name_en": "Cobalt Tile Blue",
+      "hex": "#2B4C8C",
+      "usage": "瓷砖台面与墙面局部图案，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "万寿菊黄",
+      "name_en": "Marigold Yellow",
+      "hex": "#D99A2B",
+      "usage": "单面重点墙与织物，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "锻铁黑",
+      "name_en": "Wrought Iron Black",
+      "hex": "#2E2B27",
+      "usage": "栏杆、灯具与五金，占比 ≤3%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "石灰与厚涂泥灰",
+      "name_en": "Lime Plaster and Thick Render",
+      "application": "内外墙面",
+      "finish": "哑光手工抹面，可见轻微抹痕"
+    },
+    {
+      "name_zh": "手工陶土砖与陶板",
+      "name_en": "Handmade Terracotta Brick and Tile",
+      "application": "地面、墙裙与庭院铺地",
+      "finish": "哑光，允许轻微尺寸与色差"
+    },
+    {
+      "name_zh": "外露木梁与木构",
+      "name_en": "Exposed Timber Beams",
+      "application": "天花梁、回廊柱与门窗框",
+      "finish": "木蜡油或清漆哑光，保留自然纹理"
+    },
+    {
+      "name_zh": "手工彩色瓷砖",
+      "name_en": "Handmade Patterned Tile",
+      "application": "台面、楼梯踏面与墙面局部",
+      "finish": "釉面丝光，图案手工绘制"
+    },
+    {
+      "name_zh": "锻铁构件",
+      "name_en": "Wrought Ironwork",
+      "application": "栏杆、灯具与五金",
+      "finish": "哑光黑或自然锈色"
+    }
+  ],
+  "furniture_language": [
+    "厚实木框架座椅，配皮革或编织坐面，体量偏重",
+    "桌台与矮柜采用瓷砖铺面或实木厚板，边缘方正",
+    "家具低矮，藤编与实木结合，基本落地不做悬空",
+    "拉手为锻铁环、木栓或穿孔铜片",
+    "装饰以陶瓷器皿与植物为主，家具本身装饰克制"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以暖光为唯一基调，与陶砖和木梁的暖色相呼应，不用冷白",
+      "回廊用下端洗墙与壁灯提供低位照明，避免顶部直射把回廊压暗成洞",
+      "庭院夜间用上照与地埋灯照亮立面，把庭院变成第二个光源"
+    ],
+    "fixtures": [
+      "锻铁壁灯",
+      "陶土或藤编吊灯",
+      "庭院地埋上照灯",
+      "暗藏洗墙灯带"
+    ],
+    "color_temperature_k": [
+      2200,
+      3000
+    ],
+    "illuminance_lux": "回廊与起居 80–180lx，餐饮操作面 300lx（常见工程惯例区间）",
+    "layering": "自然光经回廊过滤形成主光，夜间以壁灯与洗墙构成低位环境光，重点光打墙面质感"
+  },
+  "architectural_elements": [
+    "中央庭院与四周回廊（portal）",
+    "外露木梁天花",
+    "拱券或过梁式门窗洞",
+    "厚墙小窗与可坐的深窗套",
+    "手工彩色瓷砖墙裙与楼梯",
+    "锻铁栏杆与壁灯"
+  ],
+  "applicable_spaces": [
+    "住宅与庄园别墅",
+    "精品酒店与度假村",
+    "餐饮空间",
+    "文化展示与庭院公共空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "手工瓷砖的铺贴人工与损耗",
+      "外露木梁与实木门窗的加工",
+      "厚墙砌筑与多次分层抹灰"
+    ],
+    "saving_moves": [
+      "瓷砖集中在台面与楼梯侧，其余墙面改用石灰涂料",
+      "以饰面仿梁替代部分结构木梁，涉及承载时标注待持证专业人员复核",
+      "庭院以素陶砖为主，手绘瓷砖仅用于主入口一处"
+    ],
+    "notes": "鲜明墙色是风格特征，但应集中在少数界面，逐面换色会立刻显得杂乱"
+  },
+  "construction_considerations": [
+    "外露木梁的跨度与承载能力标注待持证专业人员复核",
+    "手工瓷砖需先排砖放样，统一缝宽与起铺点，避免图案错位",
+    "厚墙抹灰需分层施工并控制间隔，减少空鼓与开裂",
+    "庭院地面找坡与排水组织标注待持证专业人员复核",
+    "室内外高差与墙脚防潮处理需在结构阶段确定"
+  ],
+  "compatible_styles": [
+    "mediterranean",
+    "earth-adobe",
+    "american-classic",
+    "rustic-natural",
+    "tropical-resort"
+  ],
+  "incompatible_elements": [
+    "大面积玻璃幕墙与无庭院的内廊式布局",
+    "冷灰极简与完全无装饰的白盒空间",
+    "高光金属与镜面饰面",
+    "每面墙不同颜色的高饱和拼色",
+    "荧光霓虹色与动态屏幕墙"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "围绕中央庭院组织的单层住宅，四周为厚墙回廊，木梁天花外露，房间通过回廊互通，小窗配深窗套",
+      "material": "石灰暖白抹面墙，陶土砖地面与墙裙，深棕实木梁与门窗，手工钴蓝瓷砖台面，锻铁壁灯与栏杆",
+      "lighting": "午后斜光经回廊落在地面形成长影，室内由暖色壁灯与洗墙灯提供低位照明，陶砖反出暖色",
+      "furniture": "厚实木扶手椅配皮革坐面，瓷砖面矮桌，藤编座椅靠墙摆放，陶瓷器皿与绿植作点缀",
+      "camera": "1.5m 机位自回廊向庭院拍摄，24–35mm，画面包含木梁天花与陶砖地面同时入镜",
+      "atmosphere": "温暖、厚重、有庭院生活的节奏感，色彩鲜明但集中在少数界面",
+      "keywords": [
+        "墨西哥庄园",
+        "中央庭院",
+        "回廊",
+        "陶土砖",
+        "外露木梁",
+        "彩色瓷砖"
+      ]
+    },
+    "en": {
+      "space": "A single-storey house organised around a central courtyard, thick-walled arcade on all sides, exposed timber beam ceiling, rooms linked through the arcade, small deep-set windows",
+      "material": "Warm lime-plastered walls, terracotta brick floor and dado, deep brown solid timber beams and joinery, handmade cobalt patterned tile counter, wrought iron lamps and railings",
+      "lighting": "Afternoon light raking through the arcade casting long shadows on the floor, warm wall lamps and grazing light giving low-level interior illumination, terracotta bouncing warm colour",
+      "furniture": "Heavy timber armchairs with leather seats, tiled low table, rattan chairs along the wall, ceramics and plants as accents",
+      "camera": "1.5 m position looking from the arcade into the courtyard, 24–35mm, both timber ceiling and terracotta floor in frame",
+      "atmosphere": "Warm, massive, paced by courtyard living, vivid colour but confined to a few surfaces",
+      "keywords": [
+        "mexican hacienda",
+        "central courtyard",
+        "arcade portal",
+        "terracotta brick",
+        "exposed timber beam",
+        "patterned tile"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持庭院与回廊的平面边界与宽度关系不变",
+    "保持外露木梁的间距与走向排列，不新增或改变梁位",
+    "保持厚墙门窗洞口的尺寸与位置，不扩大为落地玻璃"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积玻璃幕墙与无庭院的内廊布局",
+      "不要冷灰极简的无装饰白盒空间",
+      "不要高光金属与镜面饰面",
+      "不要每面墙一个颜色的高饱和拼色",
+      "不要荧光霓虹色与动态屏幕墙"
+    ],
+    "en": [
+      "no large glass curtain wall or corridor plan without a courtyard",
+      "no cool-grey minimal undecorated white box",
+      "no high-gloss metal or mirrored finishes",
+      "no high-saturation colour applied wall by wall",
+      "no fluorescent neon or dynamic screen walls"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "庭院占比",
+      "criteria": "庭院面积占建筑占地 15%–30%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "回廊宽度",
+      "criteria": "回廊净宽 ≥2400mm（常见工程惯例区间），可通行且不挤压房间",
+      "stage": "schematic"
+    },
+    {
+      "check": "洞口控制",
+      "criteria": "门窗洞口总面积占对应墙面 ≤20%，窗台高度 ≥900mm（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "色彩集中",
+      "criteria": "高饱和墙色界面不超过 2 处，其余保持石灰暖白",
+      "stage": "schematic"
+    },
+    {
+      "check": "木梁外露",
+      "criteria": "回廊或主要房间天花可见木梁，梁距在 600–900mm 区间内，承载标注待持证专业人员复核",
+      "stage": "construction"
+    }
+  ]
+}

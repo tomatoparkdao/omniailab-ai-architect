@@ -1,0 +1,272 @@
+{
+  "style_id": "korean-minimal",
+  "display_name_zh": "韩式简约",
+  "display_name_en": "Korean Minimal",
+  "family": "oriental",
+  "tags": [
+    "soft",
+    "pale",
+    "rounded",
+    "tidy",
+    "family"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 21 世纪初至今",
+    "origin": "韩国都市公寓与小型住宅",
+    "summary": "韩国城市住宅以小面积、高密度公寓为主，家庭共处时间长，室内需同时承担起居、聚餐、儿童活动与居家办公。韩式简约因此发展出以「隐藏收纳 + 圆角安全 + 低饱和米白」为核心的解法：用整面通高柜把杂物全部藏起来，用圆角家具与软包减少儿童磕碰，用低饱和米白与浅木提亮小空间。它不同于北欧简约之处在于对家庭共处的强调与对收纳隐藏的极端要求，而非单纯的留白与浅色。",
+    "key_movements": [
+      "极简主义（Minimalism）的东亚家庭化转译",
+      "收纳一体化设计",
+      "小户型都市住宅"
+    ]
+  },
+  "spatial_principles": [
+    "以家庭共处为核心，起居、餐厨与儿童活动区连通，形成一处可容纳多人的通用场。",
+    "沿墙面设整面通高隐藏收纳，柜门与墙面同色齐平，把储物从视线上抹去。",
+    "房间之间以宽垭口或推拉门连接，减少门扇数量，保持视线通透。",
+    "将需要收纳的物品集中到一处「收纳墙」，其余墙面尽量保持完整。",
+    "动线以环形或短枝状组织，避免穿越式长走廊。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "柜体通高到顶，柜门分格按 400mm 或 600mm 模数排布（常见工程惯例区间），缝宽 2–4mm。",
+      "家具与柜体转角一律做圆角，半径 R20–R60mm（常见工程惯例区间），避免锐角外露。",
+      "垭口不做门套，墙与柜同色齐平，垭口净高按层高减去 200–400mm 控制。",
+      "地面与墙面尽量无高差与凹槽，避免绊脚与积灰。"
+    ],
+    "ratios": [
+      "柜门模数 400mm 或 600mm",
+      "圆角半径 R20–R60mm",
+      "公共区与收纳墙面积比约 2:1"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2500–2900mm；避免复杂降板以保留净高"
+  },
+  "color_palette": [
+    {
+      "name_zh": "米白",
+      "name_en": "Off-White Beige",
+      "hex": "#F3EFE8",
+      "usage": "墙面、天花与柜门主色，占比约 60%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅燕麦",
+      "name_en": "Pale Oat",
+      "hex": "#E0D6C6",
+      "usage": "地面与软包，占比约 18%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "浅木色",
+      "name_en": "Pale Wood",
+      "hex": "#C8A87C",
+      "usage": "家具与地板，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "雾灰",
+      "name_en": "Misty Grey",
+      "hex": "#B9B4AC",
+      "usage": "布艺与细节，占比约 5%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "暖棕",
+      "name_en": "Warm Taupe",
+      "hex": "#8C7563",
+      "usage": "五金与点缀，占比 ≤2%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "哑光烤漆板",
+      "name_en": "Matte lacquer panel",
+      "application": "通高柜门与墙板",
+      "finish": "哑光，低反射，与墙面同色",
+      "notes": "色号需与墙漆统一打样"
+    },
+    {
+      "name_zh": "浅色木地板",
+      "name_en": "Pale wood floor",
+      "application": "全屋地面",
+      "finish": "哑光，浅色直纹",
+      "notes": "可用复合地板，减少色差与伸缩"
+    },
+    {
+      "name_zh": "微水泥或哑光砖",
+      "name_en": "Microcement or matte tile",
+      "application": "厨卫地面与墙面",
+      "finish": "哑光，浅色，无缝或大板",
+      "notes": "避免亮面与深色缝隙"
+    },
+    {
+      "name_zh": "软包织物",
+      "name_en": "Upholstery fabric",
+      "application": "沙发、床头与坐垫",
+      "finish": "哑光，低饱和，手感柔软",
+      "notes": "选可拆洗耐磨材质，适配家庭使用"
+    },
+    {
+      "name_zh": "浅色石材",
+      "name_en": "Light stone",
+      "application": "台面与局部墙面",
+      "finish": "哑光或丝光",
+      "notes": "浅色系，纹理干净，避免强对比"
+    }
+  ],
+  "furniture_language": [
+    "家具线条柔和，几乎不含直角，坐具与桌角均做圆角处理 R20–R60mm（常见工程惯例区间）。",
+    "体量低矮而饱满，坐面高 380–420mm（常见工程惯例区间），柜体底部做悬空或落地双选。",
+    "软包与布艺占比高，木质只作骨架，触感优先于造型。",
+    "拉手以暗藏式、按压式或整条通长暗槽为主，不做外凸把手。",
+    "床与沙发可拼合为多人共坐形式，便于家庭成员围坐。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以均匀、柔和的底光为基调，避免强烈明暗对比与方向性硬光。",
+      "以大面积间接光洗天花或墙面，使米白表面显得通透。",
+      "重点光克制，只用于餐桌与局部台面，不使用装饰性彩色光。"
+    ],
+    "fixtures": [
+      "环形吊灯",
+      "吸顶柔光灯",
+      "柜下线性灯",
+      "墙面间接灯带"
+    ],
+    "color_temperature_k": [
+      3000,
+      3500
+    ],
+    "illuminance_lux": "常见工程惯例区间：公共区 150–300lx，餐桌与台面 300–500lx，儿童活动区 200–300lx",
+    "layering": "环境光由吸顶与天花间接灯提供，任务光由餐桌吊灯与柜下灯提供，重点光极简，整体均匀无强烈对比。"
+  },
+  "architectural_elements": [
+    "与墙面同色的通高隐藏收纳墙",
+    "无门套垭口与宽推拉门",
+    "圆角家具与圆角墙转角",
+    "低矮踢脚或无踢脚齐平收口",
+    "浅色大板地面减少拼缝"
+  ],
+  "applicable_spaces": [
+    "家庭住宅与公寓",
+    "儿童房与亲子空间",
+    "小型办公与工作室",
+    "咖啡馆与亲子商业"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "通高隐藏柜的定制量与齐平收口精度",
+      "柜门与墙面的同色打样，色差控制要求高",
+      "大板地面与无缝材料减少拼缝带来的成本"
+    ],
+    "saving_moves": [
+      "收纳墙集中做一处通高柜，其余用成品柜加哑光门板替代",
+      "地面改用浅色复合地板替代大板材料",
+      "间接灯带仅在主墙面做一处，其余用吸顶灯"
+    ],
+    "notes": "韩式简约的溢价主要来自柜体与墙面的齐平收口，控制柜体面积比提高单柜精度更划算。"
+  },
+  "construction_considerations": [
+    "柜门与墙漆必须同批打样并留样，否则同一米白会出现可见色差。",
+    "通高柜需预埋吊挂与调平结构，墙体平整度需先验收，否则柜门缝宽不均。",
+    "无门套垭口需提前预留防裂处理，板材与墙体交界处易开裂。",
+    "圆角工艺需在工厂完成，现场手工倒角难以保证一致；大面积软包需考虑可拆洗。",
+    "涉及墙体开洞与柜体固定的结构做法，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "scandinavian",
+    "japandi",
+    "modern-minimalism",
+    "contemporary-luxury"
+  ],
+  "incompatible_elements": [
+    "高饱和彩色与荧光色",
+    "亮面不锈钢与镜面大面积反射",
+    "繁复雕花与镀金装饰线脚",
+    "外露收纳与开放式格架堆放杂物"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "连通的起居餐厨公共区，一侧为整面与墙同色的通高隐藏收纳墙，房间之间以无门套宽垭口连接，地面无高差，家具围合成多人共坐的场所。",
+      "material": "哑光米白烤漆柜门与同色墙漆、浅色直纹木地板、哑光浅色软包织物、浅色哑光石材台面，全部低反射。",
+      "lighting": "吸顶柔光灯与天花间接灯带提供均匀底光，餐桌吊灯与柜下线性灯做任务光，色温 3000–3500K，明暗对比弱、无锐影。",
+      "furniture": "圆角家具，坐面高 380–420mm，体量低矮饱满，软包为主木质为骨，暗藏或按压式无外凸把手，沙发与坐垫可拼合围坐。",
+      "camera": "平视机位，镜头高度约 1400–1600mm，等效焦距 24–35mm，构图平和对称，画面强调墙面与柜体的齐平连续。",
+      "atmosphere": "明亮、柔和、整洁，低饱和米白基调，家庭共处的温暖感。",
+      "keywords": [
+        "米白",
+        "圆角",
+        "隐藏收纳",
+        "齐平收口",
+        "家庭共处",
+        "柔和均匀光"
+      ]
+    },
+    "en": {
+      "space": "Connected living-dining-kitchen zone with a full-height concealed storage wall in the same color as the walls, wide cased-opening transitions with no door casing between rooms, no floor level changes, seating arranged for a group.",
+      "material": "Matte off-white lacquer cabinet fronts and matching wall paint, pale straight-grain wood floor, matte pale upholstery, light matte stone countertop, all low-reflection.",
+      "lighting": "Soft ceiling fixture and indirect cove strip giving even base light, dining pendant and under-cabinet linear light for tasks, 3000–3500K, low contrast with no hard shadows.",
+      "furniture": "Rounded furniture, seat height 380–420mm, low and full volumes, upholstery-dominant with wood frame, concealed or push-to-open with no protruding handles, sofa and cushions that combine for group seating.",
+      "camera": "Eye-level camera at 1400–1600mm, 24–35mm equivalent, calm symmetrical composition emphasizing the flush continuity of wall and cabinetry.",
+      "atmosphere": "Bright, soft, tidy, low-saturation beige base, warm sense of family togetherness.",
+      "keywords": [
+        "off-white beige",
+        "rounded corners",
+        "concealed storage",
+        "flush detailing",
+        "family gathering",
+        "soft even light"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持垭口位置与宽度不变，跨视角不得增减房间连接关系或改变洞口尺寸。",
+    "保持通高收纳墙的范围与柜门分格数不变。",
+    "保持地面无高差关系，不得引入台地或台阶。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高饱和彩色与荧光色",
+      "不要亮面不锈钢、镜面与深色缝隙",
+      "不要繁复雕花、镀金线脚与巴洛克曲线",
+      "不要开放式堆叠收纳与暴露的杂物格架"
+    ],
+    "en": [
+      "no high-saturation or fluorescent colors",
+      "no glossy stainless steel, mirrors or dark grout lines",
+      "no elaborate carving, gilded mouldings or Baroque curves",
+      "no open cluttered shelving or exposed storage piles"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "柜墙齐平度",
+      "criteria": "柜门与墙面同色，接缝宽度 2–4mm 均匀，色差肉眼不可辨",
+      "stage": "S5"
+    },
+    {
+      "check": "圆角一致性",
+      "criteria": "家具与墙转角统一 R20–R60mm，无锐角外露",
+      "stage": "S4"
+    },
+    {
+      "check": "收纳隐藏率",
+      "criteria": "主要杂物收纳于通高柜内，开放展示格占比 ≤10%",
+      "stage": "S5"
+    },
+    {
+      "check": "光环境均匀度",
+      "criteria": "色温 3000–3500K，无锐利硬影与彩色光",
+      "stage": "S4"
+    }
+  ]
+}

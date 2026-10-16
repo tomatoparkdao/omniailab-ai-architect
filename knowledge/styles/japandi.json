@@ -1,0 +1,276 @@
+{
+  "style_id": "japandi",
+  "display_name_zh": "日式北欧融合",
+  "display_name_en": "Japandi",
+  "family": "modern",
+  "tags": [
+    "hybrid",
+    "calm",
+    "craft",
+    "wood",
+    "low-saturation"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "21 世纪初期成型，随跨文化居住审美交流而扩散",
+    "origin": "日本传统空间美学与现代北欧功能主义相互借鉴、折中而成的融合取向",
+    "summary": "日式北欧融合把两种都有「克制」传统的做法合并：一端是日本对留白、手工痕迹与不经意残缺的接受，另一端是北欧对功能、采光与舒适的处理。它解决的问题是——如何在低饱和、低刺激的环境里依然保持可用与宜居。于是它保留北欧的实用照明与收纳，却把色调压得更沉、把木色换得更深，并明确接受材料自然的不完美，而不是追求无瑕统一。",
+    "key_movements": [
+      "斯堪的纳维亚设计运动",
+      "日本现代主义建筑",
+      "侘寂美学",
+      "极简主义设计思潮"
+    ]
+  },
+  "spatial_principles": [
+    "留白占据主导，物件少而精，视线可穿过空间直达远处界面",
+    "视觉重心压低，家具低矮贴近地面，形成沉稳的水平构图",
+    "材料本色呈现，接受自然纹理、节疤与轻微不完美，不做全覆盖修饰",
+    "以帘、格栅、地台等柔性界面过渡区域，替代硬质隔墙",
+    "主通道净宽 ≥900mm（常见工程惯例区间），留出可发呆的空白区域"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "低矮家具，座面高度常见 350–420mm（常见工程惯例区间）",
+      "构图偏不对称，避免完全居中对称，靠留白平衡视觉",
+      "深色木与浅色墙面形成明度对比，比例上浅色占多数",
+      "格栅与移门按等宽模数排列，缝宽统一"
+    ],
+    "ratios": [
+      "留白（无家具的可见地面与墙面）占比 ≥40%（常见工程惯例区间）",
+      "格栅与柜体模数按 300mm 与 600mm 组合（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2500–3000mm（常见工程惯例区间）；可局部做低地台区分层次"
+  },
+  "color_palette": [
+    {
+      "name_zh": "米灰灰泥色",
+      "name_en": "Plaster Beige Grey",
+      "hex": "#DED8CE",
+      "usage": "墙面与天花基调，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅亚麻",
+      "name_en": "Pale Linen",
+      "hex": "#CFC6B8",
+      "usage": "织物与软装，占比约 15%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深胡桃木",
+      "name_en": "Deep Walnut",
+      "hex": "#4A3A2E",
+      "usage": "家具、格栅与地板，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "炭灰",
+      "name_en": "Charcoal Grey",
+      "hex": "#3B3A37",
+      "usage": "灯具与金属细件，占比 ≤10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "陶土赭",
+      "name_en": "Terracotta Ochre",
+      "hex": "#A9705A",
+      "usage": "手工陶器与织物点缀，占比 ≤5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "深色木材",
+      "name_en": "Dark Wood",
+      "application": "家具、格栅与地板",
+      "finish": "木蜡油或烟熏处理哑光",
+      "notes": "允许保留自然纹理与色差"
+    },
+    {
+      "name_zh": "亚麻与棉麻织物",
+      "name_en": "Linen and Cotton-linen Fabric",
+      "application": "窗帘、坐垫与床品",
+      "finish": "天然皱感，不做硬挺定型"
+    },
+    {
+      "name_zh": "手工陶与粗陶",
+      "name_en": "Handmade and Coarse Ceramic",
+      "application": "器皿、花器与灯具",
+      "finish": "不均匀釉面，保留手作痕迹"
+    },
+    {
+      "name_zh": "灰泥与艺术涂料",
+      "name_en": "Plaster and Artisanal Coating",
+      "application": "墙面",
+      "finish": "哑光带手工批刮肌理"
+    },
+    {
+      "name_zh": "和纸与手工纸",
+      "name_en": "Washi and Handmade Paper",
+      "application": "灯罩与移门面材",
+      "finish": "半透光、纤维可见"
+    }
+  ],
+  "furniture_language": [
+    "低矮质朴，边角圆润，手工感明显，尺寸贴近地面",
+    "深色木与浅色织物形成对比，形制简约不推崇繁复雕刻",
+    "数量极少，单件以留白衬托其形态",
+    "藤编、纸绳与实木结合，连接处可见手作工艺"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "柔和漫射、低照度，强调光影随时间的自然流动",
+      "以低位点光源为主，避免顶部直射的均匀冷光"
+    ],
+    "fixtures": [
+      "和纸灯罩台灯与吊灯",
+      "陶质台灯",
+      "低位落地灯",
+      "暗藏洗墙灯带"
+    ],
+    "color_temperature_k": [
+      2400,
+      3000
+    ],
+    "illuminance_lux": "起居环境 100–250lx，阅读角落 300lx 上下（常见工程惯例区间）",
+    "layering": "以氛围光为主，功能光弱化并低位布置，形成静谧的明暗层次"
+  },
+  "architectural_elements": [
+    "木格栅与半透光移门",
+    "灰泥或艺术涂料的肌理墙面",
+    "低地台与坐榻",
+    "壁龛与展示龛",
+    "深色木地板或抬高榻榻米区"
+  ],
+  "applicable_spaces": [
+    "住宅与公寓",
+    "茶室与冥想空间",
+    "精品民宿与酒店客房",
+    "咖啡与零售空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "手工艺术涂料与肌理墙面的施工人工",
+      "深色实木与格栅木作的加工",
+      "手工陶与天然织物等软装单件"
+    ],
+    "saving_moves": [
+      "以木纹饰面板替代整面实木格栅，保留比例与色调",
+      "灰泥肌理集中在主视线墙面，其余用哑光乳胶漆",
+      "手工陶器与织物少量精品化，而非数量铺开"
+    ],
+    "notes": "手工痕迹是风格的组成部分，过度平整与工业化会直接削弱其气质，因此不建议为了降本牺牲肌理"
+  },
+  "construction_considerations": [
+    "艺术涂料与灰泥肌理需样板确认，不同批次与施工手法会造成明显色差与纹理差",
+    "木格栅与移门的平整度与滑轨预埋需在墙面封板前确定",
+    "深色木地板对灰尘与划痕敏感，需选耐磨面层并留置备用板",
+    "低地台涉及结构荷载与防潮处理，标注待持证专业人员复核",
+    "湿区防水与排水做法，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "scandinavian",
+    "modern-minimalism",
+    "wabi-sabi",
+    "japanese-zen",
+    "italian-minimal"
+  ],
+  "incompatible_elements": [
+    "高饱和亮色与霓虹色",
+    "光面大理石与镜面金属",
+    "繁复古典雕饰与金色装饰",
+    "塑料感工业制品与高光烤漆大面",
+    "密集堆叠的装饰摆件与满墙挂画"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "留白充足的低饱和起居空间，一侧为木格栅与半透光移门，地面有抬高的小地台",
+      "material": "米灰灰泥肌理墙面，深胡桃木家具与地板，亚麻窗帘与坐垫，手工陶花器，和纸灯罩",
+      "lighting": "低位暖光从和纸灯罩与陶质台灯漫出，暗藏洗墙灯带轻扫墙面，形成静谧的明暗层次",
+      "furniture": "低矮圆润的深色木家具，座面贴近地面，少量陶器与天然织物点缀",
+      "camera": "接近坐姿高度的低机位，35–50mm，构图偏不对称并留出大面积空白",
+      "atmosphere": "安静、沉稳、有手作温度，接受材料的不完美",
+      "keywords": [
+        "日式北欧",
+        "低饱和",
+        "木格栅",
+        "手工肌理",
+        "深色木",
+        "留白"
+      ]
+    },
+    "en": {
+      "space": "A low-saturation living space with generous emptiness, a wood-slat screen and translucent sliding door on one side, a slightly raised platform",
+      "material": "Beige-grey textured plaster walls, deep walnut furniture and flooring, linen curtains and cushions, handmade ceramic vase, washi paper lamp shade",
+      "lighting": "Low warm light diffusing from a washi shade and a ceramic table lamp, hidden wall-grazing LED washing the wall, calm layers of light and shadow",
+      "furniture": "Low rounded dark-wood pieces sitting close to the floor, a few ceramics and natural textiles as accents",
+      "camera": "Low position near seated eye level, 35–50mm, asymmetric composition with large empty areas",
+      "atmosphere": "Calm, grounded, handcrafted warmth, embracing imperfection",
+      "keywords": [
+        "japandi",
+        "low saturation",
+        "wood slats",
+        "handmade texture",
+        "dark wood",
+        "negative space"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持格栅与移门的等宽模数与排列关系不变",
+    "保持地台边界与高度关系，不新增或移动台面",
+    "保持墙面肌理的连续性，不叠加平滑饰面覆盖"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高饱和亮色与霓虹色",
+      "不要光面大理石与镜面金属",
+      "不要古典雕饰与金色装饰",
+      "不要塑料感工业制品与大面积高光烤漆",
+      "不要密集堆叠的装饰摆件与满墙挂画"
+    ],
+    "en": [
+      "no saturated bright or neon colours",
+      "no polished marble or mirrored metal",
+      "no classical ornament or gilded decoration",
+      "no plastic-like industrial products or large high-gloss lacquer",
+      "no densely clustered ornaments or wall-to-wall framed art"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "留白比例",
+      "criteria": "无家具的可见地面与墙面合计占比 ≥40%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "饱和度控制",
+      "criteria": "全部色相饱和度偏低，无单一高饱和色块占比超过 5%",
+      "stage": "schematic"
+    },
+    {
+      "check": "手工肌理保留",
+      "criteria": "主视线墙面可见灰泥或批刮肌理，无整面平滑高光面",
+      "stage": "construction"
+    },
+    {
+      "check": "照明低位",
+      "criteria": "主要光源高度低于 1500mm 或为低位洗墙，避免顶部均匀直射",
+      "stage": "S4"
+    },
+    {
+      "check": "物件数量",
+      "criteria": "可见装饰单品数量克制，单一视域内不超过 3 件",
+      "stage": "schematic"
+    }
+  ]
+}

@@ -1,0 +1,288 @@
+{
+  "style_id": "memphis",
+  "display_name_zh": "孟菲斯",
+  "display_name_en": "Memphis",
+  "family": "deco-retro",
+  "tags": [
+    "bold-color",
+    "playful",
+    "geometric",
+    "anti-rule",
+    "80s"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1981 至 1988 年，1980 年代中期达到高峰",
+    "origin": "意大利米兰的设计师群体，作为对国际式现代主义单调性的反拨",
+    "summary": "孟菲斯回应的是战后现代主义对「正确品位」的垄断：当功能主义把家具与界面压成中性灰白的一套公式后，它干脆把设计还原成小尺度的几何游戏，让图像与色彩压过功能叙事。它之所以能在 1980 年代成形，是因为彩色印刷饰面板、粉末喷涂与低成本人造板工艺已经成熟，使非结构性的装饰件可以小批量快速生产。因此它的做法集中在饰面图案、单体家具轮廓与色彩关系上，而不在空间体系或结构上——这也是它适合短时停留、需要强记忆点的商业与展示空间的原因。",
+    "key_movements": [
+      "孟菲斯设计运动",
+      "后现代设计",
+      "意大利激进设计"
+    ]
+  },
+  "spatial_principles": [
+    "把墙面当作平面图形底板：按几何图案分块铺陈，不做整面统一材质。",
+    "不对称构成优先，刻意偏离中轴与视觉中心，用非对称平衡替代居中对称。",
+    "用色块分界替代物理隔断，不同色块直接界定功能区，不砌墙也读得出分区。",
+    "识别度由小尺度装饰件承担（层板、门板、地面拼块、灯具），不依赖大构件造型。",
+    "允许一次性元素与刻意的不协调并置，不追求收口级的全局统一。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "图案单元只取基本几何：圆点、波浪线、三角、方格，重复单元尺寸常见 50–200mm。",
+      "色块分界取硬边直角或规则弧线，不做渐变与羽化过渡。",
+      "构图按非对称平衡控制：左右体量不等但视觉重量相当，偏置常见 1/4–1/3 幅面。",
+      "层板与隔断用薄厚对比，常见板件厚度 18–40mm 直边，不做线脚收口。"
+    ],
+    "ratios": [
+      "图案重复单元 50–200mm",
+      "非对称偏置 1/4–1/3 幅面",
+      "板件厚度 18–40mm",
+      "色块硬边分界"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2600–3400mm；小空间可压至 2600mm 左右以增强图案的包裹感"
+  },
+  "color_palette": [
+    {
+      "name_zh": "米白底",
+      "name_en": "Off-White Ground",
+      "hex": "#F4F1E8",
+      "usage": "图案背景与大面积界面底色，占比约 30–45%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "墨黑",
+      "name_en": "Ink Black",
+      "hex": "#17161A",
+      "usage": "图案线条与硬边分界，占比约 15–25%",
+      "role": "base"
+    },
+    {
+      "name_zh": "珊瑚粉",
+      "name_en": "Coral Pink",
+      "hex": "#F06A6A",
+      "usage": "主要色块与家具饰面，占比约 12–20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "电光蓝",
+      "name_en": "Electric Blue",
+      "hex": "#2B63D9",
+      "usage": "撞色配对与金属件喷涂，占比约 10–18%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "柠檬黄",
+      "name_en": "Lemon Yellow",
+      "hex": "#F2C230",
+      "usage": "点缀色块与灯具，占比约 6–12%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "薄荷绿",
+      "name_en": "Mint Green",
+      "hex": "#5ECFB0",
+      "usage": "点缀色块与织物，占比约 6–12%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "彩色层压板",
+      "name_en": "Colour Laminate",
+      "application": "柜面、层板与门板饰面",
+      "finish": "亚光或丝光，纯色与印刷图案两种"
+    },
+    {
+      "name_zh": "人造板与中密度纤维板",
+      "name_en": "Particle Board and MDF",
+      "application": "层板、柜体与造型基层",
+      "finish": "直边配同色封边，接口不做线脚"
+    },
+    {
+      "name_zh": "橡胶与卷材地面",
+      "name_en": "Rubber and Vinyl Flooring",
+      "application": "室内地面",
+      "finish": "亚光，纯色块拼接或几何拼块"
+    },
+    {
+      "name_zh": "粉末喷涂金属",
+      "name_en": "Powder-coated Metal",
+      "application": "灯具、桌腿、扶手与搁架立柱",
+      "finish": "哑光高饱和粉末喷涂"
+    },
+    {
+      "name_zh": "水磨石",
+      "name_en": "Terrazzo",
+      "application": "地面与台面",
+      "finish": "磨光，大粒径几何骨料"
+    },
+    {
+      "name_zh": "玻璃砖与彩色玻璃",
+      "name_en": "Glass Block and Tinted Glass",
+      "application": "隔断与装饰面",
+      "finish": "透光，规则几何纹理"
+    }
+  ],
+  "furniture_language": [
+    "轮廓由几何体量直接拼装：三角、圆柱与立方体对撞，不做过渡曲面。",
+    "尺度偏小偏矮，允许非人体工学的夸张比例（低矮椅背、超高桌腿）。",
+    "落地方式直白：以彩色金属管腿或实体基座直接落地，不加裙板与踢脚线。",
+    "拉手为彩色圆形或球状突出件，或用镂空抠手替代五金。",
+    "层板做波浪边、斜切边或条纹饰面，图案本身即家具的识别符号。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以均匀环境光保证图案与撞色不被阴影污染，亮度分布尽量平。",
+      "灯具本身作为彩色几何体量参与构图，做成可见的装饰物而非隐蔽灯槽。"
+    ],
+    "fixtures": [
+      "彩色几何吊灯",
+      "球形壁灯",
+      "造型台灯",
+      "少量隐藏灯带"
+    ],
+    "color_temperature_k": [
+      3000,
+      4000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 200–350lx，图案与展示面 300–500lx",
+    "layering": "以环境层为主并保持均匀；装饰层由灯具造型本身承担色块；刻意弱化重点照明，避免强阴影改变图案与撞色的读法。"
+  },
+  "architectural_elements": [
+    "几何图案背景墙，硬边分块拼接，图案对花完整。",
+    "波浪边或锯齿边的层板与隔断，边缘不做封边线脚。",
+    "彩色硬边门洞与门套，门扇做图案或撞色分格。",
+    "几何拼块地面：圆点、方格或三角形色块。",
+    "造型门板与镂空抠手，替代常规拉手五金。"
+  ],
+  "applicable_spaces": [
+    "零售与快闪店",
+    "餐饮与咖啡空间",
+    "儿童与青少年空间",
+    "创意办公与工作室",
+    "展陈与主题体验空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "图案背景墙的定制印刷与拼贴工艺",
+      "彩色喷涂金属件的定制加工与批次色差控制",
+      "几何拼块地面的下料与对花铺贴"
+    ],
+    "saving_moves": [
+      "图案用印刷饰面板替代手工拼贴与喷绘",
+      "彩色件选用现成色卡板材与五金配色",
+      "灯具改用市售几何造型成品"
+    ],
+    "notes": "造价主要由图案饰面面积与定制件数量决定；方案阶段应先控制图案墙的数量而不是降低图案密度，否则风格识别度会掉得很快。"
+  },
+  "construction_considerations": [
+    "硬边色块分界对饰面接缝顺直度敏感，须先按分格放样再下料，避免现场裁切出现毛边与错台",
+    "彩色喷涂件色差敏感，须同批喷涂并留样复检，不同批次件不得相邻拼接",
+    "层板与悬挂隔断的固定与承重做法标注待持证专业人员复核",
+    "印刷饰面板的图案拼接须对花，接缝位置在方案阶段就要定位，不能留到现场解决",
+    "突出灯具与球状拉手在公共空间涉及防撞与电气安全，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "postmodern",
+    "retro-70s",
+    "mid-century-modern",
+    "art-deco"
+  ],
+  "incompatible_elements": [
+    "整面天然木饰面或大理石等贵重统一材质",
+    "古典线脚、护墙板与严格对称轴线",
+    "单一中性色的极简界面与大面留白",
+    "强烈的手工做旧与斑驳质感"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "孟菲斯风格零售空间，层高约 3.0m，墙面划分为硬边几何色块，一侧设波浪边层板墙，地面为圆点与方格拼块",
+      "material": "米白底彩色层压板饰面，直边人造板层板配同色封边，粉末喷涂彩色金属管腿与搁架，磨光水磨石台面，玻璃砖隔断",
+      "lighting": "均匀暖白环境光 3000–4000K，球形壁灯与彩色几何吊灯作为可见色块，避免强烈阴影",
+      "furniture": "几何体量拼装的小尺度家具，管腿直接落地，球状彩色拉手，波浪边层板，深色图形装饰面板",
+      "camera": "约 1.5m 视高，等效 24–35mm，略偏轴的斜视角以呈现非对称构成",
+      "atmosphere": "顽皮、明快、反规则，色块对比强烈而亮度均匀",
+      "keywords": [
+        "硬边色块",
+        "几何图案墙",
+        "波浪边层板",
+        "高饱和撞色",
+        "磨光水磨石",
+        "球状拉手"
+      ]
+    },
+    "en": {
+      "space": "Memphis retail interior, ceiling about 3.0 m, walls divided into hard-edged geometric colour blocks, a wave-edged shelving wall on one side, floor of dots and squares",
+      "material": "off-white base with colour laminate panelling, straight-edge MDF shelves with matching edge banding, powder-coated coloured metal tube legs and shelving, polished terrazzo counter, glass block screens",
+      "lighting": "even warm-white ambient light at 3000–4000 K, spherical wall sconces and coloured geometric pendants acting as visible colour blocks, no heavy shadowing",
+      "furniture": "small-scale furniture assembled from geometric volumes, tube legs sitting directly on the floor, spherical coloured pulls, wave-edged shelves, dark graphic panels",
+      "camera": "eye level about 1.5 m, 24–35 mm equivalent, slightly off-axis oblique view to show the asymmetric composition",
+      "atmosphere": "playful, bright and rule-breaking, strong colour contrast with an even overall brightness",
+      "keywords": [
+        "hard-edged colour blocks",
+        "geometric pattern wall",
+        "wave-edged shelving",
+        "saturated clashing colour",
+        "polished terrazzo",
+        "spherical pulls"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持墙面色块分界与图案单元的划分位置不变。",
+    "保持家具几何体量的非对称构图关系不变。",
+    "保持门洞位置与硬边门套形式不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现整面天然木饰面或大理石等贵重统一材质",
+      "不要出现古典线脚、护墙板或严格对称轴线",
+      "不要出现单一中性色的极简留白界面",
+      "不要出现强烈做旧、斑驳或锈蚀的手工质感",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no continuous precious material such as natural timber veneer or marble",
+      "no classical mouldings, wall panelling or strict symmetrical axes",
+      "no single-neutral-colour minimal blank surfaces",
+      "no heavily distressed, weathered or rusted handmade textures",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "图案与色块",
+      "criteria": "图案重复单元 50–200mm，色块分界为硬边，无渐变过渡；图案拼接处对花完整",
+      "stage": "S4"
+    },
+    {
+      "check": "非对称构成",
+      "criteria": "构图偏置处于幅面 1/4–1/3，左右视觉重量相当且不与中轴重合",
+      "stage": "S4"
+    },
+    {
+      "check": "色彩对比",
+      "criteria": "至少出现 3 组高饱和撞色，亮面占比不低于底色占比的一半",
+      "stage": "S3"
+    },
+    {
+      "check": "饰面与封边",
+      "criteria": "板件为直边且封边同色，1m 视距下无毛边与错台",
+      "stage": "S5"
+    },
+    {
+      "check": "照明均匀度",
+      "criteria": "环境 200–350lx、图案面 300–500lx，色温 3000–4000K，无明显硬阴影",
+      "stage": "S6"
+    }
+  ]
+}

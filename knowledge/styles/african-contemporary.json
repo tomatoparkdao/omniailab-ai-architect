@@ -1,0 +1,288 @@
+{
+  "style_id": "african-contemporary",
+  "display_name_zh": "非洲当代",
+  "display_name_en": "African Contemporary",
+  "family": "regional",
+  "tags": [
+    "earth-tone",
+    "craft",
+    "pattern",
+    "handmade",
+    "bold"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中后期随非洲国家现代化进程逐步成型，21 世纪在国际设计交流中扩散",
+    "origin": "撒哈拉以南非洲地区，地方生土建造与编织、雕刻传统同当代建筑方法相互结合",
+    "summary": "独立后的建设需要现代的结构与设备标准，但完全套用外来做法会抹掉地方识别性。于是这一取向把当地既有的生土墙体、棕榈与草编、木雕与陶砖做法保留下来，只替换掉不达标的部分——承重与防潮交给现代构造，表面与体量仍由手工艺决定。它解决的是「既要现代可用、又要一看就知道来自哪里」的矛盾，因此图案与手作痕迹被当成结构之外的第二套语言来使用。",
+    "key_movements": [
+      "非洲现代主义",
+      "批判地域主义",
+      "手工艺复兴运动",
+      "非洲现代艺术运动"
+    ]
+  },
+  "spatial_principles": [
+    "以单一大幅公共空间为核心，坐具环布形成多向围坐，不设以单一屏幕为中心的朝向",
+    "区域之间用挑檐、格栅屏、地台高差等半通透构件过渡，不用整面到顶隔墙",
+    "主通道净宽 ≥1000mm（常见工程惯例区间），室内外地面材质连续过渡不做门槛",
+    "大面积墙体保持素净，图案只集中在少数重点界面，避免满铺与重复堆叠",
+    "手工构件布置在可近距触摸的高度，纹理与做法在人的尺度上可被读清"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "图案由非对称几何块构成，重复单元允许有手作偏差，单件偏差常见 ±5% 以内（常见工程惯例区间）",
+      "洞口偏高窄，门窗高宽比常见 2:1 至 3:1（常见工程惯例区间）",
+      "天花与墙交接不做线脚，用两种材质直接对碰形成清晰的边",
+      "大体量构件（柱、梁、储物柜）以 ≥600mm 的进深呈现厚重感",
+      "体量以不对称整体为主，靠手作界面的位置平衡构图"
+    ],
+    "ratios": [
+      "手作图案界面占可见墙面 ≤30%（常见工程惯例区间），其余保持素净",
+      "图案与格栅按编织单元的 200mm 与 400mm 约数组织（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3400mm（常见工程惯例区间）；公共区可局部挑高并在上方外露结构"
+  },
+  "color_palette": [
+    {
+      "name_zh": "生土泥墙白",
+      "name_en": "Earthen Plaster Cream",
+      "hex": "#E4D8C4",
+      "usage": "墙面与天花基调，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "赭石红褐",
+      "name_en": "Earth Ochre",
+      "hex": "#A4552E",
+      "usage": "重点墙、地面与陶砖构件，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深炭木褐",
+      "name_en": "Charcoal Wood Brown",
+      "hex": "#3A2C22",
+      "usage": "家具、门板与雕刻构件，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "靛蓝织物",
+      "name_en": "Indigo Textile Blue",
+      "hex": "#2C4A7C",
+      "usage": "织物与软装点缀，占比 ≤8%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "赭黄陶釉",
+      "name_en": "Kaolin Ochre Yellow",
+      "hex": "#C98B3C",
+      "usage": "陶器与图案色块，占比 ≤5%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "红铜氧化",
+      "name_en": "Oxidised Copper",
+      "hex": "#B08A4A",
+      "usage": "灯具、五金与装饰细件，占比 ≤2%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "夯土与生土墙",
+      "name_en": "Rammed Earth and Earthen Wall",
+      "application": "重点墙与室内隔墙",
+      "finish": "自然夯筑肌理，不覆盖平滑饰面",
+      "notes": "需控制含水率与分层夯实工艺"
+    },
+    {
+      "name_zh": "手工编织纤维",
+      "name_en": "Handwoven Natural Fibre",
+      "application": "地毯、屏风、灯罩与坐面",
+      "finish": "本色或植物染色，保留织纹起伏"
+    },
+    {
+      "name_zh": "深色硬木与雕刻木",
+      "name_en": "Dark Hardwood and Carved Timber",
+      "application": "家具、门板、格栅与雕刻构件",
+      "finish": "木蜡油哑光，可见刀痕"
+    },
+    {
+      "name_zh": "手工陶砖与陶板",
+      "name_en": "Handmade Terracotta Brick and Tile",
+      "application": "地面、墙裙与庭院铺地",
+      "finish": "哑光，尺寸与色差允许轻微不规则"
+    },
+    {
+      "name_zh": "黄铜与红铜",
+      "name_en": "Brass and Copper",
+      "application": "灯具、把手与装饰构件",
+      "finish": "拉丝或自然氧化"
+    }
+  ],
+  "furniture_language": [
+    "大体量低矮坐具，实木或藤编框架，坐面进深常见 ≥600mm（常见工程惯例区间）",
+    "以单件手工雕木或编织品为主，线条厚重，不追求纤细金属腿",
+    "家具以落地为主，少量悬空件用于显露支撑结构",
+    "拉手为手工雕刻木条、黄铜长条或编织绳结",
+    "家具尺度普遍偏大，鼓励大面积围坐而非对坐"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以低位与中位暖光为主，让手工肌理产生可读的明暗",
+      "图案界面用擦墙光强化其立体起伏，避免均匀漫射压平表面",
+      "不使用顶部均匀冷白作为主光，以免削弱材料的暖度"
+    ],
+    "fixtures": [
+      "藤编或陶土吊灯",
+      "低位落地灯",
+      "洗墙灯带",
+      "可调角度射灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      3000
+    ],
+    "illuminance_lux": "起居环境 100–200lx，重点肌理墙 200–300lx（常见工程惯例区间）",
+    "layering": "环境光整体压低亮度，重点光集中打在手作界面，形成强肌理对比"
+  },
+  "architectural_elements": [
+    "深出檐与挑檐构成的室外延伸",
+    "编织或木格屏风隔断",
+    "手工雕刻木门与门板",
+    "夯土或肌理灰泥墙面",
+    "陶砖地面拼法与墙裙",
+    "嵌入式壁龛陈列手作器物"
+  ],
+  "applicable_spaces": [
+    "住宅与别墅",
+    "精品酒店与度假村",
+    "文化展陈与艺术空间",
+    "主题餐饮空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "手工编织与雕刻构件的制作人工",
+      "夯土或生土墙的施工与养护周期",
+      "大体量实木家具与定制木作"
+    ],
+    "saving_moves": [
+      "以编织织物与陶器软装传达地域感，减少整屋夯土面积",
+      "图案集中在重点墙，其余界面用哑光涂料保持素净",
+      "用手工纹路的木饰面替代整块实木雕板，保留色调与比例"
+    ],
+    "notes": "手作痕迹是风格成立的组成部分，过度平整的工业化表面会直接削弱其气质，不建议为降本牺牲肌理"
+  },
+  "construction_considerations": [
+    "夯土与生土墙需控制含水率并分层夯实，避免开裂，结构承载标注待持证专业人员复核",
+    "手工编织构件用于公共区时需做防虫与阻燃处理，标注待持证专业人员复核",
+    "深色木作与陶砖地面的平整度与留缝需先做样板统一",
+    "图案拼贴需在样板墙放样确认后再大面积施工",
+    "湿区防水与地面防潮做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "earth-adobe",
+    "rustic-natural",
+    "moroccan",
+    "mediterranean",
+    "organic-modern",
+    "tropical-resort"
+  ],
+  "incompatible_elements": [
+    "大面积镜面不锈钢与高光金属",
+    "冷白荧光与高饱和霓虹色",
+    "纤细的欧式线脚与古典柱式",
+    "满铺亮面大理石",
+    "塑料感强、无纹理的工业化家具"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以大幅公共空间为核心的当代住宅内部，重点墙面为夯土肌理，另一侧为木格屏风，室内外地面材质连续过渡",
+      "material": "生土泥墙与哑光灰泥，深色硬木家具与雕木门板，手工编织地毯与坐垫，陶砖地面，黄铜灯具",
+      "lighting": "低位暖光从藤编吊灯与落地灯漫出，擦墙光扫过夯土肌理的明暗起伏，暗部保持深沉",
+      "furniture": "大体量低矮实木与藤编坐具围成多向围坐，黄铜长条拉手，陶器与织物作点缀",
+      "camera": "接近坐姿的 1.4–1.6m 机位，35mm，构图略不对称并把重点肌理墙放在画面一侧",
+      "atmosphere": "厚重、温暖、有强烈手作痕迹，地域感清晰但不陈旧",
+      "keywords": [
+        "非洲当代",
+        "生土色调",
+        "手工编织",
+        "木雕",
+        "非对称图案",
+        "夯土墙"
+      ]
+    },
+    "en": {
+      "space": "A contemporary interior organised around one large communal room, one feature wall in rammed-earth texture, a timber slat screen on the other side, flooring running continuously from inside to outside",
+      "material": "Earthen plaster and matte mud wall, dark hardwood furniture and carved timber doors, handwoven rug and cushions, terracotta brick floor, brass light fittings",
+      "lighting": "Low warm light diffusing from a woven pendant and a floor lamp, wall-grazing light revealing the relief of the earthen wall, deep shadows kept dark",
+      "furniture": "Large low solid-wood and rattan seats arranged for multi-directional gathering, brass bar pulls, a few ceramics and textiles as accents",
+      "camera": "Roughly 1.4–1.6 m near seated eye level, 35mm, slightly asymmetric framing placing the textured feature wall to one side",
+      "atmosphere": "Heavy, warm, strongly hand-made with a clear sense of place yet not nostalgic",
+      "keywords": [
+        "african contemporary",
+        "earth tones",
+        "handwoven",
+        "carved wood",
+        "asymmetric pattern",
+        "rammed earth"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持屏风与格栅的等宽模数与排列关系不变",
+    "保持地台与挑檐的高度与边界关系，不新增或移动台面",
+    "保持图案墙的分布位置与面积占比，不扩展为满铺"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积镜面不锈钢与高光金属",
+      "不要冷白荧光与高饱和霓虹色",
+      "不要欧式线脚与古典柱式",
+      "不要满铺亮面大理石",
+      "不要无纹理的塑料感工业制品"
+    ],
+    "en": [
+      "no large mirrored stainless steel or high-gloss metal",
+      "no cool-white fluorescent light or saturated neon",
+      "no European mouldings or classical orders",
+      "no wall-to-wall polished marble",
+      "no textureless plastic-like industrial products"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "图案占比",
+      "criteria": "手作图案界面占可见墙面 ≤30%，其余界面保持素净（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "色彩抑制",
+      "criteria": "主色不超过 2 种，点缀色合计占比 ≤10%",
+      "stage": "schematic"
+    },
+    {
+      "check": "手作肌理可读",
+      "criteria": "主视线墙面在 1m 距离内可见夯土或编织的纹理起伏，无整面平滑饰面",
+      "stage": "construction"
+    },
+    {
+      "check": "照明低位",
+      "criteria": "主要光源高度低于 1500mm 或为擦墙光，无顶部均匀冷白主光",
+      "stage": "S4"
+    },
+    {
+      "check": "洞口比例",
+      "criteria": "门窗高宽比落在 2:1 至 3:1 区间内，偏差不超过 10%",
+      "stage": "schematic"
+    }
+  ]
+}

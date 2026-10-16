@@ -1,0 +1,272 @@
+{
+  "style_id": "japanese-zen",
+  "display_name_zh": "日式禅意",
+  "display_name_en": "Japanese Zen",
+  "family": "oriental",
+  "tags": [
+    "tatami",
+    "shoji",
+    "minimal",
+    "natural",
+    "threshold"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "室町至江户逐步定型，当代在住宅与酒店中广泛沿用",
+    "origin": "日本，书院造与茶室体系",
+    "summary": "日式禅意室内不是靠删减装饰实现的，而是靠一套模数系统实现秩序：房间尺寸由榻榻米张数决定，柱与隔扇落在固定网格上，榻榻米与木地板的交接、门槛与回廊的高差构成明确的阈限。障子纸把直射光转为漫射光，床之间提供唯一的陈设焦点，从而在极小空间内形成稳定的秩序感。它解决的是「小空间如何高效又庄重」的问题，因此控制的是模数与边界，而非家具数量。",
+    "key_movements": [
+      "书院造（Shoin-zukuri）",
+      "草庵风茶室",
+      "数寄屋（Sukiya）风格"
+    ]
+  },
+  "spatial_principles": [
+    "房间按榻榻米张数确定尺寸，地面铺装与柱网按同一模数对齐，房间净尺寸为模数的整数倍。",
+    "以障子、襖与隔扇作为可移动的边界，边界可以完全撤除使房间合并为一间。",
+    "在待客空间设置唯一的视觉焦点（床之间或壁龛），其余墙面保持简洁。",
+    "以回廊与缘侧构成室内外的阈限空间，地面高差 100–300mm（常见工程惯例区间）明确区分内外。",
+    "视线尽量压缩在坐姿高度，坐面高 300–420mm（常见工程惯例区间），家具低矮且贴地。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以榻榻米为模数，单张尺寸约 900×1800mm 或 850×1700mm（常见工程惯例区间），房间按张数排布。",
+      "柱网与隔扇分格按「间」模数（约 1800mm，常见工程惯例区间）排布，柱截面与间距相互对应。",
+      "障子分格按竖向稍高于横向母题的网格排布，横档对齐视线与拉手高度。",
+      "床之间宽度约半间至一间（900–1800mm，常见工程惯例区间），深度 300–600mm（常见工程惯例区间）。"
+    ],
+    "ratios": [
+      "榻榻米模数 1:2",
+      "柱网间距约 1800mm",
+      "障子横档分割比约 3:4:3"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2400–2800mm；缘侧与茶室局部可低至 2200mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "障子白",
+      "name_en": "Shoji White",
+      "hex": "#F0EBE1",
+      "usage": "障子纸与墙面，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "榻榻米草绿",
+      "name_en": "Tatami Straw Green",
+      "hex": "#C4BC8E",
+      "usage": "地面铺装，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "桧木米",
+      "name_en": "Hinoki Pale Wood",
+      "hex": "#D8C6A8",
+      "usage": "柱、地板与家具，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "墨灰",
+      "name_en": "Sumi Grey",
+      "hex": "#4A4A48",
+      "usage": "梁、五金与边框，占比约 10%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深褐色",
+      "name_en": "Dark Umber",
+      "hex": "#5B4534",
+      "usage": "织物与地面收边，占比约 5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "榻榻米",
+      "name_en": "Tatami",
+      "application": "地面铺装",
+      "finish": "天然草席面，收边布为素色",
+      "notes": "按模数定制，需预留更换与通风"
+    },
+    {
+      "name_zh": "障子纸",
+      "name_en": "Shoji paper",
+      "application": "推拉门与灯罩",
+      "finish": "手工纸，漫射透光",
+      "notes": "避免印刷图案与高透材质"
+    },
+    {
+      "name_zh": "桧木",
+      "name_en": "Hinoki cypress",
+      "application": "柱、地板与家具",
+      "finish": "素木或本色木蜡油，保留木香",
+      "notes": "纹理通直，控制色差"
+    },
+    {
+      "name_zh": "土壁",
+      "name_en": "Earth plaster wall",
+      "application": "墙面",
+      "finish": "哑光，轻微砂质感",
+      "notes": "可与桧木形成冷暖对比"
+    },
+    {
+      "name_zh": "铁刀木或深色木",
+      "name_en": "Dark hardwood",
+      "application": "梁、框与家具",
+      "finish": "半哑光，深色反差",
+      "notes": "用于强调水平梁线"
+    }
+  ],
+  "furniture_language": [
+    "家具低矮贴地，坐面高 300–420mm（常见工程惯例区间），无高脚与柜脚外露。",
+    "线条竖直排列，以竖木格与横梁构成直角网格，几乎不使用曲线。",
+    "体量轻薄，柜体与墙身齐平嵌入，不明显外凸。",
+    "拉手以嵌入式指拉或纸障子内凹槽为主，不做外凸把手。",
+    "件数极少，坐垫可叠放收纳，餐具与织物收进壁柜，台面接近空置。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以障子过滤的漫射自然光为主光，光线均匀无方向性。",
+      "人工光以低位与间接为主，灯具亮度不高于障子的透光面亮度。",
+      "只在床之间与陈设处设重点光，光束角 20°–30°（常见工程惯例区间）。"
+    ],
+    "fixtures": [
+      "障子内藏灯",
+      "纸罩吊灯",
+      "天花间接灯",
+      "地面落地纸灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3200
+    ],
+    "illuminance_lux": "常见工程惯例区间：居室 100–200lx，床之间重点 200–300lx，缘侧 50–100lx",
+    "layering": "环境光由障子透光与天花间接灯提供，重点光落于床之间陈设，任务光由低矮吊灯提供，整体均匀、无明显光斑。"
+  },
+  "architectural_elements": [
+    "模数化榻榻米地面与收边",
+    "障子与襖推拉门构成的连续界面",
+    "床之间或壁龛作为唯一陈设焦点",
+    "缘侧与回廊形成的室内外阈限",
+    "外露梁与格状天花"
+  ],
+  "applicable_spaces": [
+    "住宅与和室",
+    "禅修与冥想空间",
+    "精品酒店客房",
+    "茶室与日式餐饮"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "榻榻米与障子的定制模数加工，尺寸需与柱网对齐",
+      "桧木与土壁等天然材料的单价与养护",
+      "推拉门的轨道与框料精度，影响顺滑度与密封"
+    ],
+    "saving_moves": [
+      "仅一间和室用真榻榻米，其余区域用哑光草编质感地板替代",
+      "障子纸用国产手工纸替代进口纸，保持透光漫射特性即可",
+      "桧木限定在视线可达的柱与地板，隐蔽处用普通木材"
+    ],
+    "notes": "风格成立的关键是模数对齐与边界清晰，材料等级可降，但柱网与榻榻米尺寸必须按模数排定。"
+  },
+  "construction_considerations": [
+    "柱网与榻榻米尺寸必须在图纸阶段按模数排定，现场临时调整会破坏整体秩序。",
+    "推拉门轨道需在基层阶段预埋并找平，轨道不平会导致门扇卡阻。",
+    "榻榻米下方需留通风与防潮层，潮湿地区易生霉，需设可掀检修口。",
+    "障子纸需做阻燃处理并远离热源，标注待持证专业人员复核。",
+    "土壁与木构交界需留收缩缝，避免干燥后开裂。"
+  ],
+  "compatible_styles": [
+    "wabi-sabi",
+    "japandi",
+    "modern-minimalism",
+    "scandinavian"
+  ],
+  "incompatible_elements": [
+    "高饱和彩色与亮面材质",
+    "厚重巴洛克或欧式雕花家具",
+    "大面积镜面与不锈钢反光面",
+    "高脚现代沙发与繁复装饰性吊灯"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "按榻榻米张数确定尺寸的矩形和室，柱网与地面铺装对齐，一侧为可完全撤除的障子推拉门，床之间形成唯一焦点，外接一段缘侧。",
+      "material": "天然草席榻榻米、手工障子纸漫射透光、通直桧木柱与地板、哑光土壁墙面，全部低反射。",
+      "lighting": "障子透入的漫射自然光为主光，天花间接灯补底，床之间设 20°–30° 窄束重点光，色温 2700–3200K，光线均匀无明显光斑。",
+      "furniture": "低矮贴地家具，坐面高 300–420mm，直角网格线条，柜体与墙齐平嵌入，嵌入式指拉无外凸把手，台面接近空置。",
+      "camera": "坐姿视高的平视机位，镜头高度约 900–1100mm，等效焦距 28–40mm，画面强调柱网与地面的模数对齐。",
+      "atmosphere": "安静、有序、边界清晰，光线均匀柔和，材料本色克制。",
+      "keywords": [
+        "榻榻米模数",
+        "障子透光",
+        "床之间",
+        "阈限",
+        "桧木",
+        "直角网格"
+      ]
+    },
+    "en": {
+      "space": "Rectangular tatami-module room sized by mat count, column grid aligned with the floor pattern, one side fully retractable shoji sliding screens, a tokonoma alcove as the single focal point, an engawa veranda outside.",
+      "material": "Natural straw tatami, handmade shoji paper diffusing light, straight-grained hinoki cypress columns and floor, matte earth plaster walls, all low-reflection.",
+      "lighting": "Diffuse daylight through shoji as the primary source, indirect ceiling lighting as fill, a narrow 20°–30° accent on the tokonoma, 2700–3200K, even and spot-free.",
+      "furniture": "Low floor-hugging furniture, seat height 300–420mm, rectilinear grid lines, cabinets flush with walls, recessed finger pulls with no protruding handles, near-empty surfaces.",
+      "camera": "Seated eye-level camera at 900–1100mm, 28–40mm equivalent, framing that emphasizes the alignment of column grid and floor modules.",
+      "atmosphere": "Calm, ordered, sharply bounded, evenly and softly lit, restrained natural materials.",
+      "keywords": [
+        "tatami module",
+        "shoji diffusion",
+        "tokonoma",
+        "threshold",
+        "hinoki",
+        "rectilinear grid"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持榻榻米模数与柱网对齐关系不变，跨视角不得改变张数与分格。",
+    "保持障子与襖的分格数、横档位置与推拉开启方向一致。",
+    "保持床之间位置与缘侧高差关系不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高饱和彩色与亮面反光材质",
+      "不要高脚现代家具与厚重雕花家具",
+      "不要大面积镜面与不锈钢",
+      "不要多个陈设焦点，床之间之外不得再设重点墙"
+    ],
+    "en": [
+      "no high-saturation colors or glossy reflective materials",
+      "no high-leg modern furniture or heavy carved pieces",
+      "no large mirrors or stainless steel surfaces",
+      "no multiple focal points; nothing but the tokonoma may act as a feature wall"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "模数对齐",
+      "criteria": "房间净尺寸为榻榻米模数整数倍，柱网与地面分格对齐，偏差 ≤10mm",
+      "stage": "S3"
+    },
+    {
+      "check": "边界可动性",
+      "criteria": "障子与襖推拉顺畅无卡阻，撤除后房间可合并",
+      "stage": "S5"
+    },
+    {
+      "check": "焦点唯一性",
+      "criteria": "陈设焦点仅床之间一处，其余墙面简洁无重点造型",
+      "stage": "S4"
+    },
+    {
+      "check": "光环境均匀度",
+      "criteria": "无锐利光斑，主光为障子漫射光，色温 2700–3200K",
+      "stage": "S4"
+    }
+  ]
+}

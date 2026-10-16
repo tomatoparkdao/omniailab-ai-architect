@@ -1,0 +1,275 @@
+{
+  "style_id": "moroccan",
+  "display_name_zh": "摩洛哥",
+  "display_name_en": "Moroccan",
+  "family": "regional",
+  "tags": [
+    "zellige",
+    "arch",
+    "courtyard",
+    "carved",
+    "colour"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "承自中世纪以来北非西部的城市与宫廷建筑传统，当代在居住与酒店中持续被引用",
+    "origin": "北非西部（马格里布）地区，融合本地柏柏尔乡土做法与伊斯兰装饰体系",
+    "summary": "当地夏季炎热、城市居住密集，房屋由此向外封闭、向内开敞：外部只有小窗，内部围绕一个带水池与绿植的庭院（patio）组织，庭院成为采光、通风与家庭生活的中心。与此同时，伊斯兰装饰传统反对具象描绘，把创造力集中在几何上，于是发展出以切割小釉砖拼出的几何马赛克、石膏雕花、木雕与锻铁工艺。这套做法的核心不是墙体的热工性能，而是庭院生活加上极高密度、以几何为规则的图案拼贴。",
+    "key_movements": [
+      "摩尔式建筑",
+      "伊斯兰几何装饰传统",
+      "柏柏尔乡土建筑",
+      "马格里布城市民居传统"
+    ]
+  },
+  "spatial_principles": [
+    "以带水池或喷泉的内庭院（patio）为空间核心，主要房间环绕庭院布置并朝向庭院开窗",
+    "外立面封闭少开窗，内立面开敞通透，形成「外闭内开」的私密性策略",
+    "以拱廊或柱廊围绕庭院，形成有遮蔽的环通动线",
+    "房间沿庭院组织，主厅（如会客与起居）位于庭院一侧，尺度较大且装饰最密",
+    "以图案而非隔墙强化区域转换，不同空间通过地面与墙面的图案变化加以区分"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "庭院近似方正，长宽比常见 1:1–1:1.5（常见工程惯例区间），四周留出环通廊道",
+      "拱券多见马蹄拱与尖拱，拱高与跨度比常见 1.2:1–1.6:1（常见工程惯例区间）",
+      "马赛克拼贴以重复几何单元为模数，单元尺寸常见 50–200mm（常见工程惯例区间）",
+      "墙面装饰分层布置：下部护墙板、中部图案带、上部石膏雕花，按高度分段控制"
+    ],
+    "ratios": [
+      "庭院面积占宅地面积常见 15%–35%（常见工程惯例区间）",
+      "图案覆盖墙面（含护墙与图案带）高度常见占墙高 40%–70%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2800–3600mm（常见工程惯例区间）；主厅可挑高并做木雕天花"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石膏白",
+      "name_en": "Gypsum White",
+      "hex": "#EFE8DA",
+      "usage": "雕花石膏与上部墙面基调，占比约 30%",
+      "role": "base"
+    },
+    {
+      "name_zh": "马约尔蓝",
+      "name_en": "Majorelle Blue",
+      "hex": "#3A4EA0",
+      "usage": "墙面与拼贴主色之一，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "藏红花黄",
+      "name_en": "Saffron Yellow",
+      "hex": "#D89B2E",
+      "usage": "拼贴与软装，占比约 15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "赤陶橙红",
+      "name_en": "Terracotta Orange-red",
+      "hex": "#B4532A",
+      "usage": "地砖与拼贴底色，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "雪松棕与黄铜",
+      "name_en": "Cedar Brown and Brass",
+      "hex": "#7A5333",
+      "usage": "木雕与金属件，占比 ≤15%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "几何马赛克小釉砖",
+      "name_en": "Zellige Mosaic Tile",
+      "application": "墙面、水池与地面拼贴",
+      "finish": "手工釉面，满铺几何图案，表面略有起伏"
+    },
+    {
+      "name_zh": "石膏雕花",
+      "name_en": "Carved Gypsum",
+      "application": "墙面图案带与天花",
+      "finish": "手工雕镂，浅浮雕与镂空并用"
+    },
+    {
+      "name_zh": "雪松木雕",
+      "name_en": "Carved Cedar Wood",
+      "application": "天花梁、门扇与家具",
+      "finish": "雕刻或镶嵌，擦油哑光"
+    },
+    {
+      "name_zh": "陶土砖与水泥花砖",
+      "name_en": "Terracotta and Encaustic Tile",
+      "application": "地面",
+      "finish": "哑光或轻微丝光，图案化铺贴"
+    },
+    {
+      "name_zh": "锻铁与黄铜",
+      "name_en": "Wrought Iron and Brass",
+      "application": "灯具、格栅与五金",
+      "finish": "锻造或手工锤打，氧化或抛光"
+    }
+  ],
+  "furniture_language": [
+    "低矮厚重，常见马蹄形与带雕刻的木质柜体，边角做圆",
+    "以长条软垫坐榻（沿墙布置）与低圆桌为核心坐具组合",
+    "大量织物堆叠：手工羊毛毯、带几何纹样的靠垫与地垫",
+    "金属灯具以镂空灯孔投出图案光影，与墙面图案呼应"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以镂空金属灯具投出的图案光斑为特色，光本身也携带几何图案",
+      "庭院引入自然光，室内保持较低照度以突出图案与材质的层次"
+    ],
+    "fixtures": [
+      "镂空黄铜吊灯",
+      "铁艺灯笼",
+      "石膏雕花内嵌灯",
+      "低位陶质台灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      2900
+    ],
+    "illuminance_lux": "起居环境 100–200lx，庭院廊道 150–250lx（常见工程惯例区间）",
+    "layering": "环境光由灯笼与雕花内嵌灯提供，任务光低位，重点光打亮水池与墙面图案带"
+  },
+  "architectural_elements": [
+    "马蹄拱与尖拱门洞",
+    "几何马赛克拼贴墙面与护墙板",
+    "石膏雕花与镂空图案带",
+    "庭院水池与喷泉",
+    "木雕天花与镂空铁艺格栅"
+  ],
+  "applicable_spaces": [
+    "住宅与别墅",
+    "度假酒店与民宿",
+    "餐饮空间",
+    "SPA 与洗浴空间",
+    "精品零售与展厅"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "手工几何马赛克的选料、切割与铺贴人工",
+      "石膏雕花与木雕的定制工艺",
+      "庭院水池与环通拱廊的土建工程量"
+    ],
+    "saving_moves": [
+      "马赛克集中在主厅墙面与水池周边，次要空间用图案砖替代手工拼贴",
+      "石膏雕花做局部图案带而非满墙，其余用凹凸涂料模拟",
+      "木雕以饰面板雕刻件替代整料手工雕，保留图案与尺度关系"
+    ],
+    "notes": "图案密度是风格的核心判据，减少图案面积比降低单处工艺更安全；庭院水池做法需持证专业人员复核"
+  },
+  "construction_considerations": [
+    "手工马赛克需先排版编号再铺贴，否则图案错位无法后期调整",
+    "石膏雕花构件需做预拼与固定支撑，薄处易断裂，做法标注待持证专业人员复核",
+    "庭院水池的防水、溢流与循环做法标注待持证专业人员复核",
+    "木雕天花需控制木材含水率并预留伸缩缝，避免开裂与起拱",
+    "镂空铁艺与黄铜灯具的开孔率影响照度与光斑效果，需先做样灯确认"
+  ],
+  "compatible_styles": [
+    "mediterranean",
+    "middle-eastern-luxury",
+    "indian-contemporary",
+    "african-contemporary"
+  ],
+  "incompatible_elements": [
+    "大面积纯白无图案的极简界面",
+    "高光泽现代烤漆与大面积镜面",
+    "极简线性北欧家具与细金属腿",
+    "单色灰调、无图案的工业风界面",
+    "大面积通高玻璃幕墙"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "围绕内庭院组织的起居主厅，一侧为马蹄拱门洞通向带水池的庭院，墙面上下分段布置拼贴与雕花",
+      "material": "手工几何马赛克墙面与护墙板，石膏雕花图案带，雪松木雕天花与门扇，陶土地面，黄铜镂空灯具",
+      "lighting": "庭院自然光透过拱门射入，镂空黄铜吊灯在墙面投下几何光斑，室内整体偏暗",
+      "furniture": "沿墙长条软垫坐榻与低圆桌，手工羊毛毯与几何纹靠垫堆叠，雕刻木柜",
+      "camera": "人眼高度，24–35mm，从主厅穿过拱门向庭院取景以展示图案与纵深",
+      "atmosphere": "浓烈、繁密、有手工艺与庭院生活的温度",
+      "keywords": [
+        "摩洛哥",
+        "马赛克",
+        "几何图案",
+        "庭院",
+        "拱券",
+        "木雕"
+      ]
+    },
+    "en": {
+      "space": "A main living hall organised around an internal courtyard, one side with a horseshoe arch opening onto a patio with a water basin, walls divided into tiled dado and carved pattern bands",
+      "material": "Handmade zellige mosaic walls and dado, carved gypsum pattern bands, carved cedar ceiling and doors, terracotta floor, pierced brass light fittings",
+      "lighting": "Daylight entering through the arch from the courtyard, pierced brass pendants casting geometric light patterns on the wall, the interior generally dim",
+      "furniture": "A long cushioned bench along the wall with a low round table, stacked handmade wool rugs and geometric cushions, a carved wooden cabinet",
+      "camera": "Eye level, 24–35mm, framed from the hall through the arch toward the courtyard to show pattern and depth",
+      "atmosphere": "Rich, dense, warmed by craft and courtyard life",
+      "keywords": [
+        "moroccan",
+        "zellige",
+        "geometric pattern",
+        "courtyard",
+        "arch",
+        "carved wood"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持拱门的形状、跨度与起拱高度不变",
+    "保持几何图案单元的模数与排列方向不变，不改变图案分格",
+    "保持庭院边界与环通廊道的宽度关系不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积纯白无图案的极简界面",
+      "不要高光泽现代烤漆与大面积镜面",
+      "不要极简线性北欧家具与细金属腿",
+      "不要单色灰调无图案的工业界面",
+      "不要大面积通高玻璃幕墙"
+    ],
+    "en": [
+      "no large plain white pattern-free minimalist surfaces",
+      "no high-gloss modern lacquer or large mirrored areas",
+      "no minimalist linear Scandinavian furniture with thin metal legs",
+      "no monochrome grey pattern-free industrial surfaces",
+      "no large full-height glazed curtain walls"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "庭院核心",
+      "criteria": "存在可辨认的内庭院，主要房间朝向庭院开窗，庭院面积占宅地 15%–35%",
+      "stage": "schematic"
+    },
+    {
+      "check": "图案密度",
+      "criteria": "图案覆盖墙面高度占墙高 40%–70%，图案单元按统一模数排列",
+      "stage": "schematic"
+    },
+    {
+      "check": "拼贴对缝",
+      "criteria": "马赛克图案单元对缝误差 ≤1mm，无错位拼接",
+      "stage": "construction"
+    },
+    {
+      "check": "色彩数量",
+      "criteria": "主色不少于 3 种且均为中高饱和度，无大面积灰调",
+      "stage": "S4"
+    },
+    {
+      "check": "工艺并存",
+      "criteria": "同一视域内至少同时出现拼贴、石膏雕花、木雕或金属工艺中的两类",
+      "stage": "construction"
+    }
+  ]
+}

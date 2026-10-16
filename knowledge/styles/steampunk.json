@@ -1,0 +1,282 @@
+{
+  "style_id": "steampunk",
+  "display_name_zh": "蒸汽朋克",
+  "display_name_en": "Steampunk",
+  "family": "industrial",
+  "tags": [
+    "brass",
+    "gear",
+    "rivet",
+    "victorian-machine"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1980 年代末作为亚文化流派成形，2000 年代后进入室内与展陈实践",
+    "origin": "以维多利亚时代工业技术与科幻想象为原型，主要在欧美亚文化圈发展",
+    "summary": "它回应的是「技术被隐形的现代生活失去可见机械感」这一失落。蒸汽朋克把维多利亚时代的机械语汇——黄铜管路、齿轮、铆钉、铸件——重新铺陈在日常空间里，让设备本身成为可读的装饰。它之所以能在室内落地，是因为黄铜管件、阀门与灯具本就是成熟的工业商品，可以直接采购、按规范安装，不必去伪造虚构的机器。因此做法集中在金属件的种类、连接方式与包边关系上，并用深色木作与皮革提供暖色底衬，让高光的铜件有对比可依。",
+    "key_movements": [
+      "维多利亚时代工业技术",
+      "科幻亚文化与蒸汽朋克",
+      "工艺美术运动的金属手作传统"
+    ]
+  },
+  "spatial_principles": [
+    "把管线与机械件当作装饰陈设来组织：管路沿墙与天花成组走线，阀门与压力表作为可见节点。",
+    "划分空间用金属框架与深色木作隔断，配合皮革与帆布帘，而非轻质板材隔墙。",
+    "按「机器舱」逻辑分区：入口、核心与工作区各配一组机械陈设，形成连续的好奇心序列。",
+    "家具与固定件按机械模组布置：铜管、法兰与铆接节点外露，节点间距均匀可读。",
+    "暖色为主、金属为辅：深木与皮革保证久留的舒适，黄铜作为高光点缀而非大面积界面。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "管路外露成组布置，管径常见 15–50mm，组内平行间距常见 80–150mm，节点处用法兰对齐。",
+      "齿轮与铸件作为装饰时按可见尺度选取，直径常见 200–600mm，与真实功能无关。",
+      "木作与金属的视觉比例常见 3:1 至 2:1，金属用于收边、护角与节点，不做整面覆盖。",
+      "天花高度常见 3000–4000mm，管路与灯具在顶部分层排布，避免与吊顶相互冲突。"
+    ],
+    "ratios": [
+      "管径 15–50mm",
+      "管组间距 80–150mm",
+      "木作与金属比例 2:1–3:1",
+      "装饰齿轮直径 200–600mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–4000mm；管线与灯具分层布置需预留顶部空间"
+  },
+  "color_palette": [
+    {
+      "name_zh": "黄铜",
+      "name_en": "Brass",
+      "hex": "#B08D3F",
+      "usage": "管件、灯具与五金点缀，占比约 8–15%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "紫铜",
+      "name_en": "Copper",
+      "hex": "#A5663C",
+      "usage": "管路、护角与局部饰面，占比约 6–12%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "暗棕",
+      "name_en": "Dark Walnut Brown",
+      "hex": "#3B2A20",
+      "usage": "木作家具与护墙板底色，占比约 25–35%",
+      "role": "base"
+    },
+    {
+      "name_zh": "墨绿",
+      "name_en": "Deep Green",
+      "hex": "#2E4034",
+      "usage": "墙面与皮革软包，占比约 15–25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "暗红",
+      "name_en": "Oxblood Red",
+      "hex": "#6E2A28",
+      "usage": "皮革与织物点缀，占比约 8–15%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "旧纸米",
+      "name_en": "Aged Paper Cream",
+      "hex": "#D8C9A8",
+      "usage": "纸质灯具罩与浅色对比面，占比约 8–15%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "黄铜管件与阀门",
+      "name_en": "Brass Piping and Valves",
+      "application": "明装管路、灯具与五金",
+      "finish": "拉丝或做旧抛光，允许自然氧化"
+    },
+    {
+      "name_zh": "铸铜与铸铁装饰件",
+      "name_en": "Cast Brass and Iron Ornaments",
+      "application": "齿轮、支架与把手",
+      "finish": "砂型铸面，局部打磨露出金属"
+    },
+    {
+      "name_zh": "深色实木与木饰面",
+      "name_en": "Dark Hardwood",
+      "application": "家具、隔断与墙面",
+      "finish": "哑光油面，保留木纹"
+    },
+    {
+      "name_zh": "皮革与帆布",
+      "name_en": "Leather and Canvas",
+      "application": "软包、桌面与帘幕",
+      "finish": "哑光做旧，允许磨痕"
+    },
+    {
+      "name_zh": "铆接与压花金属板",
+      "name_en": "Riveted and Embossed Metal Sheet",
+      "application": "柜体与墙面护板",
+      "finish": "压花或做旧，铆钉外露"
+    },
+    {
+      "name_zh": "磨砂玻璃与灯泡玻璃",
+      "name_en": "Frosted and Bulb Glass",
+      "application": "灯具罩与装饰",
+      "finish": "半透，暖光透出"
+    }
+  ],
+  "furniture_language": [
+    "家具为木作与金属混构：木箱体外包铜边与铆钉，四角加金属护角。",
+    "线条厚实并带装饰性弧度，弧线与直线交替，不做极简现代方盒。",
+    "落地方式为金属脚座或厚重木脚落地，脚型常做车木或兽足形式。",
+    "拉手为铜制横杆、环扣或模拟阀门轮盘，尺度偏大且外显。",
+    "桌面与坐面常用皮革或深色木，边缘以铜条收口。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以暖光低照度为主，灯泡外露或半透灯罩，强调灯丝与金属反射。",
+      "灯具作为机械陈设的一部分：管路吊灯、铜罩壁灯与铸铁吊灯成组布置。"
+    ],
+    "fixtures": [
+      "铜管吊灯",
+      "铸铁枝形吊灯",
+      "铜罩壁灯",
+      "车灯式台灯"
+    ],
+    "color_temperature_k": [
+      1800,
+      2400
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 80–180lx，任务与操作面 200–400lx",
+    "layering": "环境层由铸铁吊灯与铜罩壁灯提供；任务层为台灯与局部工作灯；重点层用暖光射灯照亮铜件与皮革；装饰层由齿轮与灯具造型构成，整体低照度、高对比。"
+  },
+  "architectural_elements": [
+    "明装黄铜管路与阀门节点，成组沿墙与天花走线。",
+    "铆接金属板柜体与墙面护板。",
+    "铸铁或铜制装饰支架与齿轮造型挂件。",
+    "深色木作护墙板配铜条收边。",
+    "皮革或帆布帘幕作为柔软隔断。"
+  ],
+  "applicable_spaces": [
+    "主题餐饮与酒吧",
+    "零售与陈列空间",
+    "展陈与体验空间",
+    "影棚与场景搭建",
+    "住宅书房与收藏室"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "黄铜与铜制件的材料与加工成本",
+      "手工铆接与压花金属板工艺",
+      "做旧抛光与做旧涂装的人工"
+    ],
+    "saving_moves": [
+      "铜件只在视觉焦点范围使用，其余用铜色饰面替代",
+      "以现成工业管件替代定制铸件",
+      "齿轮等造型件用轻质仿铜件替代实心铸件"
+    ],
+    "notes": "造价由铜材用量与手工工序共同决定；方案阶段应明确铜件清单与件数，避免后期追加铜饰导致预算失控。"
+  },
+  "construction_considerations": [
+    "黄铜件自然氧化会产生色差，须统一做保护涂层，或刻意安排氧化节奏作为效果",
+    "明装管路若接入真实水暖系统，其承压与密封做法标注待持证专业人员复核",
+    "外露灯泡与金属灯具的电气安全与散热标注待持证专业人员复核",
+    "压花与铆接金属板的基材平整度须先处理，避免铆钉排列出现波浪",
+    "公共空间中皮革与织物的防火处理标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "industrial-loft",
+    "warehouse-conversion",
+    "victorian",
+    "art-deco"
+  ],
+  "incompatible_elements": [
+    "纯白极简界面与无装饰平面",
+    "高亮冷白光与完全隐藏的灯具",
+    "大面积塑料质感构件",
+    "极简细腿家具与无五金把手"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "蒸汽朋克主题酒吧，层高约 3.6m，天花成组走黄铜管路并以法兰对齐，墙面为深色木作护墙板配铜条收边，一侧设铆接金属板吧台与齿轮造型挂件",
+      "material": "拉丝黄铜管件与阀门，做旧紫铜护角，深色实木箱体包铜边与外露铆钉，皮革台面与帆布帘，磨砂玻璃灯具罩，压花金属墙面护板",
+      "lighting": "1800–2400K 暖光为主，铸铁枝形吊灯与铜罩壁灯成组布置，灯泡外露或半透罩，射灯斜照铜件形成金属反射",
+      "furniture": "木作与铜混构家具，四角金属护角，车木或兽足式厚脚落地，铜制阀门轮盘式大尺度拉手，皮革桌面铜条收口",
+      "camera": "约 1.5m 视高，等效 28–35mm，略低机位仰视以强调管路与灯具的顶部层次",
+      "atmosphere": "机械感强、暖调低照度，金属反光与深木对比明显，带收藏室般的密集细节",
+      "keywords": [
+        "黄铜管路",
+        "法兰节点",
+        "外露铆钉",
+        "做旧紫铜",
+        "齿轮造型",
+        "铸铁枝形吊灯"
+      ]
+    },
+    "en": {
+      "space": "Steampunk themed bar, ceiling about 3.6 m, brass piping run in groups with flange-aligned nodes, dark hardwood wall panelling with copper trim, a riveted metal bar counter and gear-shaped ornaments on one side",
+      "material": "brushed brass piping and valves, aged copper corner guards, dark hardwood boxes with copper edging and exposed rivets, leather countertops and canvas curtains, frosted glass lamp shades, embossed metal wall panels",
+      "lighting": "predominantly 1800–2400 K warm light, cast-iron chandeliers and copper-shaded wall lights in groups, exposed bulbs or semi-translucent shades, spotlights grazing the brass to create metal reflections",
+      "furniture": "furniture built from timber and copper, metal corner guards, turned or clawed heavy feet on the floor, large valve-wheel brass pulls, leather tops with copper trim",
+      "camera": "eye level about 1.5 m, 28–35 mm equivalent, slightly low angle looking up to emphasise the overhead piping and fixture layers",
+      "atmosphere": "strongly mechanical, warm and low-lit, with pronounced contrast between metal reflections and dark timber and collectible density",
+      "keywords": [
+        "brass piping",
+        "flange nodes",
+        "exposed rivets",
+        "aged copper",
+        "gear ornament",
+        "cast-iron chandelier"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持管路成组走向与管组间距关系不变。",
+    "保持木作与金属收边的比例关系与位置不变。",
+    "保持主要开口与隔断位置不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现纯白极简界面与无装饰平面",
+      "不要出现高亮冷白光与完全隐藏的灯具",
+      "不要出现大面积塑料质感构件",
+      "不要出现极简细腿家具与无五金把手",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no pure-white minimal surfaces with no decoration",
+      "no bright cool-white light or fully concealed fixtures",
+      "no large areas of plastic-looking components",
+      "no thin-legged minimal furniture without visible hardware",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "管路组织",
+      "criteria": "管径 15–50mm，组内间距 80–150mm，节点法兰对齐，目视水平无错位",
+      "stage": "S4"
+    },
+    {
+      "check": "材料比例",
+      "criteria": "木作与金属视觉比例为 2:1–3:1，金属仅用于收边与节点，不做整面覆盖",
+      "stage": "S3"
+    },
+    {
+      "check": "金属观感",
+      "criteria": "铜件已完成统一保护涂层或按设计节奏氧化，同批件色差受控",
+      "stage": "S5"
+    },
+    {
+      "check": "照明效果",
+      "criteria": "环境 80–180lx、任务面 200–400lx，色温 1800–2400K，铜件在射灯下呈现明确反射",
+      "stage": "S6"
+    }
+  ]
+}

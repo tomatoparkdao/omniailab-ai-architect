@@ -1,0 +1,290 @@
+{
+  "style_id": "vintage-european",
+  "display_name_zh": "复古欧式旧物风",
+  "display_name_en": "Vintage European",
+  "family": "deco-retro",
+  "tags": [
+    "flea-market",
+    "patina",
+    "mismatch",
+    "aged",
+    "layered"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1960 年代起在欧洲城市住宅中形成，2010 年代在当代住宅与商业空间重新走热",
+    "origin": "欧洲城市的旧货与跳蚤市场文化，尤其英、法、意住宅传统与其旧物流通体系",
+    "summary": "它回应的是批量标准化家具把居住空间抹成同一副面孔的问题：当所有家具来自同一系列时，家就不再携带时间信息。这套做法不重建任何一个历史时期，而是把不同年代、不同来源的旧物混置在一个空间里，让彼此的不成套本身成为层次。它能成立的原因是欧洲城市长期积累了旧货流通体系——旧货商、拍卖与市集让家具、灯具、镜框可以低成本不断更换，所以它的重心在选品、修补与并置关系，而不在硬装：硬装往往只做修补，新旧并存的痕迹被有意保留。",
+    "key_movements": [
+      "欧洲旧货与市集文化",
+      "布波式居住（Bourgeois-Bohemian Living）",
+      "古典复兴后期的住宅陈设传统"
+    ]
+  },
+  "spatial_principles": [
+    "硬装做减法、软装做加法：墙面与地面保持中性或保留旧痕迹，识别度交给家具与旧物。",
+    "以混搭而非成套组织家具：同一空间至少出现 3 个不同年代或来源的单体，不做整屋成套。",
+    "分层布置：大件靠墙、小件成组、织物与画作叠加，形成密度不均的层次，同时留出若干空角。",
+    "保留原有构件与痕迹（旧地板、旧门、旧砖）优先于更换，翻新工序以修补为导向。",
+    "允许小尺度的不完美：色差、补漆、非对称摆放，不追求全局对齐与统一收口。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "不做统一模数，家具按人体尺度自然落位，主要动线净宽常见 ≥900mm 即可，不要求整齐对位。",
+      "家具高度差控制：主体件与点缀件高差常见 ≥300mm，避免成排同高。",
+      "旧画与镜框按上沿对齐或中心对齐两种做法，画框间距常见 60–120mm。",
+      "天花与墙面保留原始高度与不平整，不做齐平吊顶，层高按现状保留。"
+    ],
+    "ratios": [
+      "画框间距 60–120mm",
+      "家具高度差 ≥300mm",
+      "主要动线净宽 ≥900mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2700–3400mm；老建筑按原有结构高度保留，不做齐平吊顶压低层高"
+  },
+  "color_palette": [
+    {
+      "name_zh": "旧米白",
+      "name_en": "Aged Cream",
+      "hex": "#E8E0CE",
+      "usage": "墙面与大面积底色，占比约 25–35%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "褪色粉",
+      "name_en": "Faded Rose",
+      "hex": "#C9A9A0",
+      "usage": "织物与次要墙面，占比约 10–18%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "灰蓝",
+      "name_en": "Faded Blue",
+      "hex": "#8A9BA8",
+      "usage": "墙面与橱柜，占比约 10–18%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "旧金",
+      "name_en": "Aged Brass",
+      "hex": "#A98A4B",
+      "usage": "镜框、灯具与五金，占比约 4–10%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "深胡桃",
+      "name_en": "Dark Walnut",
+      "hex": "#5A4230",
+      "usage": "家具木作与地板，占比约 15–25%",
+      "role": "base"
+    },
+    {
+      "name_zh": "墨绿",
+      "name_en": "Deep Green",
+      "hex": "#3E4B3C",
+      "usage": "局部墙面与软包，占比约 10–18%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "铁锈红",
+      "name_en": "Rust Red",
+      "hex": "#8C5A44",
+      "usage": "陶土与织物点缀，占比约 5–10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "旧实木与回收木",
+      "name_en": "Salvaged Timber",
+      "application": "地板、家具与门扇",
+      "finish": "自然旧化，蜡面或油面，保留色差与磕碰"
+    },
+    {
+      "name_zh": "旧金属五金",
+      "name_en": "Aged Metal Hardware",
+      "application": "灯具、把手、铰链与镜框",
+      "finish": "自然氧化，锈迹与磨痕保留不做抛光"
+    },
+    {
+      "name_zh": "石灰灰泥与旧涂料",
+      "name_en": "Lime Plaster and Old Paint",
+      "application": "墙面与顶面",
+      "finish": "手工抹面，允许斑驳与局部剥落"
+    },
+    {
+      "name_zh": "亚麻与棉织物",
+      "name_en": "Linen and Cotton",
+      "application": "窗帘、坐具与桌布",
+      "finish": "水洗处理，保留自然褶皱"
+    },
+    {
+      "name_zh": "旧镜与画框",
+      "name_en": "Antique Mirror and Picture Frames",
+      "application": "墙面与柜门",
+      "finish": "水银斑驳，边缘氧化"
+    },
+    {
+      "name_zh": "陶土与旧釉面砖",
+      "name_en": "Terracotta and Old Glazed Tile",
+      "application": "地面与壁炉周边",
+      "finish": "磨旧，釉色非均匀"
+    }
+  ],
+  "furniture_language": [
+    "家具来自不同年代：18–19 世纪的欧式单体与 20 世纪中期件并置，不做成套。",
+    "线条以木作曲线为主，雕刻克制，体量偏高瘦，常见细长弯腿。",
+    "落地方式为四腿或直脚落地，不做整面基座与封闭裙板。",
+    "拉手为旧铜或陶瓷钮，大小不一，允许同柜不同钮。",
+    "表面保留补漆、磕碰与色差，不做整体翻新到统一色。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以多点低照度的局部灯替代均匀顶光，刻意制造不均的明暗层次。",
+      "灯具以旧台灯、壁灯与烛台式吊灯为主，光源位置低、数量多。"
+    ],
+    "fixtures": [
+      "旧金属台灯",
+      "布罩壁灯",
+      "枝形或烛台式吊灯",
+      "少量画框射灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      2700
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 80–200lx，阅读与操作面 200–400lx",
+    "layering": "环境层刻意压低；任务层由台灯与壁灯提供；重点层用少量射灯照亮画作与旧物；整体以多光源、低照度、亮度不均为特征。"
+  },
+  "architectural_elements": [
+    "保留或修补的旧木地板与旧门，允许色差与磨损。",
+    "石膏线脚与壁炉式装饰构件，做旧而不翻新。",
+    "旧木窗与可开启百叶窗。",
+    "墙面画作与镜框的自由排布，含非对称组合。",
+    "局部旧砖或旧瓷砖外露的墙面。"
+  ],
+  "applicable_spaces": [
+    "住宅客厅与书房",
+    "小型餐饮与酒吧",
+    "精品店与买手店",
+    "民宿与精品酒店",
+    "摄影与展陈空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "旧物选品的采购与运输成本",
+      "旧木与旧金属的修补工艺",
+      "多光源灯具与电气点位改造"
+    ],
+    "saving_moves": [
+      "以少量真旧件做视觉焦点，其余用现代仿旧件补足",
+      "保留原有旧地板与旧门只做修补、不上新面层",
+      "通过调整织物与画作密度降低硬装投入"
+    ],
+    "notes": "造价弹性极大，主导项是选品而非施工；应在方案阶段先确定 2–3 件真旧主体，其余按普通家具预算控制。"
+  },
+  "construction_considerations": [
+    "旧木地板的打磨深度须先试板：过度打磨会丢失包浆，过浅则留不住旧感",
+    "旧金属件与老旧电线的电气安全改造标注待持证专业人员复核",
+    "旧砖墙与旧涂层的附着力与含铅风险须检测后再决定覆盖方式，结论标注待持证专业人员复核",
+    "多光源布局须在电气点位阶段一次排定，避免后期明装走线破坏旧墙",
+    "公共空间中织物与窗帘的防火处理标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "art-deco",
+    "english-country",
+    "french-romantic",
+    "european-classical",
+    "mid-century-modern"
+  ],
+  "incompatible_elements": [
+    "成套统一的新家具与整屋同一系列",
+    "高光镜面饰面与无痕现代工艺",
+    "严格对称与模数化的古典重演",
+    "极简留白与单一冷白光照明"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "复古欧式旧物风住宅客厅，层高约 3.0m 保留原顶不做吊顶，沿墙布置高瘦的旧木家具，墙面自由排布大小不一的旧画与斑驳镜框，窗为旧木百叶窗",
+      "material": "回收老木地板见包浆与色差，深胡桃木家具配旧铜拉手，石灰灰泥墙面略带斑驳，亚麻窗帘与棉质坐垫，旧陶土与局部旧砖",
+      "lighting": "2400–2700K 旧金属台灯与布罩壁灯多点布置，主灯为烛台式吊灯，照度低而不均，少量射灯斜照画作",
+      "furniture": "18–19 世纪欧式单体与中期现代件混置，细长弯腿落地，木作曲线克制，同柜拉手不成套，坐具面料水洗起皱",
+      "camera": "约 1.5m 视高，等效 28–35mm，略偏轴以呈现非对称的画作排布与旧物密度",
+      "atmosphere": "时间感强、层次密而不乱，色调偏暖且略灰，光线呈柔和的不均匀分布",
+      "keywords": [
+        "旧木包浆",
+        "跳蚤市场旧物",
+        "不成套家具",
+        "斑驳镜框",
+        "旧铜五金",
+        "亚麻织物"
+      ]
+    },
+    "en": {
+      "space": "Vintage European living room, ceiling about 3.0 m with the original soffit kept exposed, tall slim old timber furniture along the walls, assorted antique paintings and spotted mirrors freely arranged, old timber louvred windows",
+      "material": "salvaged timber floor showing patina and tone variation, dark walnut furniture with aged brass pulls, lime-plaster walls with faint mottling, linen curtains and cotton cushions, old terracotta and patches of aged brick",
+      "lighting": "2400–2700 K aged metal table lamps and fabric-shaded wall lights deployed in multiples, a candelabra-style pendant as the main fixture, low and uneven illuminance, a few spotlights grazing the paintings",
+      "furniture": "18th–19th century European pieces mixed with mid-century items, slender cabriole legs on the floor, restrained wood curves, mismatched pulls on the same cabinet, washed wrinkled upholstery",
+      "camera": "eye level about 1.5 m, 28–35 mm equivalent, slightly off-axis to show the asymmetric picture arrangement and the density of old objects",
+      "atmosphere": "strongly time-worn, densely layered but not chaotic, warm and slightly grey, soft uneven light",
+      "keywords": [
+        "aged wood patina",
+        "flea-market objects",
+        "mismatched furniture",
+        "spotted antique frames",
+        "aged brass hardware",
+        "linen textiles"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持原有层高与顶面不平整状态，不新增齐平吊顶。",
+    "保持旧门窗与墙面的原始开口位置不变。",
+    "保持画作与镜框的排布关系与墙面分组位置不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现成套统一的新家具与整屋同一系列",
+      "不要出现高光镜面饰面与无痕现代工艺",
+      "不要出现严格对称与模数化的古典重演",
+      "不要出现极简留白与单一冷白光照明",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no matching sets of new furniture or a single product family throughout",
+      "no high-gloss mirror finishes or seamless modern detailing",
+      "no strictly symmetrical, modular classical re-enactment",
+      "no minimal blank walls or single cool-white lighting",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "旧物混置",
+      "criteria": "同一视觉范围内至少出现 3 个不同年代或来源的单体，无成套家具；主体件与点缀件高差 ≥300mm",
+      "stage": "S3"
+    },
+    {
+      "check": "痕迹保留",
+      "criteria": "旧木与旧金属保留自然磨损与色差，未做整体抛光或统一重漆",
+      "stage": "S5"
+    },
+    {
+      "check": "画作排布",
+      "criteria": "画框间距 60–120mm，允许非对称但上沿或中心至少一种对齐方式成立",
+      "stage": "S4"
+    },
+    {
+      "check": "照度与色温",
+      "criteria": "环境 80–200lx、阅读面 200–400lx，色温 2200–2700K，亮度呈可读的不均匀分布",
+      "stage": "S6"
+    }
+  ]
+}

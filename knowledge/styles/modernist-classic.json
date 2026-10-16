@@ -1,0 +1,276 @@
+{
+  "style_id": "modernist-classic",
+  "display_name_zh": "现代主义经典",
+  "display_name_en": "Modernist Classic",
+  "family": "modern",
+  "tags": [
+    "bauhaus-derived",
+    "module",
+    "rational",
+    "white-box"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中期成型，战后经标准化住宅与公共建筑大规模落地",
+    "origin": "由早期现代主义与包豪斯思想发展出的国际式做法，在欧洲战后重建中被体系化",
+    "summary": "现代主义经典要解决的是「如何在有限造价与标准化建造下，仍然得到秩序良好的空间」。答案是把一切收进模数网格：柱网、隔墙、门窗、家具都按同一套尺寸排布，于是构件可预制、可复制、施工误差可控。它形成白盒子式的空间——白墙、平顶、规则开窗、功能分区清楚。与后来更松散的现代风格相比，它更强调理性与规则本身，容不下随性的造型。",
+    "key_movements": [
+      "现代主义建筑运动",
+      "国际式风格",
+      "功能主义",
+      "包豪斯设计教育运动"
+    ]
+  },
+  "spatial_principles": [
+    "严格功能分区，动静分离，用短走道或门厅组织流线，避免流线交叉",
+    "平面按模数网格排布，柱网与隔墙、门窗洞口对齐",
+    "白色墙面为主，空间方正，开窗规则重复形成节奏",
+    "层高统一、管线隐蔽，设备与收纳纳入规则体块而非零散布置",
+    "主通道净宽 ≥1000mm（常见工程惯例区间），流线尽量短且直达"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以模数为骨，墙板、门窗与家具尺寸统一落在同一网格上",
+      "开窗规则重复，窗宽窗高成系列，洞口对位",
+      "天花与地面平整，不做装饰性跌级与雕饰",
+      "门洞规整方正，门扇与门框按统一尺寸成系列"
+    ],
+    "ratios": [
+      "模数基准取 300mm 的整数倍（常见工程惯例区间）",
+      "窗洞与门洞按 1:1、1:1.5 比例成系列（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3300mm（常见工程惯例区间），保持各空间层高一致"
+  },
+  "color_palette": [
+    {
+      "name_zh": "纯白",
+      "name_en": "Pure White",
+      "hex": "#F2F2F0",
+      "usage": "墙面与天花基调，占比约 60%",
+      "role": "base"
+    },
+    {
+      "name_zh": "中灰",
+      "name_en": "Mid Grey",
+      "hex": "#9B9B98",
+      "usage": "地面与次要面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "近黑",
+      "name_en": "Near Black",
+      "hex": "#1A1A1A",
+      "usage": "钢框、门窗与家具框，占比约 10%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "自然木色",
+      "name_en": "Natural Wood",
+      "hex": "#B9905F",
+      "usage": "门、柜体与家具细部，占比约 10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "蓝灰",
+      "name_en": "Slate Blue",
+      "hex": "#6C7A88",
+      "usage": "局部墙面或家具点缀，占比 ≤5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "白色乳胶漆与石膏",
+      "name_en": "White Paint and Plaster",
+      "application": "墙面与天花",
+      "finish": "哑光平整",
+      "notes": "浅色会放大基层不平整，需控制找平"
+    },
+    {
+      "name_zh": "水磨石与混凝土",
+      "name_en": "Terrazzo and Concrete",
+      "application": "地面与楼梯",
+      "finish": "磨光或哑光面"
+    },
+    {
+      "name_zh": "钢与玻璃",
+      "name_en": "Steel and Glass",
+      "application": "窗、隔断与门",
+      "finish": "细框、粉末喷涂或本色钢"
+    },
+    {
+      "name_zh": "木饰面",
+      "name_en": "Wood Veneer",
+      "application": "门、柜体与墙板",
+      "finish": "清漆哑光"
+    },
+    {
+      "name_zh": "白色瓷砖",
+      "name_en": "White Tile",
+      "application": "厨卫墙面",
+      "finish": "哑光或亮面方砖"
+    }
+  ],
+  "furniture_language": [
+    "几何体块为主，功能优先，钢管与胶合板构成基本语汇",
+    "无多余装饰，结构外显，连接件直接可见",
+    "尺度规整，与模数网格一致，可标准化复制",
+    "拉手与五金简洁几何化，不做雕饰"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "均匀的功能性照明，照度充足，服务使用而非制造氛围",
+      "灯具造型几何化、简洁，不规避外露的线性灯具"
+    ],
+    "fixtures": [
+      "直管或线性吊灯",
+      "简洁筒灯",
+      "几何壁灯",
+      "可调工作灯"
+    ],
+    "color_temperature_k": [
+      3000,
+      4000
+    ],
+    "illuminance_lux": "居住与办公环境 200–500lx（常见工程惯例区间）",
+    "layering": "以环境均匀照明为主，功能照明就地补充，不做强调性重点光"
+  },
+  "architectural_elements": [
+    "平整白墙与整齐的阴角线",
+    "规则重复的窗洞与门洞",
+    "细钢框玻璃隔断",
+    "平板门与外露简洁门框",
+    "水磨石地面与平整天花"
+  ],
+  "applicable_spaces": [
+    "住宅",
+    "办公空间",
+    "教育与研究建筑",
+    "图书馆与公共空间",
+    "展览空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "水磨石与混凝土地面的做法与磨光工艺",
+      "细钢框玻璃隔断的定制加工",
+      "大面积墙面的平整度控制"
+    ],
+    "saving_moves": [
+      "以仿水磨石瓷砖或大板替代现浇水磨石",
+      "以系统和成品钢框隔断替代全定制隔断",
+      "减少定制木作，用标准化成品柜加统一定制门板"
+    ],
+    "notes": "现代主义经典的成本弹性在于地面与隔断做法，墙面与模数规则不宜妥协，否则秩序感立刻散掉"
+  },
+  "construction_considerations": [
+    "模数网格需在方案阶段一次性锁定，施工中改尺寸会连锁破坏对位关系",
+    "墙面与天花的平整度与阴角挺直度需重点控制，白墙会放大所有偏差",
+    "钢框玻璃隔断的放线与预埋需在墙体施工前确认，避免现场二次开凿",
+    "水磨石与混凝土面层需按分格缝排版施工，控制开裂与色差",
+    "结构安全、消防与机电负荷等判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "bauhaus",
+    "modern-minimalism",
+    "scandinavian",
+    "italian-minimal",
+    "corporate-contemporary"
+  ],
+  "incompatible_elements": [
+    "古典雕饰、线脚与奶油风装饰",
+    "繁复软装与大量织物堆叠",
+    "曲面与不规则造型墙面",
+    "过度装饰性色彩与花纹",
+    "外露未处理的杂乱管线与设备"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "方正、按模数网格组织的客厅，白墙平整，开窗规则重复，天花平整无跌级",
+      "material": "纯白哑光墙面，水磨石地面，细钢框玻璃隔断，自然木色平板门与柜体，白色瓷砖厨房墙面",
+      "lighting": "均匀的功能性照明，线性吊灯与嵌入筒灯提供充足照度，阴影平缓柔和",
+      "furniture": "钢管与胶合板构成的几何体块家具，结构外显，尺度规整、可标准化复制",
+      "camera": "一点透视，镜头水平、人眼高度，24–35mm，强调网格与对齐关系",
+      "atmosphere": "理性、明亮、秩序良好，规则本身构成美感",
+      "keywords": [
+        "现代主义经典",
+        "模数网格",
+        "白盒子",
+        "钢框玻璃",
+        "水磨石",
+        "规则开窗"
+      ]
+    },
+    "en": {
+      "space": "A rectangular living room organised on a modular grid, flat white walls, regularly repeated window openings, flat ceiling with no steps",
+      "material": "Pure-white matte walls, terrazzo floor, slim steel-framed glass partition, natural-wood flat doors and cabinetry, white tiled kitchen wall",
+      "lighting": "Even functional lighting from linear pendants and recessed downlights, high illuminance, soft low-contrast shadow",
+      "furniture": "Geometric block furniture in steel tube and plywood, structure exposed, regular dimensions and standardised",
+      "camera": "One-point perspective, eye-level horizontal camera, 24–35mm, emphasising the grid and alignment",
+      "atmosphere": "Rational, bright, well-ordered; the rule itself is the aesthetic",
+      "keywords": [
+        "modernist classic",
+        "modular grid",
+        "white box",
+        "steel and glass",
+        "terrazzo",
+        "regular openings"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持柱网与隔墙的模数对齐关系不变",
+    "保持窗洞与门洞的规则重复与对位关系",
+    "保持天花与地面的平整连续，不新增跌级与造型"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要古典雕饰、线脚与奶油风装饰",
+      "不要繁复软装与大量织物堆叠",
+      "不要曲面与不规则造型墙面",
+      "不要过度装饰性色彩与花纹",
+      "不要外露未处理的杂乱管线与设备"
+    ],
+    "en": [
+      "no classical ornament, mouldings or cake-style decor",
+      "no layered ornate soft furnishing or heavy textile clutter",
+      "no curved or irregular sculpted wall forms",
+      "no overly decorative colours or patterns",
+      "no exposed unmanaged services or clutter"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "模数一致性",
+      "criteria": "墙板、门窗与柜体尺寸均为基准模数的整数倍，偏差 ≤5mm",
+      "stage": "schematic"
+    },
+    {
+      "check": "洞口对位",
+      "criteria": "上下层或相邻门窗洞口对齐，偏移 ≤10mm",
+      "stage": "construction"
+    },
+    {
+      "check": "墙面平整度",
+      "criteria": "白墙在侧光下无可见波浪，阴角通直",
+      "stage": "construction"
+    },
+    {
+      "check": "功能分区",
+      "criteria": "动静分区清楚，流线无交叉，主通道净宽 ≥1000mm（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "色数控制",
+      "criteria": "主色为白与灰，彩色仅作 ≤10% 的点缀",
+      "stage": "schematic"
+    }
+  ]
+}

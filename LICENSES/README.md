@@ -2,7 +2,7 @@
 name: omniailab-licences-index
 description: LICENSES 目录索引 —— 第三方许可证原文与署名的归档位置；与 THIRD_PARTY_NOTICES.md 配套，二者构成本仓唯一的第三方声明落点。
 scope: 许可证原文归档（唯一处）
-version: 1.3.0
+version: 1.4.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -16,8 +16,13 @@ agent_created: true
 
 ## 现状
 
-**本仓当前不打包、不分发任何第三方源码或二进制**，因此本目录暂不存放第三方
-许可证全文。与本仓配合使用的第三方项目（均为**可选**依赖或**用户自备**的宿主软件）
+**本仓不打包、不分发任何第三方源码或二进制。** 本目录存放两类材料：
+
+| 文件 | 性质 |
+|---|---|
+| `LICENSE-<repo>.txt` | 设计风格系统立项时**参考过**的三个 MIT 许可项目的许可证原文（仅审计留档，本仓不分发其任何作品内容）。逐项审计结论见 `THIRD_PARTY_NOTICES.md` 的「设计风格系统的参考项目审计」一节。 |
+
+其余与本仓配合使用的第三方项目（均为**可选**依赖或**用户自备**的宿主软件）逐项登记在与本仓配合使用的第三方项目（均为**可选**依赖或**用户自备**的宿主软件）
 逐项登记在仓库根目录的 `THIRD_PARTY_NOTICES.md` 中，包含：
 
 - 项目名

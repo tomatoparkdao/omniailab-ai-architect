@@ -1,0 +1,257 @@
+{
+  "$comment": "© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omniailabx.com/schemas/design-style.schema.json",
+  "title": "OmniAiLab Design Style Intelligence — 风格数据 Schema",
+  "description": "单个建筑/室内设计风格的结构化定义。二十个字段为必需项（第一版硬约束），其余为可选的元数据字段。风格数据只描述设计方法与本项目独立撰写的判据，不含任何第三方项目的专有内容。",
+  "type": "object",
+  "required": [
+    "style_id",
+    "display_name_zh",
+    "display_name_en",
+    "history_and_context",
+    "spatial_principles",
+    "proportion_and_geometry",
+    "color_palette",
+    "materials",
+    "furniture_language",
+    "lighting_strategy",
+    "architectural_elements",
+    "applicable_spaces",
+    "budget_considerations",
+    "construction_considerations",
+    "compatible_styles",
+    "incompatible_elements",
+    "positive_prompt_components",
+    "geometry_preservation_rules",
+    "negative_constraints",
+    "quality_checklist"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "style_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "风格唯一标识（kebab-case）。必须与文件名一致（knowledge/styles/<style_id>.json）。"
+    },
+    "display_name_zh": { "type": "string", "minLength": 2, "maxLength": 24 },
+    "display_name_en": { "type": "string", "minLength": 2, "maxLength": 64 },
+
+    "family": {
+      "type": "string",
+      "enum": ["modern", "oriental", "classic", "deco-retro", "industrial", "natural-organic", "regional", "experimental"],
+      "description": "风格族。用于推荐引擎在同族内避免重复建议。"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "检索标签（小写 kebab-case），供 catalog.json 按标签搜索。"
+    },
+    "stages": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["S2", "S3", "S4", "S5", "S6", "S7", "S8"] },
+      "description": "该风格主要作用的设计阶段。"
+    },
+    "version": { "type": "string" },
+    "source": {
+      "type": "string",
+      "description": "固定为 OmniAiLab —— 表示本条数据由本项目独立撰写。"
+    },
+
+    "history_and_context": {
+      "type": "object",
+      "required": ["period", "origin", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "period": { "type": "string", "description": "风格形成或盛行的大致时期" },
+        "origin": { "type": "string", "description": "地域与文化来源" },
+        "summary": { "type": "string", "minLength": 40, "description": "为什么会形成这套做法，以及它解决的是什么问题（不是形容词堆砌）" },
+        "key_movements": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "spatial_principles": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "空间组织原则。每条写成可判定的句子，例如「公共区连通、私密区串接，不做长走廊」。"
+    },
+
+    "proportion_and_geometry": {
+      "type": "object",
+      "required": ["rules"],
+      "additionalProperties": false,
+      "properties": {
+        "rules": { "type": "array", "minItems": 3, "items": { "type": "string" }, "description": "比例与几何规则" },
+        "ratios": { "type": "array", "items": { "type": "string" }, "description": "关键比例（如 3:2、黄金比、模数 300mm）" },
+        "ceiling_height_mm": { "type": "string", "description": "层高常见做法区间" }
+      }
+    },
+
+    "color_palette": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name_zh", "name_en", "hex", "usage"],
+        "additionalProperties": false,
+        "properties": {
+          "name_zh": { "type": "string" },
+          "name_en": { "type": "string" },
+          "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "usage": { "type": "string", "description": "用在哪里、占比多少" },
+          "role": { "type": "string", "enum": ["base", "primary", "secondary", "accent", "neutral", "accent-metal"] }
+        }
+      }
+    },
+
+    "materials": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name_zh", "name_en", "application"],
+        "additionalProperties": false,
+        "properties": {
+          "name_zh": { "type": "string" },
+          "name_en": { "type": "string" },
+          "application": { "type": "string", "description": "用在哪（地面/墙面/台面/立面/软装）" },
+          "finish": { "type": "string", "description": "表面处理（哑光/丝光/拉丝/自然面…）" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+
+    "furniture_language": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "家具与固定件的造型语汇：线条、体量、尺度、是否落地、拉手形式等。"
+    },
+
+    "lighting_strategy": {
+      "type": "object",
+      "required": ["principles"],
+      "additionalProperties": false,
+      "properties": {
+        "principles": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+        "fixtures": { "type": "array", "items": { "type": "string" } },
+        "color_temperature_k": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[最低, 最高] 色温，单位 K"
+        },
+        "illuminance_lux": { "type": "string", "description": "照度取向（标注为常见工程惯例区间）" },
+        "layering": { "type": "string", "description": "光的分层策略（环境/任务/重点/装饰）" }
+      }
+    },
+
+    "architectural_elements": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "标志性建筑与构造元素：门洞形式、垭口、天花做法、墙面处理、地面拼法等。"
+    },
+
+    "applicable_spaces": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "适合的空间类型（住宅/办公/商业/餐饮/酒店/展厅…）"
+    },
+
+    "budget_considerations": {
+      "type": "object",
+      "required": ["tier", "drivers"],
+      "additionalProperties": false,
+      "properties": {
+        "tier": { "type": "string", "enum": ["economy", "mid", "premium", "luxury"], "description": "典型造价档位" },
+        "drivers": { "type": "array", "minItems": 2, "items": { "type": "string" }, "description": "造价驱动项（真正吃掉预算的是什么）" },
+        "saving_moves": { "type": "array", "items": { "type": "string" }, "description": "不破坏风格前提下的降本做法" },
+        "notes": { "type": "string" }
+      }
+    },
+
+    "construction_considerations": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "施工与工艺重点、易出问题的环节、必须提前定的工序。"
+    },
+
+    "compatible_styles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "可混搭的 style_id 列表（推荐引擎据此生成混搭方案）。"
+    },
+
+    "incompatible_elements": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "description": "与本风格冲突的元素 —— 这类元素混进来会立刻破坏风格。"
+    },
+
+    "positive_prompt_components": {
+      "type": "object",
+      "required": ["zh", "en"],
+      "additionalProperties": false,
+      "properties": {
+        "zh": { "$ref": "#/$defs/promptBlock" },
+        "en": { "$ref": "#/$defs/promptBlock" }
+      },
+      "description": "供 Prompt Compiler 组装的正向提示词组件，中英双语。"
+    },
+
+    "geometry_preservation_rules": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "description": "保持空间几何不变的约束（供跨视角一致性使用）。"
+    },
+
+    "negative_constraints": {
+      "type": "object",
+      "required": ["zh", "en"],
+      "additionalProperties": false,
+      "properties": {
+        "zh": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+        "en": { "type": "array", "minItems": 3, "items": { "type": "string" } }
+      },
+      "description": "负向约束：必须明确排除的内容。"
+    },
+
+    "quality_checklist": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["check", "criteria"],
+        "additionalProperties": false,
+        "properties": {
+          "check": { "type": "string", "description": "检查项" },
+          "criteria": { "type": "string", "description": "通过判准（可判定，尽量带数值）" },
+          "stage": { "type": "string", "description": "建议在哪个阶段校核" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "promptBlock": {
+      "type": "object",
+      "required": ["space", "material", "lighting", "furniture", "camera", "atmosphere"],
+      "additionalProperties": false,
+      "properties": {
+        "space": { "type": "string", "description": "空间与体量描述" },
+        "material": { "type": "string", "description": "材料与质感描述" },
+        "lighting": { "type": "string", "description": "光线描述" },
+        "furniture": { "type": "string", "description": "家具与软装描述" },
+        "camera": { "type": "string", "description": "机位与镜头倾向" },
+        "atmosphere": { "type": "string", "description": "整体氛围" },
+        "keywords": { "type": "array", "items": { "type": "string" }, "description": "可直接拼进提示词的关键词" }
+      }
+    }
+  }
+}

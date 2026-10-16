@@ -1,0 +1,276 @@
+{
+  "style_id": "earth-adobe",
+  "display_name_zh": "夯土与土坯",
+  "display_name_en": "Earth & Adobe",
+  "family": "natural-organic",
+  "tags": [
+    "rammed-earth",
+    "thick-wall",
+    "thermal-mass",
+    "clay"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "源自数千年的生土建造传统，20 世纪以来被现代土建筑实践重新采用",
+    "origin": "干旱与半干旱地区的生土民居体系，覆盖北非、中东、中亚与美洲西南部",
+    "summary": "在缺乏烧制能源与运输条件的地区，就地取土是最经济的建材，于是发展出夯土与土坯两种成熟做法。土的蓄热能力强、传热慢，厚实的土墙能显著削峰填谷，使室内昼夜温差远小于室外，这正是干热气候最需要的性能。由此形成的构造语言随之固定下来：墙厚 300–600mm、墙顶收分、门窗洞口做成喇叭口以减少洞口对墙体的削弱并加大进光，外露面用泥浆或石灰保护以防雨蚀。它的核心是构造体系与热工性能，而非单纯的外观质感。",
+    "key_movements": [
+      "生土建筑传统",
+      "夯土建筑",
+      "现代土建筑运动",
+      "气候适应性建筑"
+    ]
+  },
+  "spatial_principles": [
+    "以厚实的生土墙作为主要围护与蓄热体，外墙厚度常见 300–600mm（常见工程惯例区间）",
+    "平面向内收拢、少开大洞，房间进深较大以稳定内部温度波动",
+    "以遮荫的内院或半地下空间组织中心，公共区围绕其布置",
+    "门窗洞口做成喇叭口（外侧小、内侧大），扩大室内进光并保留洞口侧墙的承重",
+    "屋顶与墙顶的出檐或女儿墙收分形成遮雨保护，避免雨水直接冲刷土墙表面"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "外墙厚度常见 300–600mm（常见工程惯例区间），高厚比受结构限制，墙高与墙厚比常见 8:1–12:1（常见工程惯例区间）",
+      "门窗洞口做喇叭口，内口宽度约为外口宽度的 1.5–2.5 倍（常见工程惯例区间）",
+      "洞口过梁以木梁或砌拱承托，跨度常见 600–1500mm（常见工程惯例区间）",
+      "墙面保持整体连续，转角做圆弧以避免应力集中"
+    ],
+    "ratios": [
+      "墙厚 : 层高常见约 1:8–1:12（常见工程惯例区间）",
+      "洞口率（洞口面积占墙面面积）偏低，常见 ≤20%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2400–3000mm（常见工程惯例区间）；以木梁或土顶底面为准，低矮以利于保温"
+  },
+  "color_palette": [
+    {
+      "name_zh": "生土黄",
+      "name_en": "Raw Earth Ochre",
+      "hex": "#C2A277",
+      "usage": "夯土墙面基调，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "黏土红棕",
+      "name_en": "Clay Red-brown",
+      "hex": "#9A5F42",
+      "usage": "土坯砖与地坪，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "稻草米",
+      "name_en": "Straw Beige",
+      "hex": "#DED0B4",
+      "usage": "抹面与顶面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "木炭深褐",
+      "name_en": "Charcoal Umber",
+      "hex": "#4A3E33",
+      "usage": "木梁与家具，占比 ≤10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "赤陶橙",
+      "name_en": "Burnished Terracotta",
+      "hex": "#B4643C",
+      "usage": "器物与局部地面点缀，占比 ≤5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "夯土",
+      "name_en": "Rammed Earth",
+      "application": "承重与围护墙体",
+      "finish": "保留夯层纹理，表面做泥浆或石灰保护层",
+      "notes": "配比与压实度需试验确定，做法标注待持证专业人员复核"
+    },
+    {
+      "name_zh": "土坯砖与草泥",
+      "name_en": "Adobe Brick and Straw-clay",
+      "application": "砌体墙与内隔墙",
+      "finish": "手工成型自然面，外覆泥浆抹面"
+    },
+    {
+      "name_zh": "泥浆抹面与石灰抹面",
+      "name_en": "Mud Plaster and Lime Plaster",
+      "application": "内外墙面",
+      "finish": "手工批刮，透气，略见起伏"
+    },
+    {
+      "name_zh": "实木梁与椽",
+      "name_en": "Solid Timber Beams and Rafters",
+      "application": "过梁、天花与门扇",
+      "finish": "自然面或擦油，保留木纹"
+    },
+    {
+      "name_zh": "天然石材与砾石",
+      "name_en": "Natural Stone and Gravel",
+      "application": "基础、勒脚与地面",
+      "finish": "自然面，不抛光"
+    }
+  ],
+  "furniture_language": [
+    "厚重低矮，以实木与土砌固定件为主，形制朴素",
+    "固定坐台与壁龛式储物结合墙体做成一体，减少独立家具",
+    "坐具多见厚软垫与木或砌体基座组合，边角圆润",
+    "表面以哑光织物与粗陶器皿呼应墙体的土色系"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以喇叭口窗洞引入的自然光为主，光在厚墙上形成明显的明暗过渡",
+      "人工光低照度暖黄，避免均匀强光破坏土墙的柔和质感"
+    ],
+    "fixtures": [
+      "壁龛内嵌灯",
+      "陶质与土色吊灯",
+      "低位落地灯",
+      "窗龛洗墙灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      2900
+    ],
+    "illuminance_lux": "起居环境 100–200lx，阅读角落 250–300lx（常见工程惯例区间）",
+    "layering": "环境光以窗洞自然光为主，任务光低位补充，重点光擦亮喇叭口窗龛的厚度感"
+  },
+  "architectural_elements": [
+    "夯土层理墙面与圆角转角",
+    "喇叭口门窗洞口",
+    "土顶或木梁椽条天花",
+    "墙顶收分与出檐遮雨",
+    "壁龛、土砌坐台与砌体储物"
+  ],
+  "applicable_spaces": [
+    "住宅与度假住宅",
+    "民宿与文化空间",
+    "展览与美术馆",
+    "餐饮空间",
+    "教育与社区空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "夯土施工的模板、人工与土料试验",
+      "厚墙带来的基础加固与工程量",
+      "防水保护层与专用构造节点"
+    ],
+    "saving_moves": [
+      "非承重内隔墙用土坯砖或草泥替代夯土，仅在主视线保留夯土面",
+      "以泥浆抹面覆盖普通砌体做出土墙质感，用于次要房间",
+      "喇叭口收边做法统一，避免每洞单独定制模板"
+    ],
+    "notes": "夯土的结构性能与配比必须通过试验并由持证专业人员确认，降本不能以削弱墙体压实度或防水为代价"
+  },
+  "construction_considerations": [
+    "土料配比、含水率与压实度需先做试块并检测强度，做法标注待持证专业人员复核",
+    "生土墙抗雨水冲刷能力弱，勒脚与墙顶必须做石砌或出檐保护，做法标注待持证专业人员复核",
+    "夯土墙的沉降与收缩需留置变形缝并控制施工节奏，避免贯穿裂缝",
+    "洞口过梁与拱的支撑长度需与墙厚匹配，做法标注待持证专业人员复核",
+    "湿区与管线穿墙处的防水与防腐做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "rustic-natural",
+    "mediterranean",
+    "mexican-hacienda",
+    "african-contemporary",
+    "biophilic"
+  ],
+  "incompatible_elements": [
+    "大面积玻璃幕墙与通高落地窗",
+    "高光烤漆与镜面金属饰面",
+    "轻薄干挂板与薄壁隔墙的工业化界面",
+    "繁复金色雕饰与水晶灯具",
+    "高饱和荧光色与塑料制品"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "一间生土墙体的起居空间，墙面露出夯土层理与圆角转角，一处喇叭口窗洞内宽外窄，顶部为木梁与椽条",
+      "material": "夯土墙面配泥浆抹面，土坯砖砌体，实木梁椽与门扇，砾石与石材勒脚，粗陶器皿与粗纺软垫",
+      "lighting": "日光穿过喇叭口窗洞在厚墙上形成柔和明暗过渡，壁龛内嵌灯发出低位暖光",
+      "furniture": "土砌固定坐台与厚软垫，厚重实木矮桌，壁龛式储物，家具数量少而敦实",
+      "camera": "人眼高度，24–35mm，略偏侧向以呈现洞口侧墙与墙厚的层次",
+      "atmosphere": "温厚、安静、温度稳定，有土地与手工的实感",
+      "keywords": [
+        "夯土",
+        "土坯",
+        "厚墙",
+        "喇叭口窗",
+        "热惰性",
+        "生土"
+      ]
+    },
+    "en": {
+      "space": "A living space with raw earth walls showing rammed layers and rounded corners, a splayed window opening narrow outside and wider inside, timber beams and rafters overhead",
+      "material": "Rammed earth walls with mud plaster, adobe brick masonry, solid timber beams, rafters and door leaves, gravel and stone plinth, coarse ceramics and rough woven cushions",
+      "lighting": "Daylight through the splayed opening creating a soft transition of light and shade on the thick wall, recessed niche lights giving low warm glow",
+      "furniture": "Earth-built fixed bench with thick cushions, a heavy low timber table, niche storage, few but solid pieces",
+      "camera": "Eye level, 24–35mm, slightly angled to reveal the reveal depth and wall thickness",
+      "atmosphere": "Warm, quiet, thermally stable, with a tangible sense of earth and handwork",
+      "keywords": [
+        "rammed earth",
+        "adobe",
+        "thick wall",
+        "splayed opening",
+        "thermal mass",
+        "earth"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持墙厚与喇叭口洞口的内外宽度关系不变",
+    "保持墙体的圆角转角与整体连续性，不插入锐角交接",
+    "保持木梁与椽条的位置、间距与截面尺寸不变"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要大面积玻璃幕墙与通高落地窗",
+      "不要高光烤漆与镜面金属饰面",
+      "不要轻薄干挂板与薄壁工业隔墙",
+      "不要繁复金色雕饰与水晶灯具",
+      "不要高饱和荧光色与塑料制品"
+    ],
+    "en": [
+      "no large glazed curtain walls or full-height windows",
+      "no high-gloss lacquer or mirrored metal finishes",
+      "no thin dry-cladding panels or thin industrial partitions",
+      "no elaborate gilded ornament or crystal fixtures",
+      "no saturated fluorescent colours or plastic products"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "墙体厚度",
+      "criteria": "主要外墙厚度落在 300–600mm（常见工程惯例区间），或经复核的等效蓄热构造",
+      "stage": "schematic"
+    },
+    {
+      "check": "洞口形式",
+      "criteria": "主视线门窗洞口为喇叭口，内口宽度约为外口的 1.5–2.5 倍",
+      "stage": "schematic"
+    },
+    {
+      "check": "雨水保护",
+      "criteria": "墙顶与勒脚设有出檐、收分或石砌保护，无裸露土墙直接淋雨",
+      "stage": "construction"
+    },
+    {
+      "check": "裂缝控制",
+      "criteria": "墙面无贯穿裂缝，细裂纹宽度 ≤0.3mm 且不连续性发展",
+      "stage": "construction"
+    },
+    {
+      "check": "洞口率",
+      "criteria": "洞口面积占墙面面积 ≤20%，以保持热惰性优势",
+      "stage": "schematic"
+    }
+  ]
+}

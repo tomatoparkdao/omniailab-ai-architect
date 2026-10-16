@@ -1,0 +1,273 @@
+{
+  "style_id": "neoclassical",
+  "display_name_zh": "新古典",
+  "display_name_en": "Neoclassical",
+  "family": "classic",
+  "tags": [
+    "plaster",
+    "symmetry",
+    "moulding",
+    "elegant",
+    "ordered"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "18 世纪中至 19 世纪形成，当代住宅中持续被简化使用",
+    "origin": "欧洲，后随城市化扩散至全球住宅与酒店",
+    "summary": "新古典起源于对过度繁复装饰的反思：它重新强调对称、比例与理性秩序，但相比完整古典体系已大幅简化，用石膏线脚、壁柱、简化壁炉与对称轴来提示古典来源，而不再堆叠柱式与雕花。它能适应层高有限的现代公寓，因为大部分古典语汇被压缩成二维线脚与平面对称，不依赖大体量与拱券，因此成为当代高档住宅与酒店最常采用的折中方案。",
+    "key_movements": [
+      "新古典主义（Neoclassicism）",
+      "帕拉第奥主义（Palladianism）",
+      "布杂艺术（Beaux-Arts）的简化延续"
+    ]
+  },
+  "spatial_principles": [
+    "以对称轴线组织平面，主入口、走廊与客厅形成一条贯通轴线，两侧功能大体均衡。",
+    "用线脚与壁柱提示古典语汇，而不用结构柱与拱券，装饰以平面浅浮雕为主。",
+    "公共区与私密区清晰分离，过渡处设门厅或玄关作为对称的序厅。",
+    "以对角线与端景组织视线，走廊尽端设装饰墙面或壁龛。",
+    "房间比例接近古典矩形，进深与开间比控制在 1:1.2 至 1:1.6（常见工程惯例区间）。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "墙面装饰由踢脚、腰线、墙裙、檐口四道水平线脚构成，高度按层高等分（常见工程惯例区间）。",
+      "线脚宽度与层高比取 1:14 至 1:20（常见工程惯例区间），保持克制不夸张。",
+      "壁柱宽高比约 1:5 至 1:6（常见工程惯例区间），柱头简化，不做完整柱式。",
+      "门洞与窗洞上下对齐，洞口宽度按 0.9m 模数分级，水平线脚贯通不断。"
+    ],
+    "ratios": [
+      "开间:进深约 1:1.2–1:1.6",
+      "线脚宽度:层高约 1:14–1:20",
+      "壁柱宽高比约 1:5–1:6"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2800–3400mm；低于 2700mm 时须减少线脚道数"
+  },
+  "color_palette": [
+    {
+      "name_zh": "石膏白",
+      "name_en": "Plaster White",
+      "hex": "#F4F1EA",
+      "usage": "墙面、线脚与天花主色，占比约 55%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅灰米",
+      "name_en": "Pale Greige",
+      "hex": "#D6CFC3",
+      "usage": "墙裙与次要墙面，占比约 18%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深灰蓝",
+      "name_en": "Slate Blue",
+      "hex": "#5A6577",
+      "usage": "书房或重点墙面，占比约 12%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "暖沙",
+      "name_en": "Warm Sand",
+      "hex": "#C2A98B",
+      "usage": "地面与布艺，占比约 10%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "弱金",
+      "name_en": "Muted Gold",
+      "hex": "#B39257",
+      "usage": "五金与灯具细节，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "石膏线脚",
+      "name_en": "Gypsum moulding",
+      "application": "墙面、天花与门套",
+      "finish": "哑光，与墙面同色涂装",
+      "notes": "预制线脚拼接，转角需对接整齐"
+    },
+    {
+      "name_zh": "木饰面与护墙板",
+      "name_en": "Wood veneer and wainscot",
+      "application": "墙裙与柜体",
+      "finish": "哑光或丝光，浅色开放木纹",
+      "notes": "常见橡木或榉木染色"
+    },
+    {
+      "name_zh": "石材",
+      "name_en": "Stone",
+      "application": "地面、台面与壁炉饰面",
+      "finish": "丝光或哑光，浅色系",
+      "notes": "浅色大理石或人造石，纹理不宜过强"
+    },
+    {
+      "name_zh": "羊毛与丝绸质感织物",
+      "name_en": "Wool and silk-look textile",
+      "application": "窗帘、软包与地毯",
+      "finish": "哑光，垂坠感好",
+      "notes": "低饱和配色，避免亮光化纤"
+    },
+    {
+      "name_zh": "黄铜与青铜",
+      "name_en": "Brass and bronze",
+      "application": "五金、灯具与线脚描边",
+      "finish": "拉丝或做旧，弱反光",
+      "notes": "控制用量，避免大面积亮面"
+    }
+  ],
+  "furniture_language": [
+    "家具线条收束、以直线为主，转角做小圆角或倒角，不做夸张三弯腿。",
+    "体量中等，坐面高 420–460mm（常见工程惯例区间），柜体略作束腰与线脚。",
+    "整体为成组对称布置，成对布置单椅、边几与台灯。",
+    "以浅色木与布艺软包为主，金属仅作细节点缀。",
+    "拉手以圆形或长条形小拉手为主，与线脚风格统一，不做繁复雕花配件。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以天花中央吊灯或吸顶灯形成对称构图，配合壁灯成对布置。",
+      "用洗墙光突出线脚与壁柱的投影，强化立面层次。",
+      "重点光落于壁炉、挂画与端景，光束角适中，不追求强对比。"
+    ],
+    "fixtures": [
+      "水晶或金属枝形吊灯",
+      "成对壁灯",
+      "天花筒灯",
+      "台灯与落地灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "常见工程惯例区间：公共区 150–300lx，重点端景 300–400lx，走廊 80–120lx",
+    "layering": "环境光由中央吊灯与筒灯提供，重点光由洗墙灯与射灯落于线脚和端景，任务光由台灯与落地灯提供，装饰光由壁灯补充，整体明暗层次均匀。"
+  },
+  "architectural_elements": [
+    "石膏线脚构成的踢脚、腰线与檐口",
+    "简化壁柱与门套",
+    "对称的门洞与贯穿水平线脚",
+    "简化壁炉或端景壁龛",
+    "天花叠级与中央吊灯底盘"
+  ],
+  "applicable_spaces": [
+    "住宅与高档公寓",
+    "酒店大堂与客房",
+    "办公接待与会议室",
+    "售楼处与会所"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "石膏线脚的数量与造型复杂度，通高与满墙线脚是主要成本项",
+      "木饰面与护墙板的面积",
+      "成对灯具与对称构图的采购一致性"
+    ],
+    "saving_moves": [
+      "线脚仅做踢脚、腰线与檐口三道，省略装饰性线脚",
+      "护墙板限高做，上部改为哑光涂料墙面",
+      "壁柱改用平板加简单线脚拼装，替代整体造型"
+    ],
+    "notes": "新古典的预算应集中在线脚工艺与墙体平整度上，墙面不平会放大线脚投影的缺陷。"
+  },
+  "construction_considerations": [
+    "墙面基层平整度需在批腻子阶段严格控制，偏差过大时线脚投影会扭曲。",
+    "石膏线脚拼接需在工厂预拼并做斜接，现场对接应错缝并补缝，避免开裂。",
+    "线脚与墙体不同材质交界处需做防裂处理，并预留伸缩缝。",
+    "线脚布局必须在图纸阶段按层高等分排定，现场临时定位易造成上下不对称。",
+    "吊顶与吊灯底盘需核算荷载，标注待持证专业人员复核。"
+  ],
+  "compatible_styles": [
+    "european-classical",
+    "french-romantic",
+    "american-classic",
+    "modernist-classic",
+    "contemporary-luxury"
+  ],
+  "incompatible_elements": [
+    "工业风裸管、锈铁与集装箱材质",
+    "高饱和荧光色与大面积亮面金属",
+    "繁复巴洛克曲线与完整柱式堆叠",
+    "完全无装饰的极简平面与无踢脚做法"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "以对称轴线组织的公共区，主入口经门厅进入客厅，墙面由踢脚、腰线与檐口三道水平线脚构成，成对壁柱提示古典来源，天花中央设吊灯底盘，房间进深适中。",
+      "material": "石膏线脚与墙面同色哑光涂装、浅色木饰面护墙板、丝光浅色石材地面、哑光羊毛窗帘与软包，金属仅弱反光拉丝。",
+      "lighting": "天花中央枝形吊灯与筒灯提供均匀环境光，洗墙灯突出线脚与壁柱投影，成对壁灯补光，色温 2700–3000K，重点端景用中等光束角。",
+      "furniture": "线条收束的直边家具，坐面高 420–460mm，成对布置的单椅与边几，浅色木与布艺软包为主，圆形或长条小拉手与线脚统一。",
+      "camera": "正对称的一眼透视，镜头高度约 1500–1600mm，等效焦距 28–35mm，画面包含线脚层次与中央吊灯。",
+      "atmosphere": "优雅、克制、秩序感强，明暗层次均匀，装饰密度适中。",
+      "keywords": [
+        "对称轴",
+        "石膏线脚",
+        "壁柱",
+        "浅色调",
+        "成对布置",
+        "比例收敛"
+      ]
+    },
+    "en": {
+      "space": "Public zone organized on a symmetrical axis, entry through a vestibule into the living room, walls built from three horizontal moulding bands—skirting, dado, cornice—paired pilasters hinting at classical origin, central ceiling medallion, moderate room depth.",
+      "material": "Gypsum mouldings painted in the same matte color as the walls, pale wood wainscot and veneer, satin light stone floor, matte wool curtains and upholstery, brushed and low-reflection metal only.",
+      "lighting": "Central chandelier and downlights giving even ambient light, wall-washing light emphasizing moulding and pilaster shadows, paired wall sconces as fill, 2700–3000K, medium beam angle on the feature end wall.",
+      "furniture": "Restrained straight-edged furniture, seat height 420–460mm, paired armchairs and side tables, pale wood with fabric upholstery, round or bar pulls matching the mouldings.",
+      "camera": "Perfectly symmetrical one-point perspective at 1500–1600mm, 28–35mm equivalent, framing the moulding bands and central chandelier.",
+      "atmosphere": "Elegant, restrained, strongly ordered, even tonal layering, moderate ornament density.",
+      "keywords": [
+        "symmetry axis",
+        "gypsum moulding",
+        "pilaster",
+        "pale palette",
+        "paired arrangement",
+        "restrained proportion"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持对称轴线与成对构件的位置关系不变，跨视角不得偏移。",
+    "保持四道水平线脚（含踢脚）的高度与贯通关系不变。",
+    "保持门洞窗洞上下对齐与洞口模数关系一致。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要工业风裸管、锈铁与集装箱材质",
+      "不要高饱和荧光色与大面积亮面金属",
+      "不要繁复巴洛克曲线与完整柱式堆叠",
+      "不要无踢脚、无线脚的极简平面"
+    ],
+    "en": [
+      "no industrial exposed ducts, rusted iron or container materials",
+      "no high-saturation fluorescent colors or large glossy metal surfaces",
+      "no elaborate Baroque curves or full stacked classical orders",
+      "no trim-free minimalist surfaces without skirting or mouldings"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "线脚对称与对齐",
+      "criteria": "水平线脚贯通不断，左右高度偏差 ≤5mm，洞口上下对齐",
+      "stage": "S3"
+    },
+    {
+      "check": "墙面平整度",
+      "criteria": "基层平整度偏差 ≤3mm/2m（常见工程惯例区间），线脚投影不扭曲",
+      "stage": "S4"
+    },
+    {
+      "check": "比例收敛",
+      "criteria": "线脚宽度:层高落在 1:14–1:20，装饰密度不过量",
+      "stage": "S4"
+    },
+    {
+      "check": "灯具对称",
+      "criteria": "壁灯成对等距，中央吊灯居中，偏差 ≤20mm",
+      "stage": "S4"
+    }
+  ]
+}

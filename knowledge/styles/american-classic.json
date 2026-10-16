@@ -1,0 +1,276 @@
+{
+  "style_id": "american-classic",
+  "display_name_zh": "美式古典",
+  "display_name_en": "American Classic",
+  "family": "classic",
+  "tags": [
+    "panelling",
+    "warm",
+    "family",
+    "brass",
+    "settled"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "19 世纪末至 20 世纪中叶，由殖民复兴住宅与新古典住宅共同塑造",
+    "origin": "北美东部住宅传统，承袭英式乔治亚语汇并加以简化与放宽",
+    "summary": "美式古典解决的是大尺度家庭日常的问题。北美住宅开间与进深普遍大于英式，家庭成员习惯在同一空间长时间共处，于是英式对称语汇被简化为更方正、更耐用的做法：护墙板改为方正凹槽板、线脚层级减少、木材与黄铜承担主要质感，家具体量放大、坐深加厚以适应久坐。采暖与壁炉位于公共区几何中心，围绕它形成家庭核心，而不是欧洲式的社交展示轴线。",
+    "key_movements": [
+      "乔治亚风格（Georgian）",
+      "殖民复兴（Colonial Revival）",
+      "美式工匠运动（American Craftsman）"
+    ]
+  },
+  "spatial_principles": [
+    "公共区围绕一个几何中心（壁炉或中央客厅）组织，起居、餐叙与厨房以宽门洞连通，家庭动线可在同一层闭合完成。",
+    "以方正构图为主，房间接近矩形，长宽比常见 1.2:1–1.6:1，避免异形与斜角。",
+    "门洞宽大且数量少，常见净宽 ≥1000mm，强调空间连续而非房间独立。",
+    "通行区与停留区分开，坐具围合成边长 2.7–3.6m 的交谈区。",
+    "储藏以整墙方正柜体解决，柜体与护墙板处于同一标高与板缝体系。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "护墙板为方正平板凹槽式，单板宽 400–600mm，顶部为平直收口，不带曲线冠饰。",
+      "墙裙顶标高常见 900–1200mm，并与窗台标高对齐形成整层统一水平线。",
+      "门洞高宽比取 2:1–2.2:1，门套为方正直边，宽度 90–120mm。",
+      "天花不做复杂线脚，以一圈宽 100–150mm 的平直檐口收边。"
+    ],
+    "ratios": [
+      "房间长宽比 1.2:1–1.6:1",
+      "护墙板板宽模数 400mm 与 600mm",
+      "门洞高宽比 2:1–2.2:1",
+      "交谈区围合边长 2.7–3.6m"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2700–3200mm；挑空客厅局部 4000–5500mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "暖白",
+      "name_en": "Warm White",
+      "hex": "#EFE6D5",
+      "usage": "墙面与天花，占比约 50–65%",
+      "role": "base"
+    },
+    {
+      "name_zh": "橄榄绿",
+      "name_en": "Olive Green",
+      "hex": "#6B6B4A",
+      "usage": "书房与餐厅墙面或柜体，占比约 10–20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深胡桃",
+      "name_en": "Walnut Brown",
+      "hex": "#5A4030",
+      "usage": "木作与家具，占比约 15–25%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "黄铜",
+      "name_en": "Brass",
+      "hex": "#B08D4F",
+      "usage": "五金、灯具与拉手，占比 ≤8%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "砖红",
+      "name_en": "Brick Red",
+      "hex": "#8C4A3A",
+      "usage": "织物或局部墙面点缀，占比 ≤10%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "橡木与胡桃木护墙板",
+      "name_en": "Oak or Walnut Panelling",
+      "application": "墙面、门套与整墙柜体",
+      "finish": "哑光清漆或硬蜡油，直纹为主"
+    },
+    {
+      "name_zh": "黄铜五金",
+      "name_en": "Brass Hardware",
+      "application": "门锁、拉手与灯具底座",
+      "finish": "拉丝或做旧黄铜，保留轻微氧化"
+    },
+    {
+      "name_zh": "花岗岩与石英石台面",
+      "name_en": "Granite or Quartz Countertop",
+      "application": "厨房与卫生间台面",
+      "finish": "柔光或哑光，收边平直"
+    },
+    {
+      "name_zh": "羊毛手工地毯",
+      "name_en": "Wool Area Rug",
+      "application": "起居区中央",
+      "finish": "短绒、低反差图案或无图案"
+    },
+    {
+      "name_zh": "亚麻与棉麻混纺",
+      "name_en": "Linen and Linen-blend",
+      "application": "窗帘、沙发包覆与靠垫",
+      "finish": "自然肌理、无光泽"
+    }
+  ],
+  "furniture_language": [
+    "家具体量方正厚重，坐深加厚（常见 550–650mm），适合长时间停留。",
+    "椅腿与柜脚为直方或托脚式，落地面积较大，不用悬空细腿。",
+    "柜体与门板为方正平板加浅凹槽，顶冠平直，不做曲线冠饰。",
+    "拉手为实心球形或长条黄铜，体量明显、手感偏重。",
+    "沙发与单椅以固定围合方式摆放，鼓励面对面的家庭交谈。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以顶面中轴吊灯或吸顶灯提供均匀环境光，再用成对台灯与落地灯补足坐姿阅读光。",
+      "公共区整体照度偏高，强调明亮与可用，而非戏剧性明暗对比。"
+    ],
+    "fixtures": [
+      "吸顶灯或短臂吊灯",
+      "成对台灯与落地灯",
+      "柜内线性灯",
+      "檐口与窗顶洗墙灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，阅读与餐桌任务面 300–500lx",
+    "layering": "环境层（顶灯）为主，任务层（台灯与落地灯）辅助，重点层（柜内与画作照明）点缀；最暗与最亮处照度比常见 <5:1，整体偏亮。"
+  },
+  "architectural_elements": [
+    "方正凹槽护墙板与统一高度的墙裙，覆盖公共区主要墙面。",
+    "位于公共区几何中心的壁炉体，两侧为对称柜体或开口。",
+    "方正宽门套与带侧窗的入户门，形成明确的入户仪式。",
+    "整墙落地柜体，与护墙板同标高、同板缝模数。",
+    "带分格的分格窗，窗框为白色方正收边。"
+  ],
+  "applicable_spaces": [
+    "独栋住宅与联排住宅的家庭起居与餐厨",
+    "会所与俱乐部",
+    "精品酒店公区",
+    "亲子与家庭类商业空间",
+    "样板间与展示空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "整墙定制木作与柜体面积大",
+      "黄铜五金用量大且需统一表面处理",
+      "石材台面的选料与加工"
+    ],
+    "saving_moves": [
+      "柜门用饰面板加实木收边替代全实木",
+      "黄铜五金只用在触手可及处，高处改用同色喷涂件",
+      "以涂料模拟墙裙分段，减少实木护墙板面积"
+    ],
+    "notes": "造价集中在木作面积与五金数量，可按房间重要性分级配置，公共区满做、次要房间简化。"
+  },
+  "construction_considerations": [
+    "护墙板与整墙柜体须统一板缝模数，先做样板墙确认分板与收口再批量加工",
+    "黄铜五金易留指纹与氧化，安装前应确认表面处理与清洁方式，避免二次打磨",
+    "壁炉烟道、燃气与结构开洞方案须由持证专业人员复核后方可施工",
+    "石材台面下料前须完成现场实测放样，转角与拼缝位置应避开使用受力点",
+    "大面积木作需控制含水率与室内湿度，避免季节变形造成板缝不均"
+  ],
+  "compatible_styles": [
+    "neoclassical",
+    "european-classical",
+    "english-country",
+    "american-country",
+    "french-romantic"
+  ],
+  "incompatible_elements": [
+    "裸露混凝土与明装管道等工业构件",
+    "无框极简通顶平板柜与大面留白墙",
+    "洛可可式细密卷草曲线线脚与轻巧弯腿家具",
+    "高光漆面与镜面不锈钢的大面积使用"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "北美住宅起居室，方正矩形平面，中心为砖石壁炉，两侧对称整墙柜体，层高约 3m，天花一圈平直檐口",
+      "material": "暖白墙面配方正凹槽护墙板，深胡桃木柜体，拉丝黄铜五金，羊毛短绒地毯，亚麻织物窗帘",
+      "lighting": "白天从分格窗引入自然光，顶灯与成对台灯提供暖白环境光，柜内线性灯照亮陈列物",
+      "furniture": "方正厚体量沙发围合成交谈区，直方托脚落地，实心球形黄铜拉手，实木边桌",
+      "camera": "约 1.5m 视高、正视或微侧视，等效 28–35mm，画面稳定平直，强调方正构图",
+      "atmosphere": "明亮、温暖、稳重，强调家庭共处与耐用感",
+      "keywords": [
+        "方正凹槽护墙板",
+        "暖胡桃木作",
+        "黄铜五金",
+        "家庭起居",
+        "厚体量沙发",
+        "分格窗"
+      ]
+    },
+    "en": {
+      "space": "North American family living room, orthogonal rectangular plan, a masonry fireplace at the centre, symmetrical full-height cabinetry on both sides, ceiling about 3 m with a flat cornice band",
+      "material": "warm-white walls with square recessed panelling, dark walnut cabinetry, brushed brass hardware, short-pile wool rug, linen drapery",
+      "lighting": "daylight through a divided window, plus a ceiling fitting and paired table lamps for warm-white ambient light, with linear lights illuminating the cabinet display",
+      "furniture": "square, heavy-mass sofa arranged around a conversation zone, straight bracket feet on the floor, solid ball brass knobs, solid timber side table",
+      "camera": "eye level about 1.5 m, frontal or slightly angled view, 28–35 mm equivalent, stable and level, emphasising the orthogonal composition",
+      "atmosphere": "bright, warm and settled, conveying family living and durability",
+      "keywords": [
+        "square recessed panelling",
+        "warm walnut woodwork",
+        "brass hardware",
+        "family room",
+        "heavy upholstery",
+        "divided window"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持壁炉作为公共区几何中心的位置不变。",
+    "保持护墙板板缝模数与墙裙标高在整层一致。",
+    "保持门窗方正洞口与高宽比不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现裸露混凝土或明装管道",
+      "不要出现洛可可式细密曲线线脚",
+      "不要出现镜面不锈钢与高光漆面的大面积使用",
+      "不要出现通顶无框平板柜替代方正木作",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no exposed concrete or surface-mounted ducts",
+      "no dense rococo-style curved mouldings",
+      "no large areas of mirrored stainless steel or high-gloss lacquer",
+      "no frameless full-height slab cabinetry replacing square panelled joinery",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "方正构图",
+      "criteria": "公共区房间长宽比落在 1.2:1–1.6:1，门洞净宽 ≥1000mm",
+      "stage": "S4"
+    },
+    {
+      "check": "护墙板模数",
+      "criteria": "板宽 400–600mm，墙裙顶标高 900–1200mm 且与窗台对齐",
+      "stage": "S4"
+    },
+    {
+      "check": "五金一致性",
+      "criteria": "黄铜五金表面处理统一，同一空间不超过两种处理方式",
+      "stage": "S5"
+    },
+    {
+      "check": "核心区尺度",
+      "criteria": "交谈区围合边长 2.7–3.6m，主要坐具坐深 550–650mm",
+      "stage": "S3"
+    },
+    {
+      "check": "照明均匀度",
+      "criteria": "环境照度 150–300lx，最亮与最暗处照度比 <5:1",
+      "stage": "S6"
+    }
+  ]
+}

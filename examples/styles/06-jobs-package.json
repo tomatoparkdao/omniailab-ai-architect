@@ -1,0 +1,341 @@
+{
+  "$comment": "© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
+  "generated_for": "OmniAiLab Design Style Intelligence",
+  "platform": "omniailab",
+  "platform_state": "not_configured",
+  "platform_missing": [
+    "平台 API 契约（base_url / auth / endpoints / models）"
+  ],
+  "third_party_fallback": "forbidden",
+  "not_implemented_as_fallback": [
+    "任何第三方图片生成 SaaS 的直连入口",
+    "任何第三方视频生成 SaaS 的直连入口",
+    "任何未登记的模型路由或自建中转端点",
+    "任何形式的静默供应商切换"
+  ],
+  "authorized": true,
+  "job_count": 2,
+  "deferred_count": 2,
+  "jobs": [
+    {
+      "job_id": "job-bd51dab38b",
+      "target": "interior-render",
+      "scope": "image_generation",
+      "status": "awaiting_platform",
+      "style_ids": [
+        "italian-minimal"
+      ],
+      "consistency_key": "sp-22db636aa74d",
+      "revision": 3,
+      "owner_required": "omniailab",
+      "reason": "平台未配置：缺少 平台 API 契约（base_url / auth / endpoints / models）",
+      "outputs": [],
+      "authoritative": false,
+      "package": {
+        "target": "interior-render",
+        "stage": "S4",
+        "style_ids": [
+          "italian-minimal"
+        ],
+        "style_labels": [
+          "意式极简（Italian Minimal）"
+        ],
+        "consistency_key": "sp-22db636aa74d",
+        "revision": 3,
+        "positive": {
+          "zh": "【风格】意式极简（Italian Minimal）。开敞连续的起居空间，一面整幅石材背景墙作为视觉锚点，天花为窄边暗槽平顶\n【空间（取自已确认模型，不得改动）】空间：客厅；开间 × 进深：4200 × 6000 mm；净高：2800 mm；朝向与采光：南向，主采光面 3.6m 落地窗；门窗与洞口：阳台推拉门 2400×2400，南墙偏东\n【材质】暖灰米色哑光岩板地面与背景墙对纹拼接，暖色胡桃木饰面通高墙板，台面加厚并做 45° 斜切，拉丝香槟金属细线收口\n【光线】洗墙射灯自上而下强调石材纹理，台面下暗藏线性灯带，光色偏暖、暗部保留层次\n【家具】低矮方正的大型软体沙发，皮革与织物混搭，柜体齐平配细长金属拉手\n【机位】一点透视，镜头略低于人眼，28–40mm\n【氛围】温暖、克制而有质感层级，材料本身构成视觉重心\n【客户功能需求】三人布艺沙发，坐深 900；电视背景墙只做整幅石材\n【关键词】意式极简，整幅岩板，木饰面，斜切台面，少缝，暖色石材\n【画面目标】室内空间完整视野：界面、家具、材质、光线与透视关系",
+          "en": "[style] Italian Minimal. An open continuous living volume with a single full-slab stone feature wall as the visual anchor, flat ceiling with narrow recessed shadow gap\n[space, taken from the approved model — do not alter] space: 客厅; width × depth: 4200 × 6000 mm; clear ceiling height: 2800 mm; orientation and daylight: 南向，主采光面 3.6m 落地窗; openings: 阳台推拉门 2400×2400，南墙偏东\n[materials] Warm greige matte sintered stone floor and book-matched feature wall, warm walnut full-height veneer panelling, thickened countertop with 45° mitred edge, brushed champagne metal reveals\n[light] Wall-washing spotlights grazing the stone texture from above, hidden linear LED under the counter, warm tone with retained shadow detail\n[furniture] Large low square sofa mixing leather and fabric, flush cabinetry with slim metal pulls\n[camera] 一点透视，镜头略低于人眼，28–40mm\n[atmosphere] Warm, restrained, layered in material rather than object\n[client requirements] 三人布艺沙发，坐深 900; 电视背景墙只做整幅石材\n[keywords] italian minimal, full slab stone, wood veneer, mitred edge, few seams, warm stone\n[shot purpose] a full interior view: surfaces, furniture, materials, light and perspective"
+        },
+        "negative": {
+          "zh": [
+            "不要高饱和与荧光色",
+            "不要仿石纹贴纸、塑料饰面与廉价复合板",
+            "不要露明管线与未经处理的水泥裸面",
+            "不要古典雕饰与繁复线脚",
+            "不要可见阳角压条与彩色收边条",
+            "改变墙体或门窗位置",
+            "改变房间比例与层高",
+            "添加不存在的结构构件",
+            "乱码文字与错字招牌",
+            "失真的人体比例",
+            "过度 HDR 与塑料感",
+            "与锁定风格冲突的材质",
+            "品牌 logo 与商标",
+            "水印与画面外文字"
+          ],
+          "en": [
+            "no saturated or fluorescent colours",
+            "no faux-stone laminates, plastic finishes or cheap composite panels",
+            "no exposed services or raw untreated concrete",
+            "no classical ornament or applied mouldings",
+            "no visible corner trims or coloured edge strips",
+            "altered wall or window positions",
+            "altered room proportions or ceiling height",
+            "structural elements that do not exist",
+            "garbled text or signage",
+            "distorted human proportions",
+            "over-processed HDR and plastic sheen",
+            "materials conflicting with the locked style",
+            "brand logos and trademarks",
+            "watermarks or out-of-frame text"
+          ]
+        },
+        "structured": {
+          "target": "interior-render",
+          "stage": "S4",
+          "style": {
+            "primary": {
+              "id": "italian-minimal",
+              "name_zh": "意式极简",
+              "name_en": "Italian Minimal"
+            },
+            "blend": [],
+            "ratio": {
+              "italian-minimal": 1.0
+            }
+          },
+          "space": {
+            "space_name": "客厅",
+            "area_m2": null,
+            "width_mm": 4200,
+            "depth_mm": 6000,
+            "ceiling_mm": 2800,
+            "orientation": "南向，主采光面 3.6m 落地窗",
+            "openings": [
+              "阳台推拉门 2400×2400，南墙偏东"
+            ],
+            "existing_elements": [],
+            "to_change": [],
+            "materials_override": [],
+            "lighting_override": [],
+            "furniture_needs": [
+              "三人布艺沙发，坐深 900",
+              "电视背景墙只做整幅石材"
+            ],
+            "camera": "一点透视，镜头略低于人眼，28–40mm",
+            "style_ratio": {
+              "italian-minimal": 1.0
+            },
+            "references": [
+              "plan-r3.png"
+            ]
+          },
+          "layers": {
+            "space": "开敞连续的起居空间，一面整幅石材背景墙作为视觉锚点，天花为窄边暗槽平顶",
+            "material": "暖灰米色哑光岩板地面与背景墙对纹拼接，暖色胡桃木饰面通高墙板，台面加厚并做 45° 斜切，拉丝香槟金属细线收口",
+            "lighting": "洗墙射灯自上而下强调石材纹理，台面下暗藏线性灯带，光色偏暖、暗部保留层次",
+            "furniture": "低矮方正的大型软体沙发，皮革与织物混搭，柜体齐平配细长金属拉手",
+            "camera": "一点透视，镜头略低于人眼，28–40mm",
+            "atmosphere": "温暖、克制而有质感层级，材料本身构成视觉重心",
+            "keywords": [
+              "意式极简",
+              "整幅岩板",
+              "木饰面",
+              "斜切台面",
+              "少缝",
+              "暖色石材"
+            ]
+          },
+          "consistency": {
+            "key": "sp-22db636aa74d",
+            "share_across_views": true,
+            "scope": "同一（风格集合 + 模型修订）下的所有房间与机位共用同一指纹；产出后据此比对材质与光源方向是否漂移",
+            "view": {
+              "space": "客厅",
+              "camera": "一点透视，镜头略低于人眼，28–40mm",
+              "width_mm": 4200,
+              "depth_mm": 6000
+            }
+          },
+          "references": [
+            "plan-r3.png"
+          ],
+          "reference_note": "参考图 = 已确认平面 G3 的确定性栅格化",
+          "authoritative": false
+        },
+        "geometry_preservation": [
+          "所有墙体、门窗洞口、梁柱的位置与尺寸保持与已确认模型一致。",
+          "房间的开间、进深与净高不得被调整以适配构图。",
+          "家具与固定件只能布置在模型允许的位置，不得穿过墙体或洞口。",
+          "保持大体量材质块的体量与位置不变，不改动背景墙所在墙面",
+          "保持石材整幅排版的对纹关系与缝位分布",
+          "保持天花暗槽位置与灯位网格，不新增叠级"
+        ],
+        "style_lock": "风格已锁定（门禁确认），提示词以锁定结果为准。",
+        "verification_mandate": [
+          "把生成结果与**已确认的统一空间模型**逐项比对：开间进深、墙体与门窗位置、层高。",
+          "把生成结果与**参考图**（已确认平面的确定性栅格化）比对空间关系是否成立。",
+          "多机位或多张产出之间比对：材质、色温、家具形态是否一致；不一致则以模型为准重出。",
+          "涉及结构、消防、无障碍、机电负荷与法规符合性的内容，必须由持证专业人员在项目所在地复核签署。",
+          "生成图像为非权威成果，**不得作为施工尺寸依据**。"
+        ],
+        "warnings": [],
+        "authoritative": false,
+        "disclaimer": "提示词不承载几何。任何产出都必须与已确认模型和参考图比对后方可用于设计沟通；生成图像不得作为施工尺寸依据。"
+      }
+    },
+    {
+      "job_id": "job-e8f41c7547",
+      "target": "partial-renovation",
+      "scope": "image_editing",
+      "status": "awaiting_platform",
+      "style_ids": [
+        "italian-minimal"
+      ],
+      "consistency_key": "sp-f6ccffddc94b",
+      "revision": 5,
+      "owner_required": "omniailab",
+      "reason": "平台未配置：缺少 平台 API 契约（base_url / auth / endpoints / models）",
+      "outputs": [],
+      "authoritative": false,
+      "package": {
+        "target": "partial-renovation",
+        "stage": "S6",
+        "style_ids": [
+          "italian-minimal"
+        ],
+        "style_labels": [
+          "意式极简（Italian Minimal）"
+        ],
+        "consistency_key": "sp-f6ccffddc94b",
+        "revision": 5,
+        "positive": {
+          "zh": "【风格】意式极简（Italian Minimal）。开敞连续的起居空间，一面整幅石材背景墙作为视觉锚点，天花为窄边暗槽平顶\n【空间（取自已确认模型，不得改动）】空间：客厅（局部改造）；开间 × 进深：4200 × 6000 mm；净高：2800 mm\n【材质】暖灰米色哑光岩板地面与背景墙对纹拼接，暖色胡桃木饰面通高墙板，台面加厚并做 45° 斜切，拉丝香槟金属细线收口\n【光线】洗墙射灯自上而下强调石材纹理，台面下暗藏线性灯带，光色偏暖、暗部保留层次\n【家具】低矮方正的大型软体沙发，皮革与织物混搭，柜体齐平配细长金属拉手\n【机位】与现状照片一致的机位\n【氛围】温暖、克制而有质感层级，材料本身构成视觉重心\n【关键词】意式极简，整幅岩板，木饰面，斜切台面，少缝，暖色石材\n【只允许改动】电视背景墙饰面；地面铺装；窗帘形式\n【必须原样保留】南墙推拉门 2400×2400（位置与尺寸不变）；西侧承重墙（不得开洞）；原梁位与净高 2800（不得降低）\n【画面目标】只改动指定部位；原有墙体、门窗、结构构件位置严格不变",
+          "en": "[style] Italian Minimal. An open continuous living volume with a single full-slab stone feature wall as the visual anchor, flat ceiling with narrow recessed shadow gap\n[space, taken from the approved model — do not alter] space: 客厅（局部改造）; width × depth: 4200 × 6000 mm; clear ceiling height: 2800 mm\n[materials] Warm greige matte sintered stone floor and book-matched feature wall, warm walnut full-height veneer panelling, thickened countertop with 45° mitred edge, brushed champagne metal reveals\n[light] Wall-washing spotlights grazing the stone texture from above, hidden linear LED under the counter, warm tone with retained shadow detail\n[furniture] Large low square sofa mixing leather and fabric, flush cabinetry with slim metal pulls\n[camera] 与现状照片一致的机位\n[atmosphere] Warm, restrained, layered in material rather than object\n[keywords] italian minimal, full slab stone, wood veneer, mitred edge, few seams, warm stone\n[change only] 电视背景墙饰面; 地面铺装; 窗帘形式\n[keep exactly as-is] 南墙推拉门 2400×2400（位置与尺寸不变）; 西侧承重墙（不得开洞）; 原梁位与净高 2800（不得降低）\n[shot purpose] change only the named area; walls, openings and structure stay exactly where they are"
+        },
+        "negative": {
+          "zh": [
+            "不要高饱和与荧光色",
+            "不要仿石纹贴纸、塑料饰面与廉价复合板",
+            "不要露明管线与未经处理的水泥裸面",
+            "不要古典雕饰与繁复线脚",
+            "不要可见阳角压条与彩色收边条",
+            "改变墙体或门窗位置",
+            "改变房间比例与层高",
+            "添加不存在的结构构件",
+            "乱码文字与错字招牌",
+            "失真的人体比例",
+            "过度 HDR 与塑料感",
+            "与锁定风格冲突的材质",
+            "品牌 logo 与商标",
+            "水印与画面外文字"
+          ],
+          "en": [
+            "no saturated or fluorescent colours",
+            "no faux-stone laminates, plastic finishes or cheap composite panels",
+            "no exposed services or raw untreated concrete",
+            "no classical ornament or applied mouldings",
+            "no visible corner trims or coloured edge strips",
+            "altered wall or window positions",
+            "altered room proportions or ceiling height",
+            "structural elements that do not exist",
+            "garbled text or signage",
+            "distorted human proportions",
+            "over-processed HDR and plastic sheen",
+            "materials conflicting with the locked style",
+            "brand logos and trademarks",
+            "watermarks or out-of-frame text"
+          ]
+        },
+        "structured": {
+          "target": "partial-renovation",
+          "stage": "S6",
+          "style": {
+            "primary": {
+              "id": "italian-minimal",
+              "name_zh": "意式极简",
+              "name_en": "Italian Minimal"
+            },
+            "blend": [],
+            "ratio": {
+              "italian-minimal": 1.0
+            }
+          },
+          "space": {
+            "space_name": "客厅（局部改造）",
+            "area_m2": null,
+            "width_mm": 4200,
+            "depth_mm": 6000,
+            "ceiling_mm": 2800,
+            "orientation": "",
+            "openings": [],
+            "existing_elements": [
+              "南墙推拉门 2400×2400（位置与尺寸不变）",
+              "西侧承重墙（不得开洞）",
+              "原梁位与净高 2800（不得降低）"
+            ],
+            "to_change": [
+              "电视背景墙饰面",
+              "地面铺装",
+              "窗帘形式"
+            ],
+            "materials_override": [],
+            "lighting_override": [],
+            "furniture_needs": [],
+            "camera": "与现状照片一致的机位",
+            "style_ratio": {},
+            "references": [
+              "plan-r3.png",
+              "site-photo-camera-a.jpg"
+            ]
+          },
+          "layers": {
+            "space": "开敞连续的起居空间，一面整幅石材背景墙作为视觉锚点，天花为窄边暗槽平顶",
+            "material": "暖灰米色哑光岩板地面与背景墙对纹拼接，暖色胡桃木饰面通高墙板，台面加厚并做 45° 斜切，拉丝香槟金属细线收口",
+            "lighting": "洗墙射灯自上而下强调石材纹理，台面下暗藏线性灯带，光色偏暖、暗部保留层次",
+            "furniture": "低矮方正的大型软体沙发，皮革与织物混搭，柜体齐平配细长金属拉手",
+            "camera": "与现状照片一致的机位",
+            "atmosphere": "温暖、克制而有质感层级，材料本身构成视觉重心",
+            "keywords": [
+              "意式极简",
+              "整幅岩板",
+              "木饰面",
+              "斜切台面",
+              "少缝",
+              "暖色石材"
+            ]
+          },
+          "consistency": {
+            "key": "sp-f6ccffddc94b",
+            "share_across_views": true,
+            "scope": "同一（风格集合 + 模型修订）下的所有房间与机位共用同一指纹；产出后据此比对材质与光源方向是否漂移",
+            "view": {
+              "space": "客厅（局部改造）",
+              "camera": "与现状照片一致的机位",
+              "width_mm": 4200,
+              "depth_mm": 6000
+            }
+          },
+          "references": [
+            "plan-r3.png",
+            "site-photo-camera-a.jpg"
+          ],
+          "reference_note": "",
+          "authoritative": false
+        },
+        "geometry_preservation": [
+          "**局部改造强约束**：除指定改动部位外，所有墙体、门窗、梁柱、管井位置与尺寸保持原样。",
+          "所有墙体、门窗洞口、梁柱的位置与尺寸保持与已确认模型一致。",
+          "房间的开间、进深与净高不得被调整以适配构图。",
+          "家具与固定件只能布置在模型允许的位置，不得穿过墙体或洞口。",
+          "保持大体量材质块的体量与位置不变，不改动背景墙所在墙面",
+          "保持石材整幅排版的对纹关系与缝位分布",
+          "保持天花暗槽位置与灯位网格，不新增叠级"
+        ],
+        "style_lock": "风格已锁定（门禁确认），提示词以锁定结果为准。",
+        "verification_mandate": [
+          "把生成结果与**已确认的统一空间模型**逐项比对：开间进深、墙体与门窗位置、层高。",
+          "把生成结果与**参考图**（已确认平面的确定性栅格化）比对空间关系是否成立。",
+          "多机位或多张产出之间比对：材质、色温、家具形态是否一致；不一致则以模型为准重出。",
+          "涉及结构、消防、无障碍、机电负荷与法规符合性的内容，必须由持证专业人员在项目所在地复核签署。",
+          "生成图像为非权威成果，**不得作为施工尺寸依据**。"
+        ],
+        "warnings": [],
+        "authoritative": false,
+        "disclaimer": "提示词不承载几何。任何产出都必须与已确认模型和参考图比对后方可用于设计沟通；生成图像不得作为施工尺寸依据。"
+      }
+    }
+  ],
+  "next_step": "把本任务包交给 OmniAiLab 平台执行；产出后回到编译器生成的校核清单逐项比对。",
+  "note": "所有创作任务唯一被授权主体为 OmniAiLab；平台不可用时延后，绝不改道第三方。"
+}

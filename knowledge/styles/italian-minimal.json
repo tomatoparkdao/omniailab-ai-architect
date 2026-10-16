@@ -1,0 +1,276 @@
+{
+  "style_id": "italian-minimal",
+  "display_name_zh": "意式极简",
+  "display_name_en": "Italian Minimal",
+  "family": "modern",
+  "tags": [
+    "minimal",
+    "warm",
+    "stone",
+    "luxury",
+    "matte"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪后期成型，21 世纪随大规格岩板与薄板石材普及而成熟",
+    "origin": "意大利北部的工业与制造带，建立在战后工业设计传统及石材、木饰面加工工艺之上",
+    "summary": "意式极简的出发点是：线条可以干净，但空间不能发冷。它保留平直的线条与收干净的面，却用整幅石材的连续纹理和暖色木饰面叠出质感层级，再以极少的接缝和精细收口体现工艺水平。与只做留白的极简不同，意式极简的视觉重心落在材料本身——同一面墙靠一块整石和一道倒边来成立，而不是靠空白。",
+    "key_movements": [
+      "现代主义建筑运动",
+      "意大利理性主义",
+      "极简主义设计思潮"
+    ]
+  },
+  "spatial_principles": [
+    "开敞平面中植入一个或少数几个大体量材质块（岛台、壁炉墙、展示龛）作为视觉锚点，其余界面做减法",
+    "追求少缝：石材按大板整幅排版，接缝数量最小化，缝位尽量避开视觉中心",
+    "木饰面与石材按同一色系相接，采用阴阳角对拼或斜切对拼收口，不用压条遮盖",
+    "湿区与干区沿用同一套材料语言贯通过渡，不做明显分界",
+    "主通道净宽 ≥1000mm（常见工程惯例区间），保证大体量石材件周围可环行"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "石材大板按 1600×3200mm 上下规格整幅排版，纹理对纹拼接（常见工程惯例区间）",
+      "墙面、柜体、台面共用同一厚度基准，转角收在同一条线上",
+      "天花采用平顶加窄边暗槽，灯具与风口嵌入同一模数网格",
+      "体块边缘做倒边或斜切，留出可见的加工痕迹而非贴条收边"
+    ],
+    "ratios": [
+      "台面加厚边缘做 45° 斜切或 20mm 倒边（常见工程惯例区间）",
+      "柜体分格按 600mm 与 900mm 组合（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2700–3200mm（常见工程惯例区间）；高端做法适度抬高以容纳暗藏设备与灯槽"
+  },
+  "color_palette": [
+    {
+      "name_zh": "象牙白",
+      "name_en": "Ivory White",
+      "hex": "#E8E2D8",
+      "usage": "墙面与天花基调，占比约 40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "暖灰米",
+      "name_en": "Warm Greige",
+      "hex": "#B9B2A6",
+      "usage": "地面与次要墙面石材，占比约 25%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "暖木棕",
+      "name_en": "Warm Walnut",
+      "hex": "#A9743F",
+      "usage": "木饰面墙板与柜体，占比约 20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "深咖",
+      "name_en": "Deep Cocoa",
+      "hex": "#38291F",
+      "usage": "局部石材深色区与皮革，占比 ≤10%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "香槟金属",
+      "name_en": "Champagne Metal",
+      "hex": "#C6A469",
+      "usage": "五金、线条与踢脚，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "大规格岩板与薄板石材",
+      "name_en": "Large-format Sintered Stone and Stone Slab",
+      "application": "地面、背景墙与台面",
+      "finish": "哑光或柔光面",
+      "notes": "需按板幅整幅排版并规划运输与进场路径"
+    },
+    {
+      "name_zh": "暖色木饰面",
+      "name_en": "Warm Wood Veneer",
+      "application": "墙板、柜体与门",
+      "finish": "开放漆或木蜡油哑光"
+    },
+    {
+      "name_zh": "哑光烤漆",
+      "name_en": "Matte Lacquer",
+      "application": "柜门与造型面",
+      "finish": "哑光（光泽度 <10 度）"
+    },
+    {
+      "name_zh": "拉丝金属饰面",
+      "name_en": "Brushed Metal Finish",
+      "application": "五金、线条与收口",
+      "finish": "拉丝或香槟色电镀"
+    },
+    {
+      "name_zh": "头层皮革与织物软包",
+      "name_en": "Full-grain Leather and Upholstery Fabric",
+      "application": "床头、柜体局部与软体家具",
+      "finish": "哑光自然面"
+    }
+  ],
+  "furniture_language": [
+    "低矮方正的软体，皮革与织物混搭，体量偏大以匹配材料尺度",
+    "柜体齐平，采用细长金属拉手或暗拉手，收边利落",
+    "台面与台身加厚，边缘做斜切或倒边，露出材料厚度",
+    "家具讲究落地与收边，避免悬空的轻飘感"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "重点照明强调石材纹理走向与木饰面拼缝，让材料成为主角",
+      "光色偏暖，暗部保留层次，不做均匀平光"
+    ],
+    "fixtures": [
+      "洗墙射灯",
+      "线性洗墙灯带",
+      "台面下方暗藏灯带",
+      "金属落地灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "起居环境 150–300lx，材料重点区 300–500lx（常见工程惯例区间）",
+    "layering": "低亮度环境光打底 → 洗墙光突出材料 → 台面与局部任务光"
+  },
+  "architectural_elements": [
+    "整幅石材背景墙与对纹拼接做法",
+    "通高木饰面墙板与齐平暗门",
+    "加厚并做斜切的石材台面边缘",
+    "窄边暗槽天花与隐形风口",
+    "金属细线踢脚与收口"
+  ],
+  "applicable_spaces": [
+    "住宅平层与别墅",
+    "样板间",
+    "精品零售",
+    "餐饮空间",
+    "酒店客房"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "大规格石材与岩板的选料及排版损耗",
+      "木饰面与石材收口的精细加工与现场安装",
+      "定制柜体与隐形五金"
+    ],
+    "saving_moves": [
+      "以岩板替代天然石材，纹理与规格更可控",
+      "仅在视觉焦点墙面用整幅石材，其余墙面用同色乳胶漆过渡",
+      "减少对纹拼接位置，把缝位安排到次要视角"
+    ],
+    "notes": "造价的大头在「板幅损耗 + 收口加工」，选料阶段就应锁定板幅与排版，避免施工中期改料"
+  },
+  "construction_considerations": [
+    "石材大板排版需结合运输与进场路径，超长板必须分缝并预先控制缝位",
+    "木饰面与石材相接处存在湿度差异，需设背衬与伸缩处理以防开裂",
+    "台面加厚斜切边缘必须工厂加工，现场不可二次修整",
+    "墙面基层平整度直接影响大板铺贴的空鼓率与拼缝观感",
+    "结构安全、消防、机电负荷等最终判断，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "modern-minimalism",
+    "japandi",
+    "contemporary-luxury",
+    "modernist-classic",
+    "scandinavian"
+  ],
+  "incompatible_elements": [
+    "高饱和色与荧光色",
+    "廉价仿石纹贴纸与塑料饰面",
+    "露明管线与未经处理的水泥裸面",
+    "繁复古典雕饰与线脚",
+    "可见的阳角压条与彩色收边条"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "开敞连续的起居空间，一面整幅石材背景墙作为视觉锚点，天花为窄边暗槽平顶",
+      "material": "暖灰米色哑光岩板地面与背景墙对纹拼接，暖色胡桃木饰面通高墙板，台面加厚并做 45° 斜切，拉丝香槟金属细线收口",
+      "lighting": "洗墙射灯自上而下强调石材纹理，台面下暗藏线性灯带，光色偏暖、暗部保留层次",
+      "furniture": "低矮方正的大型软体沙发，皮革与织物混搭，柜体齐平配细长金属拉手",
+      "camera": "一点透视，镜头略低于人眼高度，28–40mm，突出材料整幅连续性",
+      "atmosphere": "温暖、克制而有质感层级，材料本身构成视觉重心",
+      "keywords": [
+        "意式极简",
+        "整幅岩板",
+        "木饰面",
+        "斜切台面",
+        "少缝",
+        "暖色石材"
+      ]
+    },
+    "en": {
+      "space": "An open continuous living volume with a single full-slab stone feature wall as the visual anchor, flat ceiling with narrow recessed shadow gap",
+      "material": "Warm greige matte sintered stone floor and book-matched feature wall, warm walnut full-height veneer panelling, thickened countertop with 45° mitred edge, brushed champagne metal reveals",
+      "lighting": "Wall-washing spotlights grazing the stone texture from above, hidden linear LED under the counter, warm tone with retained shadow detail",
+      "furniture": "Large low square sofa mixing leather and fabric, flush cabinetry with slim metal pulls",
+      "camera": "One-point perspective, camera slightly below eye level, 28–40mm, emphasising full-slab continuity",
+      "atmosphere": "Warm, restrained, layered in material rather than object",
+      "keywords": [
+        "italian minimal",
+        "full slab stone",
+        "wood veneer",
+        "mitred edge",
+        "few seams",
+        "warm stone"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持大体量材质块的体量与位置不变，不改动背景墙所在墙面",
+    "保持石材整幅排版的对纹关系与缝位分布",
+    "保持天花暗槽位置与灯位网格，不新增叠级"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高饱和与荧光色",
+      "不要仿石纹贴纸、塑料饰面与廉价复合板",
+      "不要露明管线与未经处理的水泥裸面",
+      "不要古典雕饰与繁复线脚",
+      "不要可见阳角压条与彩色收边条"
+    ],
+    "en": [
+      "no saturated or fluorescent colours",
+      "no faux-stone laminates, plastic finishes or cheap composite panels",
+      "no exposed services or raw untreated concrete",
+      "no classical ornament or applied mouldings",
+      "no visible corner trims or coloured edge strips"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "石材排版与缝位",
+      "criteria": "接缝数量按整幅排版最小化，缝位不落在主视角中心，缝宽一致",
+      "stage": "schematic"
+    },
+    {
+      "check": "对纹连续性",
+      "criteria": "相邻石材板纹理走向连续，错位 ≤5mm",
+      "stage": "construction"
+    },
+    {
+      "check": "收口方式",
+      "criteria": "木饰面与石材相接处为对拼收口，无可见压条",
+      "stage": "construction"
+    },
+    {
+      "check": "台面边缘加工",
+      "criteria": "加厚边缘倒边或斜切尺寸统一，误差 ≤1mm（常见工程惯例区间）",
+      "stage": "construction"
+    },
+    {
+      "check": "色彩数量",
+      "criteria": "材料主色系不超过 3 类，金属色仅一种且用量 ≤5%",
+      "stage": "schematic"
+    }
+  ]
+}

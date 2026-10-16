@@ -1,0 +1,275 @@
+{
+  "style_id": "scandinavian",
+  "display_name_zh": "北欧风格",
+  "display_name_en": "Scandinavian",
+  "family": "modern",
+  "tags": [
+    "light",
+    "wood",
+    "hygge",
+    "functional",
+    "pale"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪前期成型，20 世纪中后期经标准化住宅推广而定型",
+    "origin": "北欧诸国，长冬季与低日照的气候条件下形成的居住传统",
+    "summary": "北欧风格源于对长冬与低日照的应对：既然天然光稀缺，就最大化采光并把室内做亮，用高明度浅色墙面与浅色木地板反射光线；既然冬季室内停留时间长，就把功能与舒适做实，让家具承担收纳与座位。它不追求贵重材料，而追求「可负担的舒适」——这也是它能在标准化住宅里大规模复制的原因。",
+    "key_movements": [
+      "斯堪的纳维亚设计运动",
+      "功能主义",
+      "现代主义建筑运动"
+    ]
+  },
+  "spatial_principles": [
+    "最大化自然采光：窗面尽量大且少遮挡，窗边优先安排座位或工作区",
+    "平面紧凑高效，各功能区相互连通，由家具而非隔墙承担分区",
+    "墙面与小尺度体块保持浅色以反射光线，避免大面积深色墙",
+    "储物嵌入式与家具化结合，以可用性优先决定柜体位置",
+    "主通道净宽 ≥900mm（常见工程惯例区间），家具轻便可移动以灵活调整"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "以人体尺度为准，层高不必过高但需保证采光面高度与深度",
+      "家具低矮、细腿，保持视觉通透与地面连续",
+      "木地板采用窄板铺设，走向与主要采光方向一致",
+      "柜体与墙面同色或同为浅色木，弱化体量感"
+    ],
+    "ratios": [
+      "木地板板宽常见 120–190mm（常见工程惯例区间）",
+      "柜体模数按 400mm 与 600mm 组合（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2500–2900mm（常见工程惯例区间）；空间偏矮时以浅色与细腿家具维持通透"
+  },
+  "color_palette": [
+    {
+      "name_zh": "雪白",
+      "name_en": "Snow White",
+      "hex": "#F5F3EE",
+      "usage": "墙面与天花基调，占比约 50%",
+      "role": "base"
+    },
+    {
+      "name_zh": "浅灰蓝",
+      "name_en": "Pale Grey Blue",
+      "hex": "#C3C8CC",
+      "usage": "次要墙面与织物，占比约 15%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "浅白蜡木",
+      "name_en": "Pale Ash Wood",
+      "hex": "#D9C3A0",
+      "usage": "地板与主要家具，占比约 25%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "雾灰",
+      "name_en": "Mist Grey",
+      "hex": "#9AA0A2",
+      "usage": "织物与软装，占比约 10%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "柔和芥末黄",
+      "name_en": "Soft Mustard",
+      "hex": "#D9A85C",
+      "usage": "抱枕与点缀织物，占比 ≤5%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "浅色白蜡木与桦木",
+      "name_en": "Pale Ash and Birch",
+      "application": "地板、家具与墙面木作",
+      "finish": "清漆或木蜡油半哑光",
+      "notes": "同一空间尽量统一木种与色调"
+    },
+    {
+      "name_zh": "哑光乳胶漆",
+      "name_en": "Matte Latex Paint",
+      "application": "墙面与天花",
+      "finish": "哑光"
+    },
+    {
+      "name_zh": "羊毛与棉麻织物",
+      "name_en": "Wool and Linen Fabric",
+      "application": "地毯、窗帘与软垫",
+      "finish": "天然纤维质感"
+    },
+    {
+      "name_zh": "白色哑光瓷砖",
+      "name_en": "Matte White Tile",
+      "application": "厨卫墙面",
+      "finish": "哑光陶质面"
+    },
+    {
+      "name_zh": "编织藤与纸绳",
+      "name_en": "Woven Rattan and Paper Cord",
+      "application": "座椅与灯罩",
+      "finish": "天然手工编织"
+    }
+  ],
+  "furniture_language": [
+    "线条明快，带克制曲线与细木腿，人体工学优先",
+    "以浅色木质为主，配织物软垫提供温暖",
+    "家具轻巧可移动、可叠放，强调模块化与组合",
+    "通过地毯、靠垫、毛毯等织物层叠堆积温暖感"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "追求柔和均匀的漫射光与多个光源点，避免单一强顶灯",
+      "傍晚以低照度多点光源营造 hygge 式的温馨氛围"
+    ],
+    "fixtures": [
+      "纸或织物灯罩吊灯",
+      "细杆落地灯",
+      "床头台灯",
+      "氛围蜡烛与烛台"
+    ],
+    "color_temperature_k": [
+      2400,
+      3000
+    ],
+    "illuminance_lux": "起居环境 150–300lx，桌面阅读区 300–500lx（常见工程惯例区间）",
+    "layering": "以多个低亮度点光源形成氛围层，功能照明就地补充"
+  },
+  "architectural_elements": [
+    "大面积浅色窗框与低窗台窗洞",
+    "浅色木地板与白色踢脚",
+    "简洁白色墙面与平整天花",
+    "窗边座位与嵌入式书架",
+    "简洁采暖设备或传统壁炉的现代转译"
+  ],
+  "applicable_spaces": [
+    "住宅与公寓",
+    "小型办公与工作室",
+    "咖啡馆与烘焙店",
+    "亲子与儿童空间"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "浅色木地板与木作的用料与铺装",
+      "织物软装与地毯的用量",
+      "采光改造与窗洞处理"
+    ],
+    "saving_moves": [
+      "以木纹饰面板或多层板替代部分实木",
+      "以成品家具替代定制柜体，保留可移动性",
+      "集中在一件织物地毯和少量靠垫上营造温暖，而非全屋软装铺开"
+    ],
+    "notes": "北欧风格对材料质感的要求高于对规格的要求，浅色木一旦色调不统一，整体感会明显下降"
+  },
+  "construction_considerations": [
+    "浅色木地板与木作需统一木种、批次与油漆色调，避免同空间出现色差",
+    "墙面基层需平整且无泛黄，浅色哑光漆会放大基层瑕疵",
+    "窗洞改造涉及外立面与保温时，需按当地规范处理，标注待持证专业人员复核",
+    "地板留缝与踢脚收口需按含水率与季节调整，防止起拱",
+    "湿区墙面防水与排水做法，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "japandi",
+    "modern-minimalism",
+    "modernist-classic",
+    "mid-century-modern",
+    "italian-minimal"
+  ],
+  "incompatible_elements": [
+    "深色重木与繁复古典家具",
+    "高饱和艳丽色与大面积强对比色块",
+    "大面积冷硬工业金属与裸露管线",
+    "厚重深色皮质沙发配深色墙面",
+    "繁复吊灯与水晶装饰灯"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "采光充足的起居空间，大面积浅色窗框与低窗台引入自然光，天花平整无叠级",
+      "material": "雪白哑光墙面，浅白蜡木窄板地板，白蜡木细腿家具，羊毛与棉麻织物地毯与窗帘",
+      "lighting": "日光自大窗漫射进入，傍晚由纸灯罩吊灯与细杆落地灯提供多点柔和暖光",
+      "furniture": "细木腿沙发与单椅，低矮白蜡木茶几，轻便可移动的成品家具，织物靠垫层叠",
+      "camera": "接近人眼高度的平视机位，35mm，迎着窗户拍摄突出暖白光线",
+      "atmosphere": "明亮、通透、温暖而有生活感，功能与舒适并重",
+      "keywords": [
+        "北欧",
+        "浅色木",
+        "高采光",
+        "织物温暖",
+        "细木腿家具",
+        "漫射光"
+      ]
+    },
+    "en": {
+      "space": "A daylit living space with large pale window frames and low sills bringing in natural light, flat ceiling with no steps",
+      "material": "Snow-white matte walls, narrow pale ash floor boards, pale ash furniture with slender legs, wool and linen rugs and curtains",
+      "lighting": "Daylight diffusing from the large window, and in the evening soft multi-point warm light from a paper-shade pendant and thin-stem floor lamp",
+      "furniture": "Slim-legged sofa and armchair, low pale ash coffee table, lightweight movable ready-made pieces, layered textile cushions",
+      "camera": "Near eye-level, 35mm, shot towards the window to emphasise the warm pale light",
+      "atmosphere": "Bright, airy, warm and lived-in, functional and comfortable in equal measure",
+      "keywords": [
+        "scandinavian",
+        "pale wood",
+        "daylight",
+        "textile warmth",
+        "slender legs",
+        "diffused light"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持窗洞位置与尺寸不变，不改动采光面",
+    "保持地板走向与主要采光面方向的关系",
+    "保持天花平整连续，不新增叠级与吊顶造型"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要深色重木与繁复古典家具",
+      "不要高饱和艳丽色与大面积强对比色块",
+      "不要大面积冷硬工业金属与裸露管线",
+      "不要厚重深色皮质沙发配深色墙面",
+      "不要繁复吊灯与水晶装饰灯"
+    ],
+    "en": [
+      "no dark heavy wood or ornate classical furniture",
+      "no saturated vivid colours or large high-contrast colour blocks",
+      "no large areas of cold industrial metal or exposed services",
+      "no heavy dark leather sofas against dark walls",
+      "no ornate pendants or crystal chandeliers"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "采光效率",
+      "criteria": "主采光面窗地比不低于 1:6，窗边无高家具遮挡（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "木色统一",
+      "criteria": "同一空间木材色调一致，色差在肉眼不可辨范围内",
+      "stage": "construction"
+    },
+    {
+      "check": "照明分点",
+      "criteria": "起居空间至少 3 个独立光源，单一主灯不承担全部照度",
+      "stage": "S4"
+    },
+    {
+      "check": "织物温暖度",
+      "criteria": "可见织物（地毯、窗帘、软垫）面积占地面与软装总面积 ≥30%",
+      "stage": "schematic"
+    },
+    {
+      "check": "通透感",
+      "criteria": "家具腿外露、离地，地面可见连续面积不低于 60%",
+      "stage": "schematic"
+    }
+  ]
+}

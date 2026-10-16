@@ -1,0 +1,289 @@
+{
+  "style_id": "warehouse-conversion",
+  "display_name_zh": "厂房改造",
+  "display_name_en": "Warehouse Conversion",
+  "family": "industrial",
+  "tags": [
+    "adaptive-reuse",
+    "truss",
+    "clerestory",
+    "vast"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1980 年代起在欧洲与北美形成规模化实践，2010 年代成为城市更新的主流做法",
+    "origin": "工业区外迁后遗留的厂房、仓库与车站等大型工业建筑的适应性再利用实践",
+    "summary": "它回应的是城市工业外迁后留下的大体量厂房如何处理的问题。这类建筑最不可替代的价值在结构本体：大跨度桁架、连续高侧窗、厚实砌体与耐磨地坪，新建几乎无法复刻。做法因此以「保留结构、更新性能」为原则——先评估既有结构的承载与消防现状，再在既有条件下植入夹层、设备与疏散体系，只在确有必要处开洞或减载。它与工业 LOFT 的关键区别在于：这里是既有工业建筑的适应性再利用，一切改动受原结构约束，主要工作是结构加固、性能提升与夹层植入；而工业 LOFT 是在新建的常规结构内做室内改造。",
+    "key_movements": [
+      "工业遗产适应性再利用",
+      "城市更新与工业区转型",
+      "开敞空间保护与改造实践"
+    ]
+  },
+  "spatial_principles": [
+    "原有大跨度结构体系统一呈现：桁架、柱列与高侧窗构成空间主导秩序，不做包封。",
+    "竖向增量采用轻质夹层植入而非外围接建，夹层与既有柱列对位并尽量落在原有承重点上。",
+    "在原有体量内划分新功能时优先用轻质隔断与地面高差，避免新增大荷载隔墙。",
+    "利用高侧窗组织自然采光与通风，深处空间以人工光补足并按功能分区独立控制。",
+    "新加构件与原构件在构造上明确区分，保留原有工业构件与地坪作为可辨识的时间层。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "保留原有大跨度，桁架跨度常见 12–30m，中间不新增柱以免破坏原始空间感。",
+      "夹层净高常见 2400–2700mm，夹层下净高宜保持 ≥2600mm；总净高按原厂房常见 4500–9000mm。",
+      "高侧窗窗台高常见距地 4500–7000mm，窗高常见 900–2000mm，形成连续顶部采光带。",
+      "新增夹层与隔断按独立模数布置，常见模数 600mm 或 1200mm，与既有柱距不必整除。"
+    ],
+    "ratios": [
+      "桁架跨度 12–30m",
+      "夹层下净高 ≥2600mm",
+      "高侧窗窗台 4500–7000mm",
+      "新增模数 600/1200mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 4500–9000mm；原厂房越高越有利于夹层植入与竖向分区"
+  },
+  "color_palette": [
+    {
+      "name_zh": "砖色",
+      "name_en": "Brick",
+      "hex": "#A05C46",
+      "usage": "原有砖砌体外墙与局部内墙，占比约 20–30%",
+      "role": "base"
+    },
+    {
+      "name_zh": "混凝土灰",
+      "name_en": "Concrete Grey",
+      "hex": "#9C9C98",
+      "usage": "混凝土柱、楼板与地面，占比约 25–35%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深绿钢",
+      "name_en": "Deep Green Steel",
+      "hex": "#3E4A44",
+      "usage": "钢构涂装与新增钢件，占比约 15–22%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "旧木色",
+      "name_en": "Aged Timber",
+      "hex": "#8B6A46",
+      "usage": "回收木隔断与家具，占比约 10–16%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "白灰墙",
+      "name_en": "Chalk White",
+      "hex": "#E7E4DC",
+      "usage": "新增隔墙与天花底面，占比约 10–18%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "铁锈",
+      "name_en": "Rust",
+      "hex": "#6E4A33",
+      "usage": "旧金属构件与设备遗存，占比约 3–8%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "既有砖砌体与清水混凝土",
+      "name_en": "Existing Masonry and Concrete",
+      "application": "外墙、柱与地面",
+      "finish": "清理后做憎水或封护处理，保留原始纹理与轻微污渍"
+    },
+    {
+      "name_zh": "原钢桁架与钢构件",
+      "name_en": "Existing Steel Trusses",
+      "application": "屋面结构与外露柱",
+      "finish": "除锈后防锈涂装，保留原有铆钉与节点板"
+    },
+    {
+      "name_zh": "钢框玻璃与聚碳酸酯板",
+      "name_en": "Steel-framed Glazing and Polycarbonate",
+      "application": "高侧窗与新增隔断",
+      "finish": "透明或漫射，框架外露"
+    },
+    {
+      "name_zh": "轻钢与压型钢板夹层",
+      "name_en": "Light-gauge Steel and Composite Deck",
+      "application": "新增夹层楼板",
+      "finish": "结构板加面层，底面可见压型板纹理"
+    },
+    {
+      "name_zh": "回收砖与回收木",
+      "name_en": "Reclaimed Brick and Timber",
+      "application": "新加隔墙与家具",
+      "finish": "清洁后回用，保留旧痕与色差"
+    },
+    {
+      "name_zh": "耐磨地坪",
+      "name_en": "Wear-resistant Flooring",
+      "application": "大空间地面",
+      "finish": "密封固化或金刚砂耐磨面"
+    }
+  ],
+  "furniture_language": [
+    "家具体量中等但数量克制，让空间由建筑本体而非家具主导。",
+    "线条方直、构造可见，多用回收木与金属框架拼装。",
+    "落地方式为钢框架或厚木块直接落地，不做封闭基座。",
+    "拉手为简单金属条或明装铰链，形式统一以便批量复制。",
+    "家具按大空间尺度成组摆放，组间保持较大间距，不做密集填充。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以高侧窗引入的自然光为主，按空间进深分区补足人工光。",
+      "以可见的明装灯具延续原有结构秩序，避免用吊顶遮蔽桁架。"
+    ],
+    "fixtures": [
+      "高天棚工业吊灯",
+      "线性明装灯带",
+      "轨道射灯",
+      "应急与疏散照明"
+    ],
+    "color_temperature_k": [
+      3000,
+      4000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，工作面 300–500lx",
+    "layering": "环境层由高天棚灯具与自然光共同承担；任务层按功能区局部提高；重点层用射灯照亮原结构与展示面；装饰层弱，灯具以功能性为主。"
+  },
+  "architectural_elements": [
+    "保留的大跨度钢桁架与铆接节点。",
+    "连续高侧窗与顶部采光带。",
+    "植入的轻质钢夹层及其可见的楼板底面。",
+    "原工业大门改为钢框玻璃洞口。",
+    "保留的原工业地坪与设备基础痕迹。"
+  ],
+  "applicable_spaces": [
+    "创意办公与联合办公",
+    "文化展览与艺术空间",
+    "大型零售与市集",
+    "餐饮与活动空间",
+    "住宅 LOFT 与工作室"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "既有结构的检测、加固与防腐涂装",
+      "屋面与高侧窗的防水保温更新",
+      "夹层钢结构与楼板体系"
+    ],
+    "saving_moves": [
+      "保留原有地坪与砖墙只做清理封护",
+      "夹层采用轻钢体系以降低加固量",
+      "高侧窗改漫射板材替代玻璃以控制造价"
+    ],
+    "notes": "造价由既有结构状况决定而非设计意图；应在方案阶段之前完成结构检测，否则加固工程量无法估算。"
+  },
+  "construction_considerations": [
+    "原有结构的承载力、剩余寿命与加固方案须由持证专业人员检测判定，本系统不给出结构结论",
+    "厂房的防火分区、疏散距离与耐火等级改造须按现行规范重新核定，标注待持证专业人员复核",
+    "屋面与高侧窗的防水、保温和冷凝问题在改造中最易遗漏，须先做现状勘查再定做法",
+    "新增夹层的荷载传递路径与既有柱列对位须在施工图阶段明确，严禁直接压在未经核算的楼板上",
+    "拆除原有构件前须确认其非承重属性并经持证专业人员确认，不得自行拆改"
+  ],
+  "compatible_styles": [
+    "industrial-loft",
+    "brutalist",
+    "biophilic",
+    "steampunk"
+  ],
+  "incompatible_elements": [
+    "全包吊顶、隐藏原有桁架",
+    "在原有开敞空间内新增柱列以缩小跨度",
+    "仿古典线脚与护墙板",
+    "成套轻质密集隔墙把大空间切碎"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "厂房改造后的创意办公大空间，净高约 7m，屋面为保留的钢桁架与铆接节点，一侧连续高侧窗形成顶部采光带，中部植入轻钢夹层并以白灰隔墙划分会议区",
+      "material": "清理封护的旧砖外墙，除锈涂装的原钢构件与铆钉，漫射聚碳酸酯高侧窗，密封固化的原工业地坪，回收木隔断与钢框玻璃洞口",
+      "lighting": "高侧窗自然光为主，高天棚工业吊灯提供环境光，夹层下线性明装灯带补光，射灯照亮桁架，色温 3000–4000K",
+      "furniture": "钢框架与厚木拼装的中等体量家具，成组分散摆放，金属条拉手与明装铰链，形式统一便于复制",
+      "camera": "约 1.5m 视高，等效 20–24mm 广角，收入完整桁架跨度与高侧窗采光带",
+      "atmosphere": "开敞宏大、时间层次清晰，新旧构件可辨识，自然光从顶部进入",
+      "keywords": [
+        "大跨度钢桁架",
+        "铆接节点",
+        "连续高侧窗",
+        "轻钢夹层",
+        "保留工业地坪",
+        "新旧可辨识"
+      ]
+    },
+    "en": {
+      "space": "Converted warehouse as a creative office hall, clear height about 7 m, preserved steel roof trusses with riveted nodes, a continuous clerestory along one side forming a top lighting band, a light steel mezzanine inserted in the middle with chalk-white partitions dividing meeting zones",
+      "material": "cleaned and sealed old brick walls, de-rusted and painted original steel members with rivets, diffusing polycarbonate clerestory, sealed original industrial floor, reclaimed timber partitions and steel-framed glass openings",
+      "lighting": "clerestory daylight as the main source, high-bay industrial pendants for ambient light, linear surface-mounted strips under the mezzanine, spotlights grazing the trusses, 3000–4000 K",
+      "furniture": "medium-scale furniture built from steel frames and thick timber, scattered in groups, metal bar pulls and exposed hinges, unified for repeatability",
+      "camera": "eye level about 1.5 m, 20–24 mm wide angle capturing the full truss span and the clerestory band",
+      "atmosphere": "vast and open with clearly readable time layers, old and new members distinguishable, daylight entering from above",
+      "keywords": [
+        "long-span steel truss",
+        "riveted node",
+        "continuous clerestory",
+        "light steel mezzanine",
+        "retained industrial floor",
+        "readable old and new"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持原有桁架跨度与柱列位置不变。",
+    "保持高侧窗的位置、连续长度与标高关系不变。",
+    "保持夹层与既有柱列的对位关系不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现全包吊顶或隐藏原有桁架",
+      "不要在开敞空间内新增柱列缩小跨度",
+      "不要出现仿古典线脚与护墙板",
+      "不要出现成套轻质密集隔墙把大空间切碎",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no full suspended ceiling or concealed original trusses",
+      "no new columns inserted to reduce the original open span",
+      "no imitation classical mouldings or wall panelling",
+      "no dense set of lightweight partitions fragmenting the large volume",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "结构呈现",
+      "criteria": "桁架跨度 12–30m 未被新增柱打断，节点与铆钉可见且已完成防腐",
+      "stage": "S3"
+    },
+    {
+      "check": "高侧窗",
+      "criteria": "窗台高 4500–7000mm，窗高 900–2000mm，连续采光带无中断",
+      "stage": "S4"
+    },
+    {
+      "check": "夹层净高",
+      "criteria": "夹层下净高 ≥2600mm，夹层内净高 2400–2700mm，柱列对位偏差 ≤50mm",
+      "stage": "S4"
+    },
+    {
+      "check": "照明分层",
+      "criteria": "环境 150–300lx、工作面 300–500lx，色温 3000–4000K，桁架在射灯下可读",
+      "stage": "S6"
+    },
+    {
+      "check": "改造合规项",
+      "criteria": "消防分区、疏散距离与结构加固方案已由持证专业人员核定并留档",
+      "stage": "S6"
+    }
+  ]
+}

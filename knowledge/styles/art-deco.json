@@ -1,0 +1,276 @@
+{
+  "style_id": "art-deco",
+  "display_name_zh": "装饰艺术",
+  "display_name_en": "Art Deco",
+  "family": "deco-retro",
+  "tags": [
+    "geometric",
+    "metallic",
+    "lacquer",
+    "glamour",
+    "stepped"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "约 1920 至 1939 年，以 1925 年巴黎国际装饰与现代工业艺术博览会为命名节点",
+    "origin": "法国装饰艺术传统与北美商业建筑实践的结合",
+    "summary": "装饰艺术回应的是工业化之后的机器美学。它把机械时代的几何、速度与强度转译为装饰语汇，用阶梯状轮廓、放射与锯齿母题、几何化的花叶纹替代历史样式，并以漆面、金属镶嵌与贵重石材制造戏剧性对比。它本质上是面向公共与商业场景的展示性风格：入口、门厅与电梯厅等短时停留空间最需要强视觉记忆点，因此做法集中在垂直界面的饰面与轮廓线，而非长期居住的舒适度。",
+    "key_movements": [
+      "装饰艺术运动（Art Deco）",
+      "现代主义前奏（Early Modernism）",
+      "流线型现代主义（Streamline Moderne）"
+    ]
+  },
+  "spatial_principles": [
+    "强调垂直方向，以竖向线条、柱与凹槽拉高视觉层高，弱化水平线。",
+    "入口与门厅做戏剧化处理：对称、镜面与金属饰面共同放大空间感。",
+    "平面多用对称与轴线，公共区沿轴线设分级台阶或门洞，形成行进序列。",
+    "轮廓采用阶梯状收分，体量自上而下逐级退台，拒绝圆角与柔软过渡。",
+    "家具与固定件皆几何化，允许强对比与局部聚焦照明。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "竖向分格按模数重复，常见 150–300mm，形成密集竖线。",
+      "阶梯状母题每级退台常见 20–80mm，转角为硬朗直角。",
+      "天花做同心或放射状线脚，中心对称，环距常见 200–400mm。",
+      "门洞取窄高做法，高宽比常见 2.4:1–3:1，强调纵向。"
+    ],
+    "ratios": [
+      "竖向分格模数 150–300mm",
+      "门洞高宽比 2.4:1–3:1",
+      "阶梯退台每级 20–80mm",
+      "天花环距 200–400mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 3000–4200mm；公共空间可更高"
+  },
+  "color_palette": [
+    {
+      "name_zh": "墨黑",
+      "name_en": "Ebony Black",
+      "hex": "#14161A",
+      "usage": "漆面与背景色，占比约 25–40%",
+      "role": "base"
+    },
+    {
+      "name_zh": "香槟金",
+      "name_en": "Champagne Gold",
+      "hex": "#C3A45C",
+      "usage": "金属镶嵌与装饰线条，占比约 8–15%",
+      "role": "accent-metal"
+    },
+    {
+      "name_zh": "祖母绿",
+      "name_en": "Emerald",
+      "hex": "#1E5A4A",
+      "usage": "漆面、石材与织物，占比约 12–20%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "米象牙",
+      "name_en": "Ivory",
+      "hex": "#E6DCC8",
+      "usage": "墙面与浅色对比面，占比约 20–30%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "深棕红",
+      "name_en": "Oxblood",
+      "hex": "#5A2A2A",
+      "usage": "皮革与局部漆面，占比约 8–15%",
+      "role": "accent"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "高光漆面",
+      "name_en": "High-gloss Lacquer",
+      "application": "墙面、柜体与门板",
+      "finish": "高光、镜面级平整，以深色为主"
+    },
+    {
+      "name_zh": "金属镶嵌",
+      "name_en": "Metal Inlay",
+      "application": "地面、墙面镶嵌与五金",
+      "finish": "黄铜或不锈钢抛光或拉丝，几何拼条"
+    },
+    {
+      "name_zh": "黑色大理石",
+      "name_en": "Black Marble",
+      "application": "地面、台面与门套",
+      "finish": "抛光，可见白色石纹"
+    },
+    {
+      "name_zh": "皮革与软包",
+      "name_en": "Leather and Upholstery",
+      "application": "坐具与墙面软包",
+      "finish": "高光或半哑光，几何分割"
+    },
+    {
+      "name_zh": "蚀刻与磨砂玻璃",
+      "name_en": "Etched or Frosted Glass",
+      "application": "隔断、门板与灯具",
+      "finish": "蚀刻几何纹样，透光不透形"
+    }
+  ],
+  "furniture_language": [
+    "家具线条硬朗几何，以直线与阶梯形轮廓为主，避免曲线。",
+    "体量低平而宽，多用平台式基座，落地或压在低矮底座上。",
+    "椅背与柜面常做放射、锯齿或扇形几何拼饰。",
+    "拉手为长条几何金属或嵌入式抠手，强调线条而非圆钮。",
+    "家具与固定件皆具重量感，材质以漆面、金属与皮革为主。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以隐藏式灯槽与金属灯具制造均匀而有戏剧感的亮度分布。",
+      "重点照明强调金属与漆面的反射，制造光泽与阴影对比。"
+    ],
+    "fixtures": [
+      "几何金属灯具",
+      "阶梯式或多层吸顶灯",
+      "隐藏灯槽与檐口灯带",
+      "金属壁灯"
+    ],
+    "color_temperature_k": [
+      2700,
+      3000
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 150–300lx，重点与展示面 300–600lx",
+    "layering": "环境层（灯槽与吸顶）为主，重点层（洗墙与展示）强调金属与漆面，装饰层（发光线条）参与几何构图，整体强调光泽与阴影的高对比。"
+  },
+  "architectural_elements": [
+    "阶梯状收分的天花或门头轮廓。",
+    "几何金属镶嵌地面，采用放射、锯齿或方格拼条。",
+    "高光漆面墙面与竖向凹槽分格。",
+    "蚀刻或磨砂玻璃隔断与发光线条。",
+    "对称的戏剧化入口与门套，常配镜面。"
+  ],
+  "applicable_spaces": [
+    "商业门厅与电梯厅",
+    "酒店公区与酒吧",
+    "影剧院与娱乐空间",
+    "高端零售与展厅",
+    "样板间与公寓入口"
+  ],
+  "budget_considerations": {
+    "tier": "luxury",
+    "drivers": [
+      "高光漆面的基层平整与多道打磨",
+      "金属镶嵌与几何拼条的定制加工",
+      "石材与镜面的大面积铺装"
+    ],
+    "saving_moves": [
+      "金属镶嵌改为金属漆或饰膜局部呈现",
+      "高光漆只做视觉焦点墙面",
+      "石材改用仿石面材并控制拼缝"
+    ],
+    "notes": "造价几乎由高光饰面面积与金属镶嵌长度决定，方案阶段应先锁定两者的比例。"
+  },
+  "construction_considerations": [
+    "高光漆面对基层平整度极敏感，须先做找平与样板确认，避免出现波纹与橘皮",
+    "金属镶嵌与石材拼条在地面下料前须完成放样，拼缝误差控制在常见 1–2mm 内以免积灰",
+    "大面积镜面与玻璃的固定、防撞与安全性做法标注待持证专业人员复核",
+    "发光线条与灯槽需与木作和饰面同步预埋，避免后期开槽破坏完成面",
+    "公共空间的人员疏散与消防要求涉及造型遮挡时，标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "vintage-european",
+    "postmodern",
+    "modernist-classic",
+    "mid-century-modern",
+    "neoclassical"
+  ],
+  "incompatible_elements": [
+    "乡村印花、做旧木材与草编等天然手作质感",
+    "极简无装饰的大面留白墙",
+    "柔和粉彩与暖白单色照明",
+    "圆角柔软体量与布艺罩套家具"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "装饰艺术风格酒店门厅，层高约 3.6m，天花为同心阶梯状线脚，墙面竖向凹槽分格，入口对称并带镜面",
+      "material": "高光深色漆面墙面，几何放射金属镶嵌地面，黑色大理石台面与门套，蚀刻玻璃隔断，皮革软包",
+      "lighting": "暖白灯槽提供均匀环境光，墙面金属壁灯勾勒竖向线条，洗墙光强调漆面与金属反射",
+      "furniture": "低平宽体量几何家具，平台式基座落地，椅背做扇形几何拼饰，长条金属拉手",
+      "camera": "约 1.5m 视高、中轴对称正视，等效 24–28mm，强调垂直与对称",
+      "atmosphere": "戏剧、锐利、光泽感强，几何秩序明确，明暗对比高",
+      "keywords": [
+        "阶梯状轮廓",
+        "几何金属镶嵌",
+        "高光漆面",
+        "黑色大理石",
+        "蚀刻玻璃",
+        "竖向凹槽"
+      ]
+    },
+    "en": {
+      "space": "Art Deco hotel foyer, ceiling about 3.6 m, concentric stepped ceiling mouldings, fluted vertical wall panelling, symmetrical mirrored entrance",
+      "material": "high-gloss dark lacquer walls, geometric radial metal inlay flooring, black marble counters and door surrounds, etched glass screens, leather upholstery",
+      "lighting": "warm-white cove lighting for even ambient illumination, metal wall sconces tracing the vertical lines, wall-washing light emphasising lacquer and metal reflections",
+      "furniture": "low, wide geometric furniture on plinth bases sitting on the floor, fan-shaped geometric inlay on chair backs, long linear metal pulls",
+      "camera": "eye level about 1.5 m, symmetrical frontal axis, 24–28 mm equivalent, emphasising verticality and symmetry",
+      "atmosphere": "theatrical, sharp and highly reflective, clear geometric order with strong contrast",
+      "keywords": [
+        "stepped silhouette",
+        "geometric metal inlay",
+        "high-gloss lacquer",
+        "black marble",
+        "etched glass",
+        "vertical fluting"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持中轴线与阶梯状轮廓的对称关系不变。",
+    "保持竖向分格模数与地面镶嵌拼条的走向不变。",
+    "保持门洞的窄高比例与位置不变。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现乡村印花、做旧木材或草编质感",
+      "不要出现极简无装饰的大面留白墙",
+      "不要出现柔和粉彩与暖白单色照明",
+      "不要出现圆角柔软体量与布艺罩套家具",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no country prints, distressed timber or woven straw textures",
+      "no large undecorated minimal blank walls",
+      "no soft pastel palette or single warm-white lighting",
+      "no rounded soft volumes or loose fabric-covered furniture",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "几何秩序",
+      "criteria": "竖向分格模数 150–300mm，阶梯退台每级 20–80mm，转角为直角",
+      "stage": "S4"
+    },
+    {
+      "check": "饰面光泽",
+      "criteria": "高光漆面在 1m 视距下不可见波纹与橘皮，样板已确认",
+      "stage": "S5"
+    },
+    {
+      "check": "金属镶嵌精度",
+      "criteria": "地面与墙面拼条拼缝误差 ≤2mm，走向与中轴线一致",
+      "stage": "S5"
+    },
+    {
+      "check": "照明对比",
+      "criteria": "环境 150–300lx、重点 300–600lx，色温 2700–3000K",
+      "stage": "S6"
+    },
+    {
+      "check": "对称一致性",
+      "criteria": "门厅中轴两侧构件镜像，左右偏差 ≤20mm",
+      "stage": "S4"
+    }
+  ]
+}

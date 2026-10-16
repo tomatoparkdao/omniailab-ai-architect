@@ -1,0 +1,277 @@
+{
+  "style_id": "organic-modern",
+  "display_name_zh": "有机现代",
+  "display_name_en": "Organic Modern",
+  "family": "natural-organic",
+  "tags": [
+    "soft-curve",
+    "warm-neutral",
+    "tactile",
+    "calm"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "20 世纪中期萌发，21 世纪初在住宅与商业空间中广泛流行",
+    "origin": "现代主义的空间效率与有机建筑对自然形态的追求相互融合的取向",
+    "summary": "现代主义把空间做得干净高效，但直角、硬边与工业材料容易让居住者觉得冷硬。有机现代的做法是保留现代主义的简洁骨架，用连续的曲线、圆角与雕塑化体量柔化界面，同时把材料换成温润的天然品类，而加工精度仍保持工业级——表面均匀、拼缝精细、色差受控。它解决的问题是：在维持现代整洁与效率的前提下，让空间获得生物形态的亲和力，靠形态与触感而不是靠增加装饰来制造温度。",
+    "key_movements": [
+      "有机建筑",
+      "现代主义",
+      "加州现代主义",
+      "自然主义室内设计"
+    ]
+  },
+  "spatial_principles": [
+    "以连续曲线墙面与圆弧转角替代直角交接，公共区转折处圆角半径常见 R≥300mm（常见工程惯例区间）",
+    "以曲面隔断或弧形吊顶划分区域，隔断可半高或不到顶，保持视线通透与流动",
+    "平面以开放流动布局为主，避免长直走廊，动线沿曲线展开，公共区净宽常见 ≥1200mm（常见工程惯例区间）",
+    "家具靠墙布置，让出中部连续的曲面与空地，形成可环行的核心区",
+    "天花做局部弧面或曲线跌级，弱化顶面与墙面的直角交线"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "门洞做圆角或拱形，圆角半径常见 R100–R400mm（常见工程惯例区间）",
+      "体量圆润，家具与固定件边角倒圆，台面与水槽尽量一体化无缝",
+      "拱形洞口高跨比常见约 1:1.2–1:2（常见工程惯例区间）",
+      "曲线段材料分缝等距，竖向分缝与直线段模数对齐"
+    ],
+    "ratios": [
+      "圆角半径常用 R100–R400mm（常见工程惯例区间）",
+      "拱形洞口高跨比约 1:1.2–1:2（常见工程惯例区间）",
+      "硬质直角界面占比建议 ≤30%（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2600–3200mm（常见工程惯例区间）；弧面跌级可再压低 200–300mm 而不显压抑"
+  },
+  "color_palette": [
+    {
+      "name_zh": "暖乳白",
+      "name_en": "Warm Cream",
+      "hex": "#F2EDE4",
+      "usage": "墙面与天花基调，占比约 45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "沙褐",
+      "name_en": "Sand Taupe",
+      "hex": "#D8CBB8",
+      "usage": "大面积墙板与地面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "燕麦灰",
+      "name_en": "Oat Grey",
+      "hex": "#B8AFA1",
+      "usage": "织物与软装，占比约 15%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "浅陶土",
+      "name_en": "Soft Terracotta",
+      "hex": "#C08B70",
+      "usage": "单椅、靠垫与局部墙面点缀，占比 ≤10%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "暖古铜",
+      "name_en": "Warm Bronze",
+      "hex": "#9A7B5A",
+      "usage": "灯具与五金细件，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "微水泥与无缝涂料",
+      "name_en": "Microcement and Seamless Coating",
+      "application": "墙面、地面与天花",
+      "finish": "哑光无缝，批刮匀净",
+      "notes": "曲面处需连续施工，避免明显接痕"
+    },
+    {
+      "name_zh": "木饰面与实木",
+      "name_en": "Timber Veneer and Solid Wood",
+      "application": "墙板、家具与固定柜",
+      "finish": "木蜡油丝光，色差受控"
+    },
+    {
+      "name_zh": "曲木与模压木",
+      "name_en": "Bent and Moulded Wood",
+      "application": "家具框架与弧形构件",
+      "finish": "光滑打磨，边缘倒圆"
+    },
+    {
+      "name_zh": "天然石材",
+      "name_en": "Natural Stone",
+      "application": "台面与地面",
+      "finish": "哑光或细拉丝，避免镜面"
+    },
+    {
+      "name_zh": "羊毛与棉麻织物",
+      "name_en": "Wool and Cotton-linen Fabric",
+      "application": "沙发、窗帘与地毯",
+      "finish": "天然质感，手感厚实"
+    }
+  ],
+  "furniture_language": [
+    "圆润无锐角，柜体转角做倒圆，拉手为隐藏式或一体铣型",
+    "体量偏大但低矮，以圆润单椅、弧形沙发与椭圆桌为常见形制",
+    "材质以木、绒布、皮革与石材组合，触感温润而不滑冷",
+    "落地与悬空结合，柜体尽量做成整体曲面而非分段拼接"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以暗藏灯带洗亮曲线墙面，强调曲面的连续性而不是照亮单个物体",
+      "低色温柔和漫射，避免在曲面上形成硬边阴影"
+    ],
+    "fixtures": [
+      "暗藏线性灯带",
+      "弧形吊灯",
+      "可调角度壁灯",
+      "低位落地灯"
+    ],
+    "color_temperature_k": [
+      2600,
+      3200
+    ],
+    "illuminance_lux": "起居环境 150–300lx，重点墙面洗墙 200–400lx（常见工程惯例区间）",
+    "layering": "环境光以曲线灯带打底，任务光用低矮灯具，重点光落在雕塑化家具与艺术品上"
+  },
+  "architectural_elements": [
+    "弧形墙面与圆角转角",
+    "曲线吊顶与跌级",
+    "拱形或圆角门洞",
+    "通长无缝的微水泥或木饰面墙板",
+    "一体化曲面台面与水槽"
+  ],
+  "applicable_spaces": [
+    "住宅与公寓",
+    "酒店大堂与客房",
+    "精品零售空间",
+    "办公与联合办公",
+    "餐饮空间"
+  ],
+  "budget_considerations": {
+    "tier": "premium",
+    "drivers": [
+      "曲面墙体与弧形木作的定制加工与放样",
+      "无缝微水泥的分层施工与打磨",
+      "弧面家具与定制固定件"
+    ],
+    "saving_moves": [
+      "曲线只做在主视线与动线转折处，次要界面保留直墙",
+      "以成品弧形家具替代全定制曲面墙体",
+      "无缝涂料集中在公共区，次要房间用哑光乳胶漆"
+    ],
+    "notes": "曲线工艺对基层平整度要求高，预算有限时应减少曲线数量而非降低单处加工精度"
+  },
+  "construction_considerations": [
+    "曲线墙体放样建议用模板或数控切割定位，避免手工放线累积误差",
+    "微水泥与无缝涂料需分层施工并控制基层含水率，抗裂与收边做法标注待持证专业人员复核",
+    "弧形木饰面需按曲率做薄板或背衬开槽，封板前确认基层半径",
+    "曲面上的开洞与预埋电位需在封板前一次定位，后期返工代价高",
+    "湿区曲面防水与排水做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "japandi",
+    "modern-minimalism",
+    "biophilic",
+    "contemporary-luxury",
+    "scandinavian"
+  ],
+  "incompatible_elements": [
+    "尖锐直角与密集网格分缝",
+    "高光泽石材与镜面不锈钢",
+    "繁复古典线脚与金色雕饰",
+    "大面积高饱和色块",
+    "外露管线与粗野的毛面混凝土"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "开放流动的起居空间，一面通长的弧形微水泥墙连接圆角门洞，天花有一道曲线跌级，中部为空地",
+      "material": "暖乳白无缝微水泥墙面与地面，丝光木饰面墙板，哑光天然石材台面，羊毛地毯与棉麻沙发",
+      "lighting": "墙脚暗藏灯带自下向上洗亮曲面，弧形吊灯提供柔和环境光，窗口漫射日光从侧面进入",
+      "furniture": "圆润无锐角的低矮沙发与椭圆茶几，隐藏拉手的整体曲面柜，浅陶土靠垫点缀",
+      "camera": "人眼高度略低，24–35mm 广角，沿曲线动线取景以体现弧面延续",
+      "atmosphere": "温润、安静、雕塑感强，表面均匀无瑕",
+      "keywords": [
+        "有机现代",
+        "曲线",
+        "圆角",
+        "暖中性",
+        "无缝涂料",
+        "触感"
+      ]
+    },
+    "en": {
+      "space": "An open flowing living space with a long curved microcement wall meeting a rounded doorway, a curved ceiling drop, and a clear central void",
+      "material": "Warm cream seamless microcement walls and floor, satin timber veneer panelling, matte natural stone countertop, wool rug and cotton-linen sofa",
+      "lighting": "Hidden cove lighting washing the curved wall from below, a curved pendant for soft ambient light, diffuse daylight entering from the side",
+      "furniture": "Low rounded sofa with no sharp edges, oval coffee table, handleless curved cabinetry, soft terracotta cushions",
+      "camera": "Slightly below eye level, 24–35mm wide angle, composed along the curved circulation to show the continuous surface",
+      "atmosphere": "Warm, calm, sculptural, uniformly finished",
+      "keywords": [
+        "organic modern",
+        "curved",
+        "rounded",
+        "warm neutral",
+        "seamless coating",
+        "tactile"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持曲线墙体的曲率与圆角半径不变",
+    "保持拱形洞口的跨度与高度关系不变",
+    "保持天花弧面跌级的位置与高差，不新增或删减"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要尖锐直角与密集网格分缝",
+      "不要高光泽石材与镜面不锈钢",
+      "不要古典线脚与金色雕饰",
+      "不要大面积高饱和色块",
+      "不要外露管线与粗野毛面混凝土"
+    ],
+    "en": [
+      "no sharp right angles or dense grid jointing",
+      "no high-gloss stone or mirrored stainless steel",
+      "no classical mouldings or gilded ornament",
+      "no large saturated colour blocks",
+      "no exposed services or raw bush-hammered concrete"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "曲线连续性",
+      "criteria": "主视线内曲线墙面的曲率连续，无直段突然插入，转角圆角 ≥R100mm",
+      "stage": "schematic"
+    },
+    {
+      "check": "硬边控制",
+      "criteria": "硬质直角界面占比 ≤30%（常见工程惯例区间）",
+      "stage": "schematic"
+    },
+    {
+      "check": "无缝面完成度",
+      "criteria": "微水泥墙面 2m 靠尺下无明显凹凸与接痕，无可见色差带",
+      "stage": "construction"
+    },
+    {
+      "check": "照明柔和度",
+      "criteria": "曲面上无硬边阴影，色温落在 2600–3200K",
+      "stage": "S4"
+    },
+    {
+      "check": "金属控制",
+      "criteria": "金属占比 ≤5%，且为哑光或拉丝表面，无镜面反射",
+      "stage": "construction"
+    }
+  ]
+}

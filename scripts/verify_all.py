@@ -362,8 +362,65 @@ def check_v11() -> int:
     return failures
 
 
+def check_style() -> int:
+    section("7. 设计风格系统（内部专业模块）")
+    try:
+        from omniarchitect.stages import STAGES
+        from omniarchitect.style import all_hooks, load_catalog
+        from omniarchitect.style import validation as sv
+        from omniarchitect.style.hooks import STAGE_HOOKS
+    except Exception as exc:                                    # noqa: BLE001
+        print(f"  FAIL  风格模块无法导入：{type(exc).__name__}: {exc}")
+        return 1
+
+    fails = 0
+
+    bad = sv.check_style_dir()
+    if bad:
+        print(f"  FAIL  {len(bad)} 条风格数据未通过 Schema 校验：{list(bad)[:3]}")
+        fails += len(bad)
+    else:
+        print("  ok  风格数据全部通过 Schema 校验")
+
+    try:
+        cat = load_catalog(refresh=True)
+    except Exception as exc:                                    # noqa: BLE001
+        print(f"  FAIL  索引构建失败：{exc}")
+        return fails + 1
+    if len(cat) < 40:
+        print(f"  FAIL  风格条目仅 {len(cat)} 条（预期不少于 40）")
+        fails += 1
+    else:
+        print(f"  ok  风格索引 {len(cat)} 条（按需加载，不整体读入上下文）")
+
+    by_id = {st.id: st for st in STAGES}
+    drift = []
+    for sid, h in STAGE_HOOKS.items():
+        if sid not in by_id:
+            drift.append(f"{sid}: 阶段模型中没有这个阶段")
+            continue
+        want = f"{by_id[sid].gate.id} {by_id[sid].gate.label}"
+        if h["gate"] != want:
+            drift.append(f"{sid}: 挂钩 {h['gate']!r} ≠ 阶段模型 {want!r}")
+    if drift:
+        print(f"  FAIL  挂钩与阶段模型不一致：{drift}")
+        fails += len(drift)
+    else:
+        print(f"  ok  {len(all_hooks())} 条挂钩的门禁措辞与阶段模型逐字符一致")
+
+    proc = subprocess.run([sys.executable, "-m", PACKAGE, "style", "catalog"],
+                          capture_output=True, text=True, encoding="utf-8",
+                          cwd=str(ROOT))
+    if proc.returncode != 0:
+        print(f"  FAIL  CLI `style catalog` 执行失败：{(proc.stderr or '')[:200]}")
+        fails += 1
+    else:
+        print("  ok  CLI `omniarchitect style` 可用")
+    return fails
+
+
 def check_assets() -> int:
-    section("7. 资产体积（大文件 / 媒体二进制）")
+    section("8. 资产体积（大文件 / 媒体二进制）")
     proc = subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "check_assets.py"), "--json"],
         capture_output=True, text=True, encoding="utf-8", cwd=str(ROOT))
@@ -400,11 +457,11 @@ def main() -> int:
     print("OmniArchitect 完整性验证")
     print(f"项目根目录：{ROOT}")
     total = (check_paths() + check_catalogue() + check_doctor() + check_smoke()
-             + check_tests() + check_v11() + check_assets())
+             + check_tests() + check_v11() + check_style() + check_assets())
     section("结论")
     if total == 0:
         print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、"
-              "v1.1 子系统正常、资产体积达标")
+              "v1.1 子系统正常、风格系统就绪、资产体积达标")
         return 0
     print(f"  {total} 项问题，需处理")
     return 1

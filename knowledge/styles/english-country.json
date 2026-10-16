@@ -1,0 +1,276 @@
+{
+  "style_id": "english-country",
+  "display_name_zh": "英式乡村",
+  "display_name_en": "English Country",
+  "family": "classic",
+  "tags": [
+    "floral",
+    "patina",
+    "wallpaper",
+    "cozy",
+    "layered"
+  ],
+  "stages": [
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "17 世纪起在英格兰乡间住宅中成型，19 世纪随印刷壁纸普及而进一步丰富",
+    "origin": "英格兰乡间庄园住宅与农舍居住传统的融合",
+    "summary": "英式乡村的做法来自气候与旧物两个约束。多雨阴冷的气候要求保温与心理上的暖意，于是房间做小而独立、天花压低、窗开小而深、壁炉成为每间房的几何中心；家族世代居住又使新物与旧物持续叠置，形成不刻意统一的层次感。墙面用印花壁纸遮盖抹灰缺陷，织物与靠枕层层叠加以吸声保温，色彩偏沉以配合长期低照度的自然光，最终形成室内包裹感强、局部亮而整体暗的照明习惯。",
+    "key_movements": [
+      "乡土建筑（Vernacular architecture）",
+      "工艺美术运动（Arts and Crafts Movement）",
+      "英式乡村住宅复兴（English country house revival）"
+    ]
+  },
+  "spatial_principles": [
+    "房间之间以门连接而非打通，保持各自独立与保温，单间面积常见 12–20㎡。",
+    "每间主要房间以壁炉或火炉为几何中心组织家具，坐具朝向火源围合。",
+    "不做大面开窗，窗洞小而深（窗深常见 150–300mm），兼顾保温与私密。",
+    "入口设过渡间（门厅或侧廊）挡风与收纳，再进入主要房间。",
+    "家具沿墙与窗前布置，中心留出通行，允许旧家具与新家具混置。"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "天花偏低以压低空间并减少热量流失，常见 2400–2800mm。",
+      "窗洞为竖长方形，高宽比常见 1.5:1–2:1，带分格小玻璃。",
+      "墙面以壁纸连续铺贴，不做上下分段，踢脚与檐口线脚较窄（常见 60–100mm）。",
+      "壁炉开口宽常见 900–1200mm，其上方墙面作为视觉重点。"
+    ],
+    "ratios": [
+      "窗洞高宽比 1.5:1–2:1",
+      "天花高度 2400–2800mm",
+      "壁炉开口宽 900–1200mm",
+      "壁纸图案单元常见 100–300mm"
+    ],
+    "ceiling_height_mm": "常见工程惯例区间 2400–2800mm"
+  },
+  "color_palette": [
+    {
+      "name_zh": "奶油白",
+      "name_en": "Cream",
+      "hex": "#E7DFCC",
+      "usage": "木作与天花，占比约 30–45%",
+      "role": "base"
+    },
+    {
+      "name_zh": "深橄榄绿",
+      "name_en": "Deep Olive",
+      "hex": "#4E5B45",
+      "usage": "壁纸底色或柜体饰面，占比约 20–30%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "暖赭",
+      "name_en": "Warm Ochre",
+      "hex": "#B2764A",
+      "usage": "织物与局部墙面，占比约 10–15%",
+      "role": "secondary"
+    },
+    {
+      "name_zh": "勃艮第红",
+      "name_en": "Burgundy",
+      "hex": "#6E3A3A",
+      "usage": "地毯与窗帘重点，占比 ≤15%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "旧木棕",
+      "name_en": "Aged Wood Brown",
+      "hex": "#4A3B2C",
+      "usage": "木地板与家具，占比约 20–30%",
+      "role": "neutral"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "印花壁纸",
+      "name_en": "Printed Wallpaper",
+      "application": "墙面满铺",
+      "finish": "哑光纸质或乙烯基，小尺度重复图案"
+    },
+    {
+      "name_zh": "亚麻与粗棉",
+      "name_en": "Linen and Heavy Cotton",
+      "application": "窗帘、沙发罩与靠垫",
+      "finish": "自然褶皱、无光泽"
+    },
+    {
+      "name_zh": "回收旧木与橡木",
+      "name_en": "Reclaimed Timber and Oak",
+      "application": "地板、外露梁与家具",
+      "finish": "保留使用痕迹与低光泽"
+    },
+    {
+      "name_zh": "手工陶砖与石材",
+      "name_en": "Handmade Tile and Stone",
+      "application": "壁炉、厨房背墙与地面",
+      "finish": "哑光、手感不均"
+    },
+    {
+      "name_zh": "织物拼铺地毯",
+      "name_en": "Layered Rugs",
+      "application": "地面叠铺",
+      "finish": "短绒叠铺，图案各异"
+    }
+  ],
+  "furniture_language": [
+    "家具线条朴素、体量中等，以实用为先，椅背多为直板或简单栏杆式。",
+    "新旧混置是常态，家具不追求成套，允许不同年代与材质同处一室。",
+    "柜体多为实木带浅嵌线门板，落地带托脚，不做悬空。",
+    "拉手为小圆钮或简单直杆，材质以做旧黄铜或铁质为主。",
+    "坐具以低靠背扶手椅为主，配厚坐垫与多层靠枕，强调包裹与暖意。"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "不设顶部主灯，以台灯、壁灯与落地灯构成分层暖光。",
+      "照明强调局部亮、整体暗的包围感，壁炉火光是氛围核心。"
+    ],
+    "fixtures": [
+      "布罩台灯",
+      "壁灯",
+      "落地灯",
+      "壁炉火光"
+    ],
+    "color_temperature_k": [
+      2400,
+      2800
+    ],
+    "illuminance_lux": "常见工程惯例区间：环境 50–150lx，阅读任务面 200–300lx",
+    "layering": "以任务光（台灯与阅读灯）为骨架，壁灯提供墙面氛围，壁炉光为情绪核心；整体照度低，明暗比常见 >8:1。"
+  },
+  "architectural_elements": [
+    "每间房的核心壁炉体，带石质或砖砌炉腔与上方壁炉架。",
+    "竖长分格小窗与深窗洞，配厚重窗帘与窗帘盒。",
+    "外露木梁天花，或抹灰天花加窄线脚。",
+    "满铺印花壁纸的墙面，包含门后与门窗侧壁。",
+    "宽橡木实木地板与门槛石，出现有使用痕迹的木色。"
+  ],
+  "applicable_spaces": [
+    "乡间别墅与住宅的起居、餐叙与书房",
+    "精品民宿与客栈",
+    "餐酒馆与下午茶空间",
+    "书店与阅读空间",
+    "精品酒店公区"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "壁纸满铺与图案对花的人工",
+      "窗帘的织物层数（衬布、遮光、纱帘）",
+      "回收旧木的筛选与处理"
+    ],
+    "saving_moves": [
+      "只在主要房间满铺壁纸，次要房间改用涂料",
+      "使用成品窗帘并简化层数",
+      "以旧家具采购替代定制木作"
+    ],
+    "notes": "造价的关键变量是织物层数与壁纸覆盖率，二者可按房间重要性分级。"
+  },
+  "construction_considerations": [
+    "壁纸对花须先做整墙排布，图案接缝位置应避开阳角与视线中心",
+    "旧木与旧砖的含水率与虫害情况需在进场前检测，处理方案标注待持证专业人员复核",
+    "壁炉与烟道的防火构造、烟道截面与排放做法标注待持证专业人员复核",
+    "深窗洞与厚墙改造若涉及结构，开洞与加固方案标注待持证专业人员复核",
+    "多层窗帘需预先确认窗帘盒净尺寸与轨道承重，避免遮挡窗扇开启"
+  ],
+  "compatible_styles": [
+    "victorian",
+    "american-country",
+    "european-classical",
+    "rustic-natural",
+    "vintage-european"
+  ],
+  "incompatible_elements": [
+    "裸露混凝土与金属框架等工业构件",
+    "大面无装饰白墙与通顶平板柜",
+    "冷白色高照度顶部均布筒灯",
+    "高饱和荧光色与镜面材质"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "英格兰乡间住宅起居室，房间偏小、天花压低约 2.6m，中心为砖石壁炉，竖长分格小窗嵌入深窗洞，外露橡木梁",
+      "material": "满铺小尺度印花壁纸，厚重亚麻窗帘与多层靠枕，宽橡木实木地板，手工陶砖壁炉，织物拼铺地毯",
+      "lighting": "阴天傍晚，台灯与壁灯提供低色温暖光，壁炉火光为空间核心，无顶部主灯",
+      "furniture": "低靠背扶手椅围合壁炉，厚坐垫与多层靠枕，实木带嵌线柜体，做旧黄铜小圆钮拉手，新旧家具混置",
+      "camera": "约 1.4m 视高、微侧视，等效 35mm，画面略带纵深，视线引向壁炉",
+      "atmosphere": "包裹、沉静、有生活痕迹，明暗对比强，材质哑光而层叠",
+      "keywords": [
+        "印花壁纸满铺",
+        "多层织物",
+        "低矮木梁天花",
+        "壁炉围合",
+        "深窗洞",
+        "叠铺地毯"
+      ]
+    },
+    "en": {
+      "space": "English country house sitting room, small room with a lowered beamed ceiling about 2.6 m, a masonry fireplace at the centre, tall small-paned windows set in deep reveals",
+      "material": "small-scale printed wallpaper on all walls, heavy linen drapery and many cushions, wide oak plank flooring, handmade tile fireplace, layered patterned rugs",
+      "lighting": "overcast late afternoon; table and wall lamps give low-temperature warm light, the fireplace glow anchors the room, no ceiling pendant",
+      "furniture": "low-back armchairs gathered around the fireplace, thick cushions, solid timber cabinets with inset moulding, aged brass knobs, old and new furniture mixed",
+      "camera": "eye level about 1.4 m, slightly angled view, 35 mm equivalent, mild depth, gaze drawn towards the fireplace",
+      "atmosphere": "enveloping, quiet and lived-in, strong light-to-dark contrast, matte and layered materials",
+      "keywords": [
+        "small-scale printed wallpaper",
+        "layered textiles",
+        "low beamed ceiling",
+        "fireplace gathering",
+        "deep window reveal",
+        "layered rugs"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持壁炉在每间主要房间的居中位置不变。",
+    "保持窗洞尺寸、分格形式与深窗洞关系不变。",
+    "保持房间之间的独立与门洞尺度，不做打通。"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要出现裸露混凝土或金属框架结构",
+      "不要出现大面无装饰白墙与平板通顶柜",
+      "不要出现顶部满铺冷白筒灯或高照度均布光",
+      "不要出现镜面不锈钢与高光漆面",
+      "不要出现任何品牌名、标识或文字标语"
+    ],
+    "en": [
+      "no exposed concrete or exposed metal frame structure",
+      "no large undecorated blank walls or slab-front full-height cabinetry",
+      "no full-ceiling cold-white downlights or high uniform illuminance",
+      "no mirrored stainless steel or high-gloss lacquer",
+      "no brand names, logos or lettering"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "房间独立性",
+      "criteria": "主要房间以门连接，单间面积 12–20㎡，无打通式开放布局",
+      "stage": "S3"
+    },
+    {
+      "check": "壁炉为核心",
+      "criteria": "每间主要房间家具围合朝向壁炉，壁炉开口宽 900–1200mm",
+      "stage": "S4"
+    },
+    {
+      "check": "壁纸覆盖与对花",
+      "criteria": "主要房间壁纸满铺，图案接缝避开阳角与视线中心",
+      "stage": "S5"
+    },
+    {
+      "check": "照明层次",
+      "criteria": "无顶部主灯，环境 50–150lx、阅读面 200–300lx，色温 2400–2800K",
+      "stage": "S6"
+    },
+    {
+      "check": "织物层数",
+      "criteria": "窗帘与坐具织物层数按房间重要性配置，主房常见 2–3 层",
+      "stage": "S3"
+    }
+  ]
+}

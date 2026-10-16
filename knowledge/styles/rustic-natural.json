@@ -1,0 +1,276 @@
+{
+  "style_id": "rustic-natural",
+  "display_name_zh": "质朴自然",
+  "display_name_en": "Rustic Natural",
+  "family": "natural-organic",
+  "tags": [
+    "raw-materials",
+    "handcraft",
+    "uneven",
+    "honest"
+  ],
+  "stages": [
+    "S2",
+    "S3",
+    "S4",
+    "S5"
+  ],
+  "version": "1.4.0",
+  "source": "OmniAiLab",
+  "history_and_context": {
+    "period": "承自前工业时代乡土民居，20 世纪起被反复重新诠释并延续至今",
+    "origin": "乡村自建民居与地方手工艺传统，强调就地取材与手工加工",
+    "summary": "在工业化材料普及之前，乡村建造只能依赖本地可得材料与本地匠人，于是形成了一套「以材料本真与手工痕迹为核心」的做法：木料按可用尺寸走，不追求统一模数；墙面允许批刮不均；石材保留自然断口；家具由手工榫卯拼合。当代的质朴自然并不复刻贫困，而是主动保留材料的缺陷、不均与手作误差，用这些痕迹表达材料的真实与时间的延续，从而对抗工业化表面带来的千篇一律。",
+    "key_movements": [
+      "乡土建筑传统",
+      "工艺美术运动",
+      "有机建筑",
+      "地方手工艺复兴"
+    ]
+  },
+  "spatial_principles": [
+    "以材料本体划分区域，裸露的木梁、石墙、砖墙直接作为界面，不做全面覆盖",
+    "平面尺度宽松、分区较松，允许非正交的局部凹凸与不规整边界",
+    "保留结构的可见性，梁、柱、椽等承重构件外露成为空间特征",
+    "家具与器物按使用需求自然累积，密度偏高而非刻意留白",
+    "主通道净宽常见 ≥900mm（常见工程惯例区间），但允许家具局部压缩动线形成曲折"
+  ],
+  "proportion_and_geometry": {
+    "rules": [
+      "结构构件按材料自然尺寸走，木梁断面常见 100–200mm（常见工程惯例区间），不作等模数统一",
+      "界面允许尺寸偏差，墙面平整度不追求工业级，允许可见的批刮起伏",
+      "开口形式以矩形为主，随结构梁位定高，窗洞大小不强调重复",
+      "材料拼法本身构成比例，如石砌错缝、木板竖铺与横向梁位的交错"
+    ],
+    "ratios": [
+      "可见天然材料（木、石、砖、土）面积占比建议 ≥50%（常见工程惯例区间）",
+      "木构件断面尺寸偏差允许 ±10mm 以内的自然波动（常见工程惯例区间）"
+    ],
+    "ceiling_height_mm": "净高常见 2500–3400mm（常见工程惯例区间）；外露木梁区以梁底为视觉天花线"
+  },
+  "color_palette": [
+    {
+      "name_zh": "生石灰白",
+      "name_en": "Raw Lime White",
+      "hex": "#E7E1D5",
+      "usage": "批刮墙面基调，占比约 35%",
+      "role": "base"
+    },
+    {
+      "name_zh": "原木褐",
+      "name_en": "Raw Timber Brown",
+      "hex": "#8A6B4C",
+      "usage": "梁柱、地板与家具，占比约 30%",
+      "role": "primary"
+    },
+    {
+      "name_zh": "石灰岩灰",
+      "name_en": "Limestone Grey",
+      "hex": "#A9A297",
+      "usage": "石墙与地面，占比约 20%",
+      "role": "neutral"
+    },
+    {
+      "name_zh": "陶土红棕",
+      "name_en": "Earthen Red-brown",
+      "hex": "#9C5A44",
+      "usage": "砖砌与陶器点缀，占比 ≤10%",
+      "role": "accent"
+    },
+    {
+      "name_zh": "熟铁黑",
+      "name_en": "Forged Iron Black",
+      "hex": "#3E3A35",
+      "usage": "铁件与灯具五金，占比 ≤5%",
+      "role": "accent-metal"
+    }
+  ],
+  "materials": [
+    {
+      "name_zh": "原木与再生木",
+      "name_en": "Solid and Reclaimed Timber",
+      "application": "梁柱、地板与家具",
+      "finish": "自然面或擦色哑光，保留节疤与刀痕",
+      "notes": "允许色差与轻微开裂"
+    },
+    {
+      "name_zh": "天然石材",
+      "name_en": "Natural Stone",
+      "application": "墙体、地面与台面",
+      "finish": "自然断口或粗凿面，不抛光"
+    },
+    {
+      "name_zh": "手工砖与陶",
+      "name_en": "Handmade Brick and Ceramic",
+      "application": "砌体与器皿",
+      "finish": "表面不均，边角不规整"
+    },
+    {
+      "name_zh": "石灰抹面与土灰泥",
+      "name_en": "Lime Plaster and Earth Plaster",
+      "application": "墙面",
+      "finish": "手工批刮，可见施工方向与起伏"
+    },
+    {
+      "name_zh": "粗麻、藤与毛纺",
+      "name_en": "Hessian, Rattan and Wool",
+      "application": "软装与坐具",
+      "finish": "天然粗纤，不做硬挺定型"
+    }
+  ],
+  "furniture_language": [
+    "厚重朴素，多见整块木料与手工榫卯，连接处可见而非隐藏",
+    "尺寸不追求规整统一，同类家具之间允许体量差异",
+    "落地为主，柜体直接坐地，避免悬空的现代细腿形式",
+    "表面保留刀痕、凿痕与打磨不均的过渡，金属件为锻造或氧化态"
+  ],
+  "lighting_strategy": {
+    "principles": [
+      "以低位与局部光源为主，明暗对比强，允许墙面出现自然的斑驳阴影",
+      "尽量引入自然光并保留窗洞的粗糙边口，人工光补充功能照明"
+    ],
+    "fixtures": [
+      "铁艺吊灯",
+      "陶质台灯",
+      "烛台与灯笼式灯具",
+      "外露线缆的简易吊灯"
+    ],
+    "color_temperature_k": [
+      2200,
+      2900
+    ],
+    "illuminance_lux": "起居环境 100–250lx，餐桌面 250–350lx（常见工程惯例区间）",
+    "layering": "以低照度氛围光打底，功能光集中在桌面与灶台，重点光打在材料肌理上以强化质感"
+  },
+  "architectural_elements": [
+    "外露木梁与木柱",
+    "石灰抹面或土灰泥手工墙面",
+    "石砌墙与粗凿石地面",
+    "厚重木门与铁质门闩",
+    "壁炉或砌筑灶台"
+  ],
+  "applicable_spaces": [
+    "乡村住宅与民宿",
+    "餐饮与酒吧空间",
+    "展示与零售空间",
+    "度假乡村酒店",
+    "工作室"
+  ],
+  "budget_considerations": {
+    "tier": "mid",
+    "drivers": [
+      "手工抹面与石砌的人工成本",
+      "再生木与天然石材的采购与挑选",
+      "手工家具与铁艺定制件"
+    ],
+    "saving_moves": [
+      "以仿石材饰面或水泥砌块做局部替换，保留砌缝与断口观感",
+      "手工抹面集中在公共区主视线，次要房间用哑光乳胶漆",
+      "再生木以饰面板贴面替代整料，用于非承重视觉面"
+    ],
+    "notes": "不平整与手工痕迹是风格的核心判据，降本不应以抹平肌理为代价；结构构件必须由持证专业人员确认"
+  },
+  "construction_considerations": [
+    "石灰与土灰泥抹面需分层施工并控制干燥速度，快速干燥易开裂，做法标注待持证专业人员复核",
+    "再生木需做除虫与含水率检测后再上墙，避免后期变形与虫害",
+    "外露木梁涉及承重与防火处理，材质与断面标注待持证专业人员复核",
+    "石砌墙与粗石地面的平整度直接影响后期铺装，需提前放线确认",
+    "砌筑灶台与壁炉的排烟与防火做法标注待持证专业人员复核"
+  ],
+  "compatible_styles": [
+    "earth-adobe",
+    "wabi-sabi",
+    "english-country",
+    "american-country",
+    "mediterranean"
+  ],
+  "incompatible_elements": [
+    "高光烤漆与镜面饰面",
+    "严丝合缝的工业级板材与隐形拼接",
+    "大面积金色装饰与人工水晶",
+    "通体纯白无缝的极简界面",
+    "高饱和荧光色与塑料制品"
+  ],
+  "positive_prompt_components": {
+    "zh": {
+      "space": "一间外露木梁的乡村起居空间，一侧为手工石灰抹面墙，另一侧为粗凿石墙，尽头是砌筑灶台",
+      "material": "原木梁柱与再生木地板，粗凿天然石材，手工石灰抹面带批刮起伏，粗麻织物与陶器",
+      "lighting": "铁艺吊灯投下低位暖光，窗洞射入的日光在抹面墙上形成斑驳光影",
+      "furniture": "厚重整木餐桌与长凳，落地木柜，铁艺椅与藤编坐具交错",
+      "camera": "人眼高度，28–40mm，略微侧向以展现材料层与结构外露关系",
+      "atmosphere": "朴素、耐看、有手工与时间痕迹，接受不完美",
+      "keywords": [
+        "质朴自然",
+        "原木梁",
+        "手工抹面",
+        "粗石",
+        "手作痕迹",
+        "接地气"
+      ]
+    },
+    "en": {
+      "space": "A rustic living room with exposed timber beams, one handmade lime-plaster wall, an opposite roughly hewn stone wall, and a masonry hearth at the far end",
+      "material": "Solid and reclaimed timber beams and flooring, rough natural stone, hand-troweled lime plaster with visible trowel movement, hessian textiles and ceramics",
+      "lighting": "A forged iron pendant casting low warm light, daylight from a window making dappled shadows on the plaster wall",
+      "furniture": "A heavy solid-wood dining table with benches, a floor-standing wooden cabinet, forged iron chairs mixed with rattan seating",
+      "camera": "Eye level, 28–40mm, slightly angled to reveal the layered materials and exposed structure",
+      "atmosphere": "Plain, enduring, marked by hand and time, accepting imperfection",
+      "keywords": [
+        "rustic natural",
+        "exposed beams",
+        "handmade plaster",
+        "rough stone",
+        "handcraft",
+        "grounded"
+      ]
+    }
+  },
+  "geometry_preservation_rules": [
+    "保持外露梁柱的位置、断面与间距关系不变",
+    "保持门窗洞口的位置与大小不变，不新增规整重复的开洞",
+    "保持材料分界的走向不变，不让抹面边界被拉直或规整化"
+  ],
+  "negative_constraints": {
+    "zh": [
+      "不要高光烤漆与镜面饰面",
+      "不要工业级无接缝板材与隐形拼缝",
+      "不要大面积金色装饰与人工水晶",
+      "不要通体纯白无缝的极简界面",
+      "不要塑料制品与荧光色"
+    ],
+    "en": [
+      "no high-gloss lacquer or mirrored finishes",
+      "no industrial seamless panels or invisible joints",
+      "no large gilded ornament or artificial crystal",
+      "no all-white seamless minimalist surfaces",
+      "no plastic products or fluorescent colours"
+    ]
+  },
+  "quality_checklist": [
+    {
+      "check": "材料本真度",
+      "criteria": "可见天然材料面积占比 ≥50%，且表面可见自然纹理或手工痕迹",
+      "stage": "schematic"
+    },
+    {
+      "check": "结构外露",
+      "criteria": "至少一处承重构件外露且未被吊顶或包裹遮挡",
+      "stage": "schematic"
+    },
+    {
+      "check": "抹面完成度",
+      "criteria": "主视线墙面可见均匀但不呆板的手工批刮起伏，无整面平滑高光",
+      "stage": "construction"
+    },
+    {
+      "check": "照明对比",
+      "criteria": "明暗对比明显，环境照度 100–250lx，色温 ≤2900K",
+      "stage": "S4"
+    },
+    {
+      "check": "家具落地率",
+      "criteria": "主要柜体落地比例 ≥70%，避免大面积悬空细腿形式",
+      "stage": "construction"
+    }
+  ]
+}
