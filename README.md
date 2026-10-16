@@ -337,6 +337,7 @@ python -m omniarchitect canvas-models                                         # 
 | 23 | 新增依赖没做许可证核查 | 合规风险 | 先在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 登记，再在 `brand_policy` 登记 |
 | 24 | 装了依赖就直接用而不问"能不能降级" | 破坏零硬依赖 | 新增依赖前先问：能不能降级？ |
 | 25 | 把 `omniarchitect/` 当成重复目录删掉 | 项目直接跑不起来 | 它是**代码本体**（内部引擎代号），不是重复 |
+| 26 | 提交了参考照片 / 现场视频 / 效果图导出 | 仓库推不上去，历史被永久撑大 | 单文件 ≥ 1 MB 或任何媒体二进制一律不入库（`scripts/check_assets.py` 守卫）；确需保留时把**外部位置与摘要**写进 JSON 数据 |
 
 完整版见操作手册第 12 节。
 
@@ -365,7 +366,7 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 │   ├── presentation/            汇报 → PPTX / MD / HTML / PDF
 │   ├── integration/ installer/  Agent Skills 校验与安装
 │   ├── brand_policy.py          品牌与供应商策略 + 创作能力独占裁决
-│   └── tests/                   16 个测试模块（全量回归）
+│   └── tests/                   测试模块（全量回归）
 ├── knowledge/                   13 个原创设计知识域（渐进式加载）
 ├── skills/                      30 项专业能力说明（文件名 = 能力名，可直接按名加载）
 ├── cases/                       通用项目类型案例判据
@@ -376,7 +377,7 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 ├── installer/                   安装脚本与清单
 ├── examples/                    示例库（起手话术 / 交付清单 / 需求样例，可整段照抄）
 ├── providers/                   平台连接配置位置（凭据不入库）
-└── scripts/                     测试、验证、格式统一脚本
+└── scripts/                     测试、验证、格式统一、资产体积守卫脚本
 ```
 
 ---
@@ -545,8 +546,8 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 **改完必须跑**：
 
 ```bash
-python scripts/run_tests.py                     # 全量测试（16 个模块）
-python scripts/verify_all.py                    # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
+python scripts/run_tests.py                     # 全量测试（全部模块，零外部依赖）
+python scripts/verify_all.py                    # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统 + 资产体积
 python -m omniarchitect audit --write docs      # 署名 / 隐私 / 外链 / 许可
 python -m omniarchitect policy --write docs     # 品牌 / 供应商 / 凭据 / fallback / 创作独占
 python scripts/normalize_attribution.py --check # 全仓开头结尾格式一致性

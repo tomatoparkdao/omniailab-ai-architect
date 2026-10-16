@@ -63,6 +63,8 @@ REQUIRED_PATHS = [
     "docs/BRAND_POLICY.md", "docs/CONCEPT_RENDER.md",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
+    "scripts/normalize_attribution.py",
+    "scripts/check_assets.py",
 ]
 
 
@@ -360,14 +362,49 @@ def check_v11() -> int:
     return failures
 
 
+def check_assets() -> int:
+    section("7. 资产体积（大文件 / 媒体二进制）")
+    proc = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "check_assets.py"), "--json"],
+        capture_output=True, text=True, encoding="utf-8", cwd=str(ROOT))
+    try:
+        rep = json.loads(proc.stdout or "{}")
+    except Exception:                                            # noqa: BLE001
+        print("  FAIL  资产守卫无法解析输出")
+        print(f"    {(proc.stderr or proc.stdout or '')[:300]}")
+        return 1
+    print(f"  扫描 {rep.get('files_scanned', 0)} 个文件 / "
+          f"合计 {rep.get('total_mb', 0)} MB / 上限 "
+          f"{rep.get('max_bytes', 0) // 1024 // 1024} MB")
+    over = rep.get("oversize") or []
+    media = rep.get("media") or []
+    if over:
+        print(f"  FAIL  {len(over)} 个文件达到或超过上限：")
+        for f in over[:10]:
+            print(f"    {f['mb']:>9.3f} MB  {f['path']}")
+    if media:
+        print(f"  FAIL  {len(media)} 个媒体/二进制文件不得入库：")
+        for m in media[:10]:
+            print(f"    {m['kb']:>9.1f} KB  [{m['kind']}]  {m['path']}")
+    if over or media:
+        for g in rep.get("guidance", []):
+            print(f"  → {g}")
+        return len(over) + len(media)
+    worst = (rep.get("biggest") or [{"kb": 0, "path": "-"}])[0]
+    print(f"  ok  无超限文件、无媒体二进制；最大文件 "
+          f"{worst['kb']} KB（{worst['path']}）")
+    return 0
+
+
 def main() -> int:
     print("OmniArchitect 完整性验证")
     print(f"项目根目录：{ROOT}")
     total = (check_paths() + check_catalogue() + check_doctor() + check_smoke()
-             + check_tests() + check_v11())
+             + check_tests() + check_v11() + check_assets())
     section("结论")
     if total == 0:
-        print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、v1.1 子系统正常")
+        print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、"
+              "v1.1 子系统正常、资产体积达标")
         return 0
     print(f"  {total} 项问题，需处理")
     return 1

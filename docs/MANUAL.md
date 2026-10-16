@@ -597,7 +597,8 @@ python -m omniarchitect policy --write docs   # 品牌 / 供应商 / 凭据 / fa
 | 22 | 改了版本号但没同步 | 版本不一致 | `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README 必须一致 |
 | 23 | 新增依赖没做许可证核查 | 合规风险 | 先在 `THIRD_PARTY_NOTICES.md` 登记，再在 `brand_policy` 登记 |
 | 24 | 装了依赖就直接用而不问「能不能降级」 | 破坏零硬依赖 | 新增依赖前先问：能不能降级？ |
-| 25 | 把 `omniailab_ai_architect/` 当成重复目录删掉 | 项目直接跑不起来 | 它是**代码本体**（内部代号 `omniarchitect`），不是重复 |
+| 25 | 把 `omniarchitect/` 当成重复目录删掉 | 项目直接跑不起来 | 它是**代码本体**（内部引擎代号），不是重复 |
+| 26 | 提交了参考照片 / 现场视频 / 效果图导出 | 仓库推不上去，历史被永久撑大 | 单文件 ≥ 1 MB 或任何媒体二进制一律不入库（`scripts/check_assets.py` 守卫）；确需保留时把**外部位置与摘要**写进 JSON 数据 |
 
 ---
 
@@ -660,7 +661,7 @@ python -m omniarchitect verify --project <项目目录>
 **改完必须跑的三项自检**：
 
 ```bash
-python scripts/run_tests.py        # 全量测试（16 个模块）
+python scripts/run_tests.py        # 全量测试（全部模块，零外部依赖）
 python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
 python -m omniarchitect audit --write docs && python -m omniarchitect policy --write docs
 ```

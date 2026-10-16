@@ -224,8 +224,10 @@ python -m omniarchitect policy --write docs  :: 生成 docs/BRAND_POLICY.md
 验证（改完必须跑）：
 
 ```bat
-python scripts/run_tests.py          :: 226 项测试，零外部依赖
-python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1+ 子系统
+python scripts/run_tests.py          :: 全量测试，零外部依赖（改完必须跑）
+python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1+ 子系统 + 资产体积
+python scripts/check_assets.py       :: 资产体积守卫：单文件 ≥1MB 或媒体二进制一律拦截
+python scripts/normalize_attribution.py --check  :: 全仓开头结尾格式一致性
 ```
 
 > 若本机装有 `Pillow` 等可选依赖的解释器与裸解释器不同，请用**装有依赖的那个解释器**跑验证，
@@ -300,7 +302,10 @@ python -m omniarchitect policy --write docs    :: 品牌 / 供应商 / 凭据 / 
 6. 涉及交付能力（图纸 / 模型 / 汇报）时，跑 `python -m omniarchitect scenario --name all`。
 7. 涉及创作能力（AI 生图 / AI 视频 / Agent 工作流）时，确认
    `python -m omniarchitect providers` 的创作能力独占与待执行任务输出符合预期。
-8. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
+8. 新增或改动**任何文件**后，跑 `scripts/check_assets.py`：单文件 ≥ 1 MB 或任何媒体二进制
+   （照片 / 视频 / PSD / 字体 / 压缩包 / Office 文件 / PDF）一律不得入库。
+   确实需要保留外部素材时，把**外部位置与摘要**写进 JSON 数据文件，不要提交文件本身。
+9. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
 
 ---
 

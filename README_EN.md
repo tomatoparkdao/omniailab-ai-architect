@@ -337,6 +337,7 @@ Hit any one of these and you may, at best, redo a stretch of work — at worst, 
 | 23 | Add a dependency without a licence check | Compliance risk | Register it in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) first, then in `brand_policy` |
 | 24 | Install a dependency and use it without asking "can it degrade" | Breaks zero hard dependencies | Before adding a dependency, ask first: can it degrade? |
 | 25 | Delete `omniarchitect/` as a duplicate directory | The project will not run at all | It is the **code itself** (the internal engine codename), not a duplicate |
+| 26 | Committing reference photos / site videos / exported renders | The push fails and history is bloated forever | A single file of 1 MB or more, or any media binary, is never committed (`scripts/check_assets.py` guards this); if it must be kept, record its **external location and digest** in a JSON data file |
 
 The full version is in section 12 of the operation manual.
 
@@ -376,7 +377,7 @@ omniailab-ai-architect/          ← Skill root (this repository)
 ├── installer/                   Install scripts and manifest
 ├── examples/                    Example library (opening prompts / deliverable checklist / sample brief; copy as-is)
 ├── providers/                   Platform connection config location (credentials never committed)
-└── scripts/                     Test, verify and format-normalisation scripts
+└── scripts/                     Test, verify, format-normalisation and asset-guard scripts
 ```
 
 ---
@@ -545,8 +546,8 @@ This repository is open source under the **MIT** licence (full text in [LICENSE]
 **After any change you must run**:
 
 ```bash
-python scripts/run_tests.py                     # full test suite (16 modules)
-python scripts/verify_all.py                    # directory + self-checks + toolchain + closed loop + tests + subsystems
+python scripts/run_tests.py                     # full test suite (all modules, zero external deps)
+python scripts/verify_all.py                    # directory + self-checks + toolchain + closed loop + tests + subsystems + asset size
 python -m omniarchitect audit --write docs      # signature / privacy / external links / licences
 python -m omniarchitect policy --write docs     # brand / vendors / credentials / fallback / creative exclusivity
 python scripts/normalize_attribution.py --check # repository-wide head/tail format consistency

@@ -17,3 +17,94 @@ projects/*/private/
 omniailab.config.json
 **/omniailab.config.json
 providers/omniailab.api.json
+
+# ---------------------------------------------------------------------------
+# media and binary assets — never committed (guard: scripts/check_assets.py)
+#
+# This repository carries *data*: the canonical model, drawings as DXF,
+# knowledge, prompts, code and documentation. Reference photographs, site
+# videos, exported renders, delivered PPTX, fonts and archives do not belong
+# here — they are large, undiffable, unverifiable by a test, and permanent once
+# pushed. When such a file is genuinely needed, record its **external location
+# and digest** in a JSON data file and let the consumer fetch it on demand.
+# A single file of 1 MB or more counts as a large file and is refused outright.
+# ---------------------------------------------------------------------------
+
+# video
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.m4v
+*.mpg
+*.mpeg
+*.3gp
+
+# images and bitmaps
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp
+*.tif
+*.tiff
+*.heic
+*.heif
+*.psd
+*.ai
+*.eps
+*.raw
+*.cr2
+*.nef
+
+# audio
+*.mp3
+*.wav
+*.flac
+*.aac
+*.m4a
+*.ogg
+*.wma
+*.aiff
+
+# archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bz2
+*.xz
+*.tgz
+
+# fonts
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+
+# office binaries and PDF
+*.pptx
+*.docx
+*.xlsx
+*.ppt
+*.doc
+*.xls
+*.odt
+*.ods
+*.odp
+*.pdf
+
+# executables and disk images
+*.exe
+*.dll
+*.so
+*.dylib
+*.dmg
+*.iso
+*.bin
