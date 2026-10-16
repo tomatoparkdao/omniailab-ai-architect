@@ -1,0 +1,17 @@
+name: interior-end-to-end
+version: 1
+stages:
+  - brief
+  - site_analysis
+  - concept_options
+  - plan_layout
+  - checkpoint_plan_approval
+  - geometry_validation
+  - bim_or_3d_model
+  - verified_preview
+  - image_generation_optional
+  - construction_drawing_drafts
+  - quantities_and_schedules
+  - coordination_and_qa
+  - checkpoint_professional_review
+  - delivery

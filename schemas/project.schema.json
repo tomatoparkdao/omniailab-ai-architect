@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OmniArchitect Canonical Project",
+  "type": "object",
+  "required": [
+    "project_id",
+    "revision",
+    "units",
+    "coordinate_system",
+    "levels",
+    "spaces",
+    "elements",
+    "artifacts"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "units": {
+      "enum": [
+        "mm"
+      ]
+    },
+    "coordinate_system": {
+      "type": "object",
+      "required": [
+        "origin",
+        "axes"
+      ],
+      "properties": {
+        "origin": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "axes": {
+          "type": "string"
+        }
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "elevation_mm"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "elevation_mm": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "spaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "level_id",
+          "boundary_mm2d"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "level_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "boundary_mm2d": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "use": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "level_id",
+          "geometry",
+          "source",
+          "revision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "wall",
+              "door",
+              "window",
+              "slab",
+              "ceiling",
+              "furniture",
+              "fixture",
+              "other"
+            ]
+          },
+          "level_id": {
+            "type": "string"
+          },
+          "geometry": {
+            "type": "object"
+          },
+          "properties": {
+            "type": "object"
+          },
+          "source": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "revision",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "validated",
+              "stale",
+              "needs_review",
+              "issued"
+            ]
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

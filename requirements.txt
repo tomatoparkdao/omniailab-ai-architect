@@ -1,0 +1,31 @@
+# OmniArchitect dependencies
+#
+# The core pipeline has NO required dependency. Everything below is an optional
+# upgrade: install what you need, and the adapters degrade honestly for what you
+# do not install. Verify what a host can actually do with:
+#
+#     python -m omniarchitect doctor
+
+# --- optional: richer CAD output -------------------------------------------
+ezdxf>=1.1            # R2010 DXF with HATCH; without it the built-in R12 writer is used
+                      #   pip install ezdxf
+
+# --- optional: accurate polygon booleans -----------------------------------
+shapely>=2.0          # without it the built-in rectilinear clipper is used
+
+# --- optional: full JSON-Schema validation ---------------------------------
+jsonschema>=4.20      # without it the built-in subset validator is used
+
+# --- optional: faster/cleaner test runs ------------------------------------
+pytest>=8.0           # scripts/run_tests.py works with no package at all
+
+# --- optional: workflow YAML parsing ---------------------------------------
+pyyaml>=6.0
+
+# --- optional: BIM ---------------------------------------------------------
+# ifcopenshell        # writes IFC4 directly; without it an IFC projection + script is produced
+
+# --- external tools (not pip packages; detected by preflight, never assumed) -
+# Blender             # scene build and rendering: blender -b -P build_scene.py
+# FreeCAD / FreeCADCmd # parametric rebuild
+# AutoCAD             # not required — DXF output does not need it

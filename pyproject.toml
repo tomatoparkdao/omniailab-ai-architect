@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omniarchitect"
+version = "1.0.0"
+description = "OmniArchitect — AI Chief Designer for architecture and interior design (eight-stage workflow)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [{ name = "OmniAiLab" }]
+keywords = ["architecture", "interior-design", "BIM", "DXF", "IFC", "agent"]
+
+# The core runs with no third-party package at all. The extras only upgrade
+# quality; nothing here is required to produce a valid drawing, model or report.
+dependencies = []
+
+[project.optional-dependencies]
+cad = ["ezdxf>=1.1"]
+geometry = ["shapely>=2.0"]
+schema = ["jsonschema>=4.20"]
+bim = ["ifcopenshell"]
+setup = ["pyyaml>=6.0"]
+dev = ["pytest>=8.0"]
+all = ["ezdxf>=1.1", "shapely>=2.0", "jsonschema>=4.20", "pyyaml>=6.0", "pytest>=8.0"]
+
+[project.scripts]
+omniarchitect = "omniarchitect.cli:main"
+
+[tool.setuptools]
+# The project root *is* the package, so only the python sources are packaged.
+packages = ["omniarchitect", "omniarchitect.adapters", "omniarchitect.tests"]
+package-dir = { "omniarchitect" = "." }
+
+[tool.setuptools.package-data]
+omniarchitect = [
+    "schemas/*.json",
+    "skills/*.md",
+    "workflows/*.yaml",
+    "adapters/specs/*.md",
+    "docs/*.md",
+    "*.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

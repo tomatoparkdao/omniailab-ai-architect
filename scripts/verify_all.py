@@ -1,0 +1,164 @@
+#!/usr/bin/env python
+"""Full verification: tests + catalogue self-check + directory integrity + smoke run.
+
+This is what to run before claiming a change is done.
+
+    python scripts/verify_all.py
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT.parent))
+sys.path.insert(0, str(ROOT))
+
+REQUIRED_PATHS = [
+    "AGENTS.md", "README.md", "SKILL.md",
+    "stages.py", "changes.py", "model.py", "planner.py", "workflow.py",
+    "stage_state.py", "routing.py", "quantities.py", "compliance.py", "registry.py",
+    "schemas/project.schema.json", "workflows/interior-full.yaml",
+    "skills/01-brief.md", "skills/18-revisions.md",
+    "adapters/dxf.py", "adapters/dxf_r12.py", "adapters/mesh.py",
+    "adapters/blender.py", "adapters/ifc.py", "adapters/freecad.py", "adapters/render.py",
+    "adapters/specs/blender.md", "adapters/specs/ifc.md",
+    "tests/test_stages.py", "tests/test_changes.py", "tests/test_workflow.py",
+    "docs/WORKFLOW.md", "docs/ARCH_SKILLS_INTEGRATION.md", "docs/ARCHITECTURE.md",
+    "scripts/run_tests.py",
+]
+
+
+def section(title: str) -> None:
+    print()
+    print("=" * 78)
+    print(title)
+    print("=" * 78)
+
+
+def check_paths() -> int:
+    section("1. 目录完整性")
+    missing = [p for p in REQUIRED_PATHS if not (ROOT / p).exists()]
+    for p in REQUIRED_PATHS:
+        if not (ROOT / p).exists():
+            print(f"  MISSING  {p}")
+    if not missing:
+        print(f"  ok  {len(REQUIRED_PATHS)} 项必需文件全部存在")
+    return len(missing)
+
+
+def check_catalogue() -> int:
+    section("2. 阶段与能力目录自检")
+    from omniarchitect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
+    from omniarchitect.registry import load_registry, fusion_report
+
+    issues = validate_catalog()
+    print(f"  阶段 {len(STAGE_ORDER)}：{', '.join(STAGE_ORDER)}")
+    print(f"  能力 {len(CAPABILITIES)}")
+    cross = [c.slug for c in CAPABILITIES if len(c.stages) > 1]
+    print(f"  跨阶段能力 {len(cross)}：{', '.join(cross[:8])}{' …' if len(cross) > 8 else ''}")
+    recs = load_registry()
+    unmapped = [r.slug for r in recs if r.legacy and not r.legacy_file]
+    if unmapped:
+        print(f"  未找到说明文件的技能：{unmapped}")
+    fusion = fusion_report()
+    print(f"  arch-skills 融合：上游 {fusion['summary']['upstream_skills']} 项，"
+          f"覆盖阶段 {', '.join(fusion['summary']['stages_touched'])}")
+    for i in issues:
+        print(f"  ISSUE  {i}")
+    if not issues:
+        print("  ok  目录结构自检通过")
+    return len(issues) + len(unmapped)
+
+
+def check_doctor() -> int:
+    section("3. 工具链体检")
+    from omniarchitect.adapters import doctor
+
+    rep = doctor()
+    for row in rep["adapters"]:
+        mark = "可用" if row["available"] else "缺失"
+        print(f"  [{mark}] {row['adapter']:<10} {row['version'] or ''}"
+              f"{'　降级→ ' + row['degraded_to'] if row['degraded_to'] else ''}")
+    print(f"  可用：{', '.join(rep['available']) or '（无）'}")
+    print(f"  缺失：{', '.join(rep['unavailable']) or '（无）'}")
+    # DXF and mesh must always be available — they carry the closed loop
+    must = {"dxf", "mesh"}
+    broken = must - set(rep["available"])
+    for b in broken:
+        print(f"  FAIL  {b} 适配器不可用——闭环无法成立")
+    return len(broken)
+
+
+def check_smoke() -> int:
+    section("4. 全流程冒烟（八阶段 + 变更分析）")
+    from omniarchitect.changes import analyse
+    from omniarchitect.demo import build_demo_project
+    from omniarchitect.stage_state import progress
+    from omniarchitect.workflow import StageRunner
+
+    failures = 0
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        project = build_demo_project(tmp)
+        runner = StageRunner(project, tmp / "out", assume_approval=True, project_dir=tmp)
+        manifest = runner.run_all(confirm_all=True)
+        for o in manifest.outcomes:
+            print(f"  [{o.status:<9}] {o.stage_name}")
+        if manifest.blocks:
+            failures += len(manifest.blocks)
+            for b in manifest.blocks:
+                print(f"  FAIL  {b}")
+        pct = progress(project)["percent"]
+        print(f"  阶段进度 {pct}%")
+        if pct != 100.0:
+            failures += 1
+
+        dxf = sorted(Path(manifest.out_dir).rglob("*.dxf"))
+        obj = sorted(Path(manifest.out_dir).rglob("*.obj"))
+        print(f"  DXF {len(dxf)} 个，OBJ {len(obj)} 个")
+        if not dxf or not obj:
+            failures += 1
+            print("  FAIL  闭环缺件：必须有 DXF 与 OBJ")
+
+        rep = analyse(project, "我不喜欢客厅的电视背景墙", apply=False)
+        assert rep.diagnosis.landing_stage == "S4"
+        assert "S3" not in [r.stage for r in rep.rework]
+        geo = analyse(project, "把客厅那面墙往外移300mm", apply=False)
+        assert geo.diagnosis.geometry_affecting
+        print(f"  变更分析：立面→{rep.diagnosis.landing_stage}（不动几何）　"
+              f"移墙→{geo.diagnosis.landing_stage}（几何变更）")
+    return failures
+
+
+def check_tests() -> int:
+    section("5. 测试套件")
+    proc = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "run_tests.py")],
+        cwd=str(ROOT), capture_output=True, text=True,
+    )
+    tail = [l for l in proc.stdout.strip().splitlines() if l.strip()][-6:]
+    for line in tail:
+        print("  " + line)
+    if proc.returncode != 0:
+        print("  FAIL  测试未全部通过")
+    return 0 if proc.returncode == 0 else 1
+
+
+def main() -> int:
+    print("OmniArchitect 完整性验证")
+    print(f"项目根目录：{ROOT}")
+    total = check_paths() + check_catalogue() + check_doctor() + check_smoke() + check_tests()
+    section("结论")
+    if total == 0:
+        print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿")
+        return 0
+    print(f"  {total} 项问题，需处理")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
