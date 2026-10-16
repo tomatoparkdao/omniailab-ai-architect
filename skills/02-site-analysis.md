@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-02-site-analysis
-version: 0.1.0
+name: omniailab-site-analysis
+description: 场地与建筑条件分析 —— 原始建筑条件、朝向采光、动线与限制、结构不确定性标注
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-14-documents
-version: 0.1.0
+name: omniailab-cad-drafting
+description: CAD 制图 —— 方案图与正式施工图两个深度：schematic / construction
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

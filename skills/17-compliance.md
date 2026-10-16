@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-17-compliance
-version: 0.1.0
+name: omniailab-design-review
+description: 设计审核 —— 几何、配置、规范初审；列出待专业复核项
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

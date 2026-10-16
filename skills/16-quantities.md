@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-16-quantities
-version: 0.1.0
+name: omniailab-quantity-takeoff
+description: 工程量计算 —— 工程量随阶段滚动更新，最终形成正式清单
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

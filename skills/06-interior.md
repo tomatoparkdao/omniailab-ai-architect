@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-06-interior
-version: 0.1.0
+name: omniailab-interior-design
+description: 室内设计 —— 顶面、墙面、地面、软硬装整合与做法定案
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

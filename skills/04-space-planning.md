@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-04-space-planning
-version: 0.1.0
+name: omniailab-space-planning
+description: 空间规划 —— 分区、平面布置、面积配比、流线组织
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-15-mep
-version: 0.1.0
+name: omniailab-building-services
+description: 机电与设备协同 —— 电气、给排水、暖通、消防对空间与净高的影响
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

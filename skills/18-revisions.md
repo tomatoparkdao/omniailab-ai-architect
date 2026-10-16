@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-18-revisions
-version: 0.1.0
+name: omniailab-delivery
+description: 版本管理与交付 —— 变更追踪、跨图纸同步、交付核对与版本冻结
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

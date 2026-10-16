@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-01-brief
-version: 0.1.0
+name: omniailab-design-brief
+description: 设计任务书 —— 需求访谈、功能任务书、面积与预算口径、验收标准
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

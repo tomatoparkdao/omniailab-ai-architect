@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-07-lighting
-version: 0.1.0
+name: omniailab-lighting-design
+description: 灯光设计 —— 自然光、人工照明、照度与氛围；后期灯具定位
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

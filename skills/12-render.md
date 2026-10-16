@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-12-render
-version: 0.1.0
+name: omniailab-scene-rendering
+description: 场景渲染 —— 相机、材质、光影、批量多视角一致出图
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

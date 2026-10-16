@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-13-walkthrough
-version: 0.1.0
+name: omniailab-walkthrough
+description: 漫游与多视角表现 —— 全景、动画漫游、空间序列表达
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

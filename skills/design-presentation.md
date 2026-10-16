@@ -1,6 +1,7 @@
 ---
-name: omniailab-ai-architect-design-presentation
-version: 1.0.0
+name: omniailab-design-presentation
+description: 设计汇报与提案 —— 跨阶段通用：把该阶段成果转译为可决策的提案与可编辑 PPTX；每份汇报必须含免责与边界页
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

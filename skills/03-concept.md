@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-03-concept
-version: 0.1.0
+name: omniailab-concept-design
+description: 概念方案设计 —— 设计定位、概念主张、空间原型、风格与案例参照
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

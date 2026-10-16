@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-08-materials
-version: 0.1.0
+name: omniailab-material-design
+description: 材料与色彩设计 —— 材料组合、色彩体系、工艺与规格、面积占比
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

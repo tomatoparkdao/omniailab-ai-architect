@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-09-cad-analysis
-version: 0.1.0
+name: omniailab-existing-drawing-analysis
+description: 原始图纸解析 —— 图层、墙体、尺寸、门窗识别；区分可置信信息与推断信息
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,6 +1,7 @@
 ---
-name: omniarchitect-05-architecture
-version: 0.1.0
+name: omniailab-architectural-design
+description: 建筑设计 —— 建筑体量、立面、剖面与空间组织（建筑项目启用）
+version: 1.1.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
