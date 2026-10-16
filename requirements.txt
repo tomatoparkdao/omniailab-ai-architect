@@ -4,7 +4,7 @@
 # upgrade: install what you need, and the adapters degrade honestly for what you
 # do not install. Verify what a host can actually do with:
 #
-#     python -m omniarchitect doctor
+#     python -m omniailab_ai_architect doctor
 
 # --- optional: richer CAD output -------------------------------------------
 ezdxf>=1.1            # R2010 DXF with HATCH; without it the built-in R12 writer is used
@@ -15,6 +15,12 @@ shapely>=2.0          # without it the built-in rectilinear clipper is used
 
 # --- optional: full JSON-Schema validation ---------------------------------
 jsonschema>=4.20      # without it the built-in subset validator is used
+
+# --- optional: local schematic imaging (no model, no network) --------------
+pillow>=10.0          # rasterises the canonical model; without it diagrams are skipped
+
+# --- optional: high-fidelity PPTX -----------------------------------------
+python-pptx>=1.0      # without it the built-in native OOXML writer is used
 
 # --- optional: faster/cleaner test runs ------------------------------------
 pytest>=8.0           # scripts/run_tests.py works with no package at all
@@ -29,3 +35,4 @@ pyyaml>=6.0
 # Blender             # scene build and rendering: blender -b -P build_scene.py
 # FreeCAD / FreeCADCmd # parametric rebuild
 # AutoCAD             # not required — DXF output does not need it
+# LibreOffice/soffice # only for PDF export from the print-ready HTML deck

@@ -37,7 +37,7 @@
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
   "file_count": 137,
-  "total_bytes": 1122872,
+  "total_bytes": 1126333,
   "files": [
     {
       "path": ".gitignore",
@@ -142,12 +142,12 @@
     {
       "path": "docs/third-party-audit.json",
       "size": 1991,
-      "sha256_16": "06d3a99d518cad95"
+      "sha256_16": "ba6f33d34e2db13c"
     },
     {
       "path": "docs/THIRD_PARTY_AUDIT.md",
       "size": 1877,
-      "sha256_16": "daf13311e41d6954"
+      "sha256_16": "b5ac549d99861414"
     },
     {
       "path": "docs/WORKFLOW.md",
@@ -166,8 +166,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 17666,
-      "sha256_16": "7f2754c432446c64"
+      "size": 20021,
+      "sha256_16": "135eefa6c3b99ce2"
     },
     {
       "path": "installer/verify_install.py",
@@ -566,8 +566,8 @@
     },
     {
       "path": "pyproject.toml",
-      "size": 1409,
-      "sha256_16": "48e00c7cff85a0d3"
+      "size": 2072,
+      "sha256_16": "348208b4c058702c"
     },
     {
       "path": "README.md",
@@ -576,8 +576,8 @@
     },
     {
       "path": "requirements.txt",
-      "size": 1502,
-      "sha256_16": "e4c8d08d344f6e07"
+      "size": 1945,
+      "sha256_16": "54e522131afe0684"
     },
     {
       "path": "schemas/case.schema.json",
