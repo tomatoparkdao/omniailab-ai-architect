@@ -449,3 +449,58 @@ def test_shebang_scripts_keep_their_shebang_first():
                 "scripts/normalize_attribution.py"):
         first = (ROOT / rel).read_text(encoding="utf-8").splitlines()[0]
         assert first.startswith("#!"), f"{rel}: {first!r}"
+
+
+# --------------------------------------------------------------------------
+# The version is declared in seven places. It is also machine-read.
+# `openai.yaml` carries the version at the end of `display_name` rather than in
+# its own field — that is the shape the reference skill (omniailab-ai-director)
+# uses, and the shape the user signed off on. The test matches it rather than
+# "fixing" it into a different structure.
+VERSION_DECLARATIONS = (
+    ("VERSION", "{v}"),
+    ("pyproject.toml", 'version = "{v}"'),
+    ("SKILL.md", "version: {v}"),
+    ("installer/manifest.json", '"version": "{v}"'),
+    ("openai.yaml", ' {v}"'),
+    ("README.md", "v{v}"),
+    ("README_EN.md", "v{v}"),
+)
+
+
+def test_version_file_holds_only_the_version_number():
+    """`VERSION` is read by machines, so it may not carry a human signature.
+
+    This file once picked up the standard footer during a whole-repo
+    normalisation pass. `project_version()` reads the first line, so every
+    check still passed — which is precisely why it survived two rounds of
+    audits. A strict parser (`cat VERSION`, a packaging script) would not be so
+    forgiving, so the file is now pinned to exactly one line.
+    """
+    import re
+    from omniarchitect.paths import project_version
+
+    raw = (ROOT / "VERSION").read_text(encoding="utf-8")
+    lines = [line.strip() for line in raw.splitlines() if line.strip()]
+    assert len(lines) == 1, f"VERSION 应只有一行版本号，实际 {len(lines)} 行：{lines}"
+    assert re.fullmatch(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.\-]+)?", lines[0]), lines[0]
+    assert project_version() == lines[0]
+    assert "OmniAiLab" not in raw, "VERSION 是机器读取文件，不得含署名注释"
+    assert "#" not in raw, "VERSION 不得含注释"
+
+
+def test_version_agrees_across_every_declaration():
+    """Seven places name the version. Silent disagreement ships a wrong number."""
+    from omniarchitect.paths import project_version
+
+    v = project_version()
+    problems = []
+    for rel, template in VERSION_DECLARATIONS:
+        path = ROOT / rel
+        if not path.exists():
+            problems.append(f"{rel}: 文件不存在")
+            continue
+        needle = template.format(v=v)
+        if needle not in path.read_text(encoding="utf-8"):
+            problems.append(f"{rel}: 未找到 {needle!r}")
+    assert not problems, problems
