@@ -1,0 +1,52 @@
+{
+  "_readme": [
+    "这是 OmniAiLab 平台 API 契约的**填写模板**，不是可用契约。",
+    "把本文件复制为 providers/omniailab.api.json（或设置 OMNIAILAB_API_CONTRACT 指向它），",
+    "再用平台下发的真实值替换所有 FILL_ME 占位符，然后运行：",
+    "    python -m omniailab_ai_architect providers",
+    "契约字段不完整、或仍含 FILL_ME 占位符时，provider 保持 NOT_CONFIGURED，",
+    "不会发出任何请求，也不会猜测端点、参数或鉴权方式。",
+    "api_key 不要写进本文件：放到 omniailab.config.json（已加入 .gitignore），",
+    "或用环境变量 OMNIAILAB_API_KEY。"
+  ],
+
+  "base_url": "FILL_ME 平台下发的 API 基址，例如 https://<平台域名>/api/v1",
+
+  "auth": "bearer",
+  "_auth_help": "可选：bearer | x-api-key | api-key-header | query-token | none。auth_header 仅在 api-key-header 时需要。",
+  "auth_header": "",
+
+  "endpoints": {
+    "health": "FILL_ME 健康检查路径，例如 /health",
+    "submit": "FILL_ME 任务提交路径，例如 /tasks   （不猜测，必须由平台提供）",
+    "poll": "FILL_ME 状态轮询路径，例如 /tasks/status"
+  },
+
+  "capabilities": [
+    "image_generation",
+    "reference_image_generation",
+    "multi_view_visualization",
+    "visual_workflow_execution",
+    "media_asset_management"
+  ],
+  "_capabilities_help": "只写平台**确实**支持的能力域；未列出的能力不会被调用。画布相关至少需要 reference_image_generation、multi_view_visualization、visual_workflow_execution 之一。",
+
+  "models": [
+    "OmniP",
+    "image2.5"
+  ],
+  "_models_help": "平台实际下发的模型列表。本仓库 providers/omniailab.models.json 中的推荐模型会与本列表交叉校验：不在列表中的推荐会被替换为契约中的模型并记录偏差。",
+
+  "workflows": {
+    "canvas": {
+      "id": "FILL_ME 平台画布的工作流标识",
+      "input_slots": ["reference_image", "prompt", "negative_prompt", "aspect_ratio"],
+      "_help": "若平台以\"工作流\"方式提交，把工作流标识与入参槽位填在此处；本系统不发明槽位名。"
+    }
+  },
+
+  "pricing": {
+    "_help": "可选的计价声明。缺失时本系统不做成本估算，也不编造成本。",
+    "reference_image_generation": { "per_unit": 0, "unit": "image", "default_units": 1 }
+  }
+}

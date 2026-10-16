@@ -40,16 +40,16 @@ python -m omniailab_ai_architect doctor
 | 路径 | 内容 | 可否改动 |
 |---|---|---|
 | `omniailab_ai_architect/` | Python 包：模型、规划、工作流、适配器、provider、工具、汇报、集成 | 主开发区 |
-| `omniailab_ai_architect/stages.py` | **八阶段模型与能力映射的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
+| `omniailab_ai_architect/stages.py` | **八阶段模型、能力映射与门禁后置动作的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
 | `omniailab_ai_architect/changes.py` | 设计变更影响分析 | 核心能力，改前先读 `docs/WORKFLOW.md` 第三节 |
-| `omniailab_ai_architect/providers/` | 生成式 provider（OmniAiLab + 本地） | 不得猜测 endpoint / 鉴权 |
+| `omniailab_ai_architect/providers/` | 生成式 provider（OmniAiLab + 本地）+ 画布工作流 `canvas.py` | 不得猜测 endpoint / 鉴权 / 模型名 |
 | `omniailab_ai_architect/tools/` | 工具注册表 · L1–L4 权限 · 独立校验 | 风险等级静态声明，禁止运行时提权 |
 | `omniailab_ai_architect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
 | `omniailab_ai_architect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
 | `omniailab_ai_architect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
 | `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
-| `skills/` | 29 份专业能力说明书（岗位能力，非流程步骤） | 只增不改语义 |
+| `skills/` | 29 份专业能力说明书 + 画布概念效果图（30 项能力，非流程步骤） | 只增不改语义 |
 | `adapters/specs/` | MCP 适配规范 | 文档 |
 | `schemas/` | 空间模型 / 案例 / 工具能力 / 汇报 Schema | 只允许**向后兼容**的新增 |
 | `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
@@ -72,7 +72,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 
 ---
 
-## 2. 八阶段是流程，29 项能力是岗位 —— 不要混为一谈
+## 2. 八阶段是流程，30 项能力是岗位 —— 不要混为一谈
 
 **业务阶段（项目怎么推进）：**
 
@@ -87,7 +87,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 | S7 | 07 CAD / BIM 施工图深化 | G7 施工图审查 |
 | S8 | 08 物料清单与交付 | G8 交付验收 |
 
-**专业能力（谁能干什么）：** 29 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
+**专业能力（谁能干什么）：** 30 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
 
 **四条硬性专业逻辑（`GUARDRAILS`，有测试覆盖，不得放宽）：**
 
@@ -127,6 +127,8 @@ cd /d E:\SKILL\建筑室内设计skill\omniarchitect
 python -m omniailab_ai_architect doctor               :: 工具链体检
 python -m omniailab_ai_architect stages               :: 打印八阶段模型
 python -m omniailab_ai_architect registry             :: 能力目录 + 29 份技能→阶段映射
+python -m omniailab_ai_architect concept-render      :: 平面确认后的概念效果图（画布）
+python -m omniailab_ai_architect canvas-models       :: 画布模型声明与选择规则
 python -m omniailab_ai_architect criteria            :: 设计判据体系（自有口径）
 python -m omniailab_ai_architect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniailab_ai_architect demo --out out        :: 示例项目跑通全部八阶段

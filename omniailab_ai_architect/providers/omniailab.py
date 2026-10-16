@@ -84,6 +84,26 @@ def _user_config_paths() -> List[Path]:
     return out
 
 
+def _walk_strings(node: Any, path: str = "") -> List[tuple]:
+    """Every (dotted-path, string) pair inside a nested contract.
+
+    Keys starting with `_` are documentation, not data, so they are skipped —
+    a template's own instructions must not be mistaken for a live value.
+    """
+    out: List[tuple] = []
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if str(k).startswith("_"):
+                continue
+            out.extend(_walk_strings(v, f"{path}.{k}" if path else str(k)))
+    elif isinstance(node, (list, tuple)):
+        for i, v in enumerate(node):
+            out.extend(_walk_strings(v, f"{path}[{i}]"))
+    elif isinstance(node, str):
+        out.append((path, node))
+    return out
+
+
 def _find_sdk() -> Optional[Dict[str, str]]:
     import importlib
 
@@ -291,6 +311,13 @@ class OmniAiLabProvider(MediaProvider):
     @staticmethod
     def _validate_contract(contract: Dict[str, Any]) -> List[str]:
         problems: List[str] = []
+        # A template that was never filled in must never be treated as a contract.
+        placeholders = [k for k, v in _walk_strings(contract) if "FILL_ME" in v]
+        if placeholders:
+            problems.append(
+                f"契约仍含 FILL_ME 占位符（{', '.join(placeholders[:4])}）——"
+                "这是模板，不是平台下发的契约"
+            )
         if not contract.get("base_url"):
             problems.append("契约缺少 base_url")
         auth = str(contract.get("auth") or "")

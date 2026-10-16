@@ -2,14 +2,14 @@
 
 <p align="center">
   <b>An end-to-end AI chief-designer Skill for architecture and interior design — and a design system that forces a decision at every gate</b><br>
-  Eight business stages, 29 professional capabilities&nbsp;&nbsp;|&nbsp;&nbsp;Brief to construction drawings and schedules&nbsp;&nbsp;|&nbsp;&nbsp;Editable DXF, 3D meshes and editable PPTX
+  Eight business stages, 30 professional capabilities&nbsp;&nbsp;|&nbsp;&nbsp;Brief to construction drawings and schedules&nbsp;&nbsp;|&nbsp;&nbsp;Editable DXF, 3D meshes, AI concept renderings and editable PPTX
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.1.0-1f6feb?style=flat-square" alt="Version 1.1.0">
+  <img src="https://img.shields.io/badge/Version-1.2.0-1f6feb?style=flat-square" alt="Version 1.2.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2ea043?style=flat-square" alt="License MIT"></a>
   <a href="https://omniailab.cn/"><img src="https://img.shields.io/badge/Platform-OmniAiLab-8957e5?style=flat-square" alt="Platform OmniAiLab"></a>
-  <img src="https://img.shields.io/badge/Pipeline-8_stages_%C3%97_29_capabilities-db6d28?style=flat-square" alt="8 stages × 29 capabilities">
+  <img src="https://img.shields.io/badge/Pipeline-8_stages_%C3%97_30_capabilities-db6d28?style=flat-square" alt="8 stages × 30 capabilities">
   <img src="https://img.shields.io/badge/Works_with-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square" alt="Works with Codex / Claude / WorkBuddy / OmniAiLab">
 </p>
 
@@ -25,7 +25,7 @@
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens. Tools with native Skill support invoke it directly; tools without it also trigger it from a natural-language task description |
 | Display name | OmniAiLab AI Architect & Interior Designer | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.1.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md` and this README |
+| Version | v1.2.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md` and this README |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
 | Native platform | [OmniAiLab international](https://omniailab.cn/) / [China](https://www.omniailabx.com/) | Generative image and video capabilities come from the platform; **the Skill runs fully without it** |
@@ -52,7 +52,7 @@ Hand it a requirement — even just a floor plan plus "make it Italian minimalis
 
 | Layer | What it gives you |
 |---|---|
-| **① Stages separate from capabilities** | Eight **business stages** control pace and gates; 29 **professional capabilities** (brief, site analysis, concept, space planning, ergonomics, interiors, materials, lighting, MEP coordination, CAD drafting, BIM, 3D, rendering, walkthrough, construction detailing, quantities, review, presentation, delivery…) carry the professional method. Capabilities are reused across stages and never nailed to one step. |
+| **① Stages separate from capabilities** | Eight **business stages** control pace and gates; 30 **professional capabilities** (brief, site analysis, concept, space planning, ergonomics, interiors, materials, lighting, MEP coordination, CAD drafting, BIM, 3D, rendering, walkthrough, construction detailing, quantities, review, presentation, delivery…) carry the professional method. Capabilities are reused across stages and never nailed to one step. |
 | **② One geometric authority** | The Canonical Spatial Model is the single geometric source for every deliverable. Move a wall 300 mm outward and the system recomputes plans, elevations, ceilings, lighting positions, furniture clearances, quantities and drawings by dependency — **already-confirmed work that is unaffected stays valid** instead of being rebuilt wholesale. |
 | **③ Changes go through impact analysis** | Every change is diagnosed (11 change domains) → its blast radius located (including boundary elements of the affected rooms) → a rework plan and the list of gates to reopen. A material change does not invalidate geometry; a dimension change invalidates everything downstream. The program decides this, not your memory. |
 | **④ Judgements have a source** | Nine **design criteria** sets: aesthetic control baseline, concept-diagram language, moodboard iteration loop, MEP spatial impact, annotation ledger, proposal layout, project fit, cost/quantity separation, tool safety tiers. Each is written as a decidable statement ("warm surfaces ≤40%", "black 3–8%", "one dominant line for the whole space") — not as an adjective. |
@@ -68,18 +68,20 @@ Hand it a requirement — even just a floor plan plus "make it Italian minimalis
 | S1 | Project start & design brief | Design brief, existing-conditions report | G1 brief confirmed |
 | S2 | Concept design | Concept options, aesthetic direction board | G2 concept confirmed |
 | S3 | Plan layout | Two to three comparable layouts, comparison | G3 layout confirmed |
+| S3·post | **Concept renderings** (post-gate action) | AI concept renderings, canvas job package, rendering deck | Attached to G3 |
 | S4 | Preliminary design & development | Preliminary drawings, material and lighting scheme | G4 preliminary confirmed |
 | S5 | 3D modelling & visualisation | 3D model, spatial renders, walkthrough | G5 visual confirmed |
 | S6 | Design freeze & technical coordination | Frozen scheme, basis for detailing | G6 design locked |
 | S7 | CAD / BIM construction drawings | Construction drawings, BIM model, review record | G7 drawings reviewed |
 | S8 | Schedules & delivery | Material schedule, quantity list, delivery set | G8 delivery confirmed |
 
-### Four non-negotiable professional rules
+### Five non-negotiable professional rules
 
 1. **No detailed modelling before the client confirms the functional brief;**
 2. **CAD starts at S4** — the difference is `schematic` vs `construction` depth, not whether drawings exist at all;
 3. **Cost and quantities are estimated dynamically from S1**, and only become a formal schedule at S8;
-4. **No formal drawings before the layout is confirmed**; once locked, no local hand-editing — changes go through impact analysis.
+4. **No formal drawings before the layout is confirmed**; once locked, no local hand-editing — changes go through impact analysis;
+5. **Concept renderings are only generated from a client-approved layout** — change the layout and the whole batch is void.
 
 ---
 
@@ -165,7 +167,16 @@ python -m omniailab_ai_architect honesty   # the list of claims we may not make
 python -m omniailab_ai_architect providers # platform and generative provider status
 ```
 
-**Platform integration is discovered, not guessed**: official SDK, local config, a platform-issued API contract, environment variables. With none of them the state is `NOT_CONFIGURED` and the missing pieces are listed explicitly. No endpoint, parameter or auth scheme is ever invented; see [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md).
+**Platform integration is discovered, not guessed**: official SDK, local config, a platform-issued API contract, environment variables. With none of them the state is `NOT_CONFIGURED` and the missing pieces are listed explicitly. No endpoint, parameter or auth scheme is ever invented; see [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) and [providers/README.md](providers/README.md).
+
+**Concept renderings after layout approval** run on the platform **canvas**, recommending **OmniP** (spatial atmosphere, multi-view consistency) and **image2.5** (follows the approved layout, material detail):
+
+```bash
+python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
+python -m omniailab_ai_architect canvas-models      # model declaration and selection rules
+```
+
+Submitting is a **tier-L3 network** operation: it requires `--submit --authorize`. Generated images are always `authoritative = false`. See [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md).
 
 ---
 
@@ -176,12 +187,13 @@ python -m omniailab_ai_architect providers # platform and generative provider st
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
 | How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
-| How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) |
+| How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
+| Concept renderings after layout approval | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
 | Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
 | Install and standalone use | [docs/INSTALL.md](docs/INSTALL.md) |
 | Decks and PPTX output | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
 | Content compliance self-check | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) |
-| Design knowledge (12 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) |
+| Design knowledge (13 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) |
 | Project-type case criteria | [cases/](cases/) |
 | Development conventions (for coding agents) | [AGENTS.md](AGENTS.md) |
 | Version history | [CHANGELOG.md](CHANGELOG.md) |

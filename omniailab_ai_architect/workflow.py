@@ -53,7 +53,14 @@ from .stage_state import (
     start_stage,
     submit_for_confirmation,
 )
-from .stages import STAGE_BY_ID, STAGE_ORDER, Stage, stage_name, skills_for_stage
+from .stages import (
+    STAGE_BY_ID,
+    STAGE_ORDER,
+    Stage,
+    post_gate_actions_for_stage,
+    stage_name,
+    skills_for_stage,
+)
 
 # drawing depth per stage — R2: CAD exists from preliminary design onward,
 # the difference is schematic vs construction, not presence or absence.
@@ -237,8 +244,128 @@ class StageRunner:
                 confirm_stage(self.project, stage_id, by="业主/主创（假设）",
                               note="由 --assume-approval 自动确认")
                 out.next_action = "已确认，可进入下一阶段"
+                for action in self.run_post_gate(stage_id):
+                    label = action.get("capability", "")
+                    if action.get("ran"):
+                        out.notes.append(
+                            f"门禁后置动作 {label}：{action.get('summary', '')}"
+                        )
+                    else:
+                        out.notes.append(
+                            f"门禁后置动作 {label} 未执行：{action.get('reason', '')}"
+                        )
         self.manifest.add(out)
         return out
+
+    # ------------------------------------------------------------------
+    # post-gate actions
+    # ------------------------------------------------------------------
+    def run_post_gate(self, stage_id: str, **kwargs: Any) -> List[Dict[str, Any]]:
+        """Run the work that only becomes valid *after* a gate has passed.
+
+        Currently G3 -> concept-visualization: the client-facing concept
+        renderings. Producing them before approval would picture a plan that
+        may still change, so they are attached to the gate rather than to a
+        stage body.
+        """
+        from .stages import post_gate_actions_for_stage
+
+        out: List[Dict[str, Any]] = []
+        for slug in post_gate_actions_for_stage(stage_id):
+            handler = getattr(self, f"post_gate_{slug.replace('-', '_')}", None)
+            if handler is None:
+                out.append({"capability": slug, "ran": False,
+                            "reason": "该后置动作尚未实现"})
+                continue
+            try:
+                out.append(handler(stage_id=stage_id, **kwargs))
+            except Exception as exc:
+                out.append({"capability": slug, "ran": False,
+                            "reason": f"{type(exc).__name__}: {exc}"})
+        return out
+
+    def post_gate_concept_visualization(self, stage_id: str = "S3",
+                                        limit: int = 5, model: str = "",
+                                        submit: bool = False,
+                                        authorized: bool = False) -> Dict[str, Any]:
+        """概念效果图 —— 平面确认后立即执行。
+
+        Works on a **fork** when the chosen scheme has not been installed into
+        the canonical model yet. Confirming a gate must not silently rewrite the
+        project: the scheme becomes the basis for deepening at S4. The fork
+        carries the same revision, so every rendering is traceable to the exact
+        revision of the plan it came from.
+        """
+        from .providers import canvas
+
+        chosen = self._confirmed_variant()
+        basis = self.project
+        forked = False
+        if not any(s.properties.get("scheme") for s in basis.spaces):
+            basis = basis.fork()
+            forked = True
+            gen = PlanGenerator(basis, self.level_id)
+            s = self.schemes.get(chosen) or gen.generate(_scheme_options(chosen))
+            _install_scheme(basis, s)
+            resolve_host_axes(basis)
+
+        d = self._dir(stage_id) / "concept-render"
+        res = canvas.render(
+            basis, d, level_id=self.level_id, scheme=chosen,
+            limit=limit, model=model, project_dir=self.project_dir,
+            submit=submit, authorized=authorized,
+        )
+        if forked:
+            res.notes.append(
+                f"本批图依据已确认的方案{chosen}生成；统一空间模型尚未安装该方案"
+                "（S4 时安装为深化依据），故本次不改动项目修订号。"
+            )
+
+        deps = [s.id for s in basis.spaces if s.properties.get("scheme")]
+        register_artifact(self.project, "art-concept-render", "render", deps,
+                          "concept-visualization", relpath(d),
+                          "generated" if res.generated else "needs_review")
+        record_change(
+            self.project, "gate_action",
+            f"平面确认后生成概念效果图：{len(res.views)} 个机位，"
+            f"已生成 {len(res.generated)}，待平台 {len(res.pending)}",
+            targets=["art-concept-render"],
+        )
+        self.project.meta.setdefault("gate_actions", {})
+        store = self.project.meta["gate_actions"]
+        store["concept-visualization"] = {
+            "stage": stage_id, "scheme": chosen, "revision": self.project.revision,
+            "status": res.status, "provider_state": res.provider_state,
+            "views": len(res.views), "generated": len(res.generated),
+            "awaiting_platform": len(res.pending),
+            "dir": relpath(d), "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+            "authoritative": False,
+        }
+        self._persist()
+        return {
+            "capability": "concept-visualization", "ran": True,
+            "status": res.status, "views": len(res.views),
+            "generated": len(res.generated), "awaiting_platform": len(res.pending),
+            "provider_state": res.provider_state, "dir": relpath(d),
+            "files": res.files, "warnings": list(res.warnings),
+            "summary": (
+                f"{len(res.views)} 个机位任务包已就绪（{relpath(d)}）；"
+                f"平台状态 {res.provider_state}，已生成 {len(res.generated)} 张"
+                if res.generated else
+                f"{len(res.views)} 个机位任务包已就绪（{relpath(d)}）；"
+                f"平台状态 {res.provider_state}，图像待生成（未伪造占位图）"
+            ),
+            "result": res.to_dict(),
+        }
+
+    def _confirmed_variant(self) -> str:
+        """Which scheme the owner approved at G3."""
+        installed = (self.project.meta.get("scheme") or {}).get("variant")
+        if installed:
+            return str(installed)
+        if self.scheme_variant in self.schemes:
+            return self.scheme_variant
+        return self.scheme_variant
 
     # ------------------------------------------------------------------
     def run_until_gate(self, start: Optional[str] = None,
@@ -277,13 +404,19 @@ class StageRunner:
         st = confirm_stage(self.project, stage_id, by=by, note=note)
         record_change(self.project, "gate", f"{stage_name(stage_id)} 确认通过（{by}）",
                       targets=[stage_id])
+        actions = self.run_post_gate(stage_id)
         self._persist()
-        return st.to_dict()
+        return {**st.to_dict(), "post_gate_actions": actions}
 
     def reject(self, stage_id: str, reason: str = "") -> Dict[str, Any]:
         from .stage_state import reject_stage
 
         st = reject_stage(self.project, stage_id, reason)
+        # A rejected gate invalidates anything that gate had produced.
+        cleared = self.project.meta.get("gate_actions", {})
+        for slug in post_gate_actions_for_stage(stage_id):
+            if slug in cleared:
+                cleared.pop(slug)
         record_change(self.project, "gate", f"{stage_name(stage_id)} 未通过：{reason}",
                       targets=[stage_id])
         self._persist()
@@ -1090,9 +1223,7 @@ class StageRunner:
             return variant
         if not self.schemes:
             gen = PlanGenerator(self.project, self.level_id)
-            o = SchemeOptions(variant=self.scheme_variant,
-                              title=f"方案{self.scheme_variant}",
-                              strategy="band_day_night" if self.scheme_variant == "A" else "spine_centre")
+            o = _scheme_options(self.scheme_variant)
             self.schemes = {o.variant: gen.generate(o)}
         variant = self.scheme_variant if self.scheme_variant in self.schemes else sorted(self.schemes)[0]
         _install_scheme(self.project, self.schemes[variant])
@@ -1104,6 +1235,14 @@ class StageRunner:
 
 
 # --------------------------------------------------------------------------
+def _scheme_options(variant: str) -> "SchemeOptions":
+    """The deterministic scheme definition for a variant letter."""
+    return SchemeOptions(
+        variant=variant, title=f"方案{variant}",
+        strategy="band_day_night" if variant == "A" else "spine_centre",
+    )
+
+
 def _install_scheme(project: Project, s: SchemeResult) -> None:
     project.spaces = [x for x in project.spaces if not x.properties.get("scheme")] + list(s.spaces)
     project.elements = [

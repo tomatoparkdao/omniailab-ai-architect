@@ -26,17 +26,20 @@ REQUIRED_PATHS = [
     PACKAGE + "/registry.py",
     # v1.1 additions
     PACKAGE + "/providers/omniailab.py", PACKAGE + "/providers/base.py",
+    PACKAGE + "/providers/canvas.py", PACKAGE + "/providers/omniailab.models.json",
     PACKAGE + "/tools/registry.py", PACKAGE + "/tools/capability.py",
     PACKAGE + "/presentation/deck.py", PACKAGE + "/presentation/pptx_writer.py",
     PACKAGE + "/presentation/layouts.py",
     PACKAGE + "/integration/agent_skills.py", PACKAGE + "/integration/installer.py",
     PACKAGE + "/knowledge/loader.py",
     "schemas/project.schema.json", "schemas/case.schema.json",
+    "schemas/concept-render.schema.json",
     "schemas/tool-capability.schema.json", "schemas/presentation.schema.json",
     "workflows/interior-full.yaml",
     "skills/01-brief.md", "skills/18-revisions.md", "skills/design-presentation.md",
     "adapters/specs/blender.md", "adapters/specs/ifc.md",
     "knowledge/architectural-design-principles.md",
+    "knowledge/ai-concept-visualization.md",
     "knowledge/design-presentation-methodology.md",
     "installer/install.py", "installer/manifest.json",
     "compatibility/agent-skills.md",
@@ -45,8 +48,11 @@ REQUIRED_PATHS = [
     PACKAGE + "/tests/test_workflow.py", PACKAGE + "/tests/test_provider.py",
     PACKAGE + "/tests/test_tools.py", PACKAGE + "/tests/test_presentation.py",
     PACKAGE + "/tests/test_scenarios.py", PACKAGE + "/tests/test_integration.py",
+    PACKAGE + "/tests/test_concept_render.py",
+    "providers/omniailab.api.example.json", "providers/README.md",
     "docs/WORKFLOW.md", "docs/DESIGN_CRITERIA.md", "docs/ARCHITECTURE.md",
     "docs/OMNIAILAB_INTEGRATION.md", "docs/CONTENT_AUDIT.md",
+    "docs/CONCEPT_RENDER.md",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
 ]
@@ -243,6 +249,28 @@ def check_v11() -> int:
         if not v.get("ok"):
             failures += 1
             print(f"  FAIL  PPTX 未被独立校验通过：{v.get('errors')}")
+
+    # --- concept renderings (post-gate G3, OmniAiLab canvas) --------------
+    from omniailab_ai_architect.providers import canvas
+    from omniailab_ai_architect.stages import (
+        POST_GATE_ACTIONS,
+        post_gate_actions_for_stage,
+        validate_catalog,
+    )
+
+    if validate_catalog():
+        failures += len(validate_catalog())
+        for i in validate_catalog():
+            print(f"  FAIL  {i}")
+    if post_gate_actions_for_stage("S3") != ["concept-visualization"]:
+        failures += 1
+        print("  FAIL  G3 未挂载概念效果图后置动作")
+    cat = canvas.load_catalog()
+    print(f"  概念效果图：G3 后置动作 {POST_GATE_ACTIONS['G3']}；"
+          f"画布模型 {[m.get('id') for m in canvas.recommended_models(cat)]}")
+    for i in cat.get("_issues") or []:
+        failures += 1
+        print(f"  FAIL  模型声明：{i}")
 
     # --- agent skills / installer ----------------------------------------
     from omniailab_ai_architect.integration import agent_skills as sk

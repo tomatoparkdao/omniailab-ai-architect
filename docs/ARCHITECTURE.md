@@ -16,7 +16,7 @@ agent_created: true
             ────────────────────────────────────────────────────────────────
 阶段层      八阶段状态机（workflow.py + stage_state.py）  门禁 · 确认 · 返工 · 变更回流
             ────────────────────────────────────────────────────────────────
-能力层      29 项专业能力（stages.py + skills/）  判断与做法，不做工具调用
+能力层      30 项专业能力（stages.py + skills/）  判断与做法，不做工具调用
             ────────────────────────────────────────────────────────────────
 数据层      Canonical Spatial Model（model.py + schemas/）  唯一权威几何与编号
             ────────────────────────────────────────────────────────────────
@@ -134,12 +134,27 @@ class Adapter:
 | 子系统 | 模块 | 职责 |
 | --- | --- | --- |
 | 内容合规 | `compliance_audit.py` | 逐文件检查署名 / 隐私 / 外链 / 许可；用户面材料只能指向自有站点；署名行由 `registry.py: SIGNATURE` 统一定义 |
-| 原创知识库 | `knowledge/` + `knowledge/loader.py` | 12 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
+| 原创知识库 | `knowledge/` + `knowledge/loader.py` | 13 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
 | 平台 provider | `providers/` | OmniAiLab 发现式接入（SDK / 配置 / API 契约）+ 内置本地确定性 provider；未验证一律 `NOT_CONFIGURED` |
+| 概念效果图 | `providers/canvas.py` | **门禁 G3 后置动作**：以已确认平面为据，走 OmniAiLab 画布（推荐 OmniP / image2.5）出概念效果图；平台未连接时只交付任务包 |
 | 工具执行 | `tools/` | 统一工具注册表、L1–L4 权限分级、产物独立校验、能力真实性规则 |
 | 设计汇报 | `presentation/` | 汇报数据模型 → PPTX / Markdown / HTML / PDF；两个写出后端，写出后独立复核 |
 | 独立运行 | `integration/` | Agent Skills 契约校验、运行环境探测、只移不删的安装器 |
 | 验收 | `scenarios.py` | Scenario A/B/C 端到端验收，含"文件真实存在 / 格式有效 / 与项目关联 / 可追溯 / 可重复 / 未伪造"六项口径 |
+
+### v1.2 增量（概念效果图）
+
+| 位置 | 内容 |
+| --- | --- |
+| `providers/canvas.py` | 画布工作流：机位规划、提示词组装、参考图栅格化、逐机位提交与状态登记、汇报落盘 |
+| `providers/omniailab.models.json` | 画布模型声明：OmniP / image2.5 的取向与选择规则；与平台契约交叉校验，冲突时以契约为准 |
+| `stages.py` | `POST_GATE_ACTIONS = {"G3": ["concept-visualization"]}` + 能力 `concept-visualization` + 铁律 R5 |
+| `workflow.py` | 门禁后置动作分发（`run_post_gate`）；在 fork 上渲染，不改动统一空间模型与修订号 |
+| `schemas/concept-render.schema.json` | 画布任务包结构；状态三态（generated / awaiting_platform / failed） |
+| `presentation/` | 新增汇报类型 `concept-rendering`：逐机位一页，含模型、状态与提示词指纹 |
+
+**为什么不是第九个阶段**：概念效果图没有自己的门禁，也不该有——它的成立条件完全由 G3 决定。
+把门禁后置动作建成独立阶段，会诱导使用者"单独确认"这一步，从而绕过平面确认。
 
 ### 三条新铁律
 

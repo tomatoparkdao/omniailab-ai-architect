@@ -53,6 +53,7 @@ agent_created: true
 | 10 | bim-modeling-principles | BIM 建模原理 | 定义模型精度、命名、属性、协同、碰撞与交付规则 | 涉及三维建模、模型精度、构件参数、碰撞或交付时 | S5,S7 | medium |
 | 11 | design-review-checklists | 设计评审清单 | 以可判定的清单在提交与交付前把关质量 | 涉及方案自检、阶段评审、提交前检查或交付验收时 | S1,S4,S6,S8 | heavy |
 | 12 | design-presentation-methodology | 设计汇报方法论 | 把专业成果转译为可决策的叙事与图册结构 | 涉及方案表达、图册组织、汇报结构或向业主沟通时 | S2,S4,S6,S8 | light |
+| 13 | ai-concept-visualization | AI 概念表现方法论 | 平面确认后用 AI 出概念效果图：机位、提示词、参考图与迭代纪律 | 涉及概念效果图、出图提示词、机位安排或表现成果验收时 | S3,S4,S5 | medium |
 
 ## 文件对应关系
 
@@ -70,6 +71,7 @@ agent_created: true
 | bim-modeling-principles | knowledge/bim-modeling-principles.md |
 | design-review-checklists | knowledge/design-review-checklists.md |
 | design-presentation-methodology | knowledge/design-presentation-methodology.md |
+| ai-concept-visualization | knowledge/ai-concept-visualization.md |
 
 ## 加载组合建议
 
@@ -79,6 +81,7 @@ agent_created: true
 - 评审与交付（S8）：`design-review-checklists` + `design-presentation-methodology`。
 - 概念与汇报（S2）：`architectural-design-principles` + `design-presentation-methodology`。
 - 模型表现（S5）：`bim-modeling-principles` + `lighting-design` + `spatial-planning`。
+- 概念效果图（S3 门禁后 / S4）：`ai-concept-visualization` + `lighting-design` + `material-and-finish-selection`。
 
 ## 按阶段加载矩阵
 
@@ -86,9 +89,9 @@ agent_created: true
 | --- | --- | --- |
 | S1 | architectural-design-principles | design-review-checklists、interior-design-methodology |
 | S2 | architectural-design-principles | design-presentation-methodology、interior-design-methodology |
-| S3 | spatial-planning | human-ergonomics、architectural-design-principles |
-| S4 | spatial-planning | material-and-finish-selection、lighting-design、building-systems-coordination |
-| S5 | bim-modeling-principles | lighting-design、spatial-planning |
+| S3 | spatial-planning | human-ergonomics、architectural-design-principles、ai-concept-visualization |
+| S4 | spatial-planning | material-and-finish-selection、lighting-design、building-systems-coordination、ai-concept-visualization |
+| S5 | bim-modeling-principles | lighting-design、spatial-planning、ai-concept-visualization |
 | S6 | building-systems-coordination | material-and-finish-selection、construction-detailing、lighting-design |
 | S7 | construction-detailing | cad-drawing-standards、bim-modeling-principles、building-systems-coordination |
 | S8 | material-and-finish-selection | design-review-checklists、design-presentation-methodology |
@@ -108,6 +111,7 @@ agent_created: true
 | 模型与碰撞 | bim-modeling-principles |
 | 提交前把关 | design-review-checklists |
 | 汇报与表达 | design-presentation-methodology |
+| 概念效果图与出图提示词 | ai-concept-visualization、lighting-design、material-and-finish-selection |
 
 ## 成本等级说明
 
@@ -148,6 +152,7 @@ agent_created: true
 - **bim-modeling-principles**：面向模型，回答精度、属性、协同与交付如何规范。
 - **design-review-checklists**：面向质量，回答提交与交付前如何把关。
 - **design-presentation-methodology**：面向沟通，回答成果如何被理解与决策。
+- **ai-concept-visualization**：面向表现，回答平面确认后概念效果图怎么出、怎么迭代、怎么标注边界。
 
 ## 术语总表
 
@@ -186,9 +191,9 @@ agent_created: true
 | --- | --- | --- |
 | S1 | 3 | 否 |
 | S2 | 3 | 否 |
-| S3 | 3 | 是 |
-| S4 | 6 | 是 |
-| S5 | 2 | 否 |
+| S3 | 4 | 是 |
+| S4 | 7 | 是 |
+| S5 | 3 | 否 |
 | S6 | 5 | 是 |
 | S7 | 4 | 是 |
 | S8 | 3 | 是 |
@@ -202,11 +207,12 @@ agent_created: true
 - 示例三：任务为"提交前检查"，命中介于 S8，加载 `design-review-checklists`。
 - 示例四：任务为"节点做法"，命中介于 S7，加载 `construction-detailing`。
 - 示例五：任务为"向业主汇报方案"，命中介于 S4，加载 `design-presentation-methodology`。
+- 示例六：任务为"平面确认后给业主看几张概念效果图"，命中介于 S3，加载 `ai-concept-visualization`。
 - 每次加载后应回读索引确认未遗漏依赖领域。
 
 ## 质量自检
 
-- [ ] 索引中 12 个领域与 knowledge/ 下 12 个文件一一对应。
+- [ ] 索引中 13 个领域与 knowledge/ 下 13 个文件一一对应。
 - [ ] 每个领域的 slug 与文件名一致。
 - [ ] 每个领域的阶段取值来自 S1–S8。
 - [ ] 每个领域标注了加载时机与成本。
@@ -216,10 +222,10 @@ agent_created: true
 
 ## 版本
 
-- 索引版本：1.0.0
-- 覆盖领域：12 个
+- 索引版本：1.1.0
+- 覆盖领域：13 个
 - 覆盖阶段：S1–S8
-- 对应文件：knowledge/ 下 12 个文档
+- 对应文件：knowledge/ 下 13 个文档
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

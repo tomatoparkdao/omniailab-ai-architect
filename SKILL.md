@@ -1,7 +1,7 @@
 ---
 name: omniailab-ai-architect
-description: AI 建筑与室内设计总设计师。八个业务阶段 + 29 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。
-version: 1.1.0
+description: AI 建筑与室内设计总设计师。八个业务阶段 + 30 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。
+version: 1.2.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -58,6 +58,7 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
 | S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念确认 |
 | S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面确认 |
+| S3·门禁后 | **概念效果图**（G3 通过后自动执行） | 概念效果图 + 画布任务包 + 汇报 PPTX | 无（附属于 G3） |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
 | S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现确认 |
 | S6 | 设计定稿与技术协调 | 确认版方案、深化依据 | G6 设计锁定 |
@@ -92,15 +93,16 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 
 | 需要什么 | 读哪里 | 加载方式 |
 | --- | --- | --- |
-| 专业设计判据与数值区间 | `knowledge/`（12 个领域） | 先读 `knowledge/INDEX.md`，再按需读单篇或单节 |
+| 专业设计判据与数值区间 | `knowledge/`（13 个领域） | 先读 `knowledge/INDEX.md`，再按需读单篇或单节 |
 | 通用项目类型案例判据 | `cases/` | 按项目类型 |
-| 29 项专业能力的职责与门禁 | `skills/` | 按能力名 |
+| 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
 | 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
-| 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md` | 需要生成式图像 / 视频时 |
+| 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
+| 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
 | 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
 
-知识库支持渐进式加载，避免一次拉全 2500 行：
+知识库支持渐进式加载，避免一次拉全 2700 行：
 
 ```bash
 python -m omniailab_ai_architect knowledge --resolve "客厅采光不足，想做开放式" --stage S3
@@ -109,6 +111,31 @@ python -m omniailab_ai_architect knowledge --domain lighting-design --section "�
 ```
 
 ---
+
+## 4b. 平面确认后的概念效果图（G3 门禁后置动作）
+
+平面一通过 **G3**，系统立即以该平面为依据生成**概念效果图**，供业主建立空间感受。
+这是**门禁后置动作**，不是独立阶段：它没有自己的门禁，也不允许在平面确认之前发生。
+
+- 平台：**OmniAiLab 画布（canvas）**；
+- 推荐模型：**OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）；
+  按机位取向自动选择，可显式覆盖；
+- 机位：整户型一张 + 主要空间各一张，视高 / 镜头 / 光线 / 材料全部取自统一空间模型；
+- 产出：`canvas-jobs.json`（逐机位任务）、`canvas-brief.md`（画布执行说明）、
+  参考图（本地栅格化的已确认平面）、`RUN-STATUS.md`（逐张状态）与可编辑汇报 PPTX。
+
+```bash
+python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
+python -m omniailab_ai_architect canvas-models      # 模型声明与选择规则
+```
+
+**三条不许越过的线**：
+
+1. 平面未确认不得出图 —— 判断依据是 G3，不是"图好不好看"；
+2. 平台未连接就只交付任务包，逐张标注 `awaiting_platform`，**绝不写占位图**；
+3. 提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。
+
+细节 → `docs/CONCEPT_RENDER.md`、`knowledge/ai-concept-visualization.md`。
 
 ## 5. 命令速查
 
@@ -128,6 +155,8 @@ python -m omniailab_ai_architect change  --project <dir> "把厨房和餐厅之�
 ```bash
 python -m omniailab_ai_architect present --project <dir> --kind plan-comparison
 python -m omniailab_ai_architect present --list-kinds
+python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
+python -m omniailab_ai_architect concept-render --project <dir> --submit --authorize   # L3 联网，需授权
 ```
 
 ### 环境与合规
@@ -137,7 +166,7 @@ python -m omniailab_ai_architect doctor          # 工具链
 python -m omniailab_ai_architect tools           # 工具注册表 + L1–L4 权限
 python -m omniailab_ai_architect providers       # OmniAiLab / 本地 provider 状态
 python -m omniailab_ai_architect honesty         # 不得声称的能力清单
-python -m omniailab_ai_architect audit           # 第三方内容审计
+python -m omniailab_ai_architect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniailab_ai_architect compat          # Agent Skills 兼容性
 python -m omniailab_ai_architect manifest        # 生成安装清单
 python -m omniailab_ai_architect install --dry-run
@@ -190,8 +219,9 @@ OmniAiLab（[国内站](https://www.omniailabx.com) · [海外站](https://omnia
 1. 官方 SDK（`omniailab` / `omniailabx` / `omniai` / `omniailab_sdk`）；
 2. 本地配置（本项目 `omniailab.config.json`、`~/.omniailab/config.json`、
    `%APPDATA%\OmniAiLab\config.json`）；
-3. 平台下发的 **API 契约** `providers/omniailab.api.json`
-   （声明 `base_url` / `auth` / `endpoints` / `models`）；
+3. 平台下发的 **API 契约**：复制 `providers/omniailab.api.example.json`，在同目录下
+   另存为 omniailab.api.json 并填入平台真实值（声明 `base_url` / `auth` /
+   `endpoints` / `models`）；模板未填完一律 `NOT_CONFIGURED`；见 `providers/README.md`；
 4. 环境变量 `OMNIAILAB_API_KEY`、`OMNIAILAB_BASE_URL` 等。
 
 以上都缺失时状态为 `NOT_CONFIGURED`，并列出**具体缺什么**。
@@ -237,7 +267,7 @@ LICENSE  VERSION        许可与版本
 omniailab_ai_architect/ Python 包：模型 / 规划 / 阶段 / 变更 / 适配器 /
                         provider / 工具注册表 / 汇报 / 安装
 knowledge/  cases/      原创知识体系与通用案例
-skills/                 29 项专业能力说明
+skills/                 30 项专业能力说明
 schemas/  workflows/    数据模型与阶段流程
 adapters/specs/         MCP / 外部工具适配规范
 docs/                   架构、流程、平台接入、工具、安装、合规审计

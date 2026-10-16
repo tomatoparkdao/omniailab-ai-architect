@@ -59,7 +59,7 @@ def test_cost_runs_from_the_first_stage():
 
 def test_guardrails_present():
     ids = {g["id"] for g in oa.GUARDRAILS}
-    assert ids == {"R1", "R2", "R3", "R4"}
+    assert ids == {"R1", "R2", "R3", "R4", "R5"}
 
 
 def test_downstream_covers_every_stage():

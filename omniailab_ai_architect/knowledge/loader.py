@@ -1,13 +1,13 @@
 """Original design knowledge base — progressive loading.
 
-The knowledge base is twelve domain documents written from general design
+The knowledge base is thirteen domain documents written from general design
 principles and public engineering practice. It is *not* a copy of anyone's
 private methodology: nothing here is redistributed from a third-party work.
 
 Loading is deliberately progressive so an agent never has to pull the whole
 corpus into context:
 
-    1. `index()`        -> the twelve domains, front-matter only (cheap)
+    1. `index()`        -> the thirteen domains, front-matter only (cheap)
     2. `resolve(...)`   -> which domains a question actually needs
     3. `outline(d)`     -> section headings of one domain (cheap)
     4. `section(d, h)`  -> one section of one domain (targeted)
@@ -28,7 +28,7 @@ COST_ORDER = {"light": 0, "medium": 1, "heavy": 2}
 FRONTMATTER_KEYS = ("domain", "name", "stage_affinity", "loads_when", "load_cost", "version")
 
 # Question keywords -> domain. Kept broad and bilingual on purpose: the router
-# only needs to narrow twelve documents down to two or three.
+# only needs to narrow thirteen documents down to two or three.
 KEYWORD_MAP: Dict[str, Sequence[str]] = {
     "architectural-design-principles": ("总图", "场地", "体量", "体型", "立面", "剖面",
                                         "功能分区", "建筑", "退线", "朝向"),
@@ -54,6 +54,9 @@ KEYWORD_MAP: Dict[str, Sequence[str]] = {
                                  "审核", "验收", "会审"),
     "design-presentation-methodology": ("汇报", "提案", "ppt", "方案册", "讲标",
                                         "图册", "表达", "沟通", "汇报文件"),
+    "ai-concept-visualization": ("概念效果图", "效果图", "渲染", "出图", "提示词", "机位",
+                                 "生图", "画布", "概念图", "表现图", "视角", "镜头",
+                                 "omnip", "image2.5", "canvas"),
 }
 
 HEADING = "## "
@@ -154,7 +157,7 @@ def knowledge_dir() -> "object":
 
 # --------------------------------------------------------------------------
 def index(validate_files: bool = True) -> List[Domain]:
-    """The twelve domains, front-matter only. Cheap enough to call every turn."""
+    """The thirteen domains, front-matter only. Cheap enough to call every turn."""
     if not KNOWLEDGE.exists():
         return []
     out: List[Domain] = []
@@ -220,9 +223,10 @@ def resolve(question: str, stage: Optional[str] = None,
         fallback = {
             "S1": ["design-review-checklists"],
             "S2": ["design-presentation-methodology"],
-            "S3": ["spatial-planning", "human-ergonomics"],
+            "S3": ["spatial-planning", "human-ergonomics",
+                   "ai-concept-visualization"],
             "S4": ["interior-design-methodology", "material-and-finish-selection"],
-            "S5": ["bim-modeling-principles"],
+            "S5": ["bim-modeling-principles", "ai-concept-visualization"],
             "S6": ["design-review-checklists"],
             "S7": ["cad-drawing-standards", "construction-detailing"],
             "S8": ["design-presentation-methodology"],

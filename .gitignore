@@ -11,3 +11,8 @@ dist/
 projects/*/renders/
 projects/*/private/
 
+
+# local platform credentials — never committed
+omniailab.config.json
+**/omniailab.config.json
+providers/omniailab.api.json

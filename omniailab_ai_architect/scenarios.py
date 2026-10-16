@@ -30,9 +30,10 @@ SCENARIOS = ("A", "B", "C")
 
 SCENARIO_BRIEF = {
     "A": {
-        "name": "设计任务书 + 概念方案 + 两套可比平面",
+        "name": "设计任务书 + 概念方案 + 两套可比平面 + 概念效果图",
         "stages": ["S1", "S2", "S3"],
-        "goal": "输入住宅面积、需求与户型数据，自动产出任务书、概念方案与两套可比较的平面方案。",
+        "goal": "输入住宅面积、需求与户型数据，自动产出任务书、概念方案与两套可比较的平面方案；"
+                "平面确认（G3）后立即产出概念效果图的画布任务包与可编辑汇报。",
     },
     "B": {
         "name": "CAD / 3D 真实执行",
@@ -298,6 +299,77 @@ class ScenarioRunner:
             _check_file(rep, self.tools, dxfs[0], out, project, "方案深度 DXF")
         else:
             rep.add("方案深度 DXF：文件存在", False, "未生成 DXF")
+
+        self._concept_render_checks(rep, project, out)
+
+    # ------------------------------------------------------------------
+    def _concept_render_checks(self, rep, project, out: Path) -> None:
+        """概念效果图 —— 平面确认（G3）后置动作的验收。
+
+        The batch must exist, must point at the scheme that was just approved,
+        must be traceable to a revision, must ship with a client deck — and must
+        never pretend an image exists when the platform did not return one.
+        """
+        jobs_files = sorted(out.rglob("canvas-jobs.json"))
+        rep.add("概念效果图：任务包存在（G3 后置动作）", bool(jobs_files),
+                _rel(jobs_files[0], out) if jobs_files else
+                "未找到 canvas-jobs.json —— G3 确认后应自动生成")
+        if not jobs_files:
+            return
+
+        try:
+            payload = json.loads(jobs_files[0].read_text(encoding="utf-8"))
+        except Exception as exc:
+            rep.add("概念效果图：任务包可解析", False, f"{type(exc).__name__}: {exc}")
+            return
+        rep.add("概念效果图：任务包可解析", True,
+                f"{len(payload.get('jobs') or [])} 个机位 · 方案 {payload.get('scheme')}")
+
+        jobs = payload.get("jobs") or []
+        scheme_ids = {s.id for s in project.spaces if s.properties.get("scheme")}
+        # G3 confirms a scheme without installing it, so accept either the model's
+        # spaces or the scheme spaces of the same revision.
+        resolvable = all(
+            j.get("space_id") == "project:overview" or j.get("space_id") in scheme_ids
+            or str(j.get("space_id") or "").startswith("S")
+            for j in jobs
+        )
+        rep.add("概念效果图：机位指向已确认平面", bool(jobs) and resolvable,
+                f"{len(jobs)} 个机位均可解析到空间 id")
+
+        revision = project.revision
+        traced = all(f"r{revision}" in str(j.get("prompt") or "") and j.get("prompt_sha")
+                     for j in jobs)
+        rep.add("概念效果图：逐张可追溯修订与提示词", bool(jobs) and traced,
+                f"统一标注修订 r{revision}，提示词指纹齐备" if traced
+                else "存在缺少修订标识或提示词指纹的机位")
+
+        models = {j.get("model") for j in jobs}
+        rep.add("概念效果图：模型按声明选择", bool(models) and all(models),
+                f"使用模型：{', '.join(sorted(m for m in models if m))}")
+
+        statuses = {str(j.get("status")) for j in jobs}
+        images = [j.get("output") for j in jobs if j.get("status") == "generated"]
+        honest = statuses <= {"generated", "awaiting_platform", "failed"}
+        fabricated = [p for p in images if p and not Path(p).exists()]
+        # "generated" must mean an image actually came back; "awaiting_platform"
+        # must mean it did not. Anything else is a bookkeeping failure.
+        consistent = ("generated" in statuses) == bool(images)
+        rep.add("概念效果图：状态口径未混淆且未伪造图像",
+                honest and not fabricated and consistent,
+                f"状态 {sorted(statuses)}；已生成 {len(images)} 张"
+                + ("" if images else "（平台未连接，任务包已就绪，未写占位图）"))
+        if not images:
+            rep.notes.append(
+                "概念效果图：平台未连接，图像待生成；任务包、参考图、提示词与汇报文件均已交付"
+                "（未写占位图）。接入方式见 docs/OMNIAILAB_INTEGRATION.md。"
+            )
+
+        decks = sorted(out.rglob("concept-rendering-*.pptx"))
+        if decks:
+            _check_file(rep, self.tools, decks[0], out, project, "概念效果图汇报 PPTX")
+        else:
+            rep.add("概念效果图汇报 PPTX：文件存在", False, "未生成汇报文件")
 
     # ------------------------------------------------------------------
     def _scenario_b(self, rep, project, runner, out: Path, pdir: Path) -> None:

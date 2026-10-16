@@ -275,6 +275,75 @@ def cmd_manifest(args) -> int:
 
 
 # --------------------------------------------------------------------------
+def cmd_concept_render(args) -> int:
+    """平面确认后的概念效果图 —— OmniAiLab 画布。"""
+    from .model import load_project
+    from .providers import canvas
+
+    project = load_project(args.project)
+    out = args.out or f"{args.project}/concept-render"
+    res = canvas.render(
+        project, out, level_id=args.level, scheme=args.scheme,
+        limit=args.views, include=args.only, model=args.model or "",
+        project_dir=args.project, submit=args.submit, authorized=args.authorize,
+        with_reference=not args.no_reference, deck=not args.no_deck,
+    )
+    if args.json:
+        print(json.dumps(res.to_dict(), ensure_ascii=False, indent=2))
+        return 0 if res.status in ("ok", "degraded", "partial") else 1
+
+    print(f"概念效果图 · 方案{res.scheme} · 模型修订 r{res.revision}")
+    print(f"  阶段：{res.stage}（平面确认后置动作）　能力：{res.capability}")
+    print(f"  OmniAiLab：{res.provider_state}"
+          f"{('　能力域 ' + res.scope_used) if res.scope_used else ''}")
+    print(f"  机位 {len(res.views)}　已生成 {len(res.generated)}"
+          f"　待平台 {len(res.pending)}　状态 {res.status}")
+    print("  机位明细：")
+    for v in res.views:
+        mark = {"generated": "已生成", "awaiting_platform": "待平台",
+                "failed": "失败"}.get(v.status, v.status)
+        print(f"    [{mark:<4}] {v.id:<14} {v.label:<6} {v.model:<10} "
+              f"{v.area_m2:>5.1f} ㎡"
+              + (f"　{v.output}" if v.output else ""))
+    print("  文件：")
+    for k, val in res.files.items():
+        print(f"    {k:<14} {val}")
+    print("  模型选择：")
+    for v in res.views[:1]:
+        print(f"    {v.model} — {v.model_reason}")
+    for n in res.notes:
+        print(f"  说明：{n}")
+    for w in res.warnings:
+        print(f"  ! {w}")
+    print(f"  非权威声明：{canvas.DISCLAIMER}")
+    return 0
+
+
+def cmd_canvas_models(args) -> int:
+    from .providers import canvas
+
+    cat = canvas.load_catalog(args.project)
+    models = canvas.recommended_models(cat)
+    if args.json:
+        print(json.dumps({**cat, "recommended": models}, ensure_ascii=False, indent=2))
+        return 0
+    print(f"OmniAiLab 画布模型声明　{cat.get('_source') or '（内置兜底）'}")
+    print(f"  与平台契约核对："
+          f"{'是' if cat.get('verified_against_contract') else '否（平台未连接）'}")
+    for m in models:
+        print(f"  [{m.get('priority')}] {m.get('display_name')} ({m.get('id')})")
+        print(f"        擅长：{'、'.join(m.get('strengths') or [])}")
+        print(f"        适合：{', '.join(m.get('best_for') or [])}")
+        print(f"        {m.get('note')}")
+    print("  选择规则：")
+    for r in cat.get("selection_rules") or []:
+        print(f"    {r.get('need'):<20} -> {r.get('model'):<10} {r.get('why')}")
+    for i in cat.get("_issues") or []:
+        print(f"  ! {i}")
+    return 0
+
+
+
 def register(sub: "argparse._SubParsersAction") -> None:
     """Attach the v1.1 commands to the main parser."""
 
@@ -347,6 +416,34 @@ def register(sub: "argparse._SubParsersAction") -> None:
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_uninstall)
 
+    sp = sub.add_parser(
+        "concept-render",
+        help="平面确认后的概念效果图（OmniAiLab 画布，推荐 OmniP / image2.5）")
+    sp.add_argument("--project", required=True, help="项目目录")
+    sp.add_argument("--level", default=None)
+    sp.add_argument("--scheme", default="A", help="已确认的方案编号")
+    sp.add_argument("--views", type=int, default=5, help="机位数量上限")
+    sp.add_argument("--only", nargs="*", default=[],
+                    help="只出这些房间（空间 id / 用途 / 名称）")
+    sp.add_argument("--model", default=None,
+                    help="指定模型（默认按取向自动选择）")
+    sp.add_argument("--out", default=None, help="输出目录（默认 <项目>/concept-render）")
+    sp.add_argument("--no-reference", action="store_true",
+                    help="不生成参考图（仅出提示词与任务包）")
+    sp.add_argument("--no-deck", action="store_true",
+                    help="不生成可编辑汇报 PPTX")
+    sp.add_argument("--submit", action="store_true",
+                    help="向平台提交生成（L3 联网，需配合 --authorize）")
+    sp.add_argument("--authorize", action="store_true",
+                    help="确认授权这次 L3 联网提交")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_concept_render)
+
+    sp = sub.add_parser("canvas-models", help="OmniAiLab 画布模型声明与选择规则")
+    sp.add_argument("--project", default=None)
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_canvas_models)
+
     sp = sub.add_parser("manifest", help="生成 Skill 安装清单")
     sp.add_argument("--out", default=None)
     sp.add_argument("--no-hash", action="store_true")
@@ -356,4 +453,5 @@ def register(sub: "argparse._SubParsersAction") -> None:
 
 __all__ = ["register", "cmd_audit", "cmd_providers", "cmd_tools",
            "cmd_honesty", "cmd_knowledge", "cmd_present", "cmd_scenario",
-           "cmd_compat", "cmd_install", "cmd_uninstall", "cmd_manifest"]
+           "cmd_compat", "cmd_install", "cmd_uninstall", "cmd_manifest",
+           "cmd_concept_render", "cmd_canvas_models"]

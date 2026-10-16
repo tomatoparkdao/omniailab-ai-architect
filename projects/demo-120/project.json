@@ -71,16 +71,16 @@
           0.0
         ],
         [
-          1800.0,
-          0.0
-        ],
-        [
-          1800.0,
-          4800.0
-        ],
-        [
           0.0,
           4800.0
+        ],
+        [
+          1800.0,
+          4800.0
+        ],
+        [
+          1800.0,
+          0.0
         ]
       ],
       "source": "scheme_A",
@@ -107,16 +107,16 @@
           0.0
         ],
         [
-          7216.67,
-          0.0
-        ],
-        [
-          7216.67,
-          4800.0
-        ],
-        [
           1800.0,
           4800.0
+        ],
+        [
+          7216.67,
+          4800.0
+        ],
+        [
+          7216.67,
+          0.0
         ]
       ],
       "source": "scheme_A",
@@ -143,16 +143,16 @@
           0.0
         ],
         [
-          10216.67,
-          0.0
-        ],
-        [
-          10216.67,
-          4800.0
-        ],
-        [
           7216.67,
           4800.0
+        ],
+        [
+          10216.67,
+          4800.0
+        ],
+        [
+          10216.67,
+          0.0
         ]
       ],
       "source": "scheme_A",
@@ -179,24 +179,16 @@
           0.0
         ],
         [
-          10600.0,
-          0.0
-        ],
-        [
-          12616.67,
-          0.0
-        ],
-        [
-          12616.67,
-          4800.0
-        ],
-        [
-          10600.0,
-          4800.0
-        ],
-        [
           10216.67,
           4800.0
+        ],
+        [
+          12616.67,
+          4800.0
+        ],
+        [
+          12616.67,
+          0.0
         ]
       ],
       "source": "scheme_A",
@@ -223,24 +215,16 @@
           4800.0
         ],
         [
-          10600.0,
-          4800.0
-        ],
-        [
-          13200.0,
-          4800.0
-        ],
-        [
-          13200.0,
-          5900.0
-        ],
-        [
-          10600.0,
-          5900.0
-        ],
-        [
           0.0,
           5900.0
+        ],
+        [
+          13200.0,
+          5900.0
+        ],
+        [
+          13200.0,
+          4800.0
         ]
       ],
       "source": "scheme_A",
@@ -263,16 +247,16 @@
       "use": "bathroom",
       "boundary_mm2d": [
         [
-          0.0,
-          5900.0
-        ],
-        [
-          4658.82,
-          5900.0
-        ],
-        [
           4658.82,
           7500.0
+        ],
+        [
+          4658.82,
+          5900.0
+        ],
+        [
+          0.0,
+          5900.0
         ],
         [
           0.0,
@@ -300,19 +284,19 @@
       "boundary_mm2d": [
         [
           4658.82,
-          5900.0
-        ],
-        [
-          7764.71,
-          5900.0
+          7500.0
         ],
         [
           7764.71,
           7500.0
+        ],
+        [
+          7764.71,
+          5900.0
         ],
         [
           4658.82,
-          7500.0
+          5900.0
         ]
       ],
       "source": "scheme_A",
@@ -336,27 +320,19 @@
       "boundary_mm2d": [
         [
           7764.71,
-          5900.0
-        ],
-        [
-          10600.0,
-          5900.0
-        ],
-        [
-          10870.59,
-          5900.0
+          7500.0
         ],
         [
           10870.59,
           7500.0
         ],
         [
-          10600.0,
-          7500.0
+          10870.59,
+          5900.0
         ],
         [
           7764.71,
-          7500.0
+          5900.0
         ]
       ],
       "source": "scheme_A",
@@ -383,16 +359,16 @@
           5900.0
         ],
         [
-          13200.0,
-          5900.0
-        ],
-        [
-          13200.0,
-          7500.0
-        ],
-        [
           10870.59,
           7500.0
+        ],
+        [
+          13200.0,
+          7500.0
+        ],
+        [
+          13200.0,
+          5900.0
         ]
       ],
       "source": "scheme_A",
@@ -415,28 +391,20 @@
       "use": "bedroom",
       "boundary_mm2d": [
         [
+          5517.24,
+          7500.0
+        ],
+        [
           0.0,
           7500.0
-        ],
-        [
-          5517.24,
-          7500.0
-        ],
-        [
-          5517.24,
-          8200.0
-        ],
-        [
-          5517.24,
-          10400.0
         ],
         [
           0.0,
           10400.0
         ],
         [
-          0.0,
-          8200.0
+          5517.24,
+          10400.0
         ]
       ],
       "source": "scheme_A",
@@ -459,28 +427,20 @@
       "use": "bedroom",
       "boundary_mm2d": [
         [
+          9310.34,
+          7500.0
+        ],
+        [
           5517.24,
           7500.0
-        ],
-        [
-          9310.34,
-          7500.0
-        ],
-        [
-          9310.34,
-          8200.0
-        ],
-        [
-          9310.34,
-          10400.0
         ],
         [
           5517.24,
           10400.0
         ],
         [
-          5517.24,
-          8200.0
+          9310.34,
+          10400.0
         ]
       ],
       "source": "scheme_A",
@@ -503,35 +463,27 @@
       "use": "bedroom",
       "boundary_mm2d": [
         [
+          12413.79,
+          7500.0
+        ],
+        [
           9310.34,
           7500.0
-        ],
-        [
-          10600.0,
-          7500.0
-        ],
-        [
-          12413.79,
-          7500.0
-        ],
-        [
-          12413.79,
-          8200.0
-        ],
-        [
-          10600.0,
-          8200.0
-        ],
-        [
-          10600.0,
-          10400.0
         ],
         [
           9310.34,
           10400.0
         ],
         [
-          9310.34,
+          10600.0,
+          10400.0
+        ],
+        [
+          10600.0,
+          8200.0
+        ],
+        [
+          12413.79,
           8200.0
         ]
       ],
@@ -2800,7 +2752,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\01-brief\\design-brief.md",
+      "path": "out\\_demo\\run-20261016-175938\\01-brief\\design-brief.md",
       "depends_on": [
         "project:program"
       ],
@@ -2812,7 +2764,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\01-brief\\site-report.md",
+      "path": "out\\_demo\\run-20261016-175938\\01-brief\\site-report.md",
       "depends_on": [
         "shell",
         "existing_walls"
@@ -2825,7 +2777,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\02-concept\\concept-options.md",
+      "path": "out\\_demo\\run-20261016-175938\\02-concept\\concept-options.md",
       "depends_on": [
         "project:program"
       ],
@@ -2837,7 +2789,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\02-concept\\moodboard.md",
+      "path": "out\\_demo\\run-20261016-175938\\02-concept\\moodboard.md",
       "depends_on": [
         "art-concept"
       ],
@@ -2849,7 +2801,7 @@
       "type": "document",
       "revision": 1,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\03-plan\\scheme-comparison.md",
+      "path": "out\\_demo\\run-20261016-175938\\03-plan\\scheme-comparison.md",
       "depends_on": [
         "project:program",
         "shell"
@@ -2858,11 +2810,34 @@
       "notes": ""
     },
     {
+      "id": "art-concept-render",
+      "type": "render",
+      "revision": 1,
+      "status": "needs_review",
+      "path": "out\\_demo\\run-20261016-175938\\03-plan\\concept-render",
+      "depends_on": [
+        "SA-ENTRY",
+        "SA-LIVING",
+        "SA-DINING",
+        "SA-KITCHEN",
+        "SA-corridor",
+        "SA-BATH1",
+        "SA-BATH2",
+        "SA-STORAGE",
+        "SA-LAUNDRY",
+        "SA-MBED",
+        "SA-BED2",
+        "SA-BED3"
+      ],
+      "produced_by": "concept-visualization",
+      "notes": ""
+    },
+    {
       "id": "art-prelim-A",
       "type": "drawing",
       "revision": 2,
       "status": "draft",
-      "path": "out\\run-20261016-151622\\04-preliminary\\S4-schematic-A.dxf",
+      "path": "out\\_demo\\run-20261016-175938\\04-preliminary\\S4-schematic-A.dxf",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -2900,7 +2875,7 @@
       "type": "model",
       "revision": 2,
       "status": "validated",
-      "path": "out\\run-20261016-151622\\05-visual",
+      "path": "out\\_demo\\run-20261016-175938\\05-visual",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -2964,7 +2939,7 @@
       "type": "render",
       "revision": 2,
       "status": "needs_review",
-      "path": "out\\run-20261016-151622\\05-visual\\render-jobs.json",
+      "path": "out\\_demo\\run-20261016-175938\\05-visual\\render-jobs.json",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -3002,7 +2977,7 @@
       "type": "report",
       "revision": 2,
       "status": "validated",
-      "path": "out\\run-20261016-151622\\06-freeze\\coordination.md",
+      "path": "out\\_demo\\run-20261016-175938\\06-freeze\\coordination.md",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -3040,7 +3015,7 @@
       "type": "drawing",
       "revision": 2,
       "status": "needs_review",
-      "path": "out\\run-20261016-151622\\07-documents",
+      "path": "out\\_demo\\run-20261016-175938\\07-documents",
       "depends_on": [
         "W-EXT-001",
         "W-EXT-002",
@@ -3099,7 +3074,7 @@
       "type": "schedule",
       "revision": 2,
       "status": "validated",
-      "path": "out\\run-20261016-151622\\08-delivery\\takeoff.json",
+      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\takeoff.json",
       "depends_on": [
         "SA-ENTRY",
         "SA-LIVING",
@@ -3122,7 +3097,7 @@
       "type": "schedule",
       "revision": 2,
       "status": "validated",
-      "path": "out\\run-20261016-151622\\08-delivery\\material-schedule.md",
+      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\material-schedule.md",
       "depends_on": [
         "art-quantities"
       ],
@@ -3134,7 +3109,7 @@
       "type": "document",
       "revision": 2,
       "status": "issued",
-      "path": "out\\run-20261016-151622\\08-delivery\\delivery-manifest.json",
+      "path": "out\\_demo\\run-20261016-175938\\08-delivery\\delivery-manifest.json",
       "depends_on": [
         "art-quantities",
         "art-materials"
@@ -3145,9 +3120,20 @@
   ],
   "change_log": [
     {
+      "revision": 1,
+      "timestamp": "2026-10-16T09:59:38+00:00",
+      "author": "omniailab-ai-architect",
+      "kind": "gate_action",
+      "targets": [
+        "art-concept-render"
+      ],
+      "detail": "平面确认后生成概念效果图：5 个机位，已生成 0，待平台 5",
+      "invalidated": []
+    },
+    {
       "revision": 2,
-      "timestamp": "2026-10-16T07:16:22+00:00",
-      "author": "omniarchitect",
+      "timestamp": "2026-10-16T09:59:39+00:00",
+      "author": "omniailab-ai-architect",
       "kind": "scheme",
       "targets": [
         "scheme:A"
@@ -3157,8 +3143,8 @@
     },
     {
       "revision": 2,
-      "timestamp": "2026-10-16T07:16:22+00:00",
-      "author": "omniarchitect",
+      "timestamp": "2026-10-16T09:59:39+00:00",
+      "author": "omniailab-ai-architect",
       "kind": "freeze",
       "targets": [
         "scheme:A"
@@ -3315,7 +3301,7 @@
     "stage_state": {
       "S1": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:38+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3323,7 +3309,7 @@
       },
       "S2": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:38+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3331,7 +3317,7 @@
       },
       "S3": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:38+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 1,
         "attempts": 1,
@@ -3339,7 +3325,7 @@
       },
       "S4": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:39+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3347,7 +3333,7 @@
       },
       "S5": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:39+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3355,7 +3341,7 @@
       },
       "S6": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:39+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3363,7 +3349,7 @@
       },
       "S7": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:39+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3371,7 +3357,7 @@
       },
       "S8": {
         "status": "confirmed",
-        "confirmed_at": "2026-10-16T07:16:22+00:00",
+        "confirmed_at": "2026-10-16T09:59:39+00:00",
         "confirmed_by": "业主/主创（假设）",
         "revision": 2,
         "attempts": 1,
@@ -3382,6 +3368,21 @@
       "A",
       "B"
     ],
+    "gate_actions": {
+      "concept-visualization": {
+        "stage": "S3",
+        "scheme": "A",
+        "revision": 1,
+        "status": "degraded",
+        "provider_state": "not_configured",
+        "views": 5,
+        "generated": 0,
+        "awaiting_platform": 5,
+        "dir": "out\\_demo\\run-20261016-175938\\03-plan\\concept-render",
+        "at": "2026-10-16T17:59:38",
+        "authoritative": false
+      }
+    },
     "scheme": {
       "variant": "A",
       "title": "方案A · 南北动静横分",

@@ -49,6 +49,13 @@ DECK_KINDS: Dict[str, Dict[str, Any]] = {
         "slides": ["cover", "agenda", "summary", "plan", "plan_compare", "analysis",
                    "budget", "decisions", "open_items", "disclaimer"],
     },
+    "concept-rendering": {
+        # G3 确认之后立即出的一批概念效果图（OmniAiLab 画布）。
+        # 每个机位单独一页：图、模型、提示词摘要与状态一起给业主看。
+        "stage": "S3", "title": "平面确认后 · 概念效果图汇报",
+        "slides": ["cover", "agenda", "summary", "plan", "perspective", "keywords",
+                   "materials", "lighting", "decisions", "open_items", "disclaimer"],
+    },
     "preliminary": {
         "stage": "S4", "title": "初步设计汇报",
         "slides": ["cover", "agenda", "summary", "concept", "plan", "materials",

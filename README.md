@@ -2,14 +2,14 @@
 
 <p align="center">
   <b>建筑与室内设计全流程 AI 总设计师 Skill，也是一个在关键节点逼你做判断的设计系统</b><br>
-  八个业务阶段并行 29 项专业能力　｜　从设计任务书到施工图与物料清单　｜　产出可编辑 DXF、三维模型与可编辑 PPTX
+  八个业务阶段并行 30 项专业能力　｜　从设计任务书到施工图与物料清单　｜　产出可编辑 DXF、三维模型、AI 概念效果图与可编辑 PPTX
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.1.0-1f6feb?style=flat-square" alt="版本 1.1.0">
+  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.2.0-1f6feb?style=flat-square" alt="版本 1.2.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_29_%E8%83%BD%E5%8A%9B-db6d28?style=flat-square" alt="8 阶段 × 29 能力">
+  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-db6d28?style=flat-square" alt="8 阶段 × 30 能力">
   <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_WorkBuddy_%7C_OmniAiLab-0969da?style=flat-square" alt="兼容 Codex / Claude / WorkBuddy / OmniAiLab">
 </p>
 
@@ -25,7 +25,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.1.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md` 四处一致 |
+| 版本 | v1.2.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md` 四处一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
@@ -52,7 +52,7 @@
 
 | 层面 | 具体有什么 |
 |---|---|
-| **① 阶段与能力分开** | 八个**业务阶段**决定推进节奏与门禁；29 项**岗位能力**（任务书、场地分析、概念、空间规划、人体工学、室内、材料、灯光、机电协同、CAD 制图、BIM、三维、渲染、漫游、施工深化、工程量、校核、汇报、交付……）决定专业方法。能力跨阶段复用，不会被钉死在某一步。 |
+| **① 阶段与能力分开** | 八个**业务阶段**决定推进节奏与门禁；30 项**岗位能力**（任务书、场地分析、概念、空间规划、人体工学、室内、材料、灯光、机电协同、CAD 制图、BIM、三维、渲染、漫游、施工深化、工程量、校核、汇报、交付……）决定专业方法。能力跨阶段复用，不会被钉死在某一步。 |
 | **② 唯一几何权威** | 统一空间模型（Canonical Spatial Model）是全部成果的唯一几何来源。墙外移 300mm，系统按依赖关系重算平面、立面、天花、灯位、家具间距、工程量与图纸——**已确认且不受影响的部分保持有效**，不做无差别重跑。 |
 | **③ 变更走影响分析，不走局部手改** | 任何修改先诊断（11 类变更域）→ 定位影响面（含受影响空间的边界构件）→ 给出回流阶段与门禁重开清单。改材质不会让模型失效，改尺寸会让下游全部失效，这件事由程序判断，不由人记得。 |
 | **④ 判断有出处** | 九组**设计判据**：美学控制基线、概念图解语言、意向板迭代闭环、机电空间影响、批注台账、提案版式、项目适配、量价分离、工具安全分级。每条都写成可判定的句子（"暖材 ≤40%""黑 3–8%""全场只留一条主导线"），不是形容词。 |
@@ -68,18 +68,20 @@
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
 | S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念确认 |
 | S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面确认 |
+| S3·后 | **概念效果图**（门禁后置动作） | AI 概念效果图、画布任务包、概念效果图汇报 | 附属于 G3 |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
 | S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现确认 |
 | S6 | 设计定稿与技术协调 | 确认版方案、深化依据 | G6 设计锁定 |
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
 | S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付确认 |
 
-### 四条不可协商的专业逻辑
+### 五条不可协商的专业逻辑
 
 1. **业主确认功能需求前，不得开始精细建模；**
 2. **CAD 自 S4 起即可绘制**，区别在 `schematic` / `construction` 两个深度，不在有没有图纸；
 3. **成本与工程量自 S1 起动态估算**，S8 才形成正式清单；
-4. **平面未确认不得出正式图纸**；锁定后不得局部手改，必须走变更影响分析。
+4. **平面未确认不得出正式图纸**；锁定后不得局部手改，必须走变更影响分析；
+5. **概念效果图只在业主确认的平面上生成**——平面一变，整批作废重出。
 
 ---
 
@@ -141,7 +143,8 @@ python -m omniailab_ai_architect present --project projects/demo-120 --kind plan
 | CAD 图纸 | `.dxf` | 方案深度与施工深度分开命名；写出后用独立解析器复核实体数、图层与闭合性 |
 | 三维模型 | `.obj` | 毫米单位、Z 轴向上、含材质分组；网格**不冒充**参数化 BIM |
 | 空间示意 | `.png` | 由统一模型栅格化，固定标注"示意图 · 非写实渲染 · 不得作为施工尺寸依据" |
-| 设计汇报 | `.pptx` / `.md` / `.html` | 可编辑 PPTX（9 种汇报类型：概念、平面比选、初步设计、表现、定稿、材料照明、技术交底、交付、全案） |
+| 概念效果图 | `.png` + `.json` + `.md` | 平面确认（G3）后由 OmniAiLab 画布生成的 AI 概念效果图；未接入平台时交付**完整任务包**（机位、提示词、参考图、逐张状态）与汇报 PPTX，不写占位图 |
+| 设计汇报 | `.pptx` / `.md` / `.html` | 可编辑 PPTX（10 种汇报类型：概念、平面比选、**概念效果图**、初步设计、表现、定稿、材料照明、技术交底、交付、全案） |
 | 工程量与估算 | `.json` / 表格 | 分空间工程量、量价分离的估算口径、与预算的适配结论 |
 | 影响分析 | `.json` / `.md` | 变更诊断、影响面、回流阶段、门禁重开清单、保留有效的已确认成果 |
 | 交付包 | `README.md` + 清单 | 交付文件索引、未闭环项、边界说明与署名 |
@@ -165,7 +168,16 @@ python -m omniailab_ai_architect honesty   # 不得声称的能力清单
 python -m omniailab_ai_architect providers # 平台与生成式 provider 状态
 ```
 
-**平台接入是发现式的，不是猜出来的**：官方 SDK、本地配置、平台下发的 API 契约、环境变量，四者皆无时状态为 `NOT_CONFIGURED` 并列出具体缺什么。不猜 endpoint、不猜参数、不猜鉴权；接入方式见 [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md)。
+**平台接入是发现式的，不是猜出来的**：官方 SDK、本地配置、平台下发的 API 契约、环境变量，四者皆无时状态为 `NOT_CONFIGURED` 并列出具体缺什么。不猜 endpoint、不猜参数、不猜鉴权；接入方式见 [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) 与 [providers/README.md](providers/README.md)。
+
+**平面确认后的概念效果图**走平台的**画布（canvas）**，推荐模型 **OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）：
+
+```bash
+python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
+python -m omniailab_ai_architect canvas-models      # 模型声明与选择规则
+```
+
+提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。详见 [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md)。
 
 ---
 
@@ -176,12 +188,13 @@ python -m omniailab_ai_architect providers # 平台与生成式 provider 状态
 | 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
 | 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
-| 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) |
+| 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
+| 平面确认后怎么出概念效果图 | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
 | 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
 | 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) |
 | 汇报与 PPT 怎么出 | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
 | 内容合规自检 | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) |
-| 设计判据与知识（12 域） | [knowledge/INDEX.md](knowledge/INDEX.md) |
+| 设计判据与知识（13 域） | [knowledge/INDEX.md](knowledge/INDEX.md) |
 | 项目类型化案例 | [cases/](cases/) |
 | 开发约定（面向编码 Agent） | [AGENTS.md](AGENTS.md) |
 | 版本变更 | [CHANGELOG.md](CHANGELOG.md) |

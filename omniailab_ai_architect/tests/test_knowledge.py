@@ -9,9 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from omniailab_ai_architect import knowledge  # noqa: E402
 
 
-def test_twelve_domains_are_present_and_valid():
+def test_thirteen_domains_are_present_and_valid():
     domains = knowledge.index()
-    assert len(domains) == 12, [d.slug for d in domains]
+    assert len(domains) == 13, [d.slug for d in domains]
     assert knowledge.validate() == []
 
 
@@ -90,7 +90,7 @@ def test_knowledge_is_self_contained_and_carries_the_signature():
 
 def test_report_is_machine_readable():
     rep = knowledge.report()
-    assert rep["count"] == 12
+    assert rep["count"] == 13
     assert rep["total_lines"] > 1200
     assert rep["issues"] == []
     assert set(rep["by_stage"]) == {f"S{i}" for i in range(1, 9)}

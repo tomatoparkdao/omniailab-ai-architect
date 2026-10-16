@@ -11,6 +11,50 @@ agent_created: true
 
 # 变更记录
 
+## v1.2.0 — 平面确认后的概念效果图（OmniAiLab 画布）
+
+**新增能力：平面方案通过门禁 G3 之后，立即以该平面为依据生成概念效果图，交给业主建立空间感受。**
+
+### 新增
+
+- **能力 `concept-visualization`（概念效果图）**：参与 S3 / S4，能力总数 29 → **30**。
+- **门禁后置动作机制**：`stages.py: POST_GATE_ACTIONS = {"G3": ["concept-visualization"]}`。
+  后置动作没有自己的门禁、不能单独确认，只在所在门禁通过的那一刻执行；
+  门禁被打回时，其记录会被清除。新增铁律 **R5**：概念效果图只能在业主确认的平面上生成。
+- **画布工作流** `providers/canvas.py`：
+  - 机位规划取自统一空间模型（整户型 1 张 + 主要空间各 1 张，视高 / 镜头 / 光线 / 材料均来自模型）；
+  - 提示词由模型数据组装，携带项目标识、修订号与方案号，并计算**提示词指纹**用于跨轮追踪；
+  - 参考图为**已确认平面**的本地栅格化输出（与 DXF 共用绘图基元，图与图纸不会互相矛盾）；
+  - 提交走 provider 编排：提交 → 轮询 → 取回，带**有界重试**；属 **L3 联网**操作，未授权时停在授权点；
+  - 产出 `canvas-jobs.json` / `canvas-payload.json` / `canvas-brief.md` / `RUN-STATUS.md` / `models.json`
+    / `reference/*.png`，平台已连接时另有 `renders/*.png` 与逐机位资产版本关联。
+- **模型声明** `providers/omniailab.models.json`：推荐 **OmniP**（整体空间氛围、多机位一致）与
+  **image2.5**（跟随已确认平面、材质细节），含取向规则与优先级；
+  与平台契约的 `models` 交叉校验，冲突时**以契约为准**并记录偏差，不硬套平台不提供的模型。
+- **契约模板** `providers/omniailab.api.example.json` + `providers/README.md`：
+  含 `FILL_ME` 占位符的模板会被识别并**拒绝**——模板不等于可用契约。
+- **汇报类型 `concept-rendering`**：逐机位一页（图 / 模型 / 状态 / 提示词指纹），
+  页面内容读自 `canvas-jobs.json`，因此幻灯片不会描述一个从未被规划的机位；
+  未生成的机位展示参考图并写明状态，**不用替代图充数**。
+- **知识域** `ai-concept-visualization`（AI 概念表现方法论）：知识库 12 → **13** 个领域。
+- **Schema** `schemas/concept-render.schema.json`。
+- **CLI**：`concept-render`、`canvas-models` 两个命令。
+- **文档** `docs/CONCEPT_RENDER.md`；README 中英双版、SKILL.md、AGENTS.md、WORKFLOW、ARCHITECTURE、
+  OMNIAILAB_INTEGRATION、PRESENTATION 同步更新。
+- **验收**：Scenario A 增加 6 项概念效果图检查（任务包存在 / 可解析 / 机位指向已确认平面 /
+  逐张可追溯 / 模型按声明选择 / 状态口径未混淆且未伪造图像 + 汇报 PPTX 独立复核）。
+- **测试** 164 → **180** 项（新增 `test_concept_render.py`，14 个模块）。
+
+### 设计取舍
+
+- **不做成第九个阶段**：概念效果图的成立条件完全由 G3 决定。做成独立阶段会诱导使用者
+  "单独确认"这一步，从而绕过平面确认——那正是最贵的错误。
+- **在 fork 上渲染**：G3 确认的是方案，方案在 S4 才安装为深化依据。因此门禁后置动作
+  不改写统一空间模型，项目修订号也不会因为"确认了一下"而跳动。
+- **不写占位图**：平台未连接时逐张标 `awaiting_platform`，状态与产出严格对应
+  （有 `generated` 才有图），由验收脚本当作硬口径检查。
+
+
 ## v1.1.0 修订 — 内容自有化与署名规范
 
 **全仓完成内容自有化**：移除全部外部项目痕迹，全部文档与交付物统一 OmniAiLab 署名格式。

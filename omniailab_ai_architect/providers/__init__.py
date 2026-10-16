@@ -26,6 +26,7 @@ from .base import (  # noqa: F401
     ProviderError,
     ProviderJob,
 )
+from . import canvas  # noqa: F401  (OmniAiLab 画布工作流：平面确认后的概念效果图)
 from .local import LocalDeterministicProvider
 from .omniailab import OmniAiLabProvider
 
@@ -164,7 +165,7 @@ def report(project_dir: str | Path | None = None) -> Dict[str, Any]:
 
 __all__ = [
     "ProviderRegistry", "discover", "report", "PREFERENCE",
-    "OmniAiLabProvider", "LocalDeterministicProvider",
+    "OmniAiLabProvider", "LocalDeterministicProvider", "canvas",
     "MediaProvider", "ProviderCapability", "ProviderJob", "AssetLink",
     "ProviderError", "NotConfigured", "CAPABILITY_SCOPES", "PROVIDER_STATES",
 ]

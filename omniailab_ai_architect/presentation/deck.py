@@ -10,6 +10,7 @@ that looks like a result.
 """
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
@@ -140,8 +141,64 @@ class DeckBuilder:
             s = handlers[kind]()
             if s is not None:
                 self.deck.slides.append(s)
+        self.deck.slides.extend(self._concept_render_slides())
         self.deck.subtitle = self._subtitle()
         return self.deck
+
+    # ------------------------------------------------------------------
+    def _concept_render_slides(self) -> List[Slide]:
+        """One page per concept view, for the concept-rendering deck.
+
+        The pages come from `canvas-jobs.json` — the same file the platform
+        canvas consumes — so a slide can never describe a view that was not
+        actually planned. A view whose image does not exist yet is shown with
+        its reference image and an explicit status, never with a stand-in.
+        """
+        if self.kind != "concept-rendering":
+            return []
+        jobs_path = self.assets.get("renders") or self.assets.get("canvas_jobs") or ""
+        if not jobs_path or not Path(jobs_path).exists():
+            return []
+        try:
+            payload = json.loads(Path(jobs_path).read_text(encoding="utf-8"))
+        except Exception:
+            return []
+        jobs = payload.get("jobs") or []
+        self.deck.provenance.append(
+            f"{Path(jobs_path).name}（{len(jobs)} 个机位 · 方案 {payload.get('scheme','-')} "
+            f"· r{payload.get('revision','-')}）"
+        )
+        self.deck.provenance = list(dict.fromkeys(self.deck.provenance))
+
+        slides: List[Slide] = []
+        for job in jobs:
+            image = str(job.get("output") or "")
+            if not (image and Path(image).exists()):
+                image = str(job.get("reference_image") or "")
+            status = str(job.get("status") or "")
+            label = {"generated": "已生成", "awaiting_platform": "待平台生成",
+                     "failed": "生成失败"}.get(status, status)
+            bullets = [
+                f"模型：{job.get('model') or '-'} — {job.get('model_reason') or ''}",
+                f"空间：{job.get('space_name') or '-'}　约 {job.get('area_m2')} ㎡",
+                f"机位：{(job.get('camera') or {}).get('lens_mm','-')}mm　画幅 "
+                f"{job.get('aspect_ratio','-')}",
+                f"状态：{label}",
+            ]
+            if status != "generated":
+                bullets.append(
+                    "图为已确认平面的参考图，效果图待平台生成后替换（不以占位图冒充成果）"
+                )
+            bullets.append("AI 生成图像非尺寸依据，不得据此修改几何或确定材料样板")
+            slides.append(Slide(
+                kind="perspective",
+                title=f"概念效果图 {job.get('view_id','')} · {job.get('label','')}",
+                subtitle=f"修订 r{payload.get('revision','-')} · 方案 "
+                         f"{payload.get('scheme','-')} · 提示词指纹 "
+                         f"{job.get('prompt_sha','-')}",
+                bullets=bullets, image=image,
+            ))
+        return slides
 
     # ------------------------------------------------------------------
     def _subtitle(self) -> str:
@@ -344,10 +401,16 @@ class DeckBuilder:
 
     def _perspective(self) -> Slide:
         img = self.assets.get("perspective") or self.assets.get("contact_sheet") or ""
-        jobs = self.assets.get("render_jobs") or ""
+        jobs = self.assets.get("render_jobs") or self.assets.get("renders") or ""
         bullets = []
         if jobs:
             bullets.append(f"表现任务包：{Path(jobs).name}")
+        if self.kind == "concept-rendering":
+            bullets += [
+                "本页为该批概念效果图的总览，逐张机位见后续页",
+                "由 OmniAiLab 画布生成（推荐 OmniP / image2.5），依据已确认平面",
+                "图上标注的状态与提示词指纹逐张可追溯",
+            ]
         bullets += [
             "机位与镜头为方案表现，不保证与建成完全一致",
             "生成式图像不得作为施工尺寸依据",

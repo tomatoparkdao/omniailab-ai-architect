@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omniailabx.com/schemas/concept-render.schema.json",
+  "title": "OmniArchitect 概念效果图任务包（OmniAiLab 画布）",
+  "description": "平面方案通过门禁 G3 之后生成的概念效果图任务包。它描述「要生成哪些机位、用什么模型、提示词是什么、参考图在哪、产出回填到哪里」，不包含任何端点或凭据——端点与鉴权一律由平台下发的 API 契约提供。",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema", "entity", "stage", "capability", "project_id", "revision", "jobs"],
+  "properties": {
+    "schema": { "const": "omniailab.canvas-jobs/1" },
+    "entity": { "const": "画布概念效果图" },
+    "stage": {
+      "type": "string",
+      "enum": ["S3", "S4"],
+      "description": "产生该批图的工作阶段；概念效果图只能出现在平面确认之后"
+    },
+    "capability": { "const": "concept-visualization" },
+    "project_id": { "type": "string", "minLength": 1 },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "产生该批图的模型修订；几何一变，本批图整批失效"
+    },
+    "scheme": { "type": "string", "description": "已确认的方案编号" },
+    "level_id": { "type": "string" },
+    "workflow": {
+      "type": "string",
+      "description": "平台画布的工作流标识，例如 canvas"
+    },
+    "models_recommended": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "本系统推荐的平台画布模型，顺序即优先级"
+    },
+    "provider": {
+      "type": "object",
+      "required": ["id", "state"],
+      "properties": {
+        "id": { "type": "string" },
+        "state": {
+          "type": "string",
+          "enum": ["connected", "degraded", "not_configured", "unauthorized", "error"]
+        },
+        "used": { "type": "string" },
+        "scope_used": {
+          "type": "string",
+          "description": "实际使用的平台能力域；为空表示未发出任何生成请求"
+        }
+      }
+    },
+    "authoritative": { "const": false },
+    "disclaimer": { "type": "string" },
+    "jobs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["view_id", "model", "prompt", "status"],
+        "properties": {
+          "view_id": { "type": "string", "pattern": "^[0-9]{2}_[a-z_]+$" },
+          "label": { "type": "string" },
+          "space_id": {
+            "type": "string",
+            "description": "对应统一空间模型中的空间 id；整体机位为 project:overview"
+          },
+          "space_name": { "type": "string" },
+          "area_m2": { "type": "number", "minimum": 0 },
+          "need": {
+            "type": "string",
+            "description": "该机位的出图取向，用于从模型声明中选择模型"
+          },
+          "model": { "type": "string", "minLength": 1 },
+          "model_reason": { "type": "string" },
+          "reference_image": {
+            "type": "string",
+            "description": "参考图路径（由统一空间模型栅格化，非效果图本身）"
+          },
+          "prompt": { "type": "string", "minLength": 20 },
+          "negative_prompt": { "type": "string" },
+          "prompt_sha": {
+            "type": "string",
+            "description": "提示词指纹，用于跨轮追踪同一条提示词是否被改动"
+          },
+          "aspect_ratio": { "type": "string" },
+          "camera": {
+            "type": "object",
+            "properties": {
+              "position_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3 },
+              "target_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3 },
+              "lens_mm": { "type": "number" },
+              "aspect": { "type": "string" },
+              "eye_height_mm": { "type": "number" },
+              "room_extent_m": { "type": "array", "items": { "type": "number" } }
+            }
+          },
+          "lighting": { "type": "object" },
+          "finishes": { "type": "object" },
+          "expected_output": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["generated", "awaiting_platform", "failed"],
+            "description": "generated 表示平台确实返回了图像；awaiting_platform 表示任务已就绪但尚无图像；任何状态都不得以占位图冒充成果"
+          },
+          "output": { "type": "string" },
+          "detail": { "type": "string" },
+          "authoritative": { "const": false }
+        }
+      }
+    }
+  }
+}

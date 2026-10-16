@@ -151,6 +151,30 @@ links = reg.link_asset(job, job.outputs, "demo-120", 3, "S5", "image_generation"
 `multi_view_visualization`、`video_generation`、`architectural_walkthrough`、
 `media_asset_management`、`visual_workflow_execution`。
 
+### 3.1 画布（canvas）—— 平面确认后的概念效果图
+
+平面方案通过 **G3** 后，系统立即以该平面为据生成**概念效果图**，走平台的
+**画布**工作流。这是「门禁后置动作」，不是独立阶段。
+
+```python
+from omniailab_ai_architect.providers import canvas
+
+res = canvas.render(project, "projects/demo-120/concept-render", scheme="A",
+                    limit=5, project_dir="projects/demo-120",
+                    submit=True, authorized=True)      # 授权后才真的提交
+print(res.status, res.provider_state, len(res.generated), len(res.pending))
+```
+
+| 环节 | 说明 |
+| --- | --- |
+| 机位 | 整户型 1 张（OmniP）+ 主要空间各 1 张（image2.5），视高 / 镜头 / 光线取自统一模型 |
+| 模型选择 | 按 `providers/omniailab.models.json` 的取向规则；可显式覆盖 |
+| 契约校验 | 推荐模型与契约 `models` 比对，冲突时以契约为准并记录偏差 |
+| 能力域 | 依次尝试 `reference_image_generation` → `multi_view_visualization` → `image_generation` → `visual_workflow_execution`，记录实际使用的一个 |
+| 提交 | L3 联网，必须 `submit=True, authorized=True`；否则停在授权点 |
+| 产出 | `canvas-jobs.json` / `canvas-brief.md` / 参考图 / `RUN-STATUS.md` / 可编辑 PPTX |
+| 未连接 | 只交付任务包，逐张标 `awaiting_platform`，**不写占位图** |
+
 ---
 
 ## 4. 本地确定性 provider
@@ -174,6 +198,7 @@ links = reg.link_asset(job, job.outputs, "demo-120", 3, "S5", "image_generation"
 | 场景 | 系统行为 |
 | --- | --- |
 | 平台未配置 | `NOT_CONFIGURED`；表现图任务包照常生成（机位/材质/灯光/提示词齐备） |
+| 概念效果图（G3 后置动作） | 任务包 + 参考图 + 逐张状态 + 汇报 PPTX 全部照常交付；图像待平台生成，逐张标 `awaiting_platform` |
 | 需要写实效果图 | 报告写明"待平台接入"，并在 Scenario B 中记为**跳过**而非通过 |
 | 几何 / 图纸 / 模型 / 工程量 / 汇报 | **完全不受影响**，照常产出 |
 
@@ -187,6 +212,7 @@ links = reg.link_asset(job, job.outputs, "demo-120", 3, "S5", "image_generation"
 2. `api_key` 只在内存中使用，绝不写入日志、报告或产物。
 3. 所有生成式媒体 `authoritative` 恒为 `False`，并随资产登记其 provider 与 `job_id`。
 4. 远端调用属 L3，需显式授权；本仓库不会自动触发任何付费任务。
+5. 契约模板中的 `FILL_ME` 占位符会被识别并拒绝——模板不等于可用契约。
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -1,7 +1,7 @@
 ---
 name: omniailab-presentation
 description: 设计汇报与 PPT 交付 —— 汇报能力是跨阶段通用能力（design-presentation，参与 S2–S8），不是流程末尾的一次动作。
-version: 1.1.0
+version: 1.2.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -18,6 +18,11 @@ agent_created: true
 
 ## 1. 汇报类型
 
+> `concept-rendering` 由概念效果图流程（G3 后置动作）自动生成，见 `docs/CONCEPT_RENDER.md`。
+> 逐机位页面来自 `canvas-jobs.json`——**幻灯片不会描述一个从未被规划的机位**；
+> 尚未生成的机位展示参考图并写明状态，而不是拿一张替代图充数。
+
+
 ```bash
 python -m omniailab_ai_architect present --list-kinds
 ```
@@ -26,6 +31,7 @@ python -m omniailab_ai_architect present --list-kinds
 | --- | --- | --- | --- |
 | `concept` | S2 | 概念设计提案 | 封面 / 结构 / 摘要 / 概念 / 关键词 / 意向板 / 平面 / 照明 / 材料 / 预算 / 待确认 / 免责 |
 | `plan-comparison` | S3 | 平面方案比选 | 封面 / 结构 / 摘要 / 平面 / 比选 / 分析 / 预算 / 决策 / 待确认 / 免责 |
+| `concept-rendering` | S3 | **平面确认后 · 概念效果图汇报** | 基础页 + **逐机位一页**（图 / 模型 / 状态 / 提示词指纹） |
 | `preliminary` | S4 | 初步设计汇报 | 含材料、照明、机电协调 |
 | `visual` | S5 | 视觉表现汇报 | 含机位说明与非权威声明 |
 | `materials-lighting` | S4 | 材料与照明专项 | — |

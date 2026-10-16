@@ -1,0 +1,104 @@
+{
+  "schema": "omniailab.models/1",
+  "platform": "OmniAiLab",
+  "declared_by": "platform-canvas",
+  "provenance": "平台画布（canvas）已上线的图像模型，由平台侧确认并经使用者核准后登记；连接平台后与 API 契约的 models 列表交叉校验，不一致时以契约为准并记录偏差。",
+  "verified_against_contract": true,
+  "canvas": {
+    "workflow_id": "canvas",
+    "display_name": "画布",
+    "purpose": "参考图引导的空间概念表现：上传已确认平面与房间示意作为参考，按机位逐张生成概念效果图，再在画布内人工迭代。",
+    "typical_flow": [
+      "新建画布项目并选择模型",
+      "上传参考图（已确认平面 / 房间示意 / 材质意向）",
+      "粘贴机位提示词与负向提示词",
+      "逐张生成并按机位编号回填",
+      "如不满意，在画布内局部重绘，保持同一次生成的其余机位不变"
+    ],
+    "input_slots": [
+      "reference_image",
+      "prompt",
+      "negative_prompt",
+      "aspect_ratio",
+      "style_keywords"
+    ],
+    "output_kinds": [
+      "image"
+    ],
+    "scope": "visual_workflow_execution"
+  },
+  "models": [
+    {
+      "id": "OmniP",
+      "display_name": "OmniP",
+      "priority": 1,
+      "scopes": [
+        "image_generation",
+        "reference_image_generation",
+        "multi_view_visualization",
+        "visual_workflow_execution"
+      ],
+      "strengths": [
+        "空间与体量关系理解稳定",
+        "构图与透视可控，适合按机位批量出图",
+        "同一套空间的多个视角观感一致"
+      ],
+      "best_for": [
+        "spatial_atmosphere",
+        "multi_view",
+        "interior_scene"
+      ],
+      "note": "适合整体空间氛围与多机位一致出图：客厅、公区与轴测这一类需要读懂空间关系的画面。"
+    },
+    {
+      "id": "image2.5",
+      "display_name": "Image 2.5",
+      "priority": 2,
+      "scopes": [
+        "image_generation",
+        "image_editing",
+        "reference_image_generation",
+        "multi_view_visualization",
+        "visual_workflow_execution"
+      ],
+      "strengths": [
+        "参考图保真：几何关系不易跑偏",
+        "材质与饰面细节还原到位",
+        "局部重绘与改图迭代成本低"
+      ],
+      "best_for": [
+        "reference_guided",
+        "material_detail",
+        "iteration"
+      ],
+      "note": "适合严格跟随已确认平面与材料方案：需要图纸与画面能对得上、以及需要反复改图的场合。"
+    }
+  ],
+  "selection_rules": [
+    {
+      "need": "spatial_atmosphere",
+      "model": "OmniP",
+      "why": "整体氛围与空间关系优先，透视稳定比细节锐利更重要。"
+    },
+    {
+      "need": "multi_view",
+      "model": "OmniP",
+      "why": "多机位需要同源观感，跨视角一致性是首要目标。"
+    },
+    {
+      "need": "reference_guided",
+      "model": "image2.5",
+      "why": "画面必须与已确认平面相符，参考图保真优先。"
+    },
+    {
+      "need": "material_detail",
+      "model": "image2.5",
+      "why": "需要读清材质与收口细节，供材料确认使用。"
+    }
+  ],
+  "notes": [
+    "本文件只声明模型身份与适用取向，不声明端点、参数或鉴权方式；调用所需的端点一律来自平台下发的 API 契约。",
+    "两个模型都由平台画布提供；本系统按机位取向给出推荐并说明理由，使用者可覆盖。",
+    "所有生成结果均为表现材料，非权威成果，不得作为施工尺寸依据。"
+  ]
+}

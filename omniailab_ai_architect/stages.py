@@ -77,6 +77,9 @@ CAPABILITIES: List[Capability] = [
                responsibility="多方案比较、房间比例与进深优化、开放度权衡"),
     Capability("ergonomics", "人体工学与尺度", (S3, S4),
                responsibility="净宽、通行、操作面、家具尺度与净距校核"),
+    Capability("concept-visualization", "概念效果图", (S3, S4),
+               responsibility="平面确认后立即出概念效果图：由 OmniAiLab 画布按机位生成，"
+                              "用于业主建立空间感受；一律标注非权威，不得作为尺寸依据"),
 
     # --- 04 初步设计 -----------------------------------------------------
     Capability("interior-design", "室内设计", (S4, S6), legacy="06-interior",
@@ -213,13 +216,16 @@ STAGES: List[Stage] = [
         code="03", id=S3, name="平面方案设计",
         purpose="把概念落到尺度上：分区、功能、动线、家具与面积配比。",
         skills=("space-planning", "layout-optimization", "ergonomics",
-                "concept-design", "cost-check", "quantity-takeoff"),
-        deliverables=("两至三套平面方案", "方案对比分析（面积、动线、造价影响）"),
+                "concept-design", "concept-visualization",
+                "cost-check", "quantity-takeoff"),
+        deliverables=("两至三套平面方案", "方案对比分析（面积、动线、造价影响）",
+                      "业主选定后的概念效果图（门禁通过后立即生成）"),
         entry_criteria=("任务书已确认", "概念方向已确认或与平面同步迭代"),
         exit_criteria=("布局在统一空间模型中以真实尺寸成立", "人体工学与净宽校核通过",
                        "业主选定其中一套"),
         gate=StageGate("G3", "平面方案确认",
-                       "平面未确认前不得进行精细建模与正式出图——这是最常被跳过、也最贵的一步"),
+                       "平面未确认前不得进行精细建模与正式出图——这是最常被跳过、也最贵的一步；"
+                       "确认后立即以该平面为依据生成概念效果图，供业主建立空间感受"),
         drawing_depth="schematic",
         cost_estimate=True,
     ),
@@ -228,7 +234,7 @@ STAGES: List[Stage] = [
         purpose="把平面发展成可施工的做法：顶墙地、立面、材料与灯光初步。",
         skills=("interior-design", "material-design", "lighting-design",
                 "building-services", "ergonomics", "create-draw", "cad-drafting",
-                "cost-check", "quantity-takeoff"),
+                "concept-visualization", "cost-check", "quantity-takeoff"),
         deliverables=("初步设计图纸（方案深度 CAD / 简单 3D 辅助）", "材料及灯光方案"),
         entry_criteria=("平面方案已确认",),
         exit_criteria=("顶面、墙面、地面做法定案", "材料与色彩体系成立",
@@ -333,6 +339,26 @@ DOWNSTREAM: Dict[str, List[str]] = {
     S8: [S8],
 }
 
+# --------------------------------------------------------------------------
+# post-gate actions
+# --------------------------------------------------------------------------
+# Some work only becomes *meaningful* once a gate has passed. The client-facing
+# concept rendering is the clear case: producing it before the plan is approved
+# would picture a plan that may still change, which is exactly what the G3 rule
+# exists to prevent. So it is attached to G3 rather than to a stage body.
+#
+# These are not stages: they do not have their own gate, they cannot be
+# "confirmed", and a change landing upstream re-runs them through DOWNSTREAM.
+POST_GATE_ACTIONS: Dict[str, List[str]] = {
+    "G3": ["concept-visualization"],
+}
+
+POST_GATE_NOTES: Dict[str, str] = {
+    "concept-visualization":
+        "平面确认后立即以该平面为依据生成概念效果图（OmniAiLab 画布，"
+        "推荐 OmniP / image2.5），供业主建立空间感受；属表现材料，非尺寸依据。",
+}
+
 # Hard guardrails derived from the three professional logics.
 GUARDRAILS: List[Dict[str, str]] = [
     {
@@ -356,7 +382,22 @@ GUARDRAILS: List[Dict[str, str]] = [
         "rule": "平面未确认前不得出正式图纸；锁定后不得局部手改，须走变更影响分析",
         "enforced": "G3 门禁 + changes.analyse() 强制失效重算",
     },
+    {
+        "id": "R5",
+        "rule": "概念效果图只能在业主确认的平面上生成：平面一变，已出的概念效果图立即失效并重出",
+        "enforced": "POST_GATE_ACTIONS['G3'] 挂载该动作；每张图登记到产生它的模型修订",
+    },
 ]
+
+
+def post_gate_actions(gate_id: str) -> List[str]:
+    """Capabilities that must run once a gate has passed."""
+    return list(POST_GATE_ACTIONS.get(gate_id, []))
+
+
+def post_gate_actions_for_stage(stage_id: str) -> List[str]:
+    st = STAGE_BY_ID.get(stage_id)
+    return post_gate_actions(st.gate.id) if st else []
 
 
 def stage_of(skill_slug: str) -> List[str]:
@@ -405,6 +446,7 @@ def catalog_report() -> Dict[str, object]:
         "legacy_coverage": legacy_map(),
         "requires_confirmed": REQUIRES_CONFIRMED,
         "downstream": DOWNSTREAM,
+        "post_gate_actions": {k: list(v) for k, v in POST_GATE_ACTIONS.items()},
         "guardrails": GUARDRAILS,
     }
 
@@ -441,4 +483,13 @@ def validate_catalog() -> List[str]:
         for d in downs:
             if d not in STAGE_BY_ID:
                 issues.append(f"DOWNSTREAM[{s}] references unknown stage '{d}'")
+    known_gates = {st.gate.id for st in STAGES}
+    for gate_id, actions in POST_GATE_ACTIONS.items():
+        if gate_id not in known_gates:
+            issues.append(f"POST_GATE_ACTIONS references unknown gate '{gate_id}'")
+        for slug in actions:
+            if slug not in CAPABILITY_BY_SLUG:
+                issues.append(
+                    f"post-gate action '{slug}' on {gate_id} is not a known capability"
+                )
     return issues
