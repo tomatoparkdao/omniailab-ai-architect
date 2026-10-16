@@ -36,7 +36,7 @@ agent_created: true
 3. 引入了许可证要求"随附声明"的素材（字体、纹理、模型、数据）。
 
 放置后必须在 `THIRD_PARTY_NOTICES.md` 中增加指向该文件的说明，
-并运行 `python -m omniailab_ai_architect policy` 确认登记一致。
+并运行 `python -m omniarchitect policy` 确认登记一致。
 
 ## 不得做的事
 

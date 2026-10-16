@@ -47,8 +47,8 @@ agent_created: true
 查看当前解析结果：
 
 ```bash
-python -m omniailab_ai_architect tools
-python -m omniailab_ai_architect tools --json
+python -m omniarchitect tools
+python -m omniarchitect tools --json
 ```
 
 ## 权限分级
@@ -63,8 +63,8 @@ python -m omniailab_ai_architect tools --json
 查看某个具体调用的门槛（不执行）：
 
 ```bash
-python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
-python -m omniailab_ai_architect tools --plan "blender:run_blender"
+python -m omniarchitect tools --plan "dxf:draw_plan"
+python -m omniarchitect tools --plan "blender:run_blender"
 ```
 
 ## 安全约定

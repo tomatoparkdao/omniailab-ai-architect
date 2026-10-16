@@ -14,9 +14,9 @@ agent_created: true
 ## 1. 统一工具注册表
 
 ```bash
-python -m omniailab_ai_architect tools
-python -m omniailab_ai_architect tools --json
-python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
+python -m omniarchitect tools
+python -m omniarchitect tools --json
+python -m omniarchitect tools --plan "dxf:draw_plan"
 ```
 
 注册表回答三个问题：
@@ -50,7 +50,7 @@ python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
 未获授权时抛出 `PermissionRequired`，**不静默执行**：
 
 ```python
-from omniailab_ai_architect.tools import registry
+from omniarchitect.tools import registry
 reg = registry()
 reg.guard("blender", "run_blender")            # -> PermissionRequired
 reg.guard("blender", "run_blender", approved=True)   # 仍需工具真实可用
@@ -75,7 +75,7 @@ reg.verify("out/03-plan/S3-schematic-A.dxf")
 
 ## 5. 能力真实性规则
 
-`python -m omniailab_ai_architect honesty` 打印完整清单。核心五条：
+`python -m omniarchitect honesty` 打印完整清单。核心五条：
 
 | 不得声称 | 为什么 | 应当表述为 |
 | --- | --- | --- |
@@ -123,7 +123,7 @@ MCP 服务器**只被读取，不被猜测**。配置放项目根目录 `mcp.jso
 
 与创作能力的关系：本表里的工具**不承担任何生成式创作能力域**。
 AI 生图 / AI 视频 / Agent 工作流只经 OmniAiLab（`brand_policy.CREATIVE_OWNER`），
-由 `python -m omniailab_ai_architect policy` 与测试共同守住。
+由 `python -m omniarchitect policy` 与测试共同守住。
 
 ---
 

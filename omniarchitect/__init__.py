@@ -7,12 +7,12 @@ tool adapters, and one canonical spatial model every deliverable derives from.
 
 Quick start
 -----------
-    python -m omniailab_ai_architect doctor
-    python -m omniailab_ai_architect stages
-    python -m omniailab_ai_architect demo
-    python -m omniailab_ai_architect status  --project projects/demo-120
-    python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
-    python -m omniailab_ai_architect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
+    python -m omniarchitect doctor
+    python -m omniarchitect stages
+    python -m omniarchitect demo
+    python -m omniarchitect status  --project projects/demo-120
+    python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+    python -m omniarchitect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
 """
 from __future__ import annotations
 

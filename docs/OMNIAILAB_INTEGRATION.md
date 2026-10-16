@@ -22,8 +22,8 @@ OmniAiLab 是 OmniArchitect 的**原生平台**，但接入是**发现式**的�
 ## 1. 接入状态
 
 ```bash
-python -m omniailab_ai_architect providers
-python -m omniailab_ai_architect providers --json
+python -m omniarchitect providers
+python -m omniarchitect providers --json
 ```
 
 状态取值：
@@ -128,7 +128,7 @@ $OMNIAILAB_CONFIG
 ## 3. 提供方能力与调用
 
 ```python
-from omniailab_ai_architect.providers import discover
+from omniarchitect.providers import discover
 
 reg = discover(project_dir="projects/demo-120", refresh=True)
 print(reg.report())
@@ -168,7 +168,7 @@ local = reg.select("schematic_diagram")              # 返回 local
 平台不可用时的正确行为（**不是失败，也不是改道**）：
 
 ```python
-from omniailab_ai_architect.providers import NotConfigured
+from omniarchitect.providers import NotConfigured
 
 try:
     reg.generate("video_generation", {"project_id": "demo-120"}, "out")
@@ -187,7 +187,7 @@ print(reg.report()["creative_policy"])   # third_party_fallback = forbidden
 **画布**工作流。这是「门禁后置动作」，不是独立阶段。
 
 ```python
-from omniailab_ai_architect.providers import canvas
+from omniarchitect.providers import canvas
 
 res = canvas.render(project, "projects/demo-120/concept-render", scheme="A",
                     limit=5, project_dir="projects/demo-120",
@@ -250,7 +250,7 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 5. 契约模板中的 `FILL_ME` 占位符会被识别并拒绝——模板不等于可用契约。
 6. 不预置任何第三方 Agent / 生图 / 视频 SaaS 的密钥、端点、账号或下载地址；
    不设置自动回退路径。创作能力域的唯一被授权主体是 `omniailab`，由
-   `python -m omniailab_ai_architect policy` 与测试共同守住。
+   `python -m omniarchitect policy` 与测试共同守住。
 7. 不把 OmniAiLab 平台服务与底层模型提供方混为一谈：模型由平台侧依法授权并路由，
    **不得**宣称模型由 OmniAiLab 自研。
 

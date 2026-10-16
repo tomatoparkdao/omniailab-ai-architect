@@ -19,8 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from omniailab_ai_architect.integration import agent_skills as sk  # noqa: E402
-from omniailab_ai_architect.integration import installer as inst  # noqa: E402
+from omniarchitect.integration import agent_skills as sk  # noqa: E402
+from omniarchitect.integration import installer as inst  # noqa: E402
 
 
 def check_python(package_root: Path) -> dict:
@@ -29,8 +29,8 @@ def check_python(package_root: Path) -> dict:
 
     code = (
         "import sys; sys.path.insert(0, r'%s');"
-        "import omniailab_ai_architect as oa;"
-        "from omniailab_ai_architect.tools import registry;"
+        "import omniarchitect as oa;"
+        "from omniarchitect.tools import registry;"
         "r = registry().detect_report();"
         "print(oa.__version__);"
         "print(','.join(r['available']))" % str(package_root)

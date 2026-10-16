@@ -63,7 +63,7 @@ agent_created: true
 | lighting-design | S2, S4, S7 | delivery | S8 |
 | building-services | S4, S6, S7 | cad-drafting | S4, S7 |
 
-原始的 18 份说明书全部保留，就地注入 `capability` 与 `stages` 字段；新增 `19-design-presentation` 系列能力。`python -m omniailab_ai_architect registry` 可打印完整映射。
+原始的 18 份说明书全部保留，就地注入 `capability` 与 `stages` 字段；新增 `19-design-presentation` 系列能力。`python -m omniarchitect registry` 可打印完整映射。
 
 ---
 
@@ -169,11 +169,11 @@ POST_GATE_ACTIONS = {"G3": ["concept-visualization"]}
 状态：`pending → in_progress → awaiting_confirmation → confirmed`，另有 `rework` 与 `blocked`。持久化在 `project.meta["stage_state"]`，因此一次运行可以在门禁处停下，几天后继续。
 
 ```bat
-python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
 :: 跑到第一个未确认门禁即停
-python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniailab_ai_architect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
-python -m omniailab_ai_architect status  --project projects/demo-120
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniarchitect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
+python -m omniarchitect status  --project projects/demo-120
 ```
 
 ---

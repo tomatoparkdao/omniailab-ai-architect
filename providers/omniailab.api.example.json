@@ -4,7 +4,7 @@
     "这是 OmniAiLab 平台 API 契约的**填写模板**，不是可用契约。",
     "把本文件复制为 providers/omniailab.api.json（或设置 OMNIAILAB_API_CONTRACT 指向它），",
     "再用平台下发的真实值替换所有 FILL_ME 占位符，然后运行：",
-    "    python -m omniailab_ai_architect providers",
+    "    python -m omniarchitect providers",
     "契约字段不完整、或仍含 FILL_ME 占位符时，provider 保持 NOT_CONFIGURED，",
     "不会发出任何请求，也不会猜测端点、参数或鉴权方式。",
     "api_key 不要写进本文件：放到 omniailab.config.json（已加入 .gitignore），",

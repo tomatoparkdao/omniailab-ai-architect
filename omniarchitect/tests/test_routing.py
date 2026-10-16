@@ -7,9 +7,9 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from omniailab_ai_architect.demo import build_demo_project
-from omniailab_ai_architect.routing import route
-from omniailab_ai_architect.stage_state import confirm_stage
+from omniarchitect.demo import build_demo_project
+from omniarchitect.routing import route
+from omniarchitect.stage_state import confirm_stage
 
 
 def test_planning_request_routes_to_the_plan_stage():

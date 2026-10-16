@@ -24,7 +24,7 @@ agent_created: true
 
 
 ```bash
-python -m omniailab_ai_architect present --list-kinds
+python -m omniarchitect present --list-kinds
 ```
 
 | kind | 阶段 | 用途 | 默认页结构 |
@@ -41,8 +41,8 @@ python -m omniailab_ai_architect present --list-kinds
 | `full` | — | 全过程汇报 | 上述页面组合 |
 
 ```bash
-python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
-python -m omniailab_ai_architect present --project projects/demo-120 --kind full --brand "某事务所"
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect present --project projects/demo-120 --kind full --brand "某事务所"
 ```
 
 ## 2. 产出物
@@ -93,7 +93,7 @@ PDF 缺失时**不会伪造**：报告写明原因，并给出 HTML 打印作为
 - 表格列数必须与表头一致。
 
 ```python
-from omniailab_ai_architect import presentation
+from omniarchitect import presentation
 rep = presentation.render(project, "final", out_dir="out")
 print(rep["issues"])        # [] 表示通过
 ```

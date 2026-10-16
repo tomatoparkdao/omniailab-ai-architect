@@ -1,13 +1,13 @@
 """Command line interface.
 
-    python -m omniailab_ai_architect doctor
-    python -m omniailab_ai_architect stages
-    python -m omniailab_ai_architect status    --project projects/demo-120
-    python -m omniailab_ai_architect route     --project projects/demo-120 "帮我出施工图"
-    python -m omniailab_ai_architect run       --project projects/demo-120 --all --assume-approval
-    python -m omniailab_ai_architect confirm   --project projects/demo-120 --stage S3 --by 业主
-    python -m omniailab_ai_architect change    --project projects/demo-120 "我不喜欢客厅的电视背景墙"
-    python -m omniailab_ai_architect demo      --out out
+    python -m omniarchitect doctor
+    python -m omniarchitect stages
+    python -m omniarchitect status    --project projects/demo-120
+    python -m omniarchitect route     --project projects/demo-120 "帮我出施工图"
+    python -m omniarchitect run       --project projects/demo-120 --all --assume-approval
+    python -m omniarchitect confirm   --project projects/demo-120 --stage S3 --by 业主
+    python -m omniarchitect change    --project projects/demo-120 "我不喜欢客厅的电视背景墙"
+    python -m omniarchitect demo      --out out
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """

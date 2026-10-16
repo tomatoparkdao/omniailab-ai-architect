@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-PACKAGE = "omniailab_ai_architect"
+PACKAGE = "omniarchitect"
 
 REQUIRED_PATHS = [
     "AGENTS.md", "README.md", "README_EN.md", "SKILL.md", "LICENSE", "VERSION",
@@ -82,8 +82,8 @@ def check_paths() -> int:
 
 def check_catalogue() -> int:
     section("2. 阶段与能力目录自检")
-    from omniailab_ai_architect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
-    from omniailab_ai_architect.registry import criteria_report, load_registry
+    from omniarchitect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
+    from omniarchitect.registry import criteria_report, load_registry
 
     issues = validate_catalog()
     print(f"  阶段 {len(STAGE_ORDER)}：{', '.join(STAGE_ORDER)}")
@@ -107,7 +107,7 @@ def check_catalogue() -> int:
 
 def check_doctor() -> int:
     section("3. 工具链体检")
-    from omniailab_ai_architect.adapters import doctor
+    from omniarchitect.adapters import doctor
 
     rep = doctor()
     for row in rep["adapters"]:
@@ -126,10 +126,10 @@ def check_doctor() -> int:
 
 def check_smoke() -> int:
     section("4. 全流程冒烟（八阶段 + 变更分析）")
-    from omniailab_ai_architect.changes import analyse
-    from omniailab_ai_architect.demo import build_demo_project
-    from omniailab_ai_architect.stage_state import progress
-    from omniailab_ai_architect.workflow import StageRunner
+    from omniarchitect.changes import analyse
+    from omniarchitect.demo import build_demo_project
+    from omniarchitect.stage_state import progress
+    from omniarchitect.workflow import StageRunner
 
     failures = 0
     with tempfile.TemporaryDirectory() as td:
@@ -184,7 +184,7 @@ def check_v11() -> int:
     failures = 0
 
     # --- third-party compliance -------------------------------------------
-    from omniailab_ai_architect import compliance_audit as ca
+    from omniarchitect import compliance_audit as ca
 
     audit = ca.scan(ROOT)
     print(f"  内容自检：扫描 {audit['files_scanned']} 个文本文件，"
@@ -199,7 +199,7 @@ def check_v11() -> int:
             print(f"  FAIL  缺少 {need}")
 
     # --- brand and provider policy ----------------------------------------
-    from omniailab_ai_architect import brand_policy as bpr
+    from omniarchitect import brand_policy as bpr
 
     pol = bpr.scan(ROOT)
     print(f"  品牌与供应商策略：扫描 {pol.files_scanned} 个文件，"
@@ -216,7 +216,7 @@ def check_v11() -> int:
             print(f"  FAIL  缺少许可证登记文件 {need}")
 
     # 创作能力独占必须可执行，而不是只写在文档里
-    from omniailab_ai_architect.providers import (
+    from omniarchitect.providers import (
         CREATIVE_OWNER,
         CREATIVE_SCOPES,
         LocalDeterministicProvider,
@@ -253,7 +253,7 @@ def check_v11() -> int:
           f"离线时创作后端为空且不回退第三方")
 
     # --- knowledge base ---------------------------------------------------
-    from omniailab_ai_architect import knowledge
+    from omniarchitect import knowledge
 
     krep = knowledge.report()
     print(f"  知识库：{krep['count']} 个领域 / {krep['total_lines']} 行，"
@@ -263,7 +263,7 @@ def check_v11() -> int:
     failures += len(krep["issues"])
 
     # --- providers --------------------------------------------------------
-    from omniailab_ai_architect.providers import discover
+    from omniarchitect.providers import discover
 
     prep = discover(ROOT, refresh=True).report()
     print(f"  provider：已连接 {prep['connected'] or '（无）'}，"
@@ -273,7 +273,7 @@ def check_v11() -> int:
         print("  FAIL  内置本地 provider 不可用——离线闭环被破坏")
 
     # --- tool registry ----------------------------------------------------
-    from omniailab_ai_architect.tools import registry as tool_registry
+    from omniarchitect.tools import registry as tool_registry
 
     treg = tool_registry()
     detect = treg.detect_report()
@@ -292,8 +292,8 @@ def check_v11() -> int:
     # --- presentation -----------------------------------------------------
     import tempfile as _tempfile
 
-    from omniailab_ai_architect import presentation
-    from omniailab_ai_architect.demo import build_demo_project
+    from omniarchitect import presentation
+    from omniarchitect.demo import build_demo_project
 
     with _tempfile.TemporaryDirectory() as td:
         proj = build_demo_project(Path(td))
@@ -309,8 +309,8 @@ def check_v11() -> int:
             print(f"  FAIL  PPTX 未被独立校验通过：{v.get('errors')}")
 
     # --- concept renderings (post-gate G3, OmniAiLab canvas) --------------
-    from omniailab_ai_architect.providers import canvas
-    from omniailab_ai_architect.stages import (
+    from omniarchitect.providers import canvas
+    from omniarchitect.stages import (
         POST_GATE_ACTIONS,
         post_gate_actions_for_stage,
         validate_catalog,
@@ -331,8 +331,8 @@ def check_v11() -> int:
         print(f"  FAIL  模型声明：{i}")
 
     # --- agent skills / installer ----------------------------------------
-    from omniailab_ai_architect.integration import agent_skills as sk
-    from omniailab_ai_architect.integration import installer as inst
+    from omniarchitect.integration import agent_skills as sk
+    from omniarchitect.integration import installer as inst
 
     issues = sk.validate()
     print(f"  SKILL.md：{sk.parse().lines} 行 / {sk.parse().bytes_} 字节，"

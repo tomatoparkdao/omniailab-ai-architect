@@ -11,10 +11,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect import compliance_audit as ca  # noqa: E402
-from omniailab_ai_architect.integration import agent_skills as sk  # noqa: E402
-from omniailab_ai_architect.integration import installer as inst  # noqa: E402
-from omniailab_ai_architect.paths import ROOT  # noqa: E402
+from omniarchitect import compliance_audit as ca  # noqa: E402
+from omniarchitect.integration import agent_skills as sk  # noqa: E402
+from omniarchitect.integration import installer as inst  # noqa: E402
+from omniarchitect.paths import ROOT  # noqa: E402
 
 
 # --------------------------------------------------------------------------
@@ -107,7 +107,7 @@ def test_copy_mode_carries_the_payload_and_pointer_mode_does_not():
         assert (Path(ptr.target) / inst.POINTER_NAME).exists()
         assert not (Path(ptr.target) / "knowledge").exists()
         assert (Path(cp.target) / "knowledge" / "INDEX.md").exists()
-        assert (Path(cp.target) / "omniailab_ai_architect" / "model.py").exists()
+        assert (Path(cp.target) / "omniarchitect" / "model.py").exists()
 
 
 def test_installer_refuses_when_no_runtime_is_found():
@@ -175,7 +175,7 @@ def test_audit_scan_is_clean_and_reports_a_reason():
 
 
 def test_every_document_carries_the_omniailab_signature():
-    from omniailab_ai_architect.registry import (
+    from omniarchitect.registry import (
         SIGNATURE,
         SIGNATURE_SHORT,
         SIGNATURE_SHORT_EN,
@@ -202,7 +202,7 @@ def test_no_borrowed_branding_anywhere_in_the_tree():
                                                   ".yml", ".toml", ".txt"):
             continue
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
-        if rel.startswith(("out/", "projects/", "omniailab_ai_architect/tests/")):
+        if rel.startswith(("out/", "projects/", "omniarchitect/tests/")):
             continue        # the test file itself must name the banned strings
         low = p.read_text(encoding="utf-8", errors="replace").lower()
         for b in banned:
@@ -212,7 +212,7 @@ def test_no_borrowed_branding_anywhere_in_the_tree():
 
 
 def test_user_facing_files_carry_no_external_promotion():
-    from omniailab_ai_architect import compliance_audit as _ca
+    from omniarchitect import compliance_audit as _ca
 
     for rel in ("SKILL.md", "README.md", "README_EN.md"):
         text = (ROOT / rel).read_text(encoding="utf-8")
@@ -243,6 +243,41 @@ def test_a_document_without_the_signature_is_flagged():
         rep = ca.scan(root)
         assert rep["action_count"] == 1
         assert rep["needs_action"][0]["disposition"] == "missing-signature"
+
+
+def test_hex_digests_are_not_mistaken_for_phone_numbers():
+    """sha256 摘要里的一段十六进制曾被误判为手机号（真实踩到过的误报）。"""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        (root / "installer").mkdir()
+        (root / "installer" / "manifest.json").write_text(
+            '{\n  "files": [{"path": "pyproject.toml", "size": 2161,\n'
+            '              "sha256_16": "797f14446326125d"}]\n}\n', encoding="utf-8")
+        rep = ca.scan(root)
+        assert rep["action_count"] == 0, rep["needs_action"]
+
+
+def test_real_phone_numbers_are_still_caught():
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        (root / "notes.md").write_text(
+            "手机：13800138000\n座机 010-88886666\n", encoding="utf-8")
+        rep = ca.scan(root)
+        assert rep["needs_action"][0]["disposition"] == "review-privacy"
+        assert "cn_phone" in rep["needs_action"][0]["hits"]
+
+
+def test_the_scanners_own_output_does_not_flag_itself():
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        (root / "docs").mkdir()
+        # 模拟上一轮报告里记录过一个手机号：不得因此自我循环
+        (root / "docs" / "content-audit.json").write_text(
+            '{"hits": {"cn_phone": ["13800138000"]}}', encoding="utf-8")
+        rep = ca.scan(root)
+        assert rep["action_count"] == 0, rep["needs_action"]
+        f = [x for x in rep["by_disposition"].items()]
+        assert dict(f).get("generated-ok") == 1
 
 
 def test_client_names_and_emails_are_flagged_for_redaction():
@@ -320,8 +355,8 @@ def test_the_normalizer_is_idempotent():
 
 
 def test_frontmatter_tail_is_identical_in_every_markdown():
-    from omniailab_ai_architect.registry import FRONTMATTER_TAIL
-    from omniailab_ai_architect.paths import project_version
+    from omniarchitect.registry import FRONTMATTER_TAIL
+    from omniarchitect.paths import project_version
 
     version = project_version()
     bad = []
@@ -339,7 +374,7 @@ def test_frontmatter_tail_is_identical_in_every_markdown():
 
 
 def test_generated_reports_carry_the_same_header_and_footer():
-    from omniailab_ai_architect.paths import project_version
+    from omniarchitect.paths import project_version
 
     with tempfile.TemporaryDirectory() as td:
         out = ca.write_report(td)

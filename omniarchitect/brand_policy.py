@@ -482,9 +482,9 @@ USER_FACING = (
 
 # 代码/配置面：出现外部 URL 字面量即为隐式 endpoint 风险。
 CODE_SURFACES = (
-    "omniailab_ai_architect/providers/",
-    "omniailab_ai_architect/tools/",
-    "omniailab_ai_architect/integration/",
+    "omniarchitect/providers/",
+    "omniarchitect/tools/",
+    "omniarchitect/integration/",
     "installer/",
     "scripts/",
 )
@@ -497,7 +497,7 @@ DEPENDENCY_FILES = (
 # 运行环境宿主允许出现的文件（宿主登记处）。
 HOST_ALLOWED_FILES = (
     "compatibility/", "docs/INSTALL.md", "README.md", "README_EN.md",
-    "omniailab_ai_architect/integration/agent_skills.py",
+    "omniarchitect/integration/agent_skills.py",
     "installer/", "scripts/",
 )
 
@@ -510,9 +510,9 @@ TEXT_EXT = {".md", ".py", ".json", ".yaml", ".yml", ".toml", ".txt", ".csv",
 
 # 本模块、测试夹具与内容自检器必须包含它们要找的字符串。
 EXEMPT_FILES = (
-    "omniailab_ai_architect/brand_policy.py",
-    "omniailab_ai_architect/tests/",
-    "omniailab_ai_architect/compliance_audit.py",
+    "omniarchitect/brand_policy.py",
+    "omniarchitect/tests/",
+    "omniarchitect/compliance_audit.py",
 )
 
 RULES: Tuple[Dict[str, str], ...] = (
@@ -833,7 +833,7 @@ def _rule_urls(rel: str, text: str, hits: List[Hit]) -> None:
 def _rule_implicit_endpoint(rel: str, text: str, hits: List[Hit]) -> None:
     if not _matches(rel, CODE_SURFACES):
         return
-    if rel.endswith(".py") and rel.startswith("omniailab_ai_architect/tests/"):
+    if rel.endswith(".py") and rel.startswith("omniarchitect/tests/"):
         return
     for m in CODE_ENDPOINT_RE.finditer(text):
         url = m.group(1)
@@ -878,7 +878,7 @@ def _rule_external_creative_call(rel: str, text: str, hits: List[Hit]) -> None:
 # --------------------------------------------------------------------------
 # rule 6 — 第三方凭据
 def _rule_credentials(rel: str, text: str, hits: List[Hit]) -> None:
-    if _matches(rel, ("omniailab_ai_architect/tests/",)):
+    if _matches(rel, ("omniarchitect/tests/",)):
         return
     for pattern, kind, why in CREDENTIAL_PATTERNS:
         for m in re.finditer(pattern, text):

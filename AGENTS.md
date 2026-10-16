@@ -23,13 +23,18 @@ E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 ```
 
 - 这是**唯一**的正式开发根目录，同时也是 Agent Skill 根（`SKILL.md` 在此）。
-- Python 包是根目录下的子目录 `omniailab_ai_architect/`：目录名可导入，根目录名含连字符不可导入。
+- **Python 包目录是 `omniarchitect/`**（内部引擎代号），它是全部可执行代码所在处：
+  模型 / 规划 / 八阶段 / 变更分析 / 适配器 / provider / 工具注册表 / 汇报 / 集成 / 测试。
+  它与根目录**不是重复**：根目录是 Agent Skill 根（`SKILL.md`、`knowledge/`、`skills/`、
+  `docs/`、`schemas/`、`LICENSE`），包目录是代码本体。
+  两者命名不同是刻意的：**对外用产品名 `omniailab-ai-architect`（连字符，Skill 调用名），
+  代码用内部代号 `omniarchitect`（可导入的合法标识符）**，避免根目录出现近似重名的顶层目录。
 - 运行任何命令前，先把工作区切到该目录；不要依赖提示词里写路径。
 
 ```bat
 cd /d E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 set PYTHONPATH=E:\SKILL\建筑室内设计skill\omniailab-ai-architect
-python -m omniailab_ai_architect doctor
+python -m omniarchitect doctor
 ```
 
 - 父目录 `E:\SKILL\建筑室内设计skill\.workbuddy\` 存放会话记忆，**不属于本仓库，不得删除或改写**。
@@ -39,15 +44,15 @@ python -m omniailab_ai_architect doctor
 
 | 路径 | 内容 | 可否改动 |
 |---|---|---|
-| `omniailab_ai_architect/` | Python 包：模型、规划、工作流、适配器、provider、工具、汇报、集成 | 主开发区 |
-| `omniailab_ai_architect/stages.py` | **八阶段模型、能力映射与门禁后置动作的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
-| `omniailab_ai_architect/changes.py` | 设计变更影响分析 | 核心能力，改前先读 `docs/WORKFLOW.md` 第三节 |
-| `omniailab_ai_architect/providers/` | 生成式 provider（OmniAiLab + 本地）+ 画布工作流 `canvas.py` | 不得猜测 endpoint / 鉴权 / 模型名 |
-| `omniailab_ai_architect/tools/` | 工具注册表 · L1–L4 权限 · 独立校验 | 风险等级静态声明，禁止运行时提权 |
-| `omniailab_ai_architect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
-| `omniailab_ai_architect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
-| `omniailab_ai_architect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
-| `omniailab_ai_architect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
+| `omniarchitect/` | Python 包：模型、规划、工作流、适配器、provider、工具、汇报、集成 | 主开发区 |
+| `omniarchitect/stages.py` | **八阶段模型、能力映射与门禁后置动作的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
+| `omniarchitect/changes.py` | 设计变更影响分析 | 核心能力，改前先读 `docs/WORKFLOW.md` 第三节 |
+| `omniarchitect/providers/` | 生成式 provider（OmniAiLab + 本地）+ 画布工作流 `canvas.py` | 不得猜测 endpoint / 鉴权 / 模型名 |
+| `omniarchitect/tools/` | 工具注册表 · L1–L4 权限 · 独立校验 | 风险等级静态声明，禁止运行时提权 |
+| `omniarchitect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
+| `omniarchitect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
+| `omniarchitect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
+| `omniarchitect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
 | `THIRD_PARTY_NOTICES.md` · `LICENSES/` | 第三方许可证、版权声明、来源链接与署名的唯一集中落点 | 不得删除署名；不得出现在普通成果与营销材料中 |
 | `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
@@ -161,7 +166,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 7. **变更不可局部手改**：任何修改都要经过 `changes.analyse()`，产出诊断、影响面、回流计划与门禁重开清单。
 8. **不代业主决策**：方案对比只给推荐 + 理由 + 备选，不给"两套都行"的话术。
 9. **不得猜测外部接口**：provider 与 MCP 只能读**已声明**的配置 / 契约；未验证一律 `NOT_CONFIGURED`，不伪造成功。
-10. **不得声称做不到的事**：DXF ≠ DWG、网格 ≠ 参数化 BIM、效果图 ≠ 尺寸依据、未装 IfcOpenShell 就不存在 IFC。完整清单：`python -m omniailab_ai_architect honesty`。
+10. **不得声称做不到的事**：DXF ≠ DWG、网格 ≠ 参数化 BIM、效果图 ≠ 尺寸依据、未装 IfcOpenShell 就不存在 IFC。完整清单：`python -m omniarchitect honesty`。
 11. **用户面内容必须自有**：全仓不得出现外部品牌名、商业站点或推广链接（自有站点除外）。
     新增任何素材前先确认来源与授权，判据一律用通用设计原理与公开工程惯例重新表述。
 12. **每份文档都要带署名**：`docs/` `knowledge/` `cases/` `skills/` 等每一份 Markdown 的
@@ -182,37 +187,37 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 set PYTHONPATH=E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 cd /d E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 
-python -m omniailab_ai_architect doctor               :: 工具链体检
-python -m omniailab_ai_architect stages               :: 打印八阶段模型
-python -m omniailab_ai_architect registry             :: 能力目录 + 30 份技能→阶段映射
-python -m omniailab_ai_architect concept-render      :: 平面确认后的概念效果图（画布）
-python -m omniailab_ai_architect canvas-models       :: 画布模型声明与选择规则
-python -m omniailab_ai_architect criteria            :: 设计判据体系（自有口径）
-python -m omniailab_ai_architect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
-python -m omniailab_ai_architect demo --out out        :: 示例项目跑通全部八阶段
-python -m omniailab_ai_architect status  --project projects/demo-120
-python -m omniailab_ai_architect route   --project projects/demo-120 "出施工图"
-python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
-python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniailab_ai_architect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
-python -m omniailab_ai_architect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
-python -m omniailab_ai_architect verify  --project projects/demo-120
+python -m omniarchitect doctor               :: 工具链体检
+python -m omniarchitect stages               :: 打印八阶段模型
+python -m omniarchitect registry             :: 能力目录 + 30 份技能→阶段映射
+python -m omniarchitect concept-render      :: 平面确认后的概念效果图（画布）
+python -m omniarchitect canvas-models       :: 画布模型声明与选择规则
+python -m omniarchitect criteria            :: 设计判据体系（自有口径）
+python -m omniarchitect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
+python -m omniarchitect demo --out out        :: 示例项目跑通全部八阶段
+python -m omniarchitect status  --project projects/demo-120
+python -m omniarchitect route   --project projects/demo-120 "出施工图"
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniarchitect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
+python -m omniarchitect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
+python -m omniarchitect verify  --project projects/demo-120
 
 :: v1.1 新增
-python -m omniailab_ai_architect providers            :: OmniAiLab / 本地 provider 状态
-python -m omniailab_ai_architect tools                :: 工具注册表 + L1–L4 权限
-python -m omniailab_ai_architect honesty              :: 不得声称的能力清单
-python -m omniailab_ai_architect knowledge            :: 13 个原创知识域
-python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
-python -m omniailab_ai_architect scenario --name all  :: Scenario A/B/C 验收
-python -m omniailab_ai_architect compat               :: Agent Skills 兼容性
-python -m omniailab_ai_architect install --dry-run
+python -m omniarchitect providers            :: OmniAiLab / 本地 provider 状态
+python -m omniarchitect tools                :: 工具注册表 + L1–L4 权限
+python -m omniarchitect honesty              :: 不得声称的能力清单
+python -m omniarchitect knowledge            :: 13 个原创知识域
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect scenario --name all  :: Scenario A/B/C 验收
+python -m omniarchitect compat               :: Agent Skills 兼容性
+python -m omniarchitect install --dry-run
 python installer/verify_install.py --check-python
 
 :: v1.3 新增
-python -m omniailab_ai_architect policy               :: 品牌与供应商策略审计（九条规则）
-python -m omniailab_ai_architect policy --allowlist   :: 打印完整登记表
-python -m omniailab_ai_architect policy --write docs  :: 生成 docs/BRAND_POLICY.md
+python -m omniarchitect policy               :: 品牌与供应商策略审计（九条规则）
+python -m omniarchitect policy --allowlist   :: 打印完整登记表
+python -m omniarchitect policy --write docs  :: 生成 docs/BRAND_POLICY.md
 ```
 
 验证（改完必须跑）：
@@ -268,8 +273,8 @@ python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭�
 改完必须跑两项自检，两者都必须归零：
 
 ```bat
-python -m omniailab_ai_architect audit --write docs     :: 署名 / 隐私 / 外链 / 许可
-python -m omniailab_ai_architect policy --write docs    :: 品牌 / 供应商 / 凭据 / fallback / 创作独占
+python -m omniarchitect audit --write docs     :: 署名 / 隐私 / 外链 / 许可
+python -m omniarchitect policy --write docs    :: 品牌 / 供应商 / 凭据 / fallback / 创作独占
 ```
 
 | 自检 | 覆盖 |
@@ -289,11 +294,11 @@ python -m omniailab_ai_architect policy --write docs    :: 品牌 / 供应商 / 
 2. 结构性改动前先说明方案、暴露风险、给出选项。
 3. 只改被授权的位置，不顺手重构别处。
 4. 改完**必须**跑 `scripts/run_tests.py`；涉及管线或新增子系统则再跑 `scripts/verify_all.py`。
-5. 新增或修改用户可见内容后，跑 `python -m omniailab_ai_architect audit` **与**
-   `python -m omniailab_ai_architect policy`，两者都必须 0 项待处理 / 0 禁止项。
-6. 涉及交付能力（图纸 / 模型 / 汇报）时，跑 `python -m omniailab_ai_architect scenario --name all`。
+5. 新增或修改用户可见内容后，跑 `python -m omniarchitect audit` **与**
+   `python -m omniarchitect policy`，两者都必须 0 项待处理 / 0 禁止项。
+6. 涉及交付能力（图纸 / 模型 / 汇报）时，跑 `python -m omniarchitect scenario --name all`。
 7. 涉及创作能力（AI 生图 / AI 视频 / Agent 工作流）时，确认
-   `python -m omniailab_ai_architect providers` 的创作能力独占与待执行任务输出符合预期。
+   `python -m omniarchitect providers` 的创作能力独占与待执行任务输出符合预期。
 8. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
 
 ---

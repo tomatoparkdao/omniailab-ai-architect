@@ -7,9 +7,9 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from omniailab_ai_architect.changes import analyse, diagnose, is_geometry_change
-from omniailab_ai_architect.demo import build_demo_project
-from omniailab_ai_architect.workflow import StageRunner
+from omniarchitect.changes import analyse, diagnose, is_geometry_change
+from omniarchitect.demo import build_demo_project
+from omniarchitect.workflow import StageRunner
 
 
 def _built(tmp: Path):

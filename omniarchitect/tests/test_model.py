@@ -7,10 +7,10 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from omniailab_ai_architect.demo import build_demo_project
-from omniailab_ai_architect.errors import ValidationError
-from omniailab_ai_architect.model import Project, summary, validate_semantics, validate_schema
-from omniailab_ai_architect.revisions import (
+from omniarchitect.demo import build_demo_project
+from omniarchitect.errors import ValidationError
+from omniarchitect.model import Project, summary, validate_semantics, validate_schema
+from omniarchitect.revisions import (
     apply_geometry_change,
     dependents_of,
     invalidate,
@@ -78,7 +78,7 @@ def test_duplicate_ids_are_rejected():
     with tempfile.TemporaryDirectory() as td:
         p = _proj(Path(td))
         clone = p.elements[0].to_dict()
-        from omniailab_ai_architect.model import Element
+        from omniarchitect.model import Element
 
         p.elements.append(Element.from_dict(clone))
         try:

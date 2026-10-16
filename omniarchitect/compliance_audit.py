@@ -55,8 +55,11 @@ CLIENT_STOPWORDS = {
 
 PATTERNS = {
     "email": re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]{2,}"),
-    "cn_phone": re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"),
-    "cn_id": re.compile(r"(?<!\d)\d{17}[\dXx](?!\d)"),
+    # 手机号 / 身份证号：两端必须是**非十六进制字符**。
+    # 否则 sha256 摘要里的一段十六进制（如 797f14446326125d）会被误判为手机号——
+    # 这是真实踩到过的误报，规则必须能区分"一串十六进制"和"一个电话号码"。
+    "cn_phone": re.compile(r"(?<![0-9A-Fa-f])1[3-9]\d{9}(?![0-9A-Fa-f])"),
+    "cn_id": re.compile(r"(?<![0-9A-Fa-f])\d{17}[\dXx](?![0-9A-Fa-f])"),
     "url": re.compile(r"https?://[^\s)\]\"'><]+"),
     "client_name": re.compile(
         r"(业主|甲方|客户)\s*[:：]\s*([\u4e00-\u9fa5]{2,4})"
@@ -79,9 +82,15 @@ SKIP_DIRS = {".git", "out", "__pycache__", ".pytest_cache", "node_modules",
 # Test fixtures and this scanner necessarily contain the strings it looks for,
 # and sample emails/phones so the detectors can be exercised. They are code, not
 # shippable content, so content rules do not apply to them.
-EXEMPT_FROM_CONTENT_RULES = ("omniailab_ai_architect/tests/",
-                             "omniailab_ai_architect/compliance_audit.py",
-                             "omniailab_ai_architect/brand_policy.py")
+EXEMPT_FROM_CONTENT_RULES = ("omniarchitect/tests/",
+                             "omniarchitect/compliance_audit.py",
+                             "omniarchitect/brand_policy.py")
+
+# The scanner's own machine-readable output. It exists to *record* findings, so
+# scanning it would be self-referential: one flagged phone number would be
+# written into the report, then re-flagged on the next run, forever. These files
+# are generated records, not distributable assets.
+SELF_OUTPUT = ("docs/content-audit.json", "docs/brand-policy.json")
 
 DISPOSITIONS = (
     "original",                     # our own content, nothing to do
@@ -156,6 +165,14 @@ def scan_file(root: Path, path: Path) -> Optional[FileFinding]:
         f.provenance = "test-fixture"
         f.disposition = "test-fixture"
         f.reasons.append("测试夹具与扫描器本身：容忍其中的样本字符串与示例联系方式")
+        return f
+
+    if rel in SELF_OUTPUT:
+        f.provenance = "generated"
+        f.disposition = "generated-ok"
+        f.reasons.append(
+            "扫描器自身的机器可读产出：用于记录发现，不参与内容规则（否则会自我循环）"
+        )
         return f
 
     licence_allowed = _matches(rel, LICENCE_ALLOWED)

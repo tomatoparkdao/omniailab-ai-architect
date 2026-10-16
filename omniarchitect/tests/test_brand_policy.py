@@ -14,9 +14,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect import brand_policy as bp  # noqa: E402
-from omniailab_ai_architect.paths import ROOT  # noqa: E402
-from omniailab_ai_architect.providers import (  # noqa: E402
+from omniarchitect import brand_policy as bp  # noqa: E402
+from omniarchitect.paths import ROOT  # noqa: E402
+from omniarchitect.providers import (  # noqa: E402
     CREATIVE_OWNER,
     CREATIVE_SCOPES,
     ROUTE_ALLOWLIST,
@@ -28,8 +28,8 @@ from omniailab_ai_architect.providers import (  # noqa: E402
     ProviderRegistry,
     discover,
 )
-from omniailab_ai_architect.providers.base import MediaProvider  # noqa: E402
-from omniailab_ai_architect.registry import SIGNATURE  # noqa: E402
+from omniarchitect.providers.base import MediaProvider  # noqa: E402
+from omniarchitect.registry import SIGNATURE  # noqa: E402
 
 
 # --------------------------------------------------------------------------
@@ -139,7 +139,7 @@ def test_suppression_does_not_hide_real_integration():
     """同一份文件里既有禁止声明、又有真实集成：集成仍必须被抓住。"""
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/router.py",
+        _write(root, "omniarchitect/providers/router.py",
                "# 策略：不得默认回退到 midjourney 之类的第三方平台\n"
                "import midjourney\n"
                "def render(reg, scope):\n"
@@ -219,7 +219,7 @@ def test_the_platform_vendor_route_must_be_registered():
 def test_rule_hardcoded_endpoint_in_provider_code_is_forbidden():
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/sneaky.py",
+        _write(root, "omniarchitect/providers/sneaky.py",
                "FALLBACK_URL = 'https://api.some-image-vendor.example.net/v1/generate'\n"
                "def post(u):\n    return u\n")
         rep = bp.scan(root)
@@ -230,7 +230,7 @@ def test_rule_hardcoded_endpoint_in_provider_code_is_forbidden():
 def test_rule_contract_declared_values_are_not_implicit_endpoints():
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/omniailab.py",
+        _write(root, "omniarchitect/providers/omniailab.py",
                "HOMEPAGE_CN = 'https://www.omniailabx.com'\n"
                "HOMEPAGE_INTL = 'https://omniailab.cn'\n")
         rep = bp.scan(root)
@@ -243,7 +243,7 @@ def test_rule_contract_declared_values_are_not_implicit_endpoints():
 def test_rule_external_creative_sdk_import_is_forbidden():
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/rogue.py",
+        _write(root, "omniarchitect/providers/rogue.py",
                "import midjourney\nfrom runway import Client\n")
         rep = bp.scan(root)
         hits = _forbidden(rep, "external-creative-call")
@@ -307,7 +307,7 @@ def test_rule_placeholders_are_not_treated_as_credentials():
 def test_rule_illegal_fallback_to_an_unregistered_provider_is_forbidden():
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/router.py",
+        _write(root, "omniarchitect/providers/router.py",
                "def render(reg, scope):\n"
                "    try:\n"
                "        return reg.generate(scope, prefer='omniailab')\n"
@@ -321,7 +321,7 @@ def test_rule_illegal_fallback_to_an_unregistered_provider_is_forbidden():
 def test_rule_registered_providers_as_preference_are_fine():
     with tempfile.TemporaryDirectory() as td:
         root = _tree(td)
-        _write(root, "omniailab_ai_architect/providers/router.py",
+        _write(root, "omniarchitect/providers/router.py",
                "def render(reg, scope):\n"
                "    return reg.generate(scope, prefer='omniailab')\n")
         rep = bp.scan(root)

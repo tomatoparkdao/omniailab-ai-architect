@@ -29,24 +29,26 @@ all = ["ezdxf>=1.1", "shapely>=2.0", "jsonschema>=4.20", "pyyaml>=6.0",
        "pillow>=10.0", "python-pptx>=1.0", "pytest>=8.0"]
 
 [project.scripts]
-omniailab-ai-architect = "omniailab_ai_architect.cli:main"
+omniailab-ai-architect = "omniarchitect.cli:main"
 
 [tool.setuptools]
-# The importable package sits inside the skill root (the root directory name
-# contains hyphens, so it cannot itself be a package name).
+# The importable package uses the internal engine codename `omniarchitect`,
+# deliberately distinct from the product / skill name `omniailab-ai-architect`
+# (which contains hyphens and therefore cannot be a package name). This also
+# keeps the repository root free of a near-duplicate top-level directory.
 packages = [
-    "omniailab_ai_architect",
-    "omniailab_ai_architect.adapters",
-    "omniailab_ai_architect.knowledge",
-    "omniailab_ai_architect.providers",
-    "omniailab_ai_architect.tools",
-    "omniailab_ai_architect.presentation",
-    "omniailab_ai_architect.integration",
-    "omniailab_ai_architect.tests",
+    "omniarchitect",
+    "omniarchitect.adapters",
+    "omniarchitect.knowledge",
+    "omniarchitect.providers",
+    "omniarchitect.tools",
+    "omniarchitect.presentation",
+    "omniarchitect.integration",
+    "omniarchitect.tests",
 ]
 
 [tool.setuptools.package-data]
-omniailab_ai_architect = ["*.md"]
+omniarchitect = ["*.md"]
 
 [tool.setuptools.data-files]
 # Agent Skill payload: the root-level assets the SKILL.md points at.
@@ -56,5 +58,5 @@ omniailab_ai_architect = ["*.md"]
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["omniailab_ai_architect/tests"]
+testpaths = ["omniarchitect/tests"]
 addopts = "-q"

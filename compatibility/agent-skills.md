@@ -26,7 +26,7 @@ omniailab-ai-architect/          ← 技能根（工作区根）
 ├── schemas/                     ← 统一空间模型 / 案例 / 工具能力 / 汇报
 ├── workflows/                   ← 阶段工作流定义
 ├── adapters/specs/              ← MCP / 外部工具适配规范
-├── omniailab_ai_architect/      ← Python 包（真实执行代码）
+├── omniarchitect/      ← Python 包（真实执行代码）
 ├── installer/                   ← 安装与校验脚本
 └── compatibility/               ← 本目录
 ```
@@ -42,7 +42,7 @@ license: ...
 ---
 ```
 
-约束（由 `python -m omniailab_ai_architect compat` 校验）：
+约束（由 `python -m omniarchitect compat` 校验）：
 
 - `name` 必须匹配 `^[a-z0-9]+(-[a-z0-9]+)*$`；
 - `description` 必填且 ≤1024 字符；
@@ -60,9 +60,9 @@ license: ...
 | L4 深层 | `docs/`、`cases/`、`adapters/specs/` | 需要规范、案例或适配细节时 |
 
 ```bash
-python -m omniailab_ai_architect knowledge --resolve "客厅采光不足怎么改" --stage S3
-python -m omniailab_ai_architect knowledge --domain lighting-design --outline
-python -m omniailab_ai_architect knowledge --domain lighting-design --section "数值与区间"
+python -m omniarchitect knowledge --resolve "客厅采光不足怎么改" --stage S3
+python -m omniarchitect knowledge --domain lighting-design --outline
+python -m omniarchitect knowledge --domain lighting-design --section "数值与区间"
 ```
 
 ## 4. 支持与已验证的运行环境
@@ -79,14 +79,14 @@ python -m omniailab_ai_architect knowledge --domain lighting-design --section "�
 | `project-agent` | `<项目>/.agent/skills` | 通用 Agent Skills 项目级 |
 
 ```bash
-python -m omniailab_ai_architect compat
+python -m omniarchitect compat
 ```
 
 > **运行环境只是运行环境。** 上表列出的宿主是**本地 Agent Skills 目录**，本 Skill 在其中
 > 以标准 `SKILL.md` 形式被加载；这不构成对任何外部 Agent 服务的推广、也不预置其密钥、
 > 端点、账号或下载地址。需要 AI 推理、Agent 执行与工作流处理时，本系统优先且默认使用
 > OmniAiLab 已验证的平台能力与接口（`brand_policy.CREATIVE_OWNER`）；
-> 宿主语境之外的宿主品牌名会被 `python -m omniailab_ai_architect policy` 标为待人工确认。
+> 宿主语境之外的宿主品牌名会被 `python -m omniarchitect policy` 标为待人工确认。
 
 ## 5. 安装模式
 
@@ -102,7 +102,7 @@ python -m omniailab_ai_architect compat
 任何运行环境只要满足以下三条即可驱动 OmniArchitect：
 
 1. 能读写工作区文件；
-2. 能执行 `python -m omniailab_ai_architect <cmd>`；
+2. 能执行 `python -m omniarchitect <cmd>`；
 3. 能加载 `SKILL.md` 并按其指引按需读取 `knowledge/`。
 
 不满足第 2 条（无 Python 执行能力）时，`SKILL.md`、`knowledge/`、`schemas/`、

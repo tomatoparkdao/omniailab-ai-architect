@@ -6,7 +6,7 @@
 # upgrade: install what you need, and the adapters degrade honestly for what you
 # do not install. Verify what a host can actually do with:
 #
-#     python -m omniailab_ai_architect doctor
+#     python -m omniarchitect doctor
 
 # --- optional: richer CAD output -------------------------------------------
 ezdxf>=1.1            # R2010 DXF with HATCH; without it the built-in R12 writer is used

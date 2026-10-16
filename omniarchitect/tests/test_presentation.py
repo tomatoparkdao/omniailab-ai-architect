@@ -12,10 +12,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect import presentation  # noqa: E402
-from omniailab_ai_architect.demo import build_demo_project  # noqa: E402
-from omniailab_ai_architect.planner import PlanGenerator, SchemeOptions  # noqa: E402
-from omniailab_ai_architect.presentation import (  # noqa: E402
+from omniarchitect import presentation  # noqa: E402
+from omniarchitect.demo import build_demo_project  # noqa: E402
+from omniarchitect.planner import PlanGenerator, SchemeOptions  # noqa: E402
+from omniarchitect.presentation import (  # noqa: E402
     DECK_KINDS,
     SLIDE_KINDS,
     Brand,
@@ -200,7 +200,7 @@ def test_native_ooxml_backend_also_produces_a_readable_deck():
         out = Path(td) / "native.pptx"
         pptx_writer._write_native_pptx(deck, out)          # noqa: SLF001
         assert out.stat().st_size > 5000
-        from omniailab_ai_architect.tools import registry
+        from omniarchitect.tools import registry
 
         v = registry().verify(out)
         assert v["ok"], v
@@ -243,7 +243,7 @@ def test_custom_brand_is_applied_and_default_is_our_own():
 
 
 def test_every_deck_carries_the_omniailab_signature():
-    from omniailab_ai_architect.registry import SIGNATURE
+    from omniarchitect.registry import SIGNATURE
 
     with tempfile.TemporaryDirectory() as td:
         rep = presentation.render(_project(td), "full", out_dir=Path(td), want_pdf=False)

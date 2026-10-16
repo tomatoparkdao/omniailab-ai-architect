@@ -44,12 +44,12 @@ S3 平面方案  ──►  门禁 G3（业主选定一套）  ──►  ★ �
 | **OmniP** | 整体空间氛围、多机位一致、空间关系可读 | 整户型机位；公区需要读空间关系时 |
 | **image2.5** | 跟随参考图、材质与收口细节、局部改图 | 房间机位；需要画面与已确认平面严格对齐时 |
 
-声明文件：`omniailab_ai_architect/providers/omniailab.models.json`
+声明文件：`omniarchitect/providers/omniailab.models.json`
 （含 `best_for` 取向与 `selection_rules` 选择规则；`priority` 决定兜底顺序）
 
 ```bash
-python -m omniailab_ai_architect canvas-models            # 查看声明与规则
-python -m omniailab_ai_architect canvas-models --json     # 机器可读
+python -m omniarchitect canvas-models            # 查看声明与规则
+python -m omniarchitect canvas-models --json     # 机器可读
 ```
 
 选择口径（可显式覆盖）：
@@ -80,8 +80,8 @@ python -m omniailab_ai_architect canvas-models --json     # 机器可读
   它是"已确认平面的示意图"，不是 AI 图像，也不得被当作效果图。
 
 ```bash
-python -m omniailab_ai_architect policy     # 品牌与供应商策略审计
-python -m omniailab_ai_architect providers  # 创作独占状态与待执行任务
+python -m omniarchitect policy     # 品牌与供应商策略审计
+python -m omniarchitect providers  # 创作独占状态与待执行任务
 ```
 
 ## 三、产出物
@@ -108,13 +108,13 @@ python -m omniailab_ai_architect providers  # 创作独占状态与待执行任�
 
 ```bash
 # 1) 跑通到平面确认
-python -m omniailab_ai_architect run --project <dir> --to-stage S3
-python -m omniailab_ai_architect confirm --project <dir> --stage S3 --by 业主
+python -m omniarchitect run --project <dir> --to-stage S3
+python -m omniarchitect confirm --project <dir> --stage S3 --by 业主
 #    ↑ 确认的那一刻，概念效果图任务包自动生成
 
 # 2) 单独重出（换机位数量、指定房间或模型）
-python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
-python -m omniailab_ai_architect concept-render --project <dir> --only living bedroom --model OmniP
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect concept-render --project <dir> --only living bedroom --model OmniP
 ```
 
 ### 在画布上执行
@@ -130,7 +130,7 @@ python -m omniailab_ai_architect concept-render --project <dir> --only living be
 ### 授权联网生成
 
 ```bash
-python -m omniailab_ai_architect concept-render --project <dir> --submit --authorize
+python -m omniarchitect concept-render --project <dir> --submit --authorize
 ```
 
 `--submit` 表示"请平台生成"，属 **L3 联网**操作；没有 `--authorize` 时系统会停在授权点，

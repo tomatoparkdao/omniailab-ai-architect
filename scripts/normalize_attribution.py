@@ -53,8 +53,8 @@ from typing import Dict, List, Optional, Tuple
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from omniailab_ai_architect.paths import project_version  # noqa: E402
-from omniailab_ai_architect.registry import SIGNATURE  # noqa: E402
+from omniarchitect.paths import project_version  # noqa: E402
+from omniarchitect.registry import SIGNATURE  # noqa: E402
 
 # Markdown 统一尾部：键 -> 固定值（version 由 VERSION 决定）
 TAIL_KEYS: Tuple[str, ...] = ("version", "author", "developer", "agent_created",

@@ -27,8 +27,8 @@ agent_created: true
 4. **OmniAiLab 不是这些项目的作者**，也不声称与其存在隶属或背书关系；
    同理，本仓不会把任何第三方代码或文档宣称为 OmniAiLab 原创。
 5. 新增依赖前必须先做许可证核查，通过后在本文件登记，并在
-   `omniailab_ai_architect/brand_policy.py: APPROVED_DEPENDENCIES` 同步。
-   `python -m omniailab_ai_architect policy` 会逐项核对两边是否一致。
+   `omniarchitect/brand_policy.py: APPROVED_DEPENDENCIES` 同步。
+   `python -m omniarchitect policy` 会逐项核对两边是否一致。
 
 ## 可选的 Python 依赖（缺失时均有自有降级实现）
 
@@ -74,7 +74,7 @@ agent_created: true
 
 ## 与品牌策略的关系
 
-本仓的品牌与供应商策略（`omniailab_ai_architect/brand_policy.py`、
+本仓的品牌与供应商策略（`omniarchitect/brand_policy.py`、
 `docs/BRAND_POLICY.md`）规定：
 
 - **合规必要项**（本文件与 `LICENSES/` 中的许可证、版权声明、来源链接、署名）

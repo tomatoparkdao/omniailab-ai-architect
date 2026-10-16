@@ -33,37 +33,37 @@ codex
 | 方式 | 命令 | 适用 |
 | --- | --- | --- |
 | 直接用仓库 | 工作区指向本目录即可 | 开发与调试 |
-| 指针安装 | `python -m omniailab_ai_architect install --target ~/.codex/skills --mode pointer` | 让 Codex 在任意项目里都能调用，且不复制知识库 |
-| 完整安装 | `python -m omniailab_ai_architect install --target ~/.codex/skills --mode copy` | 需要完全自包含、可整体搬移 |
+| 指针安装 | `python -m omniarchitect install --target ~/.codex/skills --mode pointer` | 让 Codex 在任意项目里都能调用，且不复制知识库 |
+| 完整安装 | `python -m omniarchitect install --target ~/.codex/skills --mode copy` | 需要完全自包含、可整体搬移 |
 
 安装前先看会发生什么（不写任何文件）：
 
 ```bash
-python -m omniailab_ai_architect install --target ~/.codex/skills --dry-run
+python -m omniarchitect install --target ~/.codex/skills --dry-run
 ```
 
 安装后校验：
 
 ```bash
-python -m omniailab_ai_architect compat --json
-python -m omniailab_ai_architect manifest
+python -m omniarchitect compat --json
+python -m omniarchitect manifest
 ```
 
 卸载只做移动，不做删除：
 
 ```bash
-python -m omniailab_ai_architect uninstall --target ~/.codex/skills
+python -m omniarchitect uninstall --target ~/.codex/skills
 ```
 
 ## 3. Codex 里的常用指令
 
 ```bash
-python -m omniailab_ai_architect doctor          # 本机工具链
-python -m omniailab_ai_architect tools           # 工具注册表 + 权限分级
-python -m omniailab_ai_architect stages          # 八阶段与门禁
-python -m omniailab_ai_architect knowledge       # 12 个原创知识域
-python -m omniailab_ai_architect demo            # 示例项目跑通八阶段
-python -m omniailab_ai_architect scenario --name all
+python -m omniarchitect doctor          # 本机工具链
+python -m omniarchitect tools           # 工具注册表 + 权限分级
+python -m omniarchitect stages          # 八阶段与门禁
+python -m omniarchitect knowledge       # 12 个原创知识域
+python -m omniarchitect demo            # 示例项目跑通八阶段
+python -m omniarchitect scenario --name all
 ```
 
 ## 4. 独立运行 vs 平台连接
@@ -74,8 +74,8 @@ python -m omniailab_ai_architect scenario --name all
   未通过验证的能力一律标记 `NOT_CONFIGURED`，不伪造成功结果。
 
 ```bash
-python -m omniailab_ai_architect providers        # 查看当前连接状态
-python -m omniailab_ai_architect providers --json # 机器可读
+python -m omniarchitect providers        # 查看当前连接状态
+python -m omniarchitect providers --json # 机器可读
 ```
 
 ## 5. 环境要求

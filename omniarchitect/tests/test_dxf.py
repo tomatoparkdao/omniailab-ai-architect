@@ -7,12 +7,12 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from omniailab_ai_architect.adapters import DxfAdapter, MeshAdapter, resolve_host_axes
-from omniailab_ai_architect.adapters.dxf_r12 import read_r12, write_r12
-from omniailab_ai_architect.adapters.drawing import build_primitives
-from omniailab_ai_architect.demo import build_demo_project
-from omniailab_ai_architect.planner import PlanGenerator, SchemeOptions
-from omniailab_ai_architect.workflow import _install_scheme
+from omniarchitect.adapters import DxfAdapter, MeshAdapter, resolve_host_axes
+from omniarchitect.adapters.dxf_r12 import read_r12, write_r12
+from omniarchitect.adapters.drawing import build_primitives
+from omniarchitect.demo import build_demo_project
+from omniarchitect.planner import PlanGenerator, SchemeOptions
+from omniarchitect.workflow import _install_scheme
 
 
 def _prepared(tmp: Path):
@@ -75,7 +75,7 @@ def test_chinese_labels_survive_as_unicode_escapes():
 
 def test_openings_are_cut_out_of_walls():
     """A door must leave a gap — otherwise the drawing shows a sealed room."""
-    from omniailab_ai_architect.adapters.drawing import free_spans
+    from omniarchitect.adapters.drawing import free_spans
 
     with tempfile.TemporaryDirectory() as td:
         p, s = _prepared(Path(td))

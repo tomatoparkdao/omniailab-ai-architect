@@ -11,7 +11,7 @@ agent_created: true
 
 # 工具适配规范（MCP / 外部软件）
 
-本目录是**人读**的适配规范；**机器读**的声明在 `omniailab_ai_architect/tools/registry.py`
+本目录是**人读**的适配规范；**机器读**的声明在 `omniarchitect/tools/registry.py`
 （`BUILTIN_OPERATIONS` / `BUILTIN_LIMITS`）。两者必须一致，改动要一起改。
 
 | 规范 | 对应工具 id | 风险示例 | 缺失时 |
@@ -32,9 +32,9 @@ agent_created: true
 5. **写-读回**：写出的文件必须能被独立解析器重新打开并复核。
 
 ```bash
-python -m omniailab_ai_architect tools
-python -m omniailab_ai_architect tools --plan "blender:run_blender"
-python -m omniailab_ai_architect honesty
+python -m omniarchitect tools
+python -m omniarchitect tools --plan "blender:run_blender"
+python -m omniarchitect honesty
 ```
 
 ## 安全

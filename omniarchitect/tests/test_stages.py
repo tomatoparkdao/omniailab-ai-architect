@@ -4,8 +4,8 @@
 """
 from __future__ import annotations
 
-import omniailab_ai_architect as oa
-from omniailab_ai_architect.stages import (
+import omniarchitect as oa
+from omniarchitect.stages import (
     CAPABILITIES,
     CAPABILITY_BY_SLUG,
     DOWNSTREAM,
@@ -80,8 +80,8 @@ def test_requires_confirmed_is_acyclic_and_declared():
 
 def test_legacy_eighteen_capabilities_are_all_remapped():
     """Nothing from the original eighteen specialist briefs was dropped."""
-    from omniailab_ai_architect.registry import load_registry
-    from omniailab_ai_architect.paths import SKILLS
+    from omniarchitect.registry import load_registry
+    from omniarchitect.paths import SKILLS
 
     covered = {c.legacy for c in CAPABILITIES if c.legacy}
     on_disk = {p.stem for p in SKILLS.glob("*.md")}

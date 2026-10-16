@@ -11,9 +11,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect.adapters.dxf import DxfAdapter  # noqa: E402
-from omniailab_ai_architect.demo import build_demo_project  # noqa: E402
-from omniailab_ai_architect.tools import (  # noqa: E402
+from omniarchitect.adapters.dxf import DxfAdapter  # noqa: E402
+from omniarchitect.demo import build_demo_project  # noqa: E402
+from omniarchitect.tools import (  # noqa: E402
     ARTIFACT_KIND_CEILING,
     FORBIDDEN_CLAIMS,
     RISK_TIERS,
@@ -43,7 +43,7 @@ def test_every_declared_operation_has_a_valid_risk_tier():
 def test_illegal_risk_tier_is_refused_at_declaration_time():
     try:
         ToolCapability(id="x", name="x", kind="python",
-                       operations=[__import__("omniailab_ai_architect.tools.capability",
+                       operations=[__import__("omniarchitect.tools.capability",
                                               fromlist=["Operation"]).Operation("o", "L9")])
     except CapabilityViolation:
         pass
@@ -123,7 +123,7 @@ def test_dxf_is_verified_by_an_independent_parser():
 
 def test_obj_is_labelled_as_mesh_not_parametric_bim():
     with tempfile.TemporaryDirectory() as td:
-        from omniailab_ai_architect.adapters.mesh import MeshAdapter
+        from omniarchitect.adapters.mesh import MeshAdapter
 
         project = build_demo_project(Path(td))
         out = Path(td) / "mesh"
@@ -157,7 +157,7 @@ def test_empty_and_missing_files_fail_verification():
 def test_pptx_verification_checks_the_ooxml_container():
     with tempfile.TemporaryDirectory() as td:
         project = build_demo_project(Path(td))
-        from omniailab_ai_architect import presentation
+        from omniarchitect import presentation
 
         rep = presentation.render(project, "concept", out_dir=Path(td), want_pdf=False)
         v = ToolRegistry(mcp_config=Path("does-not-exist.json")).verify(rep["files"]["pptx"])

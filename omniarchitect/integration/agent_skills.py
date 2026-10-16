@@ -237,7 +237,15 @@ def build_manifest(root: str | Path = SKILL_ROOT, with_hashes: bool = False) -> 
         if with_hashes:
             rec["sha256_16"] = digest(p)
         payload.append(rec)
+    from ..paths import project_version
+    from ..registry import SIGNATURE
+
     return {
+        # JSON has no comment syntax, so the attribution rides on `$comment`.
+        # The repository-wide format check requires it, so the generator must
+        # emit it — otherwise the file would drift every time it is rebuilt.
+        "$comment": SIGNATURE.lstrip("> ").strip(),
+        "generated_from": f"omniarchitect v{project_version()}",
         "skill": m.to_dict(),
         "issues": validate(r / "SKILL.md"),
         "root": str(r),
@@ -246,7 +254,7 @@ def build_manifest(root: str | Path = SKILL_ROOT, with_hashes: bool = False) -> 
         "files": payload[:600],
         "truncated": len(payload) > 600,
         "entrypoint": "SKILL.md",
-        "python_package": "omniailab_ai_architect",
+        "python_package": "omniarchitect",
         "standalone": {
             "requires_platform_account": False,
             "requires_network": False,

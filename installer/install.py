@@ -21,8 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from omniailab_ai_architect.integration import installer as inst  # noqa: E402
-from omniailab_ai_architect.integration import agent_skills as sk  # noqa: E402
+from omniarchitect.integration import installer as inst  # noqa: E402
+from omniarchitect.integration import agent_skills as sk  # noqa: E402
 
 
 def main(argv: list | None = None) -> int:

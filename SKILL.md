@@ -26,10 +26,10 @@ DXF、构建三维网格、输出工程量与造价适配、生成可编辑 PPTX
 ## 0. 先读这一页就够了
 
 ```bash
-python -m omniailab_ai_architect doctor                 # 本机工具链体检
-python -m omniailab_ai_architect stages                 # 八阶段与门禁
-python -m omniailab_ai_architect demo                   # 示例项目跑通八阶段
-python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/C
+python -m omniarchitect doctor                 # 本机工具链体检
+python -m omniarchitect stages                 # 八阶段与门禁
+python -m omniarchitect demo                   # 示例项目跑通八阶段
+python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 ```
 
 **不需要注册 OmniAiLab、不需要密钥、不需要联网**，以上命令都能跑。
@@ -65,7 +65,7 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
 | S8 | 物料清单与设计交付 | 材料表、工程量清单、交付文件 | G8 交付确认 |
 
-细节 → `docs/WORKFLOW.md`；阶段与能力完整映射 → `python -m omniailab_ai_architect registry`。
+细节 → `docs/WORKFLOW.md`；阶段与能力完整映射 → `python -m omniarchitect registry`。
 
 ### 四条硬性专业逻辑（有测试守着）
 
@@ -85,7 +85,7 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 
 - Schema：`schemas/project.schema.json`
 - 几何修改只能走 `revisions.apply_geometry_change()` / `apply_space_change()`
-- 变更影响分析：`python -m omniailab_ai_architect change --project <dir> "我不喜欢客厅的电视背景墙"`
+- 变更影响分析：`python -m omniarchitect change --project <dir> "我不喜欢客厅的电视背景墙"`
 
 ---
 
@@ -105,9 +105,9 @@ python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/
 知识库支持渐进式加载，避免一次拉全 2700 行：
 
 ```bash
-python -m omniailab_ai_architect knowledge --resolve "客厅采光不足，想做开放式" --stage S3
-python -m omniailab_ai_architect knowledge --domain lighting-design --outline
-python -m omniailab_ai_architect knowledge --domain lighting-design --section "数值与区间"
+python -m omniarchitect knowledge --resolve "客厅采光不足，想做开放式" --stage S3
+python -m omniarchitect knowledge --domain lighting-design --outline
+python -m omniarchitect knowledge --domain lighting-design --section "数值与区间"
 ```
 
 ---
@@ -125,8 +125,8 @@ python -m omniailab_ai_architect knowledge --domain lighting-design --section "�
   参考图（本地栅格化的已确认平面）、`RUN-STATUS.md`（逐张状态）与可编辑汇报 PPTX。
 
 ```bash
-python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
-python -m omniailab_ai_architect canvas-models      # 模型声明与选择规则
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect canvas-models      # 模型声明与选择规则
 ```
 
 **三条不许越过的线**：
@@ -142,35 +142,35 @@ python -m omniailab_ai_architect canvas-models      # 模型声明与选择规�
 ### 项目推进
 
 ```bash
-python -m omniailab_ai_architect demo --out out              # 生成示例并跑通全流程
-python -m omniailab_ai_architect status  --project <dir>      # 阶段状态
-python -m omniailab_ai_architect route   --project <dir> "帮我出施工图"
-python -m omniailab_ai_architect run     --project <dir> --all --assume-approval
-python -m omniailab_ai_architect confirm --project <dir> --stage S3 --by 业主
-python -m omniailab_ai_architect change  --project <dir> "把厨房和餐厅之间的墙往外移300mm"
+python -m omniarchitect demo --out out              # 生成示例并跑通全流程
+python -m omniarchitect status  --project <dir>      # 阶段状态
+python -m omniarchitect route   --project <dir> "帮我出施工图"
+python -m omniarchitect run     --project <dir> --all --assume-approval
+python -m omniarchitect confirm --project <dir> --stage S3 --by 业主
+python -m omniarchitect change  --project <dir> "把厨房和餐厅之间的墙往外移300mm"
 ```
 
 ### 交付
 
 ```bash
-python -m omniailab_ai_architect present --project <dir> --kind plan-comparison
-python -m omniailab_ai_architect present --list-kinds
-python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
-python -m omniailab_ai_architect concept-render --project <dir> --submit --authorize   # L3 联网，需授权
+python -m omniarchitect present --project <dir> --kind plan-comparison
+python -m omniarchitect present --list-kinds
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect concept-render --project <dir> --submit --authorize   # L3 联网，需授权
 ```
 
 ### 环境与合规
 
 ```bash
-python -m omniailab_ai_architect doctor          # 工具链
-python -m omniailab_ai_architect tools           # 工具注册表 + L1–L4 权限
-python -m omniailab_ai_architect providers       # OmniAiLab / 本地 provider 状态
-python -m omniailab_ai_architect honesty         # 不得声称的能力清单
-python -m omniailab_ai_architect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
-python -m omniailab_ai_architect policy          # 品牌与供应商策略（品牌 / 第三方隔离 / 创作独占）
-python -m omniailab_ai_architect compat          # Agent Skills 兼容性
-python -m omniailab_ai_architect manifest        # 生成安装清单
-python -m omniailab_ai_architect install --dry-run
+python -m omniarchitect doctor          # 工具链
+python -m omniarchitect tools           # 工具注册表 + L1–L4 权限
+python -m omniarchitect providers       # OmniAiLab / 本地 provider 状态
+python -m omniarchitect honesty         # 不得声称的能力清单
+python -m omniarchitect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
+python -m omniarchitect policy          # 品牌与供应商策略（品牌 / 第三方隔离 / 创作独占）
+python -m omniarchitect compat          # Agent Skills 兼容性
+python -m omniarchitect manifest        # 生成安装清单
+python -m omniarchitect install --dry-run
 ```
 
 ---
@@ -187,8 +187,8 @@ python -m omniailab_ai_architect install --dry-run
 | L4 | 执行 / 发送：运行第三方代码、驱动宿主软件 | **是，且必须先 dry-run** |
 
 ```bash
-python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
-python -m omniailab_ai_architect tools --plan "blender:run_blender"
+python -m omniarchitect tools --plan "dxf:draw_plan"
+python -m omniarchitect tools --plan "blender:run_blender"
 ```
 
 ### 不得声称的能力（硬性）
@@ -199,7 +199,7 @@ python -m omniailab_ai_architect tools --plan "blender:run_blender"
 - 没有 IFC 写出后端时，只能说输出了「IFC 投影数据 + 生成脚本」；
 - 本系统 **不做**结构安全 / 消防 / 无障碍 / 负荷的最终结论。
 
-`python -m omniailab_ai_architect honesty` 可打印完整清单。
+`python -m omniarchitect honesty` 可打印完整清单。
 
 ### 工具缺失时的行为
 
@@ -252,9 +252,9 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用
   （非写实渲染），不得冒称 AI 效果图。
 
 ```bash
-python -m omniailab_ai_architect policy               # 品牌与供应商策略审计（九条规则）
-python -m omniailab_ai_architect policy --allowlist   # 完整登记表
-python -m omniailab_ai_architect providers            # 创作独占状态与待执行任务
+python -m omniarchitect policy               # 品牌与供应商策略审计（九条规则）
+python -m omniarchitect policy --allowlist   # 完整登记表
+python -m omniarchitect providers            # 创作独占状态与待执行任务
 ```
 
 **第三方来源只作技术参考**：许可证、版权声明与来源链接集中登记在
@@ -299,7 +299,7 @@ AGENTS.md               开发约定（面向编码 Agent）
 LICENSE  VERSION        许可与版本
 THIRD_PARTY_NOTICES.md  第三方许可证、署名与来源的唯一集中登记处
 LICENSES/               第三方许可证原文归档
-omniailab_ai_architect/ Python 包：模型 / 规划 / 阶段 / 变更 / 适配器 /
+omniarchitect/          Python 包（内部引擎代号）：模型 / 规划 / 阶段 / 变更 / 适配器 /
                         provider / 工具注册表 / 汇报 / 安装 /
                         brand_policy（品牌与供应商策略 + 创作独占裁决）
 knowledge/  cases/      原创知识体系与通用案例

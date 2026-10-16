@@ -2,8 +2,8 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-16 18:56:11",
-  "files_scanned": 141,
+  "scanned_at": "2026-10-16 19:09:47",
+  "files_scanned": 139,
   "by_disposition": {
     "authorized-dependency": 24
   },
@@ -26,7 +26,7 @@
       "disposition": "authorized-dependency",
       "path": "AGENTS.md",
       "token": "Codex",
-      "line": 141,
+      "line": 146,
       "excerpt": "\"底层模型提供方\"，**不得宣称模型由 OmniAiLab 自研**。 - **Codex 等本地 Agent Skills 宿主**只作为运行环境兼容，不得因此推广外部 Agent 服务。 - **专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf 等）",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -204,7 +204,7 @@
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
-      "path": "omniailab_ai_architect/integration/agent_skills.py",
+      "path": "omniarchitect/integration/agent_skills.py",
       "token": "WorkBuddy",
       "line": 30,
       "excerpt": "{     \"workbuddy\": {         \"label\": \"WorkBuddy（用户级）\",         \"path\": \"~/.workbuddy/skills\",         \"layout\": \"dir-per-skill\",     },     \"codex\": {",
@@ -213,7 +213,7 @@
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
-      "path": "omniailab_ai_architect/integration/agent_skills.py",
+      "path": "omniarchitect/integration/agent_skills.py",
       "token": "Codex",
       "line": 35,
       "excerpt": "\"codex\": {         \"label\": \"OpenAI Codex（用户级）\",         \"path\": \"~/.codex/skills\",         \"layout\": \"dir-per-skill\",     },     \"cursor\": {         \"label",
@@ -222,7 +222,7 @@
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
-      "path": "omniailab_ai_architect/integration/agent_skills.py",
+      "path": "omniarchitect/integration/agent_skills.py",
       "token": "Cursor",
       "line": 40,
       "excerpt": "},     \"cursor\": {         \"label\": \"Cursor（用户级）\",         \"path\": \"~/.cursor/skills-cursor\",         \"layout\": \"dir-per-skill\",     },     \"claude\": {",
@@ -231,7 +231,7 @@
     {
       "rule": "user-facing-content",
       "disposition": "authorized-dependency",
-      "path": "omniailab_ai_architect/integration/agent_skills.py",
+      "path": "omniarchitect/integration/agent_skills.py",
       "token": "Claude",
       "line": 45,
       "excerpt": "},     \"claude\": {         \"label\": \"Claude Code（用户级）\",         \"path\": \"~/.claude/skills\",         \"layout\": \"dir-per-skill\",     },     \"project-workbuddy\"",
@@ -244,7 +244,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "midjourney",
-      "line": 136,
+      "line": 141,
       "excerpt": "账号、下载地址、   商业推广链接或自动回退路径；不得集成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awai",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -253,7 +253,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "krea",
-      "line": 137,
+      "line": 142,
       "excerpt": "径；不得集成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -262,7 +262,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "higgsfield",
-      "line": 137,
+      "line": 142,
       "excerpt": "成、默认推荐或隐藏调用 Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -271,7 +271,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "runway",
-      "line": 137,
+      "line": 142,
       "excerpt": "Midjourney、Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供应商**。允许经平台内",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -280,7 +280,7 @@
       "disposition": "forbidden",
       "path": "AGENTS.md",
       "token": "sora",
-      "line": 137,
+      "line": 142,
       "excerpt": "Leonardo、   Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。 - 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），   **不得秘密切换供应商**。允许经平台内部依法授权并已配置的模型",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },

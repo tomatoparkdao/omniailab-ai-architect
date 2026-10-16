@@ -22,19 +22,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect.demo import build_demo_project  # noqa: E402
-from omniailab_ai_architect.providers import canvas  # noqa: E402
-from omniailab_ai_architect.providers.base import (  # noqa: E402
+from omniarchitect.demo import build_demo_project  # noqa: E402
+from omniarchitect.providers import canvas  # noqa: E402
+from omniarchitect.providers.base import (  # noqa: E402
     MediaProvider,
     ProviderCapability,
     ProviderJob,
 )
-from omniailab_ai_architect.stages import (  # noqa: E402
+from omniarchitect.stages import (  # noqa: E402
     CAPABILITY_BY_SLUG,
     POST_GATE_ACTIONS,
     post_gate_actions_for_stage,
 )
-from omniailab_ai_architect.workflow import StageRunner  # noqa: E402
+from omniarchitect.workflow import StageRunner  # noqa: E402
 
 
 def _confirmed_plan(td: str):
@@ -115,8 +115,8 @@ class _patched_discover:
         self.stub = stub
 
     def __enter__(self):
-        from omniailab_ai_architect import providers as pkg
-        from omniailab_ai_architect.providers import (
+        from omniarchitect import providers as pkg
+        from omniarchitect.providers import (
             LocalDeterministicProvider,
             ProviderRegistry,
         )
@@ -133,7 +133,7 @@ class _patched_discover:
         return self.stub
 
     def __exit__(self, *exc) -> None:
-        from omniailab_ai_architect import providers as pkg
+        from omniarchitect import providers as pkg
 
         pkg.discover = self._orig         # type: ignore[assignment]
 
@@ -340,7 +340,7 @@ def test_the_batch_ships_with_an_editable_deck_verified_independently():
             return
         assert Path(pptx).exists() and Path(pptx).stat().st_size > 5000
 
-        from omniailab_ai_architect.tools import registry as tool_registry
+        from omniarchitect.tools import registry as tool_registry
 
         rep = tool_registry().verify(pptx)
         assert rep and rep.get("ok"), rep

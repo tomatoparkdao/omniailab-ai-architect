@@ -15,8 +15,8 @@ agent_created: true
 
 判据是本系统的**自有工作口径**，来源为通用设计原理与公开工程惯例，全部由本项目独立撰写，
 不使用、不复制、不改写任何第三方文档。程序可读的同一份数据在
-`omniailab_ai_architect/registry.py: DESIGN_CRITERIA`，可用
-`python -m omniailab_ai_architect criteria` 打印。
+`omniarchitect/registry.py: DESIGN_CRITERIA`，可用
+`python -m omniarchitect criteria` 打印。
 
 ---
 
@@ -133,7 +133,7 @@ agent_created: true
 
 ## 四、判据如何被检查
 
-- `python -m omniailab_ai_architect criteria` —— 打印判据表；
+- `python -m omniarchitect criteria` —— 打印判据表；
 - 概念、平面、初步设计、表现四个阶段的门禁前，判据会被逐条检查并写进该阶段的评审段落；
 - 检查未通过的条目进入 `warnings`，并如实出现在交付文件与汇报的"待确认事项"里。
 

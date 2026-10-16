@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect import knowledge  # noqa: E402
+from omniarchitect import knowledge  # noqa: E402
 
 
 def test_thirteen_domains_are_present_and_valid():
@@ -81,8 +81,8 @@ def test_cases_are_generic_and_original():
 
 
 def test_knowledge_is_self_contained_and_carries_the_signature():
-    from omniailab_ai_architect.paths import KNOWLEDGE
-    from omniailab_ai_architect.registry import SIGNATURE
+    from omniarchitect.paths import KNOWLEDGE
+    from omniarchitect.registry import SIGNATURE
 
     for p in KNOWLEDGE.glob("*.md"):
         text = p.read_text(encoding="utf-8")

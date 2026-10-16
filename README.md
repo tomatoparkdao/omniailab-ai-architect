@@ -100,7 +100,7 @@ agent_created: true
 
 ### 一、装到哪：按你用的工具
 
-把**整个 `omniailab-ai-architect` 目录**（含 `SKILL.md`、`omniailab_ai_architect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`）放进下面对应的目录，重开一个新会话即可生效。
+把**整个 `omniailab-ai-architect` 目录**（含 `SKILL.md`、`omniarchitect/`、`knowledge/`、`cases/`、`skills/`、`schemas/`、`workflows/`）放进下面对应的目录，重开一个新会话即可生效。
 
 | 工具 | 放哪里 | 怎么调起 |
 |---|---|---|
@@ -126,21 +126,21 @@ python installer/verify_install.py --check-python
 ```bash
 export PYTHONPATH=<你的路径>/omniailab-ai-architect
 
-python -m omniailab_ai_architect doctor                 # 本机工具链体检
-python -m omniailab_ai_architect stages                 # 八阶段与门禁
-python -m omniailab_ai_architect demo --out out         # 示例项目跑通全部八阶段
-python -m omniailab_ai_architect scenario --name all    # 验收：Scenario A/B/C
+python -m omniarchitect doctor                 # 本机工具链体检
+python -m omniarchitect stages                 # 八阶段与门禁
+python -m omniarchitect demo --out out         # 示例项目跑通全部八阶段
+python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 ```
 
 ### 三、推进一个真实项目
 
 ```bash
-python -m omniailab_ai_architect status  --project projects/demo-120
-python -m omniailab_ai_architect route   --project projects/demo-120 "想做成现代意式极简，先给我两套平面方案"
-python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
-python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniailab_ai_architect change  --project projects/demo-120 "把厨房和餐厅之间的墙往外移300mm"
-python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect status  --project projects/demo-120
+python -m omniarchitect route   --project projects/demo-120 "想做成现代意式极简，先给我两套平面方案"
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniarchitect change  --project projects/demo-120 "把厨房和餐厅之间的墙往外移300mm"
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
 ```
 
 `route` 会把一句话变成明确的阶段计划：跑哪些阶段、谁负责、门禁是谁、此刻哪些动作被拦下。
@@ -174,9 +174,9 @@ python -m omniailab_ai_architect present --project projects/demo-120 --kind plan
 | L4 | 执行 / 发送：运行第三方代码、驱动宿主软件 | **是，且必须先 dry-run** |
 
 ```bash
-python -m omniailab_ai_architect tools     # 工具注册表 + 权限分级
-python -m omniailab_ai_architect honesty   # 不得声称的能力清单
-python -m omniailab_ai_architect providers # 平台与生成式 provider 状态
+python -m omniarchitect tools     # 工具注册表 + 权限分级
+python -m omniarchitect honesty   # 不得声称的能力清单
+python -m omniarchitect providers # 平台与生成式 provider 状态
 ```
 
 **平台接入是发现式的，不是猜出来的**：官方 SDK、本地配置、平台下发的 API 契约、环境变量，四者皆无时状态为 `NOT_CONFIGURED` 并列出具体缺什么。不猜 endpoint、不猜参数、不猜鉴权；接入方式见 [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) 与 [providers/README.md](providers/README.md)。
@@ -184,8 +184,8 @@ python -m omniailab_ai_architect providers # 平台与生成式 provider 状态
 **平面确认后的概念效果图**走平台的**画布（canvas）**，推荐模型 **OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）：
 
 ```bash
-python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
-python -m omniailab_ai_architect canvas-models      # 模型声明与选择规则
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect canvas-models      # 模型声明与选择规则
 ```
 
 提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。详见 [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md)。
@@ -204,8 +204,8 @@ Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https:
 
 | 自检 | 覆盖 |
 | --- | --- |
-| `python -m omniailab_ai_architect audit` | 署名 / 隐私 / 外链 / 许可 |
-| `python -m omniailab_ai_architect policy` | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
+| `python -m omniarchitect audit` | 署名 / 隐私 / 外链 / 许可 |
+| `python -m omniarchitect policy` | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
 
 策略采用**登记制（allowlist）而非关键词黑名单**：命中分为**合规必要**（许可证 / 版权 / 来源 /
 署名，必须保留）、**已授权依赖**（已登记的本地工具 / MCP / 依赖 / 宿主）、**需人工审查**、

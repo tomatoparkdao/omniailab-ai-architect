@@ -11,8 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from omniailab_ai_architect.demo import build_demo_project  # noqa: E402
-from omniailab_ai_architect.providers import (  # noqa: E402
+from omniarchitect.demo import build_demo_project  # noqa: E402
+from omniarchitect.providers import (  # noqa: E402
     CAPABILITY_SCOPES,
     LocalDeterministicProvider,
     NotConfigured,
@@ -23,7 +23,7 @@ from omniailab_ai_architect.providers import (  # noqa: E402
     ProviderRegistry,
     discover,
 )
-from omniailab_ai_architect.providers.base import MediaProvider  # noqa: E402
+from omniarchitect.providers.base import MediaProvider  # noqa: E402
 
 
 # --------------------------------------------------------------------------
@@ -193,7 +193,7 @@ def test_an_unavailable_creative_scope_is_deferred_not_re_routed():
 
 
 def test_explicit_preference_cannot_sidestep_creative_exclusivity():
-    from omniailab_ai_architect.providers import PolicyViolation
+    from omniarchitect.providers import PolicyViolation
 
     with tempfile.TemporaryDirectory() as td:
         reg = ProviderRegistry([OmniAiLabProvider(project_dir=td),
@@ -207,7 +207,7 @@ def test_explicit_preference_cannot_sidestep_creative_exclusivity():
 
 
 def test_unregistered_provider_is_refused_at_the_door():
-    from omniailab_ai_architect.providers import PolicyViolation
+    from omniarchitect.providers import PolicyViolation
 
     class Rogue(MediaProvider):
         id = "midjourney-bridge"
@@ -226,7 +226,7 @@ def test_unregistered_provider_is_refused_at_the_door():
 
 
 def test_a_capability_cannot_claim_a_creative_scope_without_being_the_owner():
-    from omniailab_ai_architect.providers import PolicyViolation
+    from omniarchitect.providers import PolicyViolation
 
     try:
         ProviderCapability(provider="some-vendor", state="connected",
@@ -320,7 +320,7 @@ def test_discover_is_deterministic_and_has_both_providers():
 
 
 def test_render_adapter_consults_the_provider_registry():
-    from omniailab_ai_architect.adapters.render import RenderAdapter
+    from omniarchitect.adapters.render import RenderAdapter
 
     backends = RenderAdapter._configured_backends()
     assert isinstance(backends, list)

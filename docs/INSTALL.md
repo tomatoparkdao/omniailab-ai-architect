@@ -35,8 +35,8 @@ python -m pip install ezdxf shapely jsonschema pyyaml Pillow python-pptx pytest
 
 ```bash
 cd "E:\SKILL\建筑室内设计skill\omniailab-ai-architect"
-python -m omniailab_ai_architect doctor
-python -m omniailab_ai_architect demo --out out
+python -m omniarchitect doctor
+python -m omniarchitect demo --out out
 ```
 
 ## 3. 安装到 Agent 运行环境
@@ -70,7 +70,7 @@ python installer/install.py --target ~/.workbuddy/skills
 ```bash
 python installer/verify_install.py --check-python
 python installer/verify_install.py --target ~/.codex/skills/omniailab-ai-architect
-python -m omniailab_ai_architect compat
+python -m omniarchitect compat
 ```
 
 校验内容：`SKILL.md` front-matter 合法性、正文引用是否都存在、指针是否指回真实仓库、
@@ -79,8 +79,8 @@ python -m omniailab_ai_architect compat
 ### 3.4 卸载
 
 ```bash
-python -m omniailab_ai_architect uninstall --target ~/.codex/skills
-python -m omniailab_ai_architect uninstall --dry-run
+python -m omniarchitect uninstall --target ~/.codex/skills
+python -m omniarchitect uninstall --dry-run
 ```
 
 **卸载只移动，不删除**：内容进入 `<技能根>/_backup/omniailab-ai-architect-uninstalled-<时间戳>`。
@@ -104,7 +104,7 @@ python -m omniailab_ai_architect uninstall --dry-run
 ## 5. 清单与可复现性
 
 ```bash
-python -m omniailab_ai_architect manifest --out installer/manifest.json
+python -m omniarchitect manifest --out installer/manifest.json
 ```
 
 清单包含：技能元信息、文件清单（可选 sha256 前缀）、总字节数、
@@ -115,7 +115,7 @@ python -m omniailab_ai_architect manifest --out installer/manifest.json
 
 ```bash
 python scripts/run_tests.py                 # 全部测试
-python -m omniailab_ai_architect scenario --name all   # Scenario A/B/C 验收
+python -m omniarchitect scenario --name all   # Scenario A/B/C 验收
 ```
 
 验收口径：文件真实存在、格式经独立解析有效、内容与项目关联、可追溯版本、

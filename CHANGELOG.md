@@ -11,6 +11,59 @@ agent_created: true
 
 # 变更记录
 
+## v1.3.0 · 后续补充 — 文件格式统一、包名与结构整理
+
+版本号仍为 **1.3.0**（全仓统一，不新开小版本）。
+
+### 统一开头与结尾格式
+
+- 新增 **`scripts/normalize_attribution.py`**：幂等统一化工具（`--check` / `--json`）。
+  - **Markdown**：YAML front-matter = **文件类型专属字段在前 + 标准尾部在后**
+    （`version` / `author` / `developer` / `agent_created` / `开源仓库` / `操作手册`），
+    结尾为标准署名行；**保留 CRLF**，不重排或删除类型专属字段
+    （`cases/*.md` 的 YAML 列表、`skills/*.md` 的 `capability`/`stages` 原样保留）。
+  - **Python**：署名收进模块 docstring 末尾（**shebang 必须留在第 1 行**）。
+  - **YAML / CMD / TXT**：头部注释 + 结尾注释。
+  - **JSON**：用标准 `$comment` 字段（JSON 无注释语法）。
+- 补齐 5 个缺 front-matter 的文件（`README.md` / `README_EN.md` / `providers/README.md`
+  及两份自动生成的报告）与 2 个缺尾部字段的许可证登记文件。
+- **版本号统一为 1.3.0**：原先 `1.0.0 / 1.1.0 / 1.2.0 / 1.3.0` 混用，现统一，
+  并由 `paths.project_version()` 从 `VERSION` 读取，不再两处手写。
+- **生成器同步**：`registry.frontmatter_block()` 统一构造；`compliance_audit` /
+  `brand_policy` 的报告头部由生成器产出，`installer/manifest.json` 也带署名，
+  格式不会再漂移。
+- 新增 **6 项守卫测试**：格式一致性、幂等性、尾部字段统一、生成报告头尾、
+  Python 署名齐全、shebang 仍在第 1 行。
+- `projects/` 不参与统一：统一空间模型 schema 不接受多余字段，且那是用户项目数据。
+
+### 包名与结构整理
+
+- **Python 包 `omniailab_ai_architect/` → `omniarchitect/`**。
+  原因：原包名与项目根目录 `omniailab-ai-architect` 仅差一个连字符，看起来像重复目录。
+  现在二者刻意区分：**对外用产品名 `omniailab-ai-architect`（Skill 调用名，含连字符）**，
+  **代码用内部引擎代号 `omniarchitect`（合法可导入标识符）**。
+  427 处引用全部同步（导入、脚本、测试、打包、文档、清单）。
+- **删除 `projects/_pre-rename-copy/`**：与 `projects/demo-120/` 是同一个项目
+  （`project_id` 相同、README 逐字节相同），是 v1.1 改名时留下的 **revision 1 旧快照**
+  （10 KB，现行 r2 为 73 KB）。除生成的清单外无人引用；删除前已在 git 中留档
+  （blob `0ae0d3c9…` / `ca0e864c…`），可随时取回，也能用 `demo` 重新生成。
+
+### 修掉的两个真实误报
+
+1. **sha256 摘要被当成手机号**：`installer/manifest.json` 里的
+   `797f14446326125d` 命中 `cn_phone` 规则。手机号 / 身份证号正则改为要求两端为
+   **非十六进制字符**，并能继续识别真实号码。
+2. **扫描器自我循环**：`docs/content-audit.json` 记录过一次命中，
+   下一轮扫描又把它当新命中写回去，永远归零不了。新增 `SELF_OUTPUT` 豁免：
+   扫描器自身的机器可读产出归入 `generated-ok`，不参与内容规则。
+   两项都有回归测试。
+
+### 验证
+
+- `run_tests.py`：**238 passed / 0 failed**（15 模块，235 → 238）
+- `verify_all.py`：六段全通过（内容自检 **0** 待处理；策略 **0** 禁止项）
+- `scenario --name all`：**3/3 通过**；`policy`：**0** 禁止项
+
 ## v1.3.0 — 品牌统一、第三方来源合规隔离、OmniAiLab 创作工具独占
 
 **本轮最高优先级约束：对外品牌统一为 OmniAiLab；第三方内容只作技术参考并集中登记许可证；
@@ -22,7 +75,7 @@ AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明�
 
 ### 新增
 
-- **策略模块 `omniailab_ai_architect/brand_policy.py`**：`brand-and-provider-policy`。
+- **策略模块 `omniarchitect/brand_policy.py`**：`brand-and-provider-policy`。
   **登记制（allowlist）而非关键词黑名单**，九条检测规则与用户要求逐条对应：
   1. `brand-text` 品牌文字扫描；2. `external-url` 未授权外部 URL 检测；
   3. `unregistered-vendor` 未登记模型供应商检测；4. `implicit-endpoint` 隐式 API endpoint 检测；
@@ -86,9 +139,9 @@ AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明�
 - `scripts/run_tests.py`：**226 passed / 0 failed**（15 个模块，含新增 41 项策略测试与扩展后的 provider 测试）。
 - `scripts/verify_all.py`：目录完整、目录自检、工具链、八阶段闭环、测试全绿、
   v1.1+ 子系统（内容自检 **0** 待处理；策略审计 **0** 禁止项 / **0** 待审；创作独占离线不外溢）。
-- `python -m omniailab_ai_architect scenario --name all`：**3/3 通过**（降级与跳过项按规则如实记录）。
-- `python -m omniailab_ai_architect audit`：**0** 项待处理；
-  `python -m omniailab_ai_architect policy`：**0** 禁止项。
+- `python -m omniarchitect scenario --name all`：**3/3 通过**（降级与跳过项按规则如实记录）。
+- `python -m omniarchitect audit`：**0** 项待处理；
+  `python -m omniarchitect policy`：**0** 禁止项。
 
 ## v1.2.0 — 平面确认后的概念效果图（OmniAiLab 画布）
 
@@ -145,7 +198,7 @@ AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明�
   本仓库不再保留、不再分发任何外部项目内容。
 - 代码与文档中的外部项目名、作者名、仓库地址、商业推广链接**全部清除**：
   `registry.py`、`workflow.py`、`stages.py`、`paths.py`、`changes.py`、`cli.py`、`docs/`、`AGENTS.md`、`.gitignore`、`pyproject.toml`。
-- `python -m omniailab_ai_architect fusion` / `notices` 两个命令移除，改为 `criteria`（设计判据体系）。
+- `python -m omniarchitect fusion` / `notices` 两个命令移除，改为 `criteria`（设计判据体系）。
 
 ### 新增
 
@@ -173,7 +226,7 @@ AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明�
 ### 目录与命名
 
 - 项目根目录 `omniarchitect/` → **`omniailab-ai-architect/`**（同时是 Agent Skill 根）。
-- Python 包改为根目录下的子目录 `omniailab_ai_architect/`（根目录名含连字符，不可直接导入）。
+- Python 包改为根目录下的子目录 `omniarchitect/`（根目录名含连字符，不可直接导入）。
 - 父目录遗留的 `out/`、`projects/` 已安全归并进项目，**未删除任何内容**。
 
 ### 新增

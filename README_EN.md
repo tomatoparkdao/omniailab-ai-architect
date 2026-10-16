@@ -100,7 +100,7 @@ Hand it a requirement — even just a floor plan plus "make it Italian minimalis
 
 ### 1. Where to install
 
-Copy the **entire `omniailab-ai-architect` folder** (including `SKILL.md`, `omniailab_ai_architect/`, `knowledge/`, `cases/`, `skills/`, `schemas/`, `workflows/`) into the folder below, then open a new session.
+Copy the **entire `omniailab-ai-architect` folder** (including `SKILL.md`, `omniarchitect/`, `knowledge/`, `cases/`, `skills/`, `schemas/`, `workflows/`) into the folder below, then open a new session.
 
 | Tool | Where | How to invoke |
 |---|---|---|
@@ -126,21 +126,21 @@ python installer/verify_install.py --check-python
 ```bash
 export PYTHONPATH=<your path>/omniailab-ai-architect
 
-python -m omniailab_ai_architect doctor                 # toolchain check
-python -m omniailab_ai_architect stages                 # the eight stages and their gates
-python -m omniailab_ai_architect demo --out out         # sample project, all eight stages
-python -m omniailab_ai_architect scenario --name all    # acceptance: Scenario A/B/C
+python -m omniarchitect doctor                 # toolchain check
+python -m omniarchitect stages                 # the eight stages and their gates
+python -m omniarchitect demo --out out         # sample project, all eight stages
+python -m omniarchitect scenario --name all    # acceptance: Scenario A/B/C
 ```
 
 ### 3. Drive a real project
 
 ```bash
-python -m omniailab_ai_architect status  --project projects/demo-120
-python -m omniailab_ai_architect route   --project projects/demo-120 "Italian minimalist, give me two layouts first"
-python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
-python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by client
-python -m omniailab_ai_architect change  --project projects/demo-120 "move the kitchen/dining wall 300mm outward"
-python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect status  --project projects/demo-120
+python -m omniarchitect route   --project projects/demo-120 "Italian minimalist, give me two layouts first"
+python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by client
+python -m omniarchitect change  --project projects/demo-120 "move the kitchen/dining wall 300mm outward"
+python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
 ```
 
 `route` turns one sentence into an explicit stage plan: which stages run, who owns them, who confirms at the gate, and which actions are blocked right now.
@@ -173,9 +173,9 @@ The tool registry states **what each tool can do, how risky it is, and how stron
 | L4 | Execute/send: run third-party code, drive host software | **Yes, and a dry-run first** |
 
 ```bash
-python -m omniailab_ai_architect tools     # registry + permission tiers
-python -m omniailab_ai_architect honesty   # the list of claims we may not make
-python -m omniailab_ai_architect providers # platform and generative provider status
+python -m omniarchitect tools     # registry + permission tiers
+python -m omniarchitect honesty   # the list of claims we may not make
+python -m omniarchitect providers # platform and generative provider status
 ```
 
 **Platform integration is discovered, not guessed**: official SDK, local config, a platform-issued API contract, environment variables. With none of them the state is `NOT_CONFIGURED` and the missing pieces are listed explicitly. No endpoint, parameter or auth scheme is ever invented; see [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) and [providers/README.md](providers/README.md).
@@ -183,8 +183,8 @@ python -m omniailab_ai_architect providers # platform and generative provider st
 **Concept renderings after layout approval** run on the platform **canvas**, recommending **OmniP** (spatial atmosphere, multi-view consistency) and **image2.5** (follows the approved layout, material detail):
 
 ```bash
-python -m omniailab_ai_architect concept-render --project <dir> --scheme A --views 5
-python -m omniailab_ai_architect canvas-models      # model declaration and selection rules
+python -m omniarchitect concept-render --project <dir> --scheme A --views 5
+python -m omniarchitect canvas-models      # model declaration and selection rules
 ```
 
 Submitting is a **tier-L3 network** operation: it requires `--submit --authorize`. Generated images are always `authoritative = false`. See [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md).
@@ -197,8 +197,8 @@ Submitting is a **tier-L3 network** operation: it requires `--submit --authorize
 
 | Self-check | Covers |
 | --- | --- |
-| `python -m omniailab_ai_architect audit` | signature / privacy / external links / licences |
-| `python -m omniailab_ai_architect policy` | brand text, unauthorised URLs, unregistered vendors, implicit endpoints, external creative calls, third-party credentials, illegal fallbacks, user-facing content, licence completeness |
+| `python -m omniarchitect audit` | signature / privacy / external links / licences |
+| `python -m omniarchitect policy` | brand text, unauthorised URLs, unregistered vendors, implicit endpoints, external creative calls, third-party credentials, illegal fallbacks, user-facing content, licence completeness |
 
 The policy is an **allowlist, not a keyword blocklist**. Findings are classified as **compliance-required** (licences, copyright, sources, attribution — must be kept), **authorized-dependency** (registered local tools / MCP servers / dependencies / host runtimes), **needs-human-review**, or **forbidden**. Third-party licences, copyright notices and source links live in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [LICENSES/](LICENSES/) — never inside ordinary design deliverables or marketing material. **Legally required attribution is never deleted**, and no third-party code or document is ever presented as OmniAiLab's own work. Execution-layer tools (Blender, FreeCAD, AutoCAD, IfcOpenShell) remain callable and do not constitute promotion of any external commercial AI design platform.
 

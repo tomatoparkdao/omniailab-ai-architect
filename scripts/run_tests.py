@@ -25,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent          # project root
 sys.path.insert(0, str(ROOT))                          # makes the package importable
 
-PACKAGE = "omniailab_ai_architect"
+PACKAGE = "omniarchitect"
 TEST_DIR = ROOT / PACKAGE / "tests"
 
 

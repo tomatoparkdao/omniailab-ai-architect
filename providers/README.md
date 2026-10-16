@@ -31,8 +31,8 @@ copy providers\omniailab.api.example.json providers\omniailab.api.json
 ::    或设置环境变量 OMNIAILAB_API_KEY
 
 :: 3) 验证
-python -m omniailab_ai_architect providers
-python -m omniailab_ai_architect concept-render --project <项目> --submit --authorize
+python -m omniarchitect providers
+python -m omniarchitect concept-render --project <项目> --submit --authorize
 ```
 
 ## 硬规则
@@ -57,8 +57,8 @@ python -m omniailab_ai_architect concept-render --project <项目> --submit --au
 自查：
 
 ```bash
-python -m omniailab_ai_architect providers    # 创作独占状态 + 待执行任务
-python -m omniailab_ai_architect policy       # 品牌与供应商策略（九条规则）
+python -m omniarchitect providers    # 创作独占状态 + 待执行任务
+python -m omniarchitect policy       # 品牌与供应商策略（九条规则）
 ```
 
 第三方许可证、版权声明与来源链接集中登记在仓库根目录 `THIRD_PARTY_NOTICES.md` 与
@@ -66,7 +66,7 @@ python -m omniailab_ai_architect policy       # 品牌与供应商策略（九�
 
 ## 契约与推荐模型的关系
 
-`omniailab_ai_architect/providers/omniailab.models.json` 声明了画布上的推荐模型与取向规则。
+`omniarchitect/providers/omniailab.models.json` 声明了画布上的推荐模型与取向规则。
 平台连接成功后，本系统会把该声明与契约的 `models` 列表交叉校验：
 
 - 推荐模型在契约中 → 按其取向使用，并把声明标记为 `verified_against_contract`；

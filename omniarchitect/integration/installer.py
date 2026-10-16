@@ -242,7 +242,7 @@ def verify(target: str | Path) -> Dict[str, Any]:
         home = Path(pointer.read_text(encoding="utf-8").strip())
         out["home"] = str(home)
         out["home_exists"] = home.exists()
-        pkg = home / "omniailab_ai_architect" / "__init__.py"
+        pkg = home / "omniarchitect" / "__init__.py"
         out["package_found"] = pkg.exists()
         if not home.exists():
             errs.append(f"指针指向的仓库不存在：{home}")
