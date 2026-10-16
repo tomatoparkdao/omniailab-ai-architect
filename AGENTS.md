@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.1.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -47,6 +47,8 @@ python -m omniailab_ai_architect doctor
 | `omniailab_ai_architect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
 | `omniailab_ai_architect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
 | `omniailab_ai_architect/compliance_audit.py` | 内容合规自检扫描器（署名 / 隐私 / 外链 / 许可） | 规则只收紧不放松 |
+| `omniailab_ai_architect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
+| `THIRD_PARTY_NOTICES.md` · `LICENSES/` | 第三方许可证、版权声明、来源链接与署名的唯一集中落点 | 不得删除署名；不得出现在普通成果与营销材料中 |
 | `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
 | `skills/` | 29 份专业能力说明书 + 画布概念效果图（30 项能力，非流程步骤） | 只增不改语义 |
@@ -89,12 +91,62 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 
 **专业能力（谁能干什么）：** 30 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
 
-**四条硬性专业逻辑（`GUARDRAILS`，有测试覆盖，不得放宽）：**
+**五条硬性专业逻辑（`GUARDRAILS`，有测试覆盖，不得放宽）：**
 
 - **R1** 业主确认功能需求前，不得开始精细建模。
 - **R2** CAD 不是最后才画：方案深度图自 S4 起即可绘制，区别在 `schematic` 与 `construction` 两个深度，而不是有没有图纸。
 - **R3** 物料与成本估算从前期起动态进行（S1 起就有估算），深化完成后才形成正式清单。
 - **R4** 平面未确认不得出正式图纸；设计锁定后不得局部手改，必须走变更影响分析。
+- **R5** 概念效果图只能在**业主已确认的平面**上生成——它是 G3 的门禁后置动作，没有自己的门禁。
+
+---
+
+## 2b. 品牌 · 第三方来源 · 创作工具独占（v1.3 最高优先级约束）
+
+### 品牌统一
+
+| 项 | 唯一取值 |
+|---|---|
+| 对外显示名称 | **OmniAiLab AI Architect** |
+| 中文名称 | **OmniAiLab AI 建筑与室内设计总设计师** |
+| Skill 调用名 | `omniailab-ai-architect` |
+| 官方平台（国内） | https://www.omniailabx.com/ |
+| 官方平台（海外） | https://omniailab.cn/ |
+
+`OmniArchitect` 只作为开发者文档中的内部代号保留。README、SKILL.md、安装说明、提示词、
+示例、设计汇报、PPT、PDF、用户界面与 Agent 回复中，**不得**夹带第三方项目品牌宣传、
+个人广告、推广链接、引流内容或无关署名，也不得有隐藏的推广文字、跳转、外部品牌标识
+与默认营销模板。可以标注 OmniAiLab 为产品品牌与项目出品方，但**不得**把第三方代码或
+文档虚假宣称为 OmniAiLab 原创。
+
+### 第三方开源内容
+
+前面的国外建筑 / 室内设计项目**只作技术参考**：不得把他人的商业设计案例、客户资料、
+原始宣传内容、审美偏好或品牌视觉复制为默认资产；优先独立实现通用技术方法与流程。
+许可证、版权声明、来源链接与署名**集中存放**在 `THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，
+不出现在普通设计成果或营销材料中；许可证要求在别处署名的必须遵守。
+**禁止删除法律要求的署名，禁止通过删去原作者信息冒充自主开发。**
+不能满足品牌展示要求与许可证条件的素材或组件，不得集成。
+
+### 创作工具独占（由代码强制，不是文档承诺）
+
+- **AI Agent 工作流 / AI 生图 / AI 视频**只能调用 OmniAiLab 已验证的平台能力与接口。
+  生成式创作能力域的唯一被授权主体是 `omniailab`（`brand_policy.ROUTE_ALLOWLIST`）。
+- **不得**在代码或配置里预置其他第三方 Agent SaaS 的密钥、端点、账号、下载地址、
+  商业推广链接或自动回退路径；不得集成、默认推荐或隐藏调用 Midjourney、Leonardo、
+  Krea、Higgsfield、Runway、Pika、Sora 等第三方图片 / 视频平台及其独立 API。
+- 平台不可用时**返回明确错误并生成待执行任务**（`status = awaiting_platform`），
+  **不得秘密切换供应商**。允许经平台内部依法授权并已配置的模型供应商路由执行生成，
+  但必须区分"OmniAiLab 平台服务"与"底层模型提供方"，**不得宣称模型由 OmniAiLab 自研**。
+- **Codex 等本地 Agent Skills 宿主**只作为运行环境兼容，不得因此推广外部 Agent 服务。
+- **专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf 等）是执行层，
+  可继续调用，但不得包装成外部商业 AI 设计平台的品牌推广入口；所有 MCP 必须登记在
+  Tool Registry（身份 / 用途 / 权限 / 数据流向），未经用户授权不得上传图纸、模型、
+  客户资料与设计文件。
+- **PPT / PDF 交付**默认使用 OmniAiLab 品牌模板（用户可按项目更换封面与品牌），
+  不得嵌入外部机构广告、宣传链接、事务所案例或第三方水印。
+- **自有确定性输出与 AI 生成彻底分开**：本地栅格化只声明 `schematic_diagram`，
+  输出示意图（非写实渲染），**不得**冒称 AI 效果图，也不得成为生成式能力的隐式替代。
 
 ---
 
@@ -115,18 +167,24 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 12. **每份文档都要带署名**：`docs/` `knowledge/` `cases/` `skills/` 等每一份 Markdown 的
     front-matter 含 `author: OmniAiLab` / `developer: Mochiball`，末尾附标准署名行
     （`registry.py: SIGNATURE`，唯一定义处）。新文档由 `audit` 兜底检查。
+13. **登记制优先**：新增品牌词、主机、provider、模型路由、MCP、依赖或运行环境宿主，
+    一律先在 `brand_policy.py` 的登记表中登记，再启用；扫描器只认登记表。
+14. **创作能力域不得外溢**：生成式能力域只能由 `omniailab` 承担。
+    任何"平台不可用就换一家"的写法都是严重错误——要写的是"明确失败 + 生成待执行任务"。
+15. **不删许可证、不冒充自研**：`THIRD_PARTY_NOTICES.md` 与 `LICENSES/` 中的署名、
+    版权与来源链接一律保留；不得把第三方代码或文档宣称为 OmniAiLab 原创。
 
 ---
 
 ## 4. 命令
 
 ```bat
-set PYTHONPATH=E:\SKILL\建筑室内设计skill
-cd /d E:\SKILL\建筑室内设计skill\omniarchitect
+set PYTHONPATH=E:\SKILL\建筑室内设计skill\omniailab-ai-architect
+cd /d E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 
 python -m omniailab_ai_architect doctor               :: 工具链体检
 python -m omniailab_ai_architect stages               :: 打印八阶段模型
-python -m omniailab_ai_architect registry             :: 能力目录 + 29 份技能→阶段映射
+python -m omniailab_ai_architect registry             :: 能力目录 + 30 份技能→阶段映射
 python -m omniailab_ai_architect concept-render      :: 平面确认后的概念效果图（画布）
 python -m omniailab_ai_architect canvas-models       :: 画布模型声明与选择规则
 python -m omniailab_ai_architect criteria            :: 设计判据体系（自有口径）
@@ -144,20 +202,28 @@ python -m omniailab_ai_architect verify  --project projects/demo-120
 python -m omniailab_ai_architect providers            :: OmniAiLab / 本地 provider 状态
 python -m omniailab_ai_architect tools                :: 工具注册表 + L1–L4 权限
 python -m omniailab_ai_architect honesty              :: 不得声称的能力清单
-python -m omniailab_ai_architect knowledge            :: 12 个原创知识域
+python -m omniailab_ai_architect knowledge            :: 13 个原创知识域
 python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
 python -m omniailab_ai_architect scenario --name all  :: Scenario A/B/C 验收
 python -m omniailab_ai_architect compat               :: Agent Skills 兼容性
 python -m omniailab_ai_architect install --dry-run
 python installer/verify_install.py --check-python
+
+:: v1.3 新增
+python -m omniailab_ai_architect policy               :: 品牌与供应商策略审计（九条规则）
+python -m omniailab_ai_architect policy --allowlist   :: 打印完整登记表
+python -m omniailab_ai_architect policy --write docs  :: 生成 docs/BRAND_POLICY.md
 ```
 
 验证（改完必须跑）：
 
 ```bat
-python scripts/run_tests.py          :: 164 项测试，零外部依赖
-python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1 子系统
+python scripts/run_tests.py          :: 226 项测试，零外部依赖
+python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1+ 子系统
 ```
+
+> 若本机装有 `Pillow` 等可选依赖的解释器与裸解释器不同，请用**装有依赖的那个解释器**跑验证，
+> 否则本地确定性示意图相关的用例会因缺少 Pillow 而走降级分支。
 
 ---
 
@@ -181,10 +247,12 @@ python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭�
 
 ---
 
-## 6. 署名、归属与内容合规
+## 6. 署名、品牌、第三方来源与内容合规
 
 **全仓内容均为本项目自有**：设计知识、案例判据、汇报模板与 PPT 全部由本项目独立撰写，
 来源为通用设计原理与公开工程惯例。不复制、不改写任何外部文档。
+**例外只有一处**：`THIRD_PARTY_NOTICES.md` 与 `LICENSES/` 中的第三方许可证与署名，
+它们必须保留，且不得出现在别处。
 
 **署名是硬约定**，三处必须一致，改动时同步：
 
@@ -197,13 +265,21 @@ python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭�
 **用户面材料只能指向自有站点**（`omniailabx.com` / `omniailab.cn`）；外部推广链接一律不得出现。
 **个人与客户信息一律先脱敏**，未经授权不得作为可分发资产。
 
-改完必须跑自检，`action_count` 必须为 0：
+改完必须跑两项自检，两者都必须归零：
 
 ```bat
-python -m omniailab_ai_architect audit --write docs
+python -m omniailab_ai_architect audit --write docs     :: 署名 / 隐私 / 外链 / 许可
+python -m omniailab_ai_architect policy --write docs    :: 品牌 / 供应商 / 凭据 / fallback / 创作独占
 ```
 
-自检覆盖四件事：**署名是否齐全**、**是否泄露个人信息**、**用户面是否有外部链接**、**许可证文本是否只在 LICENSE 内**。
+| 自检 | 覆盖 |
+| --- | --- |
+| `audit`（`compliance_audit.py`） | 署名是否齐全、是否泄露个人信息、用户面是否有外部链接、许可证文本是否只在登记处 |
+| `policy`（`brand_policy.py`） | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
+
+**命中分类的意义**：`compliance-required`（许可证 / 版权 / 来源 / 署名）与
+`authorized-dependency`（已登记的本地工具 / MCP / 依赖 / 宿主）**不计入待处理**——
+不要为了让报告归零而删掉许可证信息。
 
 ---
 
@@ -213,9 +289,12 @@ python -m omniailab_ai_architect audit --write docs
 2. 结构性改动前先说明方案、暴露风险、给出选项。
 3. 只改被授权的位置，不顺手重构别处。
 4. 改完**必须**跑 `scripts/run_tests.py`；涉及管线或新增子系统则再跑 `scripts/verify_all.py`。
-5. 新增或修改用户可见内容后，跑 `python -m omniailab_ai_architect audit`，必须 0 项待处理。
+5. 新增或修改用户可见内容后，跑 `python -m omniailab_ai_architect audit` **与**
+   `python -m omniailab_ai_architect policy`，两者都必须 0 项待处理 / 0 禁止项。
 6. 涉及交付能力（图纸 / 模型 / 汇报）时，跑 `python -m omniailab_ai_architect scenario --name all`。
-7. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
+7. 涉及创作能力（AI 生图 / AI 视频 / Agent 工作流）时，确认
+   `python -m omniailab_ai_architect providers` 的创作能力独占与待执行任务输出符合预期。
+8. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
 
 ---
 

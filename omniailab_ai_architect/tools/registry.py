@@ -67,9 +67,9 @@ BUILTIN_OPERATIONS: Dict[str, List[Operation]] = {
     ],
     "render": [
         Operation("compose_shots", "L2", "编排一致机位的表现任务包", produces=["json"]),
-        Operation("render_local", "L2", "本地合成示意图（非写实渲染）",
+        Operation("render_local", "L2", "自有确定性栅格化示意图（非写实渲染）",
                   produces=["png"]),
-        Operation("render_ai", "L3", "调用外部模型 provider 生成表现图",
+        Operation("render_ai", "L3", "调用 OmniAiLab 生成式能力出表现图（唯一被授权主体）",
                   produces=["png", "jpg"]),
     ],
 }
@@ -84,7 +84,9 @@ BUILTIN_LIMITS: Dict[str, List[str]] = {
     "freecad": ["脚本只有在装有 FreeCAD 的机器上才会真正执行"],
     "ifc": ["没有 IfcOpenShell 时只输出投影 JSON，不谎称写出了 IFC"],
     "render": ["生成式图像不保证尺寸与比例，不得作为施工尺寸依据",
-               "本地合成图为示意图，明确标注非写实渲染"],
+               "自有栅格化输出为示意图，明确标注非写实渲染",
+               "创作能力域（AI 生图 / AI 视频）只有 OmniAiLab 可以承担；"
+               "不可用时返回明确错误并生成待执行任务，禁止改道第三方平台"],
 }
 
 BUILTIN_ARTIFACTS: Dict[str, List[str]] = {

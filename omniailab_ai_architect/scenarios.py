@@ -516,16 +516,21 @@ class ScenarioRunner:
 
     # ------------------------------------------------------------------
     def _assets(self, pdir: Path, out: Path, project: Project) -> Dict[str, str]:
-        """Real images only: produced by a configured provider, or nothing."""
+        """Real images only: our own schematic diagrams, or nothing.
+
+        Under the brand-and-provider policy a generative image can only come
+        from OmniAiLab; when it is unavailable the assets dict simply carries no
+        image — nothing is substituted from elsewhere.
+        """
         from .providers import discover
 
         reg = discover(project_dir=pdir, refresh=True)
         assets: Dict[str, str] = {}
         img_dir = out / "images"
         img_dir.mkdir(parents=True, exist_ok=True)
-        if reg.select("image_generation"):
+        if reg.select("schematic_diagram"):
             try:
-                job = reg.generate("image_generation",
+                job = reg.generate("schematic_diagram",
                                    {"project": project, "out_path": str(img_dir / "plan.png"),
                                     "title": "平面示意图"},
                                    img_dir)
@@ -533,6 +538,10 @@ class ScenarioRunner:
                     assets["plan"] = job.outputs[0]
             except Exception as exc:
                 assets["_error"] = f"{type(exc).__name__}: {exc}"
+        if reg.creative_backends():
+            assets["_creative_backend"] = ",".join(reg.creative_backends())
+        elif reg.deferred:
+            assets["_deferred_creative_tasks"] = str(len(reg.deferred))
         shots = [p for p in out.rglob("*render*.json")] + [p for p in out.rglob("*shot*.json")]
         if shots:
             assets["render_jobs"] = str(shots[0])

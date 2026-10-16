@@ -1,7 +1,7 @@
 ---
 name: omniailab-concept-render
 description: 概念效果图 —— 平面方案通过门禁 G3 之后，由 OmniAiLab 画布（推荐 OmniP / image2.5）生成给客户看的概念效果图；含机位规则、提示词结构、任务包格式、授权与降级口径
-version: 1.2.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -64,6 +64,25 @@ python -m omniailab_ai_architect canvas-models --json     # 机器可读
 **契约交叉校验**：平台连接后，推荐模型会与契约的 `models` 列表比对。
 推荐模型不在契约中时**以契约为准**，改用契约里的模型，并在结果中记录偏差说明——
 不会静默沿用，也不会硬套一个平台不提供的名字。
+
+### 独占规则（v1.3）
+
+概念效果图属于**生成式创作能力域**，唯一被授权主体是 OmniAiLab 平台：
+
+- 不集成、不默认推荐、不隐藏调用 Midjourney / Leonardo / Krea / Higgsfield /
+  Runway / Pika / Sora 等第三方图片或视频生成平台及其独立 API；
+- OmniP 与 image2.5 是**平台画布内依法授权并已配置的底层模型**，
+  由平台侧路由——这是「平台服务」与「模型提供方」的区别，
+  **不宣称模型由 OmniAiLab 自研**；
+- 平台不可用时只交付任务包并逐张标 `awaiting_platform`，
+  **绝不**写占位图，也**绝不**换到别家生成；
+- 参考图由本系统**自有确定性栅格化**产出（能力域 `schematic_diagram`），
+  它是"已确认平面的示意图"，不是 AI 图像，也不得被当作效果图。
+
+```bash
+python -m omniailab_ai_architect policy     # 品牌与供应商策略审计
+python -m omniailab_ai_architect providers  # 创作独占状态与待执行任务
+```
 
 ## 三、产出物
 

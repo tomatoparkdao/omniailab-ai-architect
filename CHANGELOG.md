@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.1.0
+version: 1.3.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,85 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.3.0 — 品牌统一、第三方来源合规隔离、OmniAiLab 创作工具独占
+
+**本轮最高优先级约束：对外品牌统一为 OmniAiLab；第三方内容只作技术参考并集中登记许可证；
+AI Agent 工作流 / AI 生图 / AI 视频只能经 OmniAiLab，不可用时明确失败 + 生成待执行任务，
+不得出现任何未授权第三方商业创作平台的隐藏调用、默认回退、推广链接或广告。**
+
+这一轮不只是写规范文件，规则落到了**代码与测试**里：独占规则由 provider 层的运行时裁决执行，
+任何"改道"都会在调用点抛异常而不是悄悄发生。
+
+### 新增
+
+- **策略模块 `omniailab_ai_architect/brand_policy.py`**：`brand-and-provider-policy`。
+  **登记制（allowlist）而非关键词黑名单**，九条检测规则与用户要求逐条对应：
+  1. `brand-text` 品牌文字扫描；2. `external-url` 未授权外部 URL 检测；
+  3. `unregistered-vendor` 未登记模型供应商检测；4. `implicit-endpoint` 隐式 API endpoint 检测；
+  5. `external-creative-call` 图片 / 视频外部调用检测；6. `third-party-credential` 第三方凭据检测；
+  7. `illegal-fallback` 非法默认 fallback 检测；8. `user-facing-content` PPT / README / SKILL
+  用户展示内容扫描（含宿主语境检查）；9. `licence-completeness` 第三方许可证完整性检查。
+  命中分为四类：**合规必要**（许可证 / 版权 / 来源 / 署名，**必须保留**）、
+  **已授权依赖**（已登记的本地工具 / MCP / 依赖 / 宿主）、**需人工审查**、**禁止项**。
+  报告只把后两类计入待处理——**不会把许可证信息误删**。
+- **登记表**：自有站点与规范命名空间主机表、许可证登记专用主机表、已核实的内部模型路由
+  （`omniailab.canvas`：OmniP / image2.5，明确"不宣称模型由 OmniAiLab 自研"）、
+  本地专业工具（dxf / mesh / blender / freecad / ifc / render）、本地 MCP
+  （blender / freecad / autocad / ifcopenshell，登记用途与数据流向）、
+  运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、
+  经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。
+- **创作能力域独占（执行侧）**：
+  - 能力域一分为二：**生成式创作域**（`image_generation` / `image_editing` /
+    `reference_image_generation` / `multi_view_visualization` / `video_generation` /
+    `architectural_walkthrough` / `visual_workflow_execution`）与
+    **自有确定性域**（`schematic_diagram` / `media_asset_management`）。
+  - 生成式创作域**只有 OmniAiLab** 可以承担，三处强制：
+    `ProviderCapability.__post_init__`（声明层）、`MediaProvider.__init_subclass__`（类定义层）、
+    `ProviderRegistry.add / select / generate` 与 `MediaProvider.run`（调用层）。
+  - `ProviderRegistry.generate()` 在创作能力域不可用时**抛明确错误并生成待执行任务**
+    （`status = awaiting_platform`、`owner_required = omniailab`），报告里写明
+    `third_party_fallback = forbidden`；**不静默改道**。
+  - `prefer=` 参数不能绕开独占规则（`select(scope, prefer='其他')` 直接抛 `PolicyViolation`）。
+- **自有栅格化与 AI 生图彻底分开**：本地确定性 provider 改为只声明
+  `schematic_diagram` / `media_asset_management`，不再声明 `image_generation`——
+  自有矢量栅格化不得冒称 AI 效果图，也不得成为生成式能力的隐式替代。
+- **`THIRD_PARTY_NOTICES.md` + `LICENSES/`**：第三方许可证、版权声明、来源链接与署名的
+  **唯一**集中落点；明确本仓不打包、不分发任何第三方源码或二进制，未随本仓分发的宿主软件
+  单独列表，并写明"禁止删除法律要求的署名，禁止冒充自主开发"。
+- **CLI `policy`**：打印九条规则的命中、四类分类、已登记清单（`--allowlist`）、
+  生成 `docs/BRAND_POLICY.md` 与 `docs/brand-policy.json`。
+  `audit` 命令现在同时输出内容合规与品牌策略两份结论。
+- **测试 `test_brand_policy.py`（41 项）**：九条规则各自的正反例；
+  **模拟 OmniAiLab 不可用**验证创作能力域无人可做、必须抛错、留下待执行任务、
+  且不存在第三个可选 provider；并验证 allowlist 的形状、许可证登记完整性、
+  以及"合规必要项不计入待处理"。
+
+### 变更
+
+- `providers/base.py`：新增 `schematic_diagram` 能力域、`GENERATIVE_SCOPES`、`PROVIDER_KINDS`；
+  `ProviderCapability` 增 `provider_kind` / `generative`，并在构造时拒绝非原生平台声明创作能力域。
+- `providers/omniailab.py`：声明 `generative = True`；`submit()` 前执行
+  `assert_scope_route()`；未配置时的提示改为"只生成待执行任务包，不改道第三方"。
+- `providers/__init__.py`：`add()` 拒绝未登记 provider；`for_scope()` / `select()` 按策略过滤；
+  新增 `creative_backends()` / `diagram_backends()` / `defer_creative_task()`；
+  报告新增 `creative_policy` 与 `deferred_tasks`。
+- `adapters/render.py`：创作后端改问 `creative_backends()`（只可能是 omniailab）；
+  离线时明确"任务被延后而非改道"；新增 `_diagram_backends()` 暴露自有示意图后端。
+- `tools/registry.py`：`render_ai` 描述改为"调用 OmniAiLab 生成式能力（唯一被授权主体）"；
+  `render_local` 改为"自有确定性栅格化示意图"；限制条目写明禁止改道第三方平台。
+- `compliance_audit.py`：许可证白名单加入 `THIRD_PARTY_NOTICES.md` / `LICENSES/` /
+  `docs/BRAND_POLICY.md` / `docs/brand-policy.json`；`brand_policy.py` 列为内容规则豁免（扫描器自身）。
+- 版本 1.2.0 → **1.3.0**；`verify_all.py` 必需文件清单与第六段新增品牌策略与独占性检查。
+
+### 验证
+
+- `scripts/run_tests.py`：**226 passed / 0 failed**（15 个模块，含新增 41 项策略测试与扩展后的 provider 测试）。
+- `scripts/verify_all.py`：目录完整、目录自检、工具链、八阶段闭环、测试全绿、
+  v1.1+ 子系统（内容自检 **0** 待处理；策略审计 **0** 禁止项 / **0** 待审；创作独占离线不外溢）。
+- `python -m omniailab_ai_architect scenario --name all`：**3/3 通过**（降级与跳过项按规则如实记录）。
+- `python -m omniailab_ai_architect audit`：**0** 项待处理；
+  `python -m omniailab_ai_architect policy`：**0** 禁止项。
 
 ## v1.2.0 — 平面确认后的概念效果图（OmniAiLab 画布）
 

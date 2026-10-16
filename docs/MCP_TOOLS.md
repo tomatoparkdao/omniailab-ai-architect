@@ -34,7 +34,7 @@ python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
 | `blender` | 宿主程序 | 生成场景脚本、执行 Blender 批处理 | `build_scene.py`（有 Blender 的机器可直接跑） |
 | `freecad` | 宿主程序 | 生成参数化建模脚本、执行 FreeCAD | `build_freecad.py` |
 | `ifc` | python | IFC 投影数据、写出 IFC | `ifc_projection.json` + `build_ifc.py` |
-| `render` | provider | 编排机位任务包、本地示意图、调用图片 provider | 任务包 JSON |
+| `render` | provider | 编排机位任务包、自有确定性示意图（`schematic_diagram`）、调用 OmniAiLab 生成式能力 | 任务包 JSON（创作任务延后，不改道第三方） |
 
 `--plan` 打印某次调用的风险、门禁、允许的最强表述与限制。
 
@@ -43,8 +43,8 @@ python -m omniailab_ai_architect tools --plan "dxf:draw_plan"
 | 级别 | 含义 | 确认 | 示例 |
 | --- | --- | --- | --- |
 | L1 | 只读 | 否 | `dxf:audit`、`dxf:read_back` |
-| L2 | 本地写入 | 否 | `dxf:draw_plan`、`mesh:build`、`ifc:emit_projection` |
-| L3 | 联网 | **是** | `render:render_ai`（调用外部模型 provider） |
+| L2 | 本地写入 | 否 | `dxf:draw_plan`、`mesh:build`、`ifc:emit_projection`、`render:render_local` |
+| L3 | 联网 | **是** | `render:render_ai`（调用 OmniAiLab 生成式能力，唯一被授权主体） |
 | L4 | 执行 / 发送 | **是，且必须先 dry-run** | `blender:run_blender`、`freecad:run_freecad` |
 
 未获授权时抛出 `PermissionRequired`，**不静默执行**：
@@ -109,5 +109,22 @@ MCP 服务器**只被读取，不被猜测**。配置放项目根目录 `mcp.jso
 
 示例见 `compatibility/mcp.servers.example.json.md`。
 
+### 7.1 MCP 与专业工具的边界（v1.3）
+
+专业软件与开源库（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf 等）属于**执行层**，
+可以继续调用，用于真实的几何建模、CAD 绘制、BIM 与专业文件处理。但：
+
+1. **不得**把它们包装成外部商业 AI 设计平台的品牌推广入口；
+2. 所有 MCP 必须**登记**在 `brand_policy.REGISTERED_MCP_SERVERS`，
+   记录身份、用途、权限与文件数据流向；
+3. **未经用户授权**不得上传图纸、建筑模型、客户资料与设计文件；
+4. 支持本地 MCP 优先执行；不能假装所有专业功能均由 OmniAiLab 自研；
+5. 外部 MCP 的连通性不做自动探测；未经验证一律 `not_configured`。
+
+与创作能力的关系：本表里的工具**不承担任何生成式创作能力域**。
+AI 生图 / AI 视频 / Agent 工作流只经 OmniAiLab（`brand_policy.CREATIVE_OWNER`），
+由 `python -m omniailab_ai_architect policy` 与测试共同守住。
+
 ---
+
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

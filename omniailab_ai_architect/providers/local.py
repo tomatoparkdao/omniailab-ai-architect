@@ -6,6 +6,16 @@ writer uses, so the picture and the drawing cannot disagree.
 
 What it produces is labelled honestly in every output: a **schematic
 diagram**, not a photorealistic render, and never a dimensional authority.
+
+Why it does *not* declare `image_generation`
+-------------------------------------------
+`schematic_diagram` is a separate, deterministic scope on purpose. AI image
+and video generation are exclusively owned by the OmniAiLab platform; if this
+project's own vector rasteriser were allowed to answer `image_generation`, that
+would be an implicit, silent substitution for a generative model — exactly what
+the brand-and-provider policy forbids. The two families are therefore kept
+apart at the type level: a caller asking for a generative scope can only ever
+be answered by the native platform, or by an explicit, clearly-labelled error.
 """
 from __future__ import annotations
 
@@ -72,7 +82,8 @@ class LocalDeterministicProvider(MediaProvider):
 
     id = "local"
     name = "Local deterministic renderer"
-    kind = "builtin"
+    kind = "own-builtin"
+    generative = False          # 自有确定性模块，不是生成式 AI 服务
 
     def probe(self) -> ProviderCapability:
         try:
@@ -80,18 +91,22 @@ class LocalDeterministicProvider(MediaProvider):
         except Exception:
             return ProviderCapability(
                 provider=self.id, state="not_configured", scopes=[],
+                provider_kind="own-builtin",
                 missing=["Pillow"], hint="安装 Pillow 后可用本地示意图输出。",
-                notes=["本地 provider 不联网、不调用生成式模型"],
+                notes=["本地 provider 不联网、不调用生成式模型",
+                       "不承担任何生成式能力域：AI 生图 / AI 视频只经 OmniAiLab"],
             )
         font, path = _load_font(20)
         notes = ["输出为确定性示意图，由 Canonical Spatial Model 直接栅格化",
-                 "非写实渲染，不得作为施工尺寸依据"]
+                 "非写实渲染，不得作为施工尺寸依据",
+                 "只声明 schematic_diagram / media_asset_management；"
+                 "生成式能力域（AI 生图 / AI 视频）不在本模块范围内"]
         if not path:
             notes.append("未找到中文字体：CJK 标注可能无法正常显示（已如实记录）")
         return ProviderCapability(
             provider=self.id, state="connected",
-            scopes=["image_generation", "multi_view_visualization",
-                    "media_asset_management"],
+            provider_kind="own-builtin",
+            scopes=["schematic_diagram", "media_asset_management"],
             models=["local-vector-raster"],
             evidence=[f"Pillow {getattr(PIL, '__version__', '?')}",
                       f"font: {path or 'default (no CJK)'}"],
@@ -109,14 +124,19 @@ class LocalDeterministicProvider(MediaProvider):
         job = ProviderJob(job_id=f"local-{int(time.time()*1000)}", provider=self.id,
                           operation=operation, status="running")
         try:
-            if operation == "image_generation":
-                job.outputs = [self._plan_png(**params)]
-            elif operation == "multi_view_visualization":
-                job.outputs = self._contact_sheet(**params)
+            if operation == "schematic_diagram":
+                variant = str(params.get("variant") or "plan")
+                if variant == "rooms":
+                    job.outputs = self._contact_sheet(**params)
+                else:
+                    job.outputs = [self._plan_png(**params)]
             elif operation == "media_asset_management":
                 job.outputs = [self._asset_index(**params)]
             else:
-                raise ProviderError(f"本地 provider 不支持 {operation!r}")
+                raise ProviderError(
+                    f"本地 provider 不支持 {operation!r}；"
+                    "生成式能力域只能由 OmniAiLab 平台承担，本模块不得改道执行"
+                )
         except ProviderError:
             raise
         except Exception as exc:

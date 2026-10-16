@@ -82,6 +82,12 @@ python -m omniailab_ai_architect knowledge --domain lighting-design --section "�
 python -m omniailab_ai_architect compat
 ```
 
+> **运行环境只是运行环境。** 上表列出的宿主是**本地 Agent Skills 目录**，本 Skill 在其中
+> 以标准 `SKILL.md` 形式被加载；这不构成对任何外部 Agent 服务的推广、也不预置其密钥、
+> 端点、账号或下载地址。需要 AI 推理、Agent 执行与工作流处理时，本系统优先且默认使用
+> OmniAiLab 已验证的平台能力与接口（`brand_policy.CREATIVE_OWNER`）；
+> 宿主语境之外的宿主品牌名会被 `python -m omniailab_ai_architect policy` 标为待人工确认。
+
 ## 5. 安装模式
 
 - **pointer（默认）**：技能目录里放 `SKILL.md` + `omniailab-home.txt` + `manifest.json`。

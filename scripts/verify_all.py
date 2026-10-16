@@ -20,10 +20,11 @@ PACKAGE = "omniailab_ai_architect"
 
 REQUIRED_PATHS = [
     "AGENTS.md", "README.md", "README_EN.md", "SKILL.md", "LICENSE", "VERSION",
+    "THIRD_PARTY_NOTICES.md", "LICENSES/README.md",
     PACKAGE + "/stages.py", PACKAGE + "/changes.py", PACKAGE + "/model.py",
     PACKAGE + "/planner.py", PACKAGE + "/workflow.py", PACKAGE + "/stage_state.py",
     PACKAGE + "/routing.py", PACKAGE + "/quantities.py", PACKAGE + "/compliance.py",
-    PACKAGE + "/registry.py",
+    PACKAGE + "/registry.py", PACKAGE + "/brand_policy.py",
     # v1.1 additions
     PACKAGE + "/providers/omniailab.py", PACKAGE + "/providers/base.py",
     PACKAGE + "/providers/canvas.py", PACKAGE + "/providers/omniailab.models.json",
@@ -49,10 +50,11 @@ REQUIRED_PATHS = [
     PACKAGE + "/tests/test_tools.py", PACKAGE + "/tests/test_presentation.py",
     PACKAGE + "/tests/test_scenarios.py", PACKAGE + "/tests/test_integration.py",
     PACKAGE + "/tests/test_concept_render.py",
+    PACKAGE + "/tests/test_brand_policy.py",
     "providers/omniailab.api.example.json", "providers/README.md",
     "docs/WORKFLOW.md", "docs/DESIGN_CRITERIA.md", "docs/ARCHITECTURE.md",
     "docs/OMNIAILAB_INTEGRATION.md", "docs/CONTENT_AUDIT.md",
-    "docs/CONCEPT_RENDER.md",
+    "docs/BRAND_POLICY.md", "docs/CONCEPT_RENDER.md",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
 ]
@@ -193,6 +195,60 @@ def check_v11() -> int:
         if not (ROOT / need).exists():
             failures += 1
             print(f"  FAIL  缺少 {need}")
+
+    # --- brand and provider policy ----------------------------------------
+    from omniailab_ai_architect import brand_policy as bpr
+
+    pol = bpr.scan(ROOT)
+    print(f"  品牌与供应商策略：扫描 {pol.files_scanned} 个文件，"
+          f"规则 {len(bpr.RULES)} 条，禁止项 {len(pol.forbidden)}，"
+          f"待审 {len(pol.needs_review)}，合规必要 {len(pol.compliance_required)}，"
+          f"已授权依赖 {len(pol.authorized_dependency)}")
+    if not pol.ok:
+        failures += pol.action_count
+        for h in pol.forbidden + pol.needs_review:
+            print(f"  FAIL  {h.path}:{h.line} {h.rule} {h.token} — {h.reason}")
+    for need in (bpr.NOTICE_FILE, bpr.LICENCE_DIR + "/README.md", "LICENSE"):
+        if not (ROOT / need).exists():
+            failures += 1
+            print(f"  FAIL  缺少许可证登记文件 {need}")
+
+    # 创作能力独占必须可执行，而不是只写在文档里
+    from omniailab_ai_architect.providers import (
+        CREATIVE_OWNER,
+        CREATIVE_SCOPES,
+        LocalDeterministicProvider,
+        OmniAiLabProvider,
+        PolicyViolation,
+        ProviderRegistry,
+    )
+
+    local_cap = LocalDeterministicProvider().probe()
+    if set(local_cap.scopes) & set(CREATIVE_SCOPES):
+        failures += 1
+        print("  FAIL  自有模块声明了生成式创作能力域")
+    import tempfile as _tf2
+
+    with _tf2.TemporaryDirectory() as td:
+        reg = ProviderRegistry([OmniAiLabProvider(project_dir=td),
+                                LocalDeterministicProvider()])
+        if reg.creative_backends():
+            failures += 1
+            print("  FAIL  OmniAiLab 离线时仍报告有创作后端")
+        leaked = [s for s in CREATIVE_SCOPES if reg.select(s) is not None]
+        if leaked:
+            failures += 1
+            print(f"  FAIL  创作能力域被交给非原生平台：{leaked}")
+    try:
+        ProviderRegistry([OmniAiLabProvider(project_dir=ROOT)]).add(
+            type("Rogue", (), {"id": "unregistered-vendor-x"})())
+    except PolicyViolation:
+        pass
+    else:
+        failures += 1
+        print("  FAIL  未登记 provider 未被拒绝注册")
+    print(f"  创作能力独占：唯一被授权主体 {CREATIVE_OWNER}；"
+          f"离线时创作后端为空且不回退第三方")
 
     # --- knowledge base ---------------------------------------------------
     from omniailab_ai_architect import knowledge

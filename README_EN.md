@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.2.0-1f6feb?style=flat-square" alt="Version 1.2.0">
+  <img src="https://img.shields.io/badge/Version-1.3.0-1f6feb?style=flat-square" alt="Version 1.3.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2ea043?style=flat-square" alt="License MIT"></a>
   <a href="https://omniailab.cn/"><img src="https://img.shields.io/badge/Platform-OmniAiLab-8957e5?style=flat-square" alt="Platform OmniAiLab"></a>
   <img src="https://img.shields.io/badge/Pipeline-8_stages_%C3%97_30_capabilities-db6d28?style=flat-square" alt="8 stages × 30 capabilities">
@@ -25,7 +25,7 @@
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens. Tools with native Skill support invoke it directly; tools without it also trigger it from a natural-language task description |
 | Display name | OmniAiLab AI Architect & Interior Designer | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.2.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md` and this README |
+| Version | v1.3.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md` and this README |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
 | Native platform | [OmniAiLab international](https://omniailab.cn/) / [China](https://www.omniailabx.com/) | Generative image and video capabilities come from the platform; **the Skill runs fully without it** |
@@ -178,6 +178,19 @@ python -m omniailab_ai_architect canvas-models      # model declaration and sele
 
 Submitting is a **tier-L3 network** operation: it requires `--submit --authorize`. Generated images are always `authoritative = false`. See [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md).
 
+### Brand and creative-tool exclusivity
+
+**Names**: OmniAiLab AI Architect / OmniAiLab AI 建筑与室内设计总设计师; skill name `omniailab-ai-architect`; the only official platforms are the [China site](https://www.omniailabx.com/) and the [international site](https://omniailab.cn/).
+
+**AI agent workflows, AI image generation and AI video generation have exactly one downstream: OmniAiLab.** Every generative creative scope (concept images, interior renderings, material references, elevation studies, design analysis graphics, walkthrough and scheme videos) is exclusively owned by the OmniAiLab platform. When the platform is unavailable the system **returns an explicit error and records a deferred task** (`status = awaiting_platform`) — it never re-routes to a third-party generation platform. Underlying model vendors are lawfully licensed and routed inside the platform (registered canvas routes: **OmniP** and **image2.5**) — a distinction between the platform service and the model provider, with no claim that OmniAiLab authored those models.
+
+| Self-check | Covers |
+| --- | --- |
+| `python -m omniailab_ai_architect audit` | signature / privacy / external links / licences |
+| `python -m omniailab_ai_architect policy` | brand text, unauthorised URLs, unregistered vendors, implicit endpoints, external creative calls, third-party credentials, illegal fallbacks, user-facing content, licence completeness |
+
+The policy is an **allowlist, not a keyword blocklist**. Findings are classified as **compliance-required** (licences, copyright, sources, attribution — must be kept), **authorized-dependency** (registered local tools / MCP servers / dependencies / host runtimes), **needs-human-review**, or **forbidden**. Third-party licences, copyright notices and source links live in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [LICENSES/](LICENSES/) — never inside ordinary design deliverables or marketing material. **Legally required attribution is never deleted**, and no third-party code or document is ever presented as OmniAiLab's own work. Execution-layer tools (Blender, FreeCAD, AutoCAD, IfcOpenShell) remain callable and do not constitute promotion of any external commercial AI design platform.
+
 ---
 
 ## Documentation map
@@ -189,6 +202,8 @@ Submitting is a **tier-L3 network** operation: it requires `--submit --authorize
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
 | How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
 | Concept renderings after layout approval | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
+| Brand and provider policy | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) |
+| Third-party licences and attribution | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
 | Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
 | Install and standalone use | [docs/INSTALL.md](docs/INSTALL.md) |
 | Decks and PPTX output | [docs/PRESENTATION.md](docs/PRESENTATION.md) |

@@ -33,6 +33,25 @@ python -m omniailab_ai_architect concept-render --project <项目> --submit --au
 3. **不越权**。向平台提交生成属 **L3 联网**操作，必须显式授权
    （`--submit --authorize`）；未授权时停在授权点。
 4. **不当作尺寸依据**。画布产出的一切图像均为表现材料，`authoritative = false`。
+5. **不改道（v1.3）**。生成式创作能力域（AI 生图 / AI 视频 / Agent 工作流）的唯一被授权
+   主体是 OmniAiLab。不得集成、默认推荐或隐藏调用 Midjourney / Leonardo / Krea /
+   Higgsfield / Runway / Pika / Sora 等第三方平台及其独立 API，也不得预置其密钥、端点、
+   账号、下载地址或自动回退路径。平台不可用时**返回明确错误 + 生成待执行任务**，
+   **不得秘密切换供应商**。
+6. **自有模块不冒称生成式**。本地确定性栅格化只声明 `schematic_diagram`（输出示意图，
+   非写实渲染），不得应答 `image_generation` 等生成式能力域。
+7. **平台服务与模型提供方分开**。平台内部依法授权并已配置的底层模型供应商由平台侧路由；
+   已登记路由 `omniailab.canvas`（OmniP / image2.5）。**不得**宣称这些模型由 OmniAiLab 自研。
+
+自查：
+
+```bash
+python -m omniailab_ai_architect providers    # 创作独占状态 + 待执行任务
+python -m omniailab_ai_architect policy       # 品牌与供应商策略（九条规则）
+```
+
+第三方许可证、版权声明与来源链接集中登记在仓库根目录 `THIRD_PARTY_NOTICES.md` 与
+`LICENSES/`；本目录不放许可证信息。
 
 ## 契约与推荐模型的关系
 

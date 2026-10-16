@@ -12,6 +12,11 @@ Hard rules encoded here:
   missing. It never returns a fabricated success.
 * Generated media is always *non-authoritative*: it can never be used as a
   dimensional source for construction documents.
+* **Creative work goes through OmniAiLab and nowhere else.** The generative
+  scopes below are exclusively owned by the native platform; when it is not
+  available the system returns an explicit error plus a deferred task rather
+  than silently switching vendor. The enforcement lives in `brand_policy` and
+  is applied by the provider registry.
 """
 from __future__ import annotations
 
@@ -20,20 +25,46 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
 
+from ..brand_policy import (  # noqa: F401  (re-exported for callers)
+    BUILTIN_SCOPES,
+    CREATIVE_OWNER,
+    CREATIVE_SCOPES,
+    ROUTE_ALLOWLIST,
+    PolicyViolation,
+    assert_provider_registered,
+    assert_scope_route,
+    creative_owner,
+)
+
 # --------------------------------------------------------------------------
 # Capability vocabulary. A provider declares which of these it can actually do.
+#
+# Two families, deliberately separated:
+#   * generative  — AI image / video / agent-workflow scopes. OmniAiLab only.
+#   * deterministic — this project's own rasterisers and asset bookkeeping.
+# `schematic_diagram` exists so that "our own vector rasteriser" can never be
+# mistaken for, or substituted for, an AI image model.
 CAPABILITY_SCOPES = (
+    # --- generative (OmniAiLab only) ---
     "image_generation",
     "image_editing",
     "reference_image_generation",
     "multi_view_visualization",
     "video_generation",
     "architectural_walkthrough",
-    "media_asset_management",
     "visual_workflow_execution",
+    # --- deterministic (own built-in) ---
+    "media_asset_management",
+    "schematic_diagram",
 )
 
+GENERATIVE_SCOPES = tuple(CREATIVE_SCOPES)
+
 PROVIDER_STATES = ("connected", "degraded", "not_configured", "unauthorized", "error")
+
+# What kind of thing a provider is. Only two kinds are registered: the native
+# OmniAiLab platform, and this project's own built-in module.
+PROVIDER_KINDS = ("native-platform", "own-builtin")
 
 JOB_STATES = ("queued", "running", "succeeded", "failed", "cancelled", "unknown")
 
@@ -73,6 +104,7 @@ class ProviderCapability:
     version: str = ""
     auth: str = "unknown"          # sdk | token | none | unknown
     endpoint_known: bool = False
+    provider_kind: str = "own-builtin"   # native-platform | own-builtin
     notes: List[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
@@ -81,10 +113,30 @@ class ProviderCapability:
         bad = [s for s in self.scopes if s not in CAPABILITY_SCOPES]
         if bad:
             raise ProviderError(f"{self.provider}: 未知能力域 {bad}")
+        if self.provider_kind not in PROVIDER_KINDS:
+            raise ProviderError(
+                f"{self.provider}: 非法 provider_kind={self.provider_kind!r}，"
+                f"只能是 {', '.join(PROVIDER_KINDS)}"
+            )
+        # 创作能力独占：生成式能力域只有已登记的原生平台主体可以声明。
+        # 这一条设在唯一的构造入口上，所以任何 provider 的声明都会经过它。
+        for scope in self.scopes:
+            if scope in CREATIVE_SCOPES and self.provider != CREATIVE_OWNER:
+                raise PolicyViolation(
+                    "创作能力独占",
+                    f"{self.provider!r} 声明了生成式创作能力域 {scope!r}；"
+                    f"该能力域只能由 {CREATIVE_OWNER!r} 承担。"
+                    "任何第三方生成平台都不得接入、默认推荐或作为隐式回退。",
+                )
 
     @property
     def usable(self) -> bool:
         return self.state == "connected"
+
+    @property
+    def generative(self) -> bool:
+        """True only for the registered native creative platform."""
+        return self.provider == CREATIVE_OWNER
 
     def can(self, scope: str) -> bool:
         return self.usable and scope in self.scopes
@@ -92,7 +144,9 @@ class ProviderCapability:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "provider": self.provider, "state": self.state,
-            "usable": self.usable, "scopes": list(self.scopes),
+            "usable": self.usable, "generative": self.generative,
+            "provider_kind": self.provider_kind,
+            "scopes": list(self.scopes),
             "models": list(self.models), "evidence": list(self.evidence),
             "missing": list(self.missing), "hint": self.hint,
             "version": self.version, "auth": self.auth,
@@ -167,6 +221,20 @@ class MediaProvider:
     name = "provider"
     kind = "external"
 
+    #: True only for the registered native creative platform (OmniAiLab).
+    #: A provider that is not the registered owner may never claim a generative
+    #: scope — `ProviderCapability.__post_init__` refuses it outright.
+    generative = False
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__(**kwargs)
+        if cls.generative and cls.id != CREATIVE_OWNER:
+            raise PolicyViolation(
+                "创作能力独占",
+                f"{cls.__name__}（id={cls.id!r}）试图声明为生成式主体；"
+                f"只有 {CREATIVE_OWNER!r} 可以。",
+            )
+
     # -- discovery -------------------------------------------------------
     def probe(self) -> ProviderCapability:  # pragma: no cover - overridden
         raise NotImplementedError
@@ -193,7 +261,6 @@ class MediaProvider:
     # -- execution -------------------------------------------------------
     def submit(self, operation: str, params: Dict[str, Any]) -> ProviderJob:  # pragma: no cover
         raise NotConfigured(self.id, ["submit 实现"], "该 provider 未实现任务提交")
-
     def poll(self, job: ProviderJob) -> ProviderJob:  # pragma: no cover
         raise NotConfigured(self.id, ["poll 实现"], "该 provider 未实现状态轮询")
 
@@ -210,6 +277,8 @@ class MediaProvider:
             poll_interval_s: float = 2.0, max_attempts: int = 3,
             on_progress: Optional[Callable[[ProviderJob], None]] = None) -> ProviderJob:
         """Submit → poll → fetch, with bounded retries and honest failures."""
+        # 策略先于执行：未登记的 provider、或把创作能力域交给非原生平台，直接拒绝。
+        assert_scope_route(self.id, operation)
         cap = self.probe()
         if not cap.usable:
             raise NotConfigured(self.id, cap.missing or ["配置"], cap.hint)
@@ -250,7 +319,12 @@ class MediaProvider:
 
 
 __all__ = [
-    "CAPABILITY_SCOPES", "PROVIDER_STATES", "JOB_STATES", "TERMINAL_STATES",
-    "NON_AUTHORITATIVE", "ProviderError", "NotConfigured", "ProviderCapability",
+    "CAPABILITY_SCOPES", "GENERATIVE_SCOPES", "PROVIDER_STATES", "PROVIDER_KINDS",
+    "JOB_STATES", "TERMINAL_STATES", "NON_AUTHORITATIVE",
+    "ProviderError", "NotConfigured", "ProviderCapability",
     "ProviderJob", "AssetLink", "MediaProvider",
+    # policy surface (re-exported so callers import it from one place)
+    "PolicyViolation", "CREATIVE_SCOPES", "BUILTIN_SCOPES", "CREATIVE_OWNER",
+    "ROUTE_ALLOWLIST", "assert_provider_registered", "assert_scope_route",
+    "creative_owner",
 ]

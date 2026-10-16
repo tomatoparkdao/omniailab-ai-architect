@@ -29,9 +29,12 @@ OWN_DOMAINS = ("omniailabx.com", "omniailab.cn", "omniailab")
 LICENSE_TOKENS = ("MIT License", "CC BY", "Creative Commons", "SPDX-License",
                   "Copyright (c)", "Copyright ©", "All rights reserved")
 
-# Files whose whole job is to state the licence.
-LICENCE_ALLOWED = ("LICENSE", "VERSION", "docs/CONTENT_AUDIT.md",
-                   "docs/content-audit.json")
+# Files whose whole job is to state the licence. Third-party notices and the
+# licence archive are the *only* legitimate home for external attribution, so
+# they are allowed to carry licence text and source links.
+LICENCE_ALLOWED = ("LICENSE", "VERSION", "THIRD_PARTY_NOTICES.md", "LICENSES/",
+                   "docs/CONTENT_AUDIT.md", "docs/content-audit.json",
+                   "docs/BRAND_POLICY.md", "docs/brand-policy.json")
 
 # Specification namespaces and package-schema URIs are not promotional links.
 BENIGN_URL_HOSTS = (
@@ -77,7 +80,8 @@ SKIP_DIRS = {".git", "out", "__pycache__", ".pytest_cache", "node_modules",
 # and sample emails/phones so the detectors can be exercised. They are code, not
 # shippable content, so content rules do not apply to them.
 EXEMPT_FROM_CONTENT_RULES = ("omniailab_ai_architect/tests/",
-                             "omniailab_ai_architect/compliance_audit.py")
+                             "omniailab_ai_architect/compliance_audit.py",
+                             "omniailab_ai_architect/brand_policy.py")
 
 DISPOSITIONS = (
     "original",                     # our own content, nothing to do

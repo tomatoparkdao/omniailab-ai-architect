@@ -121,11 +121,19 @@ def _find_sdk() -> Optional[Dict[str, str]]:
 
 
 class OmniAiLabProvider(MediaProvider):
-    """Native OmniAiLab provider. Honest by construction."""
+    """Native OmniAiLab provider. Honest by construction.
+
+    This is the **only** provider allowed to take generative scopes (AI agent
+    workflows, AI image generation, AI video generation). The rule is enforced
+    by the brand-and-provider policy, not merely documented: `assert_scope_route`
+    is checked on every submit, so a generative call that somehow reached a
+    different provider would raise instead of running.
+    """
 
     id = "omniailab"
     name = "OmniAiLab"
     kind = "native-platform"
+    generative = True
 
     def __init__(self, project_dir: str | Path | None = None,
                  config_path: str | Path | None = None,
@@ -249,6 +257,7 @@ class OmniAiLabProvider(MediaProvider):
                 evidence.append(f"API 契约 {contract_path}")
             except Exception as exc:
                 return ProviderCapability(
+                    provider_kind="native-platform",
                     provider=self.id, state="error", evidence=evidence,
                     missing=[f"API 契约损坏：{exc}"],
                     hint="修正 omniailab.api.json 后重试。",
@@ -260,6 +269,7 @@ class OmniAiLabProvider(MediaProvider):
             problems = self._validate_contract(contract)
             if problems:
                 return ProviderCapability(
+                    provider_kind="native-platform",
                     provider=self.id, state="not_configured", evidence=evidence,
                     missing=problems,
                     hint="契约字段不完整；不猜测端点或鉴权方式。",
@@ -273,6 +283,7 @@ class OmniAiLabProvider(MediaProvider):
                 evidence.append(f"健康检查 {endpoint} -> {detail}")
                 if not ok:
                     return ProviderCapability(
+                        provider_kind="native-platform",
                         provider=self.id, state="unauthorized", scopes=scopes,
                         models=models, evidence=evidence, missing=[],
                         hint="凭据或网络未通过健康检查。",
@@ -280,6 +291,7 @@ class OmniAiLabProvider(MediaProvider):
                         endpoint_known=True,
                     )
             return ProviderCapability(
+                provider_kind="native-platform",
                 provider=self.id, state="connected", scopes=scopes, models=models,
                 evidence=evidence, missing=[],
                 hint="", auth=str(contract.get("auth") or "unknown"),
@@ -295,9 +307,11 @@ class OmniAiLabProvider(MediaProvider):
             "把平台提供的 API 契约放到本项目根目录的 providers/omniailab.api.json"
             "（或设置 OMNIAILAB_API_CONTRACT）；契约需声明 base_url、auth、endpoints 与 models。"
             "在契约到位前，OmniAiLab provider 保持 NOT_CONFIGURED，"
-            "表现图将由本地确定性 provider 或外部图片模型完成任务包降级。"
+            "创作任务只生成待执行任务包等待平台可用——"
+            "按品牌与供应商策略，不会改道到任何第三方生成平台。"
         )
         return ProviderCapability(
+            provider_kind="native-platform",
             provider=self.id, state="not_configured", scopes=[], models=[],
             evidence=evidence, missing=missing, hint=hint,
             auth="unknown", endpoint_known=False,
@@ -305,6 +319,7 @@ class OmniAiLabProvider(MediaProvider):
                 "不猜测 endpoint、请求参数或鉴权协议（硬性规则）",
                 f"国内站 {HOMEPAGE_CN} · 海外站 {HOMEPAGE_INTL}",
                 "未通过验证的能力一律标记 NOT_CONFIGURED",
+                "AI Agent 工作流 / AI 生图 / AI 视频的唯一被授权主体（创作能力独占）",
             ],
         )
 
@@ -385,6 +400,11 @@ class OmniAiLabProvider(MediaProvider):
 
     # ------------------------------------------------------------------
     def submit(self, operation: str, params: Dict[str, Any]) -> ProviderJob:
+        # 品牌与供应商策略：创作能力域只有原生平台可以承担。这一句是运行时裁决，
+        # 不依赖调用方是否读过文档。
+        from ..brand_policy import assert_scope_route
+
+        assert_scope_route(self.id, operation)
         cap = self.probe()
         if not cap.usable:
             raise NotConfigured(self.id, cap.missing or ["平台配置"], cap.hint)

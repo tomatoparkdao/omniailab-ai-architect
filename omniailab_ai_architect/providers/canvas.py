@@ -696,9 +696,9 @@ def _write_references(project: Project, res: ConceptRenderResult, out: Path,
             title="已确认平面（参考图）", scheme=f"方案{scheme}",
         )
         made.append(plan_png)
-        sheet = local.submit("multi_view_visualization", {          # type: ignore[union-attr]
+        sheet = local.submit("schematic_diagram", {          # type: ignore[union-attr]
             "project": project, "out_path": str(out_ref / f"rooms-r{project.revision}.png"),
-            "level_id": level_id,
+            "level_id": level_id, "variant": "rooms",
         })
         made.extend(sheet.outputs)
     except Exception as exc:

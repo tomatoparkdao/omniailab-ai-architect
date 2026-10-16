@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.2.0-1f6feb?style=flat-square" alt="版本 1.2.0">
+  <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.3.0-1f6feb?style=flat-square" alt="版本 1.3.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-db6d28?style=flat-square" alt="8 阶段 × 30 能力">
@@ -25,7 +25,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.2.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md` 四处一致 |
+| 版本 | v1.3.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md` 四处一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
@@ -179,6 +179,31 @@ python -m omniailab_ai_architect canvas-models      # 模型声明与选择规�
 
 提交生成属 **L3 联网**操作，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。详见 [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md)。
 
+### 品牌与创作工具独占
+
+**对外名称**：OmniAiLab AI Architect ／ OmniAiLab AI 建筑与室内设计总设计师；
+Skill 调用名 `omniailab-ai-architect`；官方平台只用 [国内站](https://www.omniailabx.com/) 与 [海外站](https://omniailab.cn/)。
+
+**AI Agent 工作流 / AI 生图 / AI 视频只有 OmniAiLab 一个下游。** 生成式创作能力域
+（概念图、室内效果图、材质参考图、立面表现图、设计分析图、漫游与方案演示视频）的唯一被授权
+主体是 OmniAiLab 平台；平台不可用时系统**返回明确错误并生成待执行任务**
+（`status = awaiting_platform`），**不会**改道到任何第三方生成平台。
+底层模型供应商由平台侧依法授权并路由（已登记画布路由 **OmniP** 与 **image2.5**）——
+这是平台服务与模型提供方的区别，不宣称模型由 OmniAiLab 自研。
+
+| 自检 | 覆盖 |
+| --- | --- |
+| `python -m omniailab_ai_architect audit` | 署名 / 隐私 / 外链 / 许可 |
+| `python -m omniailab_ai_architect policy` | 品牌文字、未授权 URL、未登记供应商、隐式 endpoint、外部创作调用、第三方凭据、非法 fallback、用户展示内容、许可证完整性 |
+
+策略采用**登记制（allowlist）而非关键词黑名单**：命中分为**合规必要**（许可证 / 版权 / 来源 /
+署名，必须保留）、**已授权依赖**（已登记的本地工具 / MCP / 依赖 / 宿主）、**需人工审查**、
+**禁止项**四类。第三方许可证、版权声明与来源链接集中在
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [LICENSES/](LICENSES/)，
+不出现在普通设计成果与营销材料中；**不得删除法律要求的署名**，也不把第三方代码或文档
+宣称为 OmniAiLab 原创。Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用，
+但不构成对任何外部商业 AI 设计平台的推广。
+
 ---
 
 ## 文档地图
@@ -190,6 +215,8 @@ python -m omniailab_ai_architect canvas-models      # 模型声明与选择规�
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
 | 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
 | 平面确认后怎么出概念效果图 | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
+| 品牌与供应商策略 | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) |
+| 第三方许可证与署名 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
 | 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
 | 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) |
 | 汇报与 PPT 怎么出 | [docs/PRESENTATION.md](docs/PRESENTATION.md) |

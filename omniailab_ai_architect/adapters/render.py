@@ -51,36 +51,65 @@ NEGATIVE = (
 
 class RenderAdapter(Adapter):
     name = "render"
-    tool = "image-model"
+    tool = "omniailab-canvas"
 
     def preflight(self) -> Capability:
         configured = self._configured_backends()
+        diagrams = self._diagram_backends()
+        notes = [
+            "job package (camera + material + lighting + prompt) is always produced offline",
+        ]
+        if configured:
+            notes += [
+                f"creative backend available: {', '.join(configured)} — OmniAiLab only",
+                "generated results are non-authoritative presentation material",
+            ]
+        else:
+            notes += [
+                "OmniAiLab creative capability is NOT available right now",
+                "generation is deferred, never re-routed: no third-party image or "
+                "video platform is contacted, recommended or configured",
+                "when the platform returns, run the saved job package as-is",
+            ]
+        if diagrams:
+            notes.append(
+                f"deterministic schematic backend: {', '.join(diagrams)} "
+                "(ours, labelled non-photorealistic — never a stand-in for an AI model)"
+            )
         return Capability(
             name=self.name,
-            available=bool(configured),
-            executable=",".join(configured) if configured else "",
-            operations=["build_jobs", "describe_viewpoints"] if configured else ["build_jobs"],
-            notes=(
-                ["image backends available; results are non-authoritative presentation material"]
-                if configured
-                else [
-                    "no image-model backend bound to this session",
-                    "job package (camera + material + lighting + prompt) is fully generated",
-                    "generation must be performed by an image tool, then attached as a render artifact",
-                ]
-            ),
-            degraded_to="render_jobs.json (prompt package only)" if not configured else "",
+            # The adapter is usable offline: it always produces the camera /
+            # material / lighting / prompt package. Whether a *creative* backend
+            # exists is reported through `executable` and the notes, because
+            # "can compose shots" and "can generate images" are different claims.
+            available=True,
+            executable=",".join(configured),
+            operations=["build_jobs", "describe_viewpoints"] + (
+                ["render_local"] if diagrams else []
+            ) + ["render_ai"],
+            notes=notes,
         )
 
     @staticmethod
     def _configured_backends() -> List[str]:
-        # Not guessed: ask the provider registry which image/video providers are
-        # actually configured on this machine. Nothing is claimed to work unless
-        # the provider reported itself as connected.
+        # Not guessed: ask the provider registry which providers may take a
+        # generative scope. Under the brand-and-provider policy that list can
+        # only ever contain the native OmniAiLab platform — when it is absent
+        # the list is empty and the task is deferred rather than substituted.
         try:
             from ..providers import discover
 
-            return discover().image_backends()
+            return discover().creative_backends()
+        except Exception:
+            return []
+
+    @staticmethod
+    def _diagram_backends() -> List[str]:
+        """This project's own schematic rasterisers (never an AI model)."""
+        try:
+            from ..providers import discover
+
+            return discover().diagram_backends()
         except Exception:
             return []
 

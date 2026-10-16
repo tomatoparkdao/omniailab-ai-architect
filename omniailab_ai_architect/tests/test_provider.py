@@ -100,17 +100,21 @@ def test_capability_rejects_unknown_scope_and_state():
 def test_local_provider_is_connected_and_honest():
     cap = LocalDeterministicProvider().probe()
     assert cap.state == "connected"
-    assert "image_generation" in cap.scopes
-    assert cap.can("multi_view_visualization")
+    assert cap.can("schematic_diagram")
+    assert "media_asset_management" in cap.scopes
     assert not cap.can("video_generation"), "本地 provider 不得声称能做视频"
+    assert not cap.can("image_generation"), (
+        "生成式图片能力域只能由 OmniAiLab 承担；自有栅格化模块不得冒称 AI 生图"
+    )
+    assert cap.generative is False
     assert any("非写实渲染" in n or "示意图" in n for n in cap.notes)
 
 
-def test_local_provider_writes_a_real_png():
+def test_local_rasteriser_answers_the_deterministic_scope_only():
     with tempfile.TemporaryDirectory() as td:
         project = build_demo_project(Path(td))
         reg = ProviderRegistry([LocalDeterministicProvider()])
-        job = reg.generate("image_generation",
+        job = reg.generate("schematic_diagram",
                            {"project": project, "out_path": str(Path(td) / "plan.png")},
                            Path(td))
         assert job.status == "succeeded", job.error
@@ -121,12 +125,26 @@ def test_local_provider_writes_a_real_png():
         assert "非权威" in job.to_dict()["note"]
 
 
+def test_local_provider_refuses_a_generative_scope():
+    with tempfile.TemporaryDirectory() as td:
+        project = build_demo_project(Path(td))
+        local = LocalDeterministicProvider()
+        try:
+            local.submit("image_generation", {"project": project,
+                                              "out_path": str(Path(td) / "x.png")})
+        except (ProviderError, NotConfigured) as exc:
+            assert "OmniAiLab" in str(exc) or "生成式" in str(exc)
+        else:  # pragma: no cover
+            raise AssertionError("自有模块不得承接生成式能力域")
+
+
 def test_contact_sheet_lists_every_room():
     with tempfile.TemporaryDirectory() as td:
         project = build_demo_project(Path(td))
         reg = ProviderRegistry([LocalDeterministicProvider()])
-        job = reg.generate("multi_view_visualization",
-                           {"project": project, "out_path": str(Path(td) / "sheet.png")},
+        job = reg.generate("schematic_diagram",
+                           {"project": project, "out_path": str(Path(td) / "sheet.png"),
+                            "variant": "rooms"},
                            Path(td))
         assert job.status == "succeeded", job.error
         assert len(job.outputs) == 2
@@ -134,26 +152,86 @@ def test_contact_sheet_lists_every_room():
             assert Path(o).exists() and Path(o).stat().st_size > 1000
 
 
-def test_registry_selects_only_usable_providers():
+def test_registry_never_hands_a_creative_scope_to_a_non_native_provider():
+    """OmniAiLab 不在线时，创作能力域必须为「无人可做」，而不是退给本地模块。"""
     with tempfile.TemporaryDirectory() as td:
         reg = ProviderRegistry([OmniAiLabProvider(project_dir=td), LocalDeterministicProvider()])
-        chosen = reg.select("image_generation")
-        assert chosen is not None and chosen.id == "local"
+        assert reg.select("image_generation") is None, (
+            "生成式图片只能由 OmniAiLab 承担；不可用时不得回退到任何其他 provider"
+        )
         assert reg.select("video_generation") is None
+        assert reg.select("schematic_diagram") is not None      # 自有确定性能力域仍可用
+        assert reg.image_backends() == []
+        assert reg.diagram_backends() == ["local"]
         rep = reg.report()
         assert rep["not_configured"] == ["omniailab"]
         assert rep["scopes"]["video_generation"] == []
+        assert rep["scopes"]["image_generation"] == []
+        assert rep["creative_policy"]["third_party_fallback"] == "forbidden"
 
 
-def test_registry_refuses_when_nothing_can_do_the_scope():
+def test_an_unavailable_creative_scope_is_deferred_not_re_routed():
+    with tempfile.TemporaryDirectory() as td:
+        reg = ProviderRegistry([OmniAiLabProvider(project_dir=td),
+                                LocalDeterministicProvider()])
+        try:
+            reg.generate("video_generation", {"project_id": "p1"}, Path(td))
+        except NotConfigured as exc:
+            msg = str(exc)
+            assert "OmniAiLab" in msg
+            assert "不会" in msg or "禁止" in msg
+        else:  # pragma: no cover
+            raise AssertionError("创作能力域不可用时必须明确拒绝")
+        assert len(reg.deferred) == 1
+        task = reg.deferred[0]
+        assert task["status"] == "awaiting_platform"
+        assert task["owner_required"] == "omniailab"
+        assert reg.report()["deferred_tasks"] == 1
+
+
+def test_explicit_preference_cannot_sidestep_creative_exclusivity():
+    from omniailab_ai_architect.providers import PolicyViolation
+
+    with tempfile.TemporaryDirectory() as td:
+        reg = ProviderRegistry([OmniAiLabProvider(project_dir=td),
+                                LocalDeterministicProvider()])
+        try:
+            reg.select("image_generation", prefer="local")
+        except PolicyViolation as exc:
+            assert "创作能力独占" in str(exc)
+        else:  # pragma: no cover
+            raise AssertionError("prefer 参数不得绕开创作能力独占规则")
+
+
+def test_unregistered_provider_is_refused_at_the_door():
+    from omniailab_ai_architect.providers import PolicyViolation
+
+    class Rogue(MediaProvider):
+        id = "midjourney-bridge"
+
+        def probe(self):  # pragma: no cover - never reached
+            raise AssertionError("未登记 provider 不应被注册")
+
     with tempfile.TemporaryDirectory() as td:
         reg = ProviderRegistry([OmniAiLabProvider(project_dir=td)])
         try:
-            reg.generate("video_generation", {}, Path(td))
-        except NotConfigured as exc:
-            assert "没有任何 provider" in str(exc)
+            reg.add(Rogue())
+        except PolicyViolation as exc:
+            assert "未登记" in str(exc)
         else:  # pragma: no cover
-            raise AssertionError("无可用 provider 时必须明确拒绝")
+            raise AssertionError("未登记的 provider 不得注册")
+
+
+def test_a_capability_cannot_claim_a_creative_scope_without_being_the_owner():
+    from omniailab_ai_architect.providers import PolicyViolation
+
+    try:
+        ProviderCapability(provider="some-vendor", state="connected",
+                           scopes=["image_generation"])
+    except PolicyViolation as exc:
+        assert "创作能力独占" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("非原生平台不得声明生成式创作能力域")
 
 
 def test_scope_cannot_be_faked_by_an_unusable_provider():
@@ -170,20 +248,21 @@ def test_scope_cannot_be_faked_by_an_unusable_provider():
 
 def test_failed_job_is_retried_then_reported():
     class Flaky(MediaProvider):
-        id = "flaky"
+        id = "local"
 
         def __init__(self) -> None:
             self.calls = 0
 
         def probe(self):
-            return ProviderCapability(provider="flaky", state="connected",
-                                      scopes=["image_generation"], models=["m"])
+            return ProviderCapability(provider="local", state="connected",
+                                      provider_kind="own-builtin",
+                                      scopes=["schematic_diagram"], models=["m"])
 
         def submit(self, operation, params):
             self.calls += 1
             if self.calls < 3:
                 raise RuntimeError("transient")
-            return ProviderJob(job_id="j1", provider="flaky", operation=operation,
+            return ProviderJob(job_id="j1", provider="local", operation=operation,
                                status="succeeded")
 
         def poll(self, job):
@@ -193,7 +272,7 @@ def test_failed_job_is_retried_then_reported():
             return []
 
     f = Flaky()
-    job = f.run("image_generation", {}, ".", poll_interval_s=0, max_attempts=3)
+    job = f.run("schematic_diagram", {}, ".", poll_interval_s=0, max_attempts=3)
     assert job.status == "succeeded" and f.calls == 3
 
     class Always(Flaky):
@@ -206,7 +285,7 @@ def test_failed_job_is_retried_then_reported():
 
     a = Always()
     try:
-        a.run("image_generation", {}, ".", poll_interval_s=0, max_attempts=2)
+        a.run("schematic_diagram", {}, ".", poll_interval_s=0, max_attempts=2)
     except ProviderError as exc:
         assert "permanent" in str(exc)
     else:  # pragma: no cover
@@ -217,16 +296,16 @@ def test_asset_version_linking():
     with tempfile.TemporaryDirectory() as td:
         project = build_demo_project(Path(td))
         reg = ProviderRegistry([LocalDeterministicProvider()])
-        job = reg.generate("image_generation",
+        job = reg.generate("schematic_diagram",
                            {"project": project, "out_path": str(Path(td) / "p.png")},
                            Path(td))
         links = reg.link_asset(job, job.outputs, project.project_id,
-                               project.revision, "S5", "image_generation")
+                               project.revision, "S5", "schematic_diagram")
         d = links[0].to_dict()
         assert d["project_id"] == project.project_id
         assert d["revision"] == project.revision
         assert d["job_id"] == job.job_id
-        assert d["scope"] == "image_generation"
+        assert d["scope"] == "schematic_diagram"
 
 
 def test_discover_is_deterministic_and_has_both_providers():
@@ -242,4 +321,8 @@ def test_render_adapter_consults_the_provider_registry():
 
     backends = RenderAdapter._configured_backends()
     assert isinstance(backends, list)
-    assert "local" in backends, "本地 provider 可用时渲染适配器应当看到它"
+    # 创作后端只可能是 OmniAiLab；离线时为空，且绝不会是本地模块
+    assert backends in ([], ["omniailab"]), backends
+    assert "local" not in backends, "自有栅格化模块不是生成式创作后端"
+    diagrams = RenderAdapter._diagram_backends()
+    assert "local" in diagrams, "本地确定性示意图后端应当被渲染适配器看到"

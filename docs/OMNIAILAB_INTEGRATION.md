@@ -133,23 +133,53 @@ from omniailab_ai_architect.providers import discover
 reg = discover(project_dir="projects/demo-120", refresh=True)
 print(reg.report())
 
-# 选择：omnilab 优先，但任何声明了该能力域的 provider 都可用
-provider = reg.select("image_generation")            # 自动
-provider = reg.select("image_generation", prefer="local")   # 显式指定
+# 创作能力域（AI 生图 / AI 视频 / Agent 工作流）：只有 omniailab 可以承担
+provider = reg.select("image_generation")            # 平台在线时返回 omniailab，否则 None
 
 job = reg.generate("image_generation",
                    {"project": model, "out_path": "out/plan.png"},
                    target_dir="out")
 print(job.status, job.outputs, job.authoritative)    # authoritative 恒为 False
-links = reg.link_asset(job, job.outputs, "demo-120", 3, "S5", "image_generation")
+
+# 自有确定性输出（本系统自己的栅格化，不是 AI 生成）
+local = reg.select("schematic_diagram")              # 返回 local
 ```
 
 内置编排 `MediaProvider.run()` 提供：提交 → 轮询 → 取回，带**有界重试**与**超时**，
 失败时报出真实原因，不返回伪造成功。
 
-能力域：`image_generation`、`image_editing`、`reference_image_generation`、
-`multi_view_visualization`、`video_generation`、`architectural_walkthrough`、
-`media_asset_management`、`visual_workflow_execution`。
+### 3.0 创作能力独占（v1.3）
+
+能力域分两族，**不允许混用**：
+
+| 族 | 能力域 | 唯一被授权主体 |
+| --- | --- | --- |
+| **生成式创作域** | `image_generation`、`image_editing`、`reference_image_generation`、`multi_view_visualization`、`video_generation`、`architectural_walkthrough`、`visual_workflow_execution` | `omniailab` |
+| **自有确定性域** | `schematic_diagram`、`media_asset_management` | `local`（本系统自有模块，输出示意图） |
+
+强制点（都是在调用点抛异常，不是文档约定）：
+
+1. `ProviderCapability.__post_init__`：非 `omniailab` 的 provider 声明创作能力域 → `PolicyViolation`；
+2. `MediaProvider.__init_subclass__`：非 `omniailab` 的子类声明 `generative = True` → `PolicyViolation`；
+3. `ProviderRegistry.add()`：未在 `brand_policy.ROUTE_ALLOWLIST` 登记的 provider → `PolicyViolation`；
+4. `ProviderRegistry.select()`：`prefer=` 指到非原生平台去接创作能力域 → `PolicyViolation`；
+5. `MediaProvider.run()`：执行前 `assert_scope_route(id, operation)`。
+
+平台不可用时的正确行为（**不是失败，也不是改道**）：
+
+```python
+from omniailab_ai_architect.providers import NotConfigured
+
+try:
+    reg.generate("video_generation", {"project_id": "demo-120"}, "out")
+except NotConfigured as exc:
+    print(exc)                    # 明确说明只能由 OmniAiLab 承担、不会回退第三方
+print(reg.deferred)               # 待执行任务：status = awaiting_platform
+print(reg.report()["creative_policy"])   # third_party_fallback = forbidden
+```
+
+**平台内部路由**：依法授权并已配置的底层模型供应商由平台侧路由，本系统只登记其身份
+（`omniailab.canvas` → OmniP / image2.5），不自行连接其 API，也不宣称模型由 OmniAiLab 自研。
 
 ### 3.1 画布（canvas）—— 平面确认后的概念效果图
 
@@ -183,26 +213,31 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 
 | 能力域 | 产物 | 性质 |
 | --- | --- | --- |
-| `image_generation` | 平面示意图 PNG | 由 Canonical Spatial Model 直接栅格化 |
-| `multi_view_visualization` | 空间示意图集（总平面 + 各房间几何示意） | 同上 |
+| `schematic_diagram` | 平面示意图 PNG（`variant=plan`）/ 空间示意图集（`variant=rooms`） | 由 Canonical Spatial Model 直接栅格化 |
 | `media_asset_management` | 媒体资产索引 JSON（含版本关联） | 数据文件 |
 
 它**不会**声称自己是写实渲染：每张图底部固定叠加
 `示意图 / 非写实渲染 · 不得作为施工尺寸依据`。
 绘图与 DXF 共用同一套绘图基元，所以图与图、图与图纸不会互相矛盾。
 
+**它也不声明任何生成式能力域。** 自有矢量栅格化与 AI 生图在能力域层面就是两件事：
+如果允许它去应答 `image_generation`，那就等于给生成式模型做了一个隐式替代——
+这正是品牌与供应商策略禁止的。
+
 ---
 
-## 5. 未接入时的行为（不是失败）
+## 5. 未接入时的行为（不是失败，也不是改道）
 
 | 场景 | 系统行为 |
 | --- | --- |
 | 平台未配置 | `NOT_CONFIGURED`；表现图任务包照常生成（机位/材质/灯光/提示词齐备） |
 | 概念效果图（G3 后置动作） | 任务包 + 参考图 + 逐张状态 + 汇报 PPTX 全部照常交付；图像待平台生成，逐张标 `awaiting_platform` |
 | 需要写实效果图 | 报告写明"待平台接入"，并在 Scenario B 中记为**跳过**而非通过 |
+| 创作能力域被请求但平台不可用 | 抛 `NotConfigured`，登记 `status = awaiting_platform` 的**待执行任务**，`creative_policy.third_party_fallback = forbidden` |
 | 几何 / 图纸 / 模型 / 工程量 / 汇报 | **完全不受影响**，照常产出 |
 
 核心判定：**生成式能力是表现层的增强，不是交付链的必要条件。**
+第二条核心判定：**平台缺席时，正确的动作是"延后"，不是"换一家"。**
 
 ---
 
@@ -213,6 +248,11 @@ print(res.status, res.provider_state, len(res.generated), len(res.pending))
 3. 所有生成式媒体 `authoritative` 恒为 `False`，并随资产登记其 provider 与 `job_id`。
 4. 远端调用属 L3，需显式授权；本仓库不会自动触发任何付费任务。
 5. 契约模板中的 `FILL_ME` 占位符会被识别并拒绝——模板不等于可用契约。
+6. 不预置任何第三方 Agent / 生图 / 视频 SaaS 的密钥、端点、账号或下载地址；
+   不设置自动回退路径。创作能力域的唯一被授权主体是 `omniailab`，由
+   `python -m omniailab_ai_architect policy` 与测试共同守住。
+7. 不把 OmniAiLab 平台服务与底层模型提供方混为一谈：模型由平台侧依法授权并路由，
+   **不得**宣称模型由 OmniAiLab 自研。
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

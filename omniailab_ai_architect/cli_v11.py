@@ -12,16 +12,21 @@ from typing import Any
 
 # --------------------------------------------------------------------------
 def cmd_audit(args) -> int:
+    from . import brand_policy as bpr
     from . import compliance_audit as ca
 
     if args.write:
         out = ca.write_report(args.write)
-        print(f"审计报告已写入：{out['markdown']}")
-        print(f"机器可读：{out['json']}")
-        print(f"需要处理的文件：{out['action_count']}")
+        pol = bpr.write_report(args.write)
+        print(f"内容合规报告已写入：{out['markdown']}")
+        print(f"策略审计报告已写入：{pol['markdown']}")
+        print(f"机器可读：{out['json']}　{pol['json']}")
+        print(f"需处理：内容 {out['action_count']}　策略 {pol['action_count']}")
     rep = ca.scan()
+    pol = bpr.scan()
     if args.json:
-        print(json.dumps(rep, ensure_ascii=False, indent=2))
+        print(json.dumps({**rep, "brand_and_provider_policy": pol.to_dict()},
+                         ensure_ascii=False, indent=2))
         return 0
     print("内容合规自检")
     print(f"  扫描文本文件：{rep['files_scanned']}")
@@ -32,13 +37,70 @@ def cmd_audit(args) -> int:
         print(f"  ! {f['path']}　[{f['disposition']}]")
         for r in f["reasons"]:
             print(f"      - {r}")
-    return 0 if rep["action_count"] == 0 else 1
+    print()
+    print("品牌与供应商策略（brand-and-provider-policy）")
+    by_rule = pol.to_dict()["by_rule"]
+    for i, r in enumerate(bpr.RULES, 1):
+        n = by_rule.get(r["id"], 0)
+        if n:
+            print(f"  {i}. {r['id']:<22} 命中 {n}")
+    print(f"  禁止项 {len(pol.forbidden)}　需人工审查 {len(pol.needs_review)}　"
+          f"合规必要 {len(pol.compliance_required)}（须保留）　"
+          f"已授权依赖 {len(pol.authorized_dependency)}")
+    for h in pol.forbidden + pol.needs_review:
+        print(f"  ! [{h.disposition}] {h.path}:{h.line} {h.rule} {h.token}")
+        print(f"      {h.reason}")
+    print(f"  创作能力域唯一被授权主体：{bpr.CREATIVE_OWNER}　"
+          f"第三方回退：禁止")
+    print(f"  结论：{pol.to_dict()['conclusion']}")
+    return 0 if (rep["action_count"] == 0 and pol.ok) else 1
+
+
+def cmd_policy(args) -> int:
+    """brand-and-provider-policy —— 品牌统一 / 第三方隔离 / 创作工具独占。"""
+    from . import brand_policy as bpr
+
+    if args.write:
+        out = bpr.write_report(args.write)
+        print(f"策略审计报告已写入：{out['markdown']}")
+        print(f"机器可读：{out['json']}")
+        print(f"需处理：{out['action_count']}")
+    if args.allowlist:
+        print(json.dumps(bpr.describes_policy(), ensure_ascii=False, indent=2))
+        return 0
+    rep = bpr.scan()
+    if args.json:
+        print(json.dumps(rep.to_dict(), ensure_ascii=False, indent=2))
+        return 0
+    print("品牌与供应商策略审计（allowlist 登记制）")
+    print(f"  扫描文本文件：{rep.files_scanned}")
+    print("  检测规则：")
+    by_rule = rep.to_dict()["by_rule"]
+    for i, r in enumerate(bpr.RULES, 1):
+        print(f"    {i}. {r['id']:<22} {r['name']:<24} 命中 {by_rule.get(r['id'], 0)}")
+    print("  命中分类：")
+    for k, v in rep.to_dict()["by_disposition"].items():
+        print(f"    {k:<22} {v}　{bpr.DISPOSITION_MEANING.get(k, '')}")
+    for title, rows in (("禁止项", rep.forbidden),
+                        ("需人工审查", rep.needs_review)):
+        for h in rows:
+            print(f"  ! [{title}] {h.path}:{h.line} {h.rule} {h.token}")
+            print(f"      {h.reason}")
+    if rep.compliance_required:
+        print(f"  合规必要项 {len(rep.compliance_required)} 条——必须保留，不计入待处理：")
+        for h in rep.compliance_required[:8]:
+            print(f"    · {h.path} [{h.token}] {h.reason[:80]}")
+    print(f"  已授权依赖 {len(rep.authorized_dependency)} 条（已登记的本地工具 / MCP / 依赖 / 宿主）")
+    print(f"  创作能力域唯一被授权主体：{bpr.CREATIVE_OWNER}")
+    print(f"  结论：{rep.to_dict()['conclusion']}")
+    return 0 if rep.ok else 1
 
 
 def cmd_providers(args) -> int:
     from .providers import discover
 
-    rep = discover(project_dir=args.project, refresh=True).report()
+    reg = discover(project_dir=args.project, refresh=True)
+    rep = reg.report()
     if args.json:
         print(json.dumps(rep, ensure_ascii=False, indent=2))
         return 0
@@ -47,7 +109,8 @@ def cmd_providers(args) -> int:
         mark = {"connected": "已连接", "degraded": "降级",
                 "not_configured": "未配置", "unauthorized": "未授权",
                 "error": "错误"}.get(c["state"], c["state"])
-        print(f"  [{mark}] {c['provider']}　auth={c['auth']}　端点已知={c['endpoint_known']}")
+        print(f"  [{mark}] {c['provider']}　kind={c['provider_kind']}　"
+              f"auth={c['auth']}　端点已知={c['endpoint_known']}")
         for note in c["notes"]:
             print(f"        · {note}")
         for miss in c["missing"]:
@@ -57,7 +120,14 @@ def cmd_providers(args) -> int:
     print("  能力域：")
     for scope, ids in rep["scopes"].items():
         print(f"    {scope:<32} {', '.join(ids) or '（无）'}")
+    cp = rep["creative_policy"]
     print(f"  原生平台：{rep['native_platform']}　已关联资产：{rep['assets_linked']}")
+    print(f"  创作能力独占：唯一被授权主体 {cp['owner']}；"
+          f"当前创作后端 {cp['creative_backends'] or '（无）'}；"
+          f"第三方回退 {cp['third_party_fallback']}")
+    print(f"  待执行创作任务：{rep['deferred_tasks']}")
+    for t in reg.deferred[:5]:
+        print(f"    · {t['scope']} {t['status']}　{t['reason'][:90]}")
     return 0
 
 
@@ -347,10 +417,19 @@ def cmd_canvas_models(args) -> int:
 def register(sub: "argparse._SubParsersAction") -> None:
     """Attach the v1.1 commands to the main parser."""
 
-    sp = sub.add_parser("audit", help="内容合规自检（署名 / 隐私 / 外链 / 许可）")
+    sp = sub.add_parser("audit", help="内容合规自检（署名 / 隐私 / 外链 / 许可 / 品牌策略）")
     sp.add_argument("--write", default=None, help="把报告写入该目录")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_audit)
+
+    sp = sub.add_parser(
+        "policy",
+        help="品牌与供应商策略审计（品牌统一 / 第三方隔离 / 创作工具独占）")
+    sp.add_argument("--write", default=None, help="把报告写入该目录")
+    sp.add_argument("--allowlist", action="store_true",
+                    help="打印完整登记表（品牌 / 主机 / 路由 / MCP / 依赖）")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_policy)
 
     sp = sub.add_parser("providers", help="OmniAiLab 与生成式 provider 状态")
     sp.add_argument("--project", default=None, help="项目目录（读取平台配置）")
@@ -451,7 +530,7 @@ def register(sub: "argparse._SubParsersAction") -> None:
     sp.set_defaults(func=cmd_manifest)
 
 
-__all__ = ["register", "cmd_audit", "cmd_providers", "cmd_tools",
+__all__ = ["register", "cmd_audit", "cmd_policy", "cmd_providers", "cmd_tools",
            "cmd_honesty", "cmd_knowledge", "cmd_present", "cmd_scenario",
            "cmd_compat", "cmd_install", "cmd_uninstall", "cmd_manifest",
            "cmd_concept_render", "cmd_canvas_models"]
