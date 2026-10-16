@@ -119,6 +119,13 @@ SKIP_DIRS = {".git", "out", "__pycache__", ".pytest_cache", "node_modules",
 GENERATED_FILES = ("docs/BRAND_POLICY.md", "docs/CONTENT_AUDIT.md",
                    "docs/brand-policy.json", "docs/content-audit.json")
 
+# 第三方许可证原文：**绝不**加盖本仓署名。
+#
+# `LICENSES/LICENSE-<repo>.txt` 里是别人的许可证文本；在它开头写「© OmniAiLab」
+# 会被读成"这份许可证由 OmniAiLab 出具"，属于冒充自研/混淆归属，是本仓明令禁止的。
+# 本仓当前不含任何第三方作品内容，故这些文件也不应存在（见 THIRD_PARTY_NOTICES.md）。
+NO_ATTRIBUTION_PREFIXES: Tuple[str, ...] = ("LICENSES/LICENSE-",)
+
 # 项目数据不参与统一：统一空间模型的 schema 不接受多余字段，
 # 且这些是用户项目数据，不是本仓的文档产物。
 SKIP_TOP = {"projects"}
@@ -357,6 +364,9 @@ def run(check: bool = False, root: Path = ROOT) -> Dict[str, object]:
 
     for pattern in ("*.cmd", "*.txt"):
         for p, rel in _iter(root, pattern):
+            if rel.startswith(NO_ATTRIBUTION_PREFIXES):
+                # 第三方许可证原文：不得加盖本仓署名（见常量处说明）。
+                continue
             report["total"] = int(report["total"]) + 1
             ch = normalize_cmd_or_txt(p, check)
             if ch:

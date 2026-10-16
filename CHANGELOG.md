@@ -33,7 +33,7 @@ agent_created: true
 | Schema：设计风格、编译提示词 | `schemas/design-style.schema.json`、`schemas/compiled-prompt.schema.json` |
 | CLI | `python -m omniarchitect style <子命令>`（16 个） |
 | 测试 | `omniarchitect/tests/test_style_*.py`（5 个模块） |
-| 第三方审计与许可证留档 | `docs/STYLE_REFERENCE_AUDIT.md`、`LICENSES/`、`THIRD_PARTY_NOTICES.md` |
+| 内容来源声明与第三方依赖登记 | `THIRD_PARTY_NOTICES.md`（设计风格内容**全部自有**，无第三方许可证留档） |
 
 ### 删除的五处重复实现（"同一规则两份实现"的来源）
 
@@ -85,6 +85,33 @@ agent_created: true
 
 - `run_tests.py`：**350 passed / 0 failed**（22 模块）
 - 用户要求的十三项验证全部通过（单 Skill 可用、无第二目录 / 安装 / 仓库等）
+
+### 后续清理 — 第三方 Skill 内容、外链与品牌宣传
+
+按「全仓内容必须自有、用户面不出现外部内容」的要求复查，清掉残留在设计风格系统
+立项记录里的**第三方 Skill 内容**：
+
+| 清除项 | 原因 |
+|---|---|
+| `docs/STYLE_REFERENCE_AUDIT.md` | 五个第三方仓库（其中两个是第三方 Skill）的参考审计全文，含项目名与仓库标识 |
+| `LICENSES/LICENSE-jac2020-2020_architectural-visualization-prompt-library.txt` | 第三方许可证原文；本仓未复用、不分发其任何内容，非法律必需 |
+| `LICENSES/LICENSE-ur-grue_autopunk-media-skills.txt` | 同上 |
+| `THIRD_PARTY_NOTICES.md`「设计风格系统的参考项目审计」一节 | 改写为「内容来源（全部自有）」声明，不再出现任何第三方项目名与仓库标识 |
+| `installer/manifest.json` 4 条失效记录 | 随上述文件重新生成 |
+
+**并修掉一个真实缺陷**：`normalize_attribution.py` 会往 `LICENSES/LICENSE-*.txt` 上盖本仓署名——
+这会把别人的许可证读成「本仓出具的许可证」，属冒充自研/混淆归属。已加
+`NO_ATTRIBUTION_PREFIXES` 守卫，这类文件一律不加本仓署名。
+
+**保留项**（真实依赖，不属于「不必要的第三方内容」）：可选 Python 库
+（ezdxf / Pillow / python-pptx / jsonschema / shapely / pytest）与用户自备的本地专业工具
+（Blender / FreeCAD / IfcOpenShell / AutoCAD）继续在 `THIRD_PARTY_NOTICES.md` 逐项登记——
+许可证完整性检查要求其必须存在，缺项会被判 `forbidden`。
+
+**商业案例与品牌宣传**：复查无残留（`cases/` 三份是自创通用任务书，不含第三方事务所 /
+项目 / 作品名；九条策略规则 `action_count = 0`）。
+**AI 生图与视频生成**：唯一被授权主体 `omniailab`，第三方回退 `forbidden`——
+能力域在平台未连接时一律标记 `awaiting_platform`，不改道（见 `python -m omniarchitect providers`）。
 
 ---
 

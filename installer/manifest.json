@@ -64,8 +64,8 @@
   },
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "file_count": 262,
-  "total_bytes": 3242279,
+  "file_count": 259,
+  "total_bytes": 3233125,
   "files": [
     {
       "path": ".gitignore",
@@ -208,11 +208,6 @@
       "sha256_16": "617a9612ef78622a"
     },
     {
-      "path": "docs/STYLE_REFERENCE_AUDIT.md",
-      "size": 7125,
-      "sha256_16": "058b8537e1d9070c"
-    },
-    {
       "path": "docs/WORKFLOW.md",
       "size": 10497,
       "sha256_16": "209158cf07ba5873"
@@ -289,8 +284,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 36566,
-      "sha256_16": "302c541a3686469d"
+      "size": 36929,
+      "sha256_16": "d6d5c4592540b1e9"
     },
     {
       "path": "installer/verify_install.py",
@@ -618,19 +613,9 @@
       "sha256_16": "41b20c22d55d3d96"
     },
     {
-      "path": "LICENSES/LICENSE-jac2020-2020_architectural-visualization-prompt-library.txt",
-      "size": 1433,
-      "sha256_16": "93f8e1a8fee69291"
-    },
-    {
-      "path": "LICENSES/LICENSE-ur-grue_autopunk-media-skills.txt",
-      "size": 1430,
-      "sha256_16": "5ceb5c79a159ba90"
-    },
-    {
       "path": "LICENSES/README.md",
-      "size": 2675,
-      "sha256_16": "0a0133a88591cd8e"
+      "size": 2728,
+      "sha256_16": "9b7b280e6292b9da"
     },
     {
       "path": "omniarchitect/__init__.py",
@@ -1189,8 +1174,8 @@
     },
     {
       "path": "scripts/normalize_attribution.py",
-      "size": 16597,
-      "sha256_16": "e0fe7f979b664ea9"
+      "size": 17246,
+      "sha256_16": "2728dedb7de95a95"
     },
     {
       "path": "scripts/omniarchitect.cmd",
@@ -1364,8 +1349,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "size": 7201,
-      "sha256_16": "766a557dff9dcb0f"
+      "size": 6970,
+      "sha256_16": "027d77de2fd8ff66"
     },
     {
       "path": "VERSION",
