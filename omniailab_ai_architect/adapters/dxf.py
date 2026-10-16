@@ -157,7 +157,10 @@ class DxfAdapter(Adapter):
             result["errors"].append("file missing or empty")
             return result
         try:
-            doc, auditor = ezdxf.recover.readfile(str(p))
+            # `ezdxf.recover` is a submodule; it is not imported by `import ezdxf`
+            from ezdxf import recover as _recover
+
+            doc, auditor = _recover.readfile(str(p))
             result["errors"] = [str(e) for e in auditor.errors][:20]
             result["fixes"] = [str(f) for f in auditor.fixes][:20]
             msp = doc.modelspace()
@@ -165,15 +168,28 @@ class DxfAdapter(Adapter):
             for e in msp:
                 kinds[e.dxftype()] = kinds.get(e.dxftype(), 0) + 1
             layers = sorted({e.dxf.layer for e in msp if e.dxf.hasattr("layer")})
-            # cross-check with the independent native parser as well
             native = read_r12(p)
+            labels = []
+            for e in msp:
+                if e.dxftype() in ("TEXT", "MTEXT"):
+                    try:
+                        labels.append(e.dxf.text if e.dxftype() == "TEXT" else e.text)
+                    except Exception:
+                        pass
+            # stats shape is identical to the native auditor's so that callers
+            # never have to know which backend produced the audit
             result["stats"] = {
-                "entities": sum(kinds.values()),
+                "entities": kinds,
+                "entity_count": sum(kinds.values()),
                 "kinds": kinds,
                 "layers": layers,
                 "size_bytes": p.stat().st_size,
+                "acadver": doc.dxfversion,
+                "text_labels": len(labels),
+                "sample_labels": [l for l in labels if l and l.strip()][:6],
                 "native_entity_count": native.get("stats", {}).get("entity_count"),
             }
+            result["native"] = native
             result["ok"] = (
                 not result["errors"]
                 and sum(kinds.values()) > 0

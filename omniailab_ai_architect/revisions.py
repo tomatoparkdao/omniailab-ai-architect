@@ -105,7 +105,7 @@ def record_change(
     kind: str,
     detail: str,
     targets: Sequence[str] = (),
-    author: str = "omniarchitect",
+    author: str = "omniailab-ai-architect",
     invalidated: Sequence[str] = (),
 ) -> ChangeEntry:
     entry = ChangeEntry(
@@ -125,7 +125,7 @@ def apply_geometry_change(
     project: Project,
     element_id: str,
     patch: Dict[str, object],
-    author: str = "omniarchitect",
+    author: str = "omniailab-ai-architect",
     detail: str = "",
 ) -> InvalidationReport:
     """Patch an element's geometry, bump revisions, and cascade invalidation.
@@ -161,7 +161,7 @@ def apply_space_change(
     project: Project,
     space_id: str,
     patch: Dict[str, object],
-    author: str = "omniarchitect",
+    author: str = "omniailab-ai-architect",
     detail: str = "",
 ) -> InvalidationReport:
     space = project.space(space_id)

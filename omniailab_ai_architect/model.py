@@ -441,7 +441,8 @@ def validate_schema(project: Project, schema_path: str | Path | None = None) -> 
     so verification never depends on a package that may not be installable.
     """
     if schema_path is None:
-        schema_path = Path(__file__).resolve().parent / "schemas" / "project.schema.json"
+        from .paths import SCHEMAS
+        schema_path = SCHEMAS / "project.schema.json"
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     instance = project.to_dict()
     try:

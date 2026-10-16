@@ -1,13 +1,13 @@
 """Command line interface.
 
-    python -m omniarchitect doctor
-    python -m omniarchitect stages
-    python -m omniarchitect status    --project projects/demo-120
-    python -m omniarchitect route     --project projects/demo-120 "帮我出施工图"
-    python -m omniarchitect run       --project projects/demo-120 --all --assume-approval
-    python -m omniarchitect confirm   --project projects/demo-120 --stage S3 --by 业主
-    python -m omniarchitect change    --project projects/demo-120 "我不喜欢客厅的电视背景墙"
-    python -m omniarchitect demo      --out out
+    python -m omniailab_ai_architect doctor
+    python -m omniailab_ai_architect stages
+    python -m omniailab_ai_architect status    --project projects/demo-120
+    python -m omniailab_ai_architect route     --project projects/demo-120 "帮我出施工图"
+    python -m omniailab_ai_architect run       --project projects/demo-120 --all --assume-approval
+    python -m omniailab_ai_architect confirm   --project projects/demo-120 --stage S3 --by 业主
+    python -m omniailab_ai_architect change    --project projects/demo-120 "我不喜欢客厅的电视背景墙"
+    python -m omniailab_ai_architect demo      --out out
 """
 from __future__ import annotations
 
@@ -305,7 +305,7 @@ def cmd_demo(args) -> int:
 # --------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="omniarchitect",
+        prog="omniailab-ai-architect",
         description="OmniArchitect — AI 建筑 / 室内设计总设计师（八阶段工作流）",
     )
     p.add_argument("--version", action="version", version=f"OmniArchitect {__version__}")

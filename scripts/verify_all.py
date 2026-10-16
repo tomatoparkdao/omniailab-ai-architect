@@ -14,20 +14,40 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT.parent))
 sys.path.insert(0, str(ROOT))
 
+PACKAGE = "omniailab_ai_architect"
+
 REQUIRED_PATHS = [
-    "AGENTS.md", "README.md", "SKILL.md",
-    "stages.py", "changes.py", "model.py", "planner.py", "workflow.py",
-    "stage_state.py", "routing.py", "quantities.py", "compliance.py", "registry.py",
-    "schemas/project.schema.json", "workflows/interior-full.yaml",
-    "skills/01-brief.md", "skills/18-revisions.md",
-    "adapters/dxf.py", "adapters/dxf_r12.py", "adapters/mesh.py",
-    "adapters/blender.py", "adapters/ifc.py", "adapters/freecad.py", "adapters/render.py",
+    "AGENTS.md", "README.md", "SKILL.md", "THIRD_PARTY_NOTICES.md",
+    PACKAGE + "/stages.py", PACKAGE + "/changes.py", PACKAGE + "/model.py",
+    PACKAGE + "/planner.py", PACKAGE + "/workflow.py", PACKAGE + "/stage_state.py",
+    PACKAGE + "/routing.py", PACKAGE + "/quantities.py", PACKAGE + "/compliance.py",
+    PACKAGE + "/registry.py",
+    # v1.1 additions
+    PACKAGE + "/providers/omniailab.py", PACKAGE + "/providers/base.py",
+    PACKAGE + "/tools/registry.py", PACKAGE + "/tools/capability.py",
+    PACKAGE + "/presentation/deck.py", PACKAGE + "/presentation/pptx_writer.py",
+    PACKAGE + "/presentation/layouts.py",
+    PACKAGE + "/integration/agent_skills.py", PACKAGE + "/integration/installer.py",
+    PACKAGE + "/knowledge/loader.py",
+    "schemas/project.schema.json", "schemas/case.schema.json",
+    "schemas/tool-capability.schema.json", "schemas/presentation.schema.json",
+    "workflows/interior-full.yaml",
+    "skills/01-brief.md", "skills/18-revisions.md", "skills/design-presentation.md",
     "adapters/specs/blender.md", "adapters/specs/ifc.md",
-    "tests/test_stages.py", "tests/test_changes.py", "tests/test_workflow.py",
+    "knowledge/architectural-design-principles.md",
+    "knowledge/design-presentation-methodology.md",
+    "installer/install.py", "installer/manifest.json",
+    "compatibility/agent-skills.md",
+    "cases/generic-apartment-120.md",
+    PACKAGE + "/tests/test_stages.py", PACKAGE + "/tests/test_changes.py",
+    PACKAGE + "/tests/test_workflow.py", PACKAGE + "/tests/test_provider.py",
+    PACKAGE + "/tests/test_tools.py", PACKAGE + "/tests/test_presentation.py",
+    PACKAGE + "/tests/test_scenarios.py", PACKAGE + "/tests/test_integration.py",
     "docs/WORKFLOW.md", "docs/ARCH_SKILLS_INTEGRATION.md", "docs/ARCHITECTURE.md",
+    "docs/OMNIAILAB_INTEGRATION.md", "docs/THIRD_PARTY_AUDIT.md",
+    "docs/MCP_TOOLS.md", "docs/INSTALL.md",
     "scripts/run_tests.py",
 ]
 
@@ -52,8 +72,8 @@ def check_paths() -> int:
 
 def check_catalogue() -> int:
     section("2. 阶段与能力目录自检")
-    from omniarchitect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
-    from omniarchitect.registry import load_registry, fusion_report
+    from omniailab_ai_architect.stages import CAPABILITIES, STAGE_ORDER, validate_catalog
+    from omniailab_ai_architect.registry import load_registry, fusion_report
 
     issues = validate_catalog()
     print(f"  阶段 {len(STAGE_ORDER)}：{', '.join(STAGE_ORDER)}")
@@ -76,7 +96,7 @@ def check_catalogue() -> int:
 
 def check_doctor() -> int:
     section("3. 工具链体检")
-    from omniarchitect.adapters import doctor
+    from omniailab_ai_architect.adapters import doctor
 
     rep = doctor()
     for row in rep["adapters"]:
@@ -95,10 +115,10 @@ def check_doctor() -> int:
 
 def check_smoke() -> int:
     section("4. 全流程冒烟（八阶段 + 变更分析）")
-    from omniarchitect.changes import analyse
-    from omniarchitect.demo import build_demo_project
-    from omniarchitect.stage_state import progress
-    from omniarchitect.workflow import StageRunner
+    from omniailab_ai_architect.changes import analyse
+    from omniailab_ai_architect.demo import build_demo_project
+    from omniailab_ai_architect.stage_state import progress
+    from omniailab_ai_architect.workflow import StageRunner
 
     failures = 0
     with tempfile.TemporaryDirectory() as td:

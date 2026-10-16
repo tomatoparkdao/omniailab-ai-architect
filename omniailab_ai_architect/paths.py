@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent  # project root (package sits inside it)
 SCHEMAS = ROOT / "schemas"
 SKILLS = ROOT / "skills"
 WORKFLOWS = ROOT / "workflows"

@@ -20,11 +20,11 @@ import traceback
 from contextlib import redirect_stdout
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT.parent))
-sys.path.insert(0, str(ROOT))
+ROOT = Path(__file__).resolve().parent.parent          # project root
+sys.path.insert(0, str(ROOT))                          # makes the package importable
 
-TEST_DIR = ROOT / "tests"
+PACKAGE = "omniailab_ai_architect"
+TEST_DIR = ROOT / PACKAGE / "tests"
 
 
 def discover(pattern: str = "") -> list:
@@ -32,7 +32,7 @@ def discover(pattern: str = "") -> list:
     for p in sorted(TEST_DIR.glob("test_*.py")):
         if pattern and pattern not in p.stem:
             continue
-        name = f"{ROOT.name}.tests.{p.stem}"
+        name = f"{PACKAGE}.tests.{p.stem}"
         try:
             mods.append(importlib.import_module(name))
         except Exception as exc:  # a module that will not import is a failure

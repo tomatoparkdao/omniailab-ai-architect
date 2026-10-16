@@ -5,8 +5,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from omniarchitect.demo import build_demo_project
-from omniarchitect.stage_state import (
+from omniailab_ai_architect.demo import build_demo_project
+from omniailab_ai_architect.stage_state import (
     AWAITING,
     BLOCKED,
     CONFIRMED,
@@ -18,7 +18,7 @@ from omniarchitect.stage_state import (
     progress,
     reject_stage,
 )
-from omniarchitect.workflow import StageRunner
+from omniailab_ai_architect.workflow import StageRunner
 
 
 def _proj(tmp: Path):

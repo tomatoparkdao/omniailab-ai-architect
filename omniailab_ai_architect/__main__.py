@@ -1,4 +1,4 @@
-"""Entry point: `python -m omniarchitect ...`"""
+"""Entry point: `python -m omniailab_ai_architect ...`"""
 from __future__ import annotations
 
 import sys

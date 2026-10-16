@@ -4,8 +4,8 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from omniarchitect.demo import build_demo_project
-from omniarchitect.planner import PlanGenerator, SchemeOptions, envelope_polygon
+from omniailab_ai_architect.demo import build_demo_project
+from omniailab_ai_architect.planner import PlanGenerator, SchemeOptions, envelope_polygon
 
 
 def _gen(tmp: Path):
@@ -47,7 +47,7 @@ def test_every_enclosed_room_gets_a_door():
 
 
 def test_rooms_do_not_overlap():
-    from omniarchitect.geometry import polygon_to_shapely
+    from omniailab_ai_architect.geometry import polygon_to_shapely
 
     with tempfile.TemporaryDirectory() as td:
         p, g = _gen(Path(td))
@@ -103,7 +103,7 @@ def test_envelope_notch_is_respected():
 
 
 def test_unknown_strategy_fails_loudly():
-    from omniarchitect.errors import ModelError
+    from omniailab_ai_architect.errors import ModelError
 
     with tempfile.TemporaryDirectory() as td:
         p, g = _gen(Path(td))

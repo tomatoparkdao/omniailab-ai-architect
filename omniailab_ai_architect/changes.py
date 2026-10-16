@@ -501,7 +501,7 @@ def analyse(
     project: Project,
     text: str,
     apply: bool = True,
-    author: str = "omniarchitect",
+    author: str = "omniailab-ai-architect",
 ) -> ChangeImpactReport:
     diag = diagnose(text)
     targets, spaces, elements, scope = locate(project, text, diag)
