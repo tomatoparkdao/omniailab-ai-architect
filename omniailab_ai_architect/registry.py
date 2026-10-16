@@ -7,7 +7,7 @@ provenance layer on top of it.
 Attribution for third-party material
 ------------------------------------
 Upstream project: arch-skills (https://github.com/gujun1502/arch-skills)
-Author: Gu Jun · https://arch-skills.com · https://www.chodo.ai
+Author: Gu Jun
 Licence: code MIT · documentation (SKILL.md, references/, templates/) CC BY 4.0.
 
 Only methodology and knowledge were absorbed into the runtime. No upstream
@@ -42,10 +42,9 @@ ARCH_ATTRIBUTION = {
     "project": "arch-skills",
     "url": "https://github.com/gujun1502/arch-skills",
     "author": "Gu Jun",
-    "author_url": "https://www.chodo.ai",
-    "homepage": "https://arch-skills.com",
     "license": "MIT (code) · CC BY 4.0 (documentation)",
-    "attribution_line": "Gu Jun / arch-skills.com",
+    "attribution_line": "Gu Jun / arch-skills",
+    "notices": "THIRD_PARTY_NOTICES.md",
     "vendored_at": "third_party/arch-skills",
     "note": "只吸收方法论与判据；未在运行时代码路径中分发上游源文件。",
 }

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omniailabx.com/schemas/presentation.schema.json",
+  "title": "OmniArchitect Design Deck",
+  "description": "The presentation content model. A deck is data before it is a file, so every slide can be traced back to the project revision and data source that produced it.",
+  "type": "object",
+  "required": ["title", "kind", "stage", "project_id", "revision", "slides"],
+  "properties": {
+    "title": { "type": "string" },
+    "subtitle": { "type": "string" },
+    "kind": {
+      "type": "string",
+      "enum": ["concept", "plan-comparison", "preliminary", "visual", "final",
+               "materials-lighting", "technical-briefing", "delivery", "full"]
+    },
+    "stage": { "type": "string", "pattern": "^S[1-8]$" },
+    "project_id": { "type": "string" },
+    "revision": { "type": "integer", "minimum": 0 },
+    "generated_at": { "type": "string" },
+    "slide_count": { "type": "integer" },
+    "brand": { "$ref": "#/$defs/brand" },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "provenance": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Which knowledge domains and data sources fed this deck."
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/slide" }
+    }
+  },
+  "allOf": [
+    {
+      "description": "Every deck must open with a cover and must close its argument with the capability-boundary page.",
+      "properties": {
+        "slides": {
+          "contains": { "type": "object", "properties": { "kind": { "const": "cover" } },
+                        "required": ["kind"] }
+        }
+      }
+    },
+    {
+      "properties": {
+        "slides": {
+          "contains": { "type": "object", "properties": { "kind": { "const": "disclaimer" } },
+                        "required": ["kind"] }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "brand": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tagline": { "type": "string" },
+        "platform": { "type": "string" },
+        "ink": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "paper": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "muted": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "accent": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "accent_soft": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "rule": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "font_cjk": { "type": "string" },
+        "font_latin": { "type": "string" },
+        "logo": { "type": "string" },
+        "footer_note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "slide": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["cover", "agenda", "section", "summary", "concept", "keywords",
+                   "moodboard", "plan", "plan_compare", "analysis", "perspective",
+                   "materials", "lighting", "decisions", "budget", "coordination",
+                   "drawings", "open_items", "next_steps", "disclaimer"]
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "kicker": { "type": "string" },
+        "bullets": { "type": "array", "items": { "type": "string" } },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title"],
+            "properties": {
+              "title": { "type": "string" },
+              "items": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "table_header": { "type": "array", "items": { "type": "string" } },
+        "table": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "string" } }
+        },
+        "image": { "type": "string" },
+        "notes": { "type": "string" },
+        "attribution": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

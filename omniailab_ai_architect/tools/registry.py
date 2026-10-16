@@ -342,7 +342,28 @@ class ToolRegistry:
 def _verify_dxf(p: Path) -> Dict[str, Any]:
     from ..adapters.dxf_r12 import read_r12
 
-    rep = read_r12(p)
+    # the native reader is a genuinely independent parser and works on both
+    # dialects; its R12-only checks are only errors when the file *is* R12.
+    native = read_r12(p)
+    stats = dict(native.get("stats", {}))
+    try:
+        raw = p.read_text(encoding="utf-8")[:4096]
+    except UnicodeDecodeError:
+        raw = p.read_text(encoding="ascii", errors="replace")[:4096]
+    is_r12 = "AC1009" in raw
+    errors: List[str] = []
+    if not is_r12:
+        # R2010 and later: ignore the R12-specific complaints, keep the rest
+        native_errors = [e for e in native.get("errors", [])
+                         if e != "missing AC1009 version header"]
+    else:
+        native_errors = list(native.get("errors", []))
+    errors.extend(native_errors)
+
+    rep: Dict[str, Any] = {
+        "ok": not errors, "stats": stats, "errors": errors,
+        "dialect": "R12(AC1009)" if is_r12 else "R2010+",
+    }
     try:
         import ezdxf  # noqa: F401
         from ezdxf import recover
@@ -351,15 +372,46 @@ def _verify_dxf(p: Path) -> Dict[str, Any]:
         kinds: Dict[str, int] = {}
         for e in doc.modelspace():
             kinds[e.dxftype()] = kinds.get(e.dxftype(), 0) + 1
+        aud_errors = [str(x) for x in auditor.errors][:10]
+        rep["ezdxf_auditor_errors"] = aud_errors
         rep["stats"]["ezdxf_entity_count"] = sum(kinds.values())
         rep["stats"]["ezdxf_kinds"] = kinds
-        rep["ezdxf_auditor_errors"] = [str(x) for x in auditor.errors][:10]
+        rep["stats"]["dxfversion"] = doc.dxfversion
+        rep["errors"] = [e for e in errors if e not in aud_errors] + aud_errors
+        rep["ok"] = not aud_errors and sum(kinds.values()) > 0
     except Exception:
         rep["stats"]["ezdxf_entity_count"] = None
-    # DXF is the only honest label for a .dxf file
+
     rep["is_dwg"] = False
     rep["honest_label"] = "可编辑 2D CAD 图纸（DXF）"
     return rep
+
+
+def _verify_dwg(p: Path) -> Dict[str, Any]:
+    """A `.dwg` is identified by content, never by its extension.
+
+    Renaming a DXF to `.dwg` does not make a DWG — AutoCAD will refuse or
+    corrupt it. This verifier reports what the file actually is.
+    """
+    head = p.read_bytes()[:512]
+    text = head.decode("latin-1", "replace")
+    if text.lstrip().startswith("AC10") or "SECTION" in text[:400]:
+        return {
+            "ok": False, "is_dwg": False, "errors": [
+                "文件内容是 DXF（文本），不是 DWG（二进制）——扩展名改名不改变格式"
+            ],
+            "honest_label": "实为 DXF，被改名为 .dwg；需要 DWG 必须由具备许可的后端另存",
+        }
+    if head[:2] in (b"AC", b"\x41\x43") and len(head) >= 6:
+        version = head[:6].decode("latin-1", "replace")
+        return {"ok": True, "is_dwg": True, "errors": [],
+                "stats": {"version": version, "size_bytes": p.stat().st_size},
+                "honest_label": "DWG（二进制，版本标识 " + version + "）"}
+    return {
+        "ok": False, "is_dwg": False,
+        "errors": ["无 DWG 版本标识：既不是有效 DWG，也不是可识别的 DXF"],
+        "honest_label": "无法确认为 DWG",
+    }
 
 
 def _verify_obj(p: Path) -> Dict[str, Any]:
@@ -423,6 +475,7 @@ def _verify_md(p: Path) -> Dict[str, Any]:
 
 VERIFIERS: Dict[str, Callable[[Path], Dict[str, Any]]] = {
     "dxf": _verify_dxf,
+    "dwg": _verify_dwg,
     "obj": _verify_obj,
     "json": _verify_json,
     "pptx": _verify_pptx,

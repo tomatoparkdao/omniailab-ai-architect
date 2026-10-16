@@ -8,7 +8,7 @@
 
 最初的设计把 18 个专业 Skill 顺序执行一遍。那是把两件不同的事混在一起了：
 
-- **岗位能力** —— 设计事务所有哪些专业角色、各自能做什么。18 项（现拆解为 28 项能力），一项能力经常横跨多个阶段。
+- **岗位能力** —— 设计事务所有哪些专业角色、各自能做什么。最初的 18 份说明书现拆解为 29 项能力（新增跨阶段的设计汇报能力），一项能力经常横跨多个阶段。
 - **业务阶段** —— 一个真实项目是怎么推进的。8 个阶段，每个阶段有自己的交付物、进入条件、退出条件和业主确认门禁。
 
 一个项目不是"把 18 个能力跑一遍"，而是**按阶段推进，每个阶段调用该阶段需要的专业能力**。灯光设计就是一个例子：它在 S2 给概念灯光方向、在 S4 出照明方案、在 S7 出灯具定位图。把它钉死在某一个阶段，项目就没法做了。
@@ -51,7 +51,7 @@
 | lighting-design | S2, S4, S7 | delivery | S8 |
 | building-services | S4, S6, S7 | cad-drafting | S4, S7 |
 
-原始的 18 份技能说明书已就地注入 `capability` 与 `stages` 字段，并保留原文。`python -m omniarchitect registry` 可打印完整映射。
+原始的 18 份说明书全部保留，就地注入 `capability` 与 `stages` 字段；新增 `19-design-presentation` 系列能力。`python -m omniailab_ai_architect registry` 可打印完整映射。
 
 ---
 
@@ -126,9 +126,9 @@ G3 是整条链上最贵的一个门禁：跳过它，后面所有图纸都要�
 状态：`pending → in_progress → awaiting_confirmation → confirmed`，另有 `rework` 与 `blocked`。持久化在 `project.meta["stage_state"]`，因此一次运行可以在门禁处停下，几天后继续。
 
 ```bat
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
+python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
 :: 跑到第一个未确认门禁即停
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniarchitect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
-python -m omniarchitect status  --project projects/demo-120
+python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniailab_ai_architect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
+python -m omniailab_ai_architect status  --project projects/demo-120
 ```

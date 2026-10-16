@@ -22,8 +22,9 @@ from typing import Dict, Iterable, List, Optional, Sequence
 from .errors import ModelError
 
 # --------------------------------------------------------------------------
-# capability catalogue — the twenty-seven professional capabilities, mapped to
-# the stages where they are used. A capability may serve several stages.
+# capability catalogue — the professional capabilities as practised in a design
+# studio, mapped to the stages where each one is used. A capability may serve
+# several stages; the stage is the business process, the capability is the job.
 # --------------------------------------------------------------------------
 SOURCE_OMNI = "omnilab"
 SOURCE_ARCH = "arch-skills"
@@ -127,6 +128,10 @@ CAPABILITIES: List[Capability] = [
                responsibility="设计文本、说明书、技术交底文件的版式与归档"),
     Capability("delivery", "版本管理与交付", (S8,), legacy="18-revisions",
                responsibility="变更追踪、跨图纸同步、交付核对与版本冻结"),
+    Capability("design-presentation", "设计汇报与提案", (S2, S3, S4, S5, S6, S7, S8),
+               legacy="design-presentation",
+               responsibility="跨阶段通用：把该阶段成果转译为可决策的提案与可编辑 PPTX；"
+                              "每份汇报必须含免责与边界页"),
 ]
 
 CAPABILITY_BY_SLUG: Dict[str, Capability] = {c.slug: c for c in CAPABILITIES}

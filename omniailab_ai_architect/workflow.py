@@ -485,9 +485,17 @@ class StageRunner:
                   "", "## 成本影响（R3 · 前期动态估算）", "",
                   "- 概念阶段成本差异主要来自天花造型复杂度与走廊面积占比",
                   "", "---", "",
-                  "> 方法与判据来源：arch-skills（Gu Jun / arch-skills.com，CC BY 4.0）——"
+                  "> 方法与判据来源：arch-skills（Gu Jun / arch-skills，CC BY 4.0）——"
                   "克制美学宪章、概念四步引擎、意向板协议。",
                   "> 概念方向须在平面阶段（S3）验证是否成立，不能只活在效果图里。"]
+        lines += [
+            "", "---", "",
+            f"项目：{self.project.name or self.project.project_id}"
+            f"（{self.project.project_id}）　模型修订 r{self.project.revision}"
+            f"　阶段 S2 　生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+            "本文件由 OmniArchitect 依据统一空间模型自动生成，与同一修订的全部下游成果可互相追溯。",
+            "设计判据为通用设计原理与工程惯例；结构、消防、无障碍与法规符合性须由持证专业人员复核签署。",
+        ]
         (d / "concept-options.md").write_text("\n".join(lines), encoding="utf-8")
 
         # moodboard protocol (arch-skills fusion)
@@ -506,6 +514,9 @@ class StageRunner:
             "- 200ms 第一印象　- 气质吻合度 0–100　- Design Critic 六维 0–100",
             "- Color Harmony 60-30-10 拆色　- Design Taste 三维校准（Variance/Motion/Density）",
             "", "> 方法来源：arch-skills · moodboard-aesthetic-iteration（CC BY 4.0）。",
+            "", "---", "",
+            f"项目：{self.project.project_id}　模型修订 r{self.project.revision}"
+            f"　阶段 S2 　生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
         ]
         (d / "moodboard.md").write_text("\n".join(mood), encoding="utf-8")
 
@@ -1039,7 +1050,7 @@ class StageRunner:
                    "## 未闭环项", ""]
         readme += [f"- {i}" for i in pkg["open_items"]]
         readme += ["", "## 第三方归属", "",
-                   "- arch-skills（Gu Jun / arch-skills.com，CC BY 4.0）——设计判据、评审方法与文档规范",
+                   "- arch-skills（Gu Jun / arch-skills，CC BY 4.0）——设计判据、评审方法与文档规范",
                    "  详见 `docs/ARCH_SKILLS_INTEGRATION.md`"]
         (d / "README.md").write_text("\n".join(readme), encoding="utf-8")
 

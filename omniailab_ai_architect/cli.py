@@ -140,7 +140,7 @@ def cmd_fusion(args) -> int:
         _print_json(rep)
         return 0
     a = rep["attribution"]
-    print(f"arch-skills 融合报告　（{a['author']} · {a['homepage']}）")
+    print(f"融合报告　（{a['author']} · {a['url']}；完整声明见 THIRD_PARTY_NOTICES.md）")
     print(f"许可：{a['license']}　本地副本：{a['vendored_at']}\n")
     for slug, info in rep["map"].items():
         stages = ",".join(info["absorbed_into_stages"]) or "—"
@@ -330,7 +330,7 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_registry)
 
-    sp = sub.add_parser("fusion", help="arch-skills 融合与归属报告")
+    sp = sub.add_parser("fusion", help="能力融合与方法来源归属报告")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_fusion)
 
@@ -375,6 +375,11 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--out", default=None)
     sp.add_argument("--scheme", default="A")
     sp.set_defaults(func=cmd_demo)
+
+    # v1.1 surface: compliance, providers, tools, knowledge, decks, scenarios
+    from .cli_v11 import register as _register_v11
+
+    _register_v11(sub)
 
     return p
 

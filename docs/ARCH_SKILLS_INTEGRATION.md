@@ -1,19 +1,20 @@
-# arch-skills 融合说明与归属
+# 设计判据融合说明与归属
 
 ## 来源与许可
 
 | | |
 |---|---|
 | 上游项目 | **arch-skills** — https://github.com/gujun1502/arch-skills |
-| 作者 | **Gu Jun**（https://www.chodo.ai · https://arch-skills.com ） |
+| 作者 | **Gu Jun** |
 | 许可 | 代码 **MIT**；文档（`SKILL.md` / `references/` / `templates/`）**CC BY 4.0** |
-| 要求署名 | `Gu Jun / arch-skills.com` |
+| 要求署名 | `Gu Jun / arch-skills` |
 | 本地副本 | `third_party/arch-skills/`（`git clone` 原样保留，含其自带 LICENSE） |
+| 完整声明 | 根目录 [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)（唯一集中声明文件） |
 
 **已做的事**：把上游的**方法论与判据**吸收进 OmniArchitect 对应的阶段与能力。
 **未做的事**：没有在上游仓库中修改任何文件；没有在运行时代码路径中分发上游源文件；没有搬运上游的脚本（如 `drawkit.py`、`annotate.py`、`md_to_pdf.py`）。
 
-融合明细的机器可读版本在 `registry.py: ARCH_FUSION`，可用 `python -m omniarchitect fusion` 打印。任何使用了这些判据的交付物都在文内带了归属行。
+融合明细的机器可读版本在 `registry.py: ARCH_FUSION`，可用 `python -m omniailab_ai_architect fusion` 打印。任何使用了这些判据的交付物都在文内带了归属行。
 
 ---
 
@@ -112,12 +113,12 @@
 
 ## 署名要求（再强调）
 
-> 设计判据、评审方法与文档规范来自 **arch-skills**，作者 **Gu Jun**（https://arch-skills.com ），
-> 代码 MIT / 文档 CC BY 4.0。
+> 设计判据、评审方法与文档规范来自 **arch-skills**，作者 **Gu Jun**，
+> 代码 MIT / 文档 CC BY 4.0。完整声明见 `THIRD_PARTY_NOTICES.md`。
 
 任何对外交付物若使用了这些判据，需保留上句归属。代码中的归属常量：
 
 ```python
 from omniarchitect import ARCH_ATTRIBUTION
-print(ARCH_ATTRIBUTION["attribution_line"])   # Gu Jun / arch-skills.com
+print(ARCH_ATTRIBUTION["attribution_line"])   # Gu Jun / arch-skills
 ```

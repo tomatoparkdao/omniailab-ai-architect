@@ -14,7 +14,7 @@ Quick start
 """
 from __future__ import annotations
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 SCHEMA_VERSION = "1.0.0"
 
 from .errors import (  # noqa: F401
@@ -82,6 +82,28 @@ from .stages import (  # noqa: F401
 )
 from .workflow import StageRunner, RunManifest, StageOutcome  # noqa: F401
 
+# --- v1.1 surfaces ---------------------------------------------------------
+from . import (  # noqa: F401
+    knowledge,
+    presentation,
+    scenarios,
+    tools,
+)
+from . import compliance_audit  # noqa: F401
+from .integration import agent_skills, installer  # noqa: F401
+from .providers import (  # noqa: F401
+    MediaProvider,
+    NotConfigured,
+    ProviderCapability,
+    ProviderError,
+    ProviderJob,
+    ProviderRegistry,
+    discover,
+)
+from .tools import ToolRegistry  # noqa: F401
+
+VERSION_INFO = tuple(int(x) for x in __version__.split("."))
+
 DEFAULT_STAGES = list(STAGE_ORDER)
 WorkflowRunner = StageRunner
 
@@ -111,4 +133,9 @@ __all__ = [
     # errors
     "OmniArchitectError", "ModelError", "ValidationError",
     "AdapterUnavailable", "GateBlocked",
+    # v1.1
+    "VERSION_INFO", "knowledge", "presentation", "scenarios", "tools",
+    "compliance_audit", "agent_skills", "installer",
+    "ProviderRegistry", "ProviderCapability", "ProviderJob", "MediaProvider",
+    "ProviderError", "NotConfigured", "discover", "ToolRegistry",
 ]

@@ -107,6 +107,12 @@ class Selection:
 
 
 def _parse_frontmatter(text: str) -> Dict[str, object]:
+    """Parse the front-matter subset the knowledge base uses.
+
+    Supports `key: value`, inline lists `[a, b]` and block lists
+    (`key:` followed by indented `- item` lines) — the last one matters, because
+    a list silently parsed as an empty string would make a case look incomplete.
+    """
     if not text.startswith("---"):
         return {}
     end = text.find("\n---", 3)
@@ -114,15 +120,31 @@ def _parse_frontmatter(text: str) -> Dict[str, object]:
         return {}
     body = text[3:end]
     out: Dict[str, object] = {}
+    current: Optional[str] = None
     for raw in body.splitlines():
-        if not raw.strip() or raw.lstrip().startswith("#") or ":" not in raw:
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if raw[:1] in (" ", "\t"):
+            item = raw.strip()
+            if item.startswith("- ") or item == "-":
+                if current is not None:
+                    if not isinstance(out.get(current), list):
+                        out[current] = []
+                    out[current].append(item[1:].strip().strip("'\""))  # type: ignore[union-attr]
+            continue
+        if ":" not in raw:
             continue
         key, val = raw.split(":", 1)
         key, val = key.strip(), val.strip()
         if val.startswith("[") and val.endswith("]"):
             out[key] = [v.strip().strip("'\"") for v in val[1:-1].split(",") if v.strip()]
+            current = None
+        elif not val:
+            out[key] = []            # a block list may follow
+            current = key
         else:
             out[key] = val.strip("'\"")
+            current = None
     return out
 
 
@@ -179,9 +201,13 @@ def resolve(question: str, stage: Optional[str] = None,
         if hits:
             scores[slug] = scores.get(slug, 0) + hits * 3
 
-    for d in domains.values():
-        if stage and stage in d.stage_affinity:
-            scores[d.slug] = scores.get(d.slug, 0) + 1
+    # The stage only *biases* a match — it must never manufacture one, otherwise
+    # every stage would score eight domains and the fallback could never fire.
+    if scores and stage:
+        for d in domains.values():
+            if stage in d.stage_affinity and d.slug in scores:
+                scores[d.slug] += 1
+                reason.append(f"{d.slug}: 阶段 {stage} 加权")
 
     for slug in include:
         if slug in domains:
@@ -208,8 +234,8 @@ def resolve(question: str, stage: Optional[str] = None,
     ranked = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))
     chosen = [domains[s] for s, _ in ranked if s in domains][:limit]
     for d in chosen:
-        if d.slug in scores and not any(d.slug in r for r in reason):
-            reason.append(f"{d.slug}: 命中关键词/阶段（{scores[d.slug]} 分）")
+        if not any(d.slug in r for r in reason):
+            reason.append(f"{d.slug}: 命中关键词（{scores[d.slug]} 分）")
     return Selection(
         domains=chosen,
         scores={k: v for k, v in ranked},

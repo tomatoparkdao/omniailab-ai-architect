@@ -85,7 +85,7 @@ def check_catalogue() -> int:
     if unmapped:
         print(f"  未找到说明文件的技能：{unmapped}")
     fusion = fusion_report()
-    print(f"  arch-skills 融合：上游 {fusion['summary']['upstream_skills']} 项，"
+    print(f"  方法融合：上游 {fusion['summary']['upstream_skills']} 项，"
           f"覆盖阶段 {', '.join(fusion['summary']['stages_touched'])}")
     for i in issues:
         print(f"  ISSUE  {i}")
@@ -168,13 +168,112 @@ def check_tests() -> int:
     return 0 if proc.returncode == 0 else 1
 
 
+def check_v11() -> int:
+    section("6. v1.1 子系统（合规 / provider / 工具 / 知识 / 汇报 / 安装）")
+    failures = 0
+
+    # --- third-party compliance -------------------------------------------
+    from omniailab_ai_architect import compliance_audit as ca
+
+    audit = ca.scan(ROOT)
+    print(f"  第三方审计：扫描 {audit['files_scanned']} 个文本文件，"
+          f"需处理 {audit['action_count']} 个")
+    if audit["action_count"]:
+        failures += audit["action_count"]
+        for f in audit["needs_action"]:
+            print(f"  FAIL  {f['path']}　{f['disposition']}")
+    notices = ROOT / "THIRD_PARTY_NOTICES.md"
+    if not notices.exists():
+        failures += 1
+        print("  FAIL  缺少 THIRD_PARTY_NOTICES.md")
+
+    # --- knowledge base ---------------------------------------------------
+    from omniailab_ai_architect import knowledge
+
+    krep = knowledge.report()
+    print(f"  知识库：{krep['count']} 个领域 / {krep['total_lines']} 行，"
+          f"问题 {len(krep['issues'])}")
+    for i in krep["issues"]:
+        print(f"  FAIL  {i}")
+    failures += len(krep["issues"])
+
+    # --- providers --------------------------------------------------------
+    from omniailab_ai_architect.providers import discover
+
+    prep = discover(ROOT, refresh=True).report()
+    print(f"  provider：已连接 {prep['connected'] or '（无）'}，"
+          f"未配置 {prep['not_configured'] or '（无）'}")
+    if "local" not in prep["connected"]:
+        failures += 1
+        print("  FAIL  内置本地 provider 不可用——离线闭环被破坏")
+
+    # --- tool registry ----------------------------------------------------
+    from omniailab_ai_architect.tools import registry as tool_registry
+
+    treg = tool_registry()
+    detect = treg.detect_report()
+    print(f"  工具注册表：可用 {detect['available']}")
+    for need in ("dxf", "mesh"):
+        if need not in detect["available"]:
+            failures += 1
+            print(f"  FAIL  {need} 不可用——闭环无法成立")
+    try:
+        treg.guard("blender", "run_blender")
+        failures += 1
+        print("  FAIL  L4 调用未被权限拦截")
+    except Exception:
+        pass
+
+    # --- presentation -----------------------------------------------------
+    import tempfile as _tempfile
+
+    from omniailab_ai_architect import presentation
+    from omniailab_ai_architect.demo import build_demo_project
+
+    with _tempfile.TemporaryDirectory() as td:
+        proj = build_demo_project(Path(td))
+        drep = presentation.render(proj, "final", out_dir=Path(td), want_pdf=False)
+        print(f"  汇报：{drep['slides']} 页，后端 {drep['pptx_backends']}")
+        if drep["issues"]:
+            failures += len(drep["issues"])
+            for i in drep["issues"]:
+                print(f"  FAIL  {i}")
+        v = treg.verify(drep["files"]["pptx"])
+        if not v.get("ok"):
+            failures += 1
+            print(f"  FAIL  PPTX 未被独立校验通过：{v.get('errors')}")
+
+    # --- agent skills / installer ----------------------------------------
+    from omniailab_ai_architect.integration import agent_skills as sk
+    from omniailab_ai_architect.integration import installer as inst
+
+    issues = sk.validate()
+    print(f"  SKILL.md：{sk.parse().lines} 行 / {sk.parse().bytes_} 字节，"
+          f"问题 {len(issues)}")
+    for i in issues:
+        print(f"  FAIL  {i}")
+    failures += len(issues)
+
+    with _tempfile.TemporaryDirectory() as td:
+        rep = inst.Installer(source=ROOT, target=Path(td) / "skills").install()
+        ok = rep.ok
+        print(f"  安装闭环：{'通过' if ok else '未通过'}"
+              f"（{len(rep.installed)} 个文件）")
+        if not ok:
+            failures += 1
+            for e in rep.errors:
+                print(f"  FAIL  {e}")
+    return failures
+
+
 def main() -> int:
     print("OmniArchitect 完整性验证")
     print(f"项目根目录：{ROOT}")
-    total = check_paths() + check_catalogue() + check_doctor() + check_smoke() + check_tests()
+    total = (check_paths() + check_catalogue() + check_doctor() + check_smoke()
+             + check_tests() + check_v11())
     section("结论")
     if total == 0:
-        print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿")
+        print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、v1.1 子系统正常")
         return 0
     print(f"  {total} 项问题，需处理")
     return 1

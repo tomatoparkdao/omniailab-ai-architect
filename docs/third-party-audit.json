@@ -1,0 +1,72 @@
+{
+  "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
+  "scanned_at": "2026-10-16 16:22:41",
+  "files_scanned": 189,
+  "by_disposition": {
+    "attribution-required-keep": 11,
+    "original": 107,
+    "test-fixture": 14,
+    "vendored-preserve": 57
+  },
+  "needs_action": [],
+  "action_count": 0,
+  "upstream": {
+    "project": "arch-skills",
+    "url": "https://github.com/gujun1502/arch-skills",
+    "author": "Gu Jun",
+    "license": "MIT (code) · CC BY 4.0 (documentation)",
+    "required_attribution": "Gu Jun / arch-skills",
+    "vendored_at": "third_party/arch-skills"
+  },
+  "watchlist": [
+    {
+      "token": "arch-skills",
+      "kind": "upstream-name",
+      "why": "上游项目名；只允许出现在合规/署名文件中"
+    },
+    {
+      "token": "gujun1502",
+      "kind": "upstream-url",
+      "why": "上游仓库地址；只允许出现在合规/署名文件中"
+    },
+    {
+      "token": "Gu Jun",
+      "kind": "author-name",
+      "why": "上游作者；署名义务，只允许出现在合规文件中"
+    },
+    {
+      "token": "chodo",
+      "kind": "commercial-site",
+      "why": "第三方商业站点；用户面材料不得出现"
+    },
+    {
+      "token": "arch-skills.com",
+      "kind": "commercial-site",
+      "why": "第三方推广站点；用户面材料不得出现"
+    }
+  ],
+  "attribution_allowed_in": [
+    "THIRD_PARTY_NOTICES.md",
+    "docs/THIRD_PARTY_AUDIT.md",
+    "docs/ARCH_SKILLS_INTEGRATION.md",
+    "AGENTS.md",
+    "LICENSES/",
+    "compliance/",
+    "third_party/",
+    "omniailab_ai_architect/",
+    "docs/third-party-audit.json"
+  ],
+  "user_facing_globs": [
+    "SKILL.md",
+    "README.md",
+    "docs/PRESENTATION.md",
+    "docs/INSTALL.md",
+    "docs/MCP_TOOLS.md",
+    "docs/OMNIAILAB_INTEGRATION.md",
+    "templates/",
+    "skills/",
+    "cases/",
+    "knowledge/"
+  ],
+  "conclusion": "无第三方商业内容需要处理"
+}

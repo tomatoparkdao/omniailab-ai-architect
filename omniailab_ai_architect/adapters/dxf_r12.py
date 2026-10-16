@@ -132,7 +132,12 @@ def read_r12(path: str | Path) -> Dict[str, Any]:
         out["errors"].append("file missing or empty")
         return out
     try:
-        raw = p.read_text(encoding="ascii", errors="replace")
+        # R12 is ASCII; R2007+ dialects are UTF-8. Decode what is actually there
+        # rather than mangling CJK labels into '?'.
+        try:
+            raw = p.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            raw = p.read_text(encoding="ascii", errors="replace")
     except Exception as exc:
         out["errors"].append(f"unreadable: {exc}")
         return out

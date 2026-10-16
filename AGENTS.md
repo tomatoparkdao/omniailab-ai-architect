@@ -8,17 +8,17 @@
 ## 0. 项目根目录（唯一）
 
 ```
-E:\SKILL\建筑室内设计skill\omniarchitect
+E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 ```
 
-- 这是**唯一**的正式开发根目录。Python 包名即 `omniarchitect`，包目录就是本目录本身。
+- 这是**唯一**的正式开发根目录，同时也是 Agent Skill 根（`SKILL.md` 在此）。
+- Python 包是根目录下的子目录 `omniailab_ai_architect/`：目录名可导入，根目录名含连字符不可导入。
 - 运行任何命令前，先把工作区切到该目录；不要依赖提示词里写路径。
-- 从**父目录**导入本包（`E:\SKILL\建筑室内设计skill` 需在 `sys.path` 上）：
 
 ```bat
-cd /d E:\SKILL\建筑室内设计skill\omniarchitect
-set PYTHONPATH=E:\SKILL\建筑室内设计skill
-python -m omniarchitect doctor
+cd /d E:\SKILL\建筑室内设计skill\omniailab-ai-architect
+set PYTHONPATH=E:\SKILL\建筑室内设计skill\omniailab-ai-architect
+python -m omniailab_ai_architect doctor
 ```
 
 - 父目录 `E:\SKILL\建筑室内设计skill\.workbuddy\` 存放会话记忆，**不属于本仓库，不得删除或改写**。
@@ -28,16 +28,25 @@ python -m omniarchitect doctor
 
 | 路径 | 内容 | 可否改动 |
 |---|---|---|
-| `omniarchitect/`（即本目录） | Python 包：模型、规划、工作流、适配器、CLI | 主开发区 |
-| `stages.py` | **八阶段模型与能力映射的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
-| `changes.py` | 设计变更影响分析 | 核心能力，改前先读 `docs/WORKFLOW.md` 第三节 |
-| `skills/` | 18 份专业能力说明书（岗位能力，非流程步骤） | 只增不改语义 |
-| `adapters/specs/` | 4 份 MCP 适配规范 | 文档 |
-| `schemas/project.schema.json` | 统一空间模型 Schema | 只允许**向后兼容**的新增 |
-| `workflows/interior-full.yaml` | 阶段流程定义 | 文档 |
+| `omniailab_ai_architect/` | Python 包：模型、规划、工作流、适配器、provider、工具、汇报、集成 | 主开发区 |
+| `omniailab_ai_architect/stages.py` | **八阶段模型与能力映射的唯一权威** | 改前先读 `docs/WORKFLOW.md` |
+| `omniailab_ai_architect/changes.py` | 设计变更影响分析 | 核心能力，改前先读 `docs/WORKFLOW.md` 第三节 |
+| `omniailab_ai_architect/providers/` | 生成式 provider（OmniAiLab + 本地） | 不得猜测 endpoint / 鉴权 |
+| `omniailab_ai_architect/tools/` | 工具注册表 · L1–L4 权限 · 独立校验 | 风险等级静态声明，禁止运行时提权 |
+| `omniailab_ai_architect/presentation/` | 汇报数据模型与 PPTX 写出 | 每份汇报必须含免责页 |
+| `omniailab_ai_architect/integration/` | Agent Skills 兼容与安装器 | 安装/卸载只移不删 |
+| `omniailab_ai_architect/compliance_audit.py` | 第三方内容扫描器 | 规则只收紧不放松 |
+| `knowledge/` | **原创** 12 个知识域 + INDEX | 只增不改语义；不得引入第三方文案 |
+| `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
+| `skills/` | 29 份专业能力说明书（岗位能力，非流程步骤） | 只增不改语义 |
+| `adapters/specs/` | MCP 适配规范 | 文档 |
+| `schemas/` | 空间模型 / 案例 / 工具能力 / 汇报 Schema | 只允许**向后兼容**的新增 |
+| `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
+| `installer/` · `compatibility/` | 安装脚本、清单与兼容说明 | 脚本 |
 | `projects/` | 示例与真实项目数据 | 项目数据 |
 | `out/` | 运行产物（可丢弃） | 可清理 |
-| `third_party/arch-skills/` | 上游参考仓库，**原样保留** | **禁止修改** |
+| `THIRD_PARTY_NOTICES.md` | 第三方声明（唯一集中处） | 只增不减署名 |
+| `third_party/arch-skills/` | 上游研究方法副本，**原样保留** | **禁止修改** |
 | `.workbuddy/`（在父目录） | 会话记忆 | 只追加 |
 
 ---
@@ -52,7 +61,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 
 ---
 
-## 2. 八阶段是流程，18 项能力是岗位 —— 不要混为一谈
+## 2. 八阶段是流程，29 项能力是岗位 —— 不要混为一谈
 
 **业务阶段（项目怎么推进）：**
 
@@ -67,7 +76,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 | S7 | 07 CAD / BIM 施工图深化 | G7 施工图审查 |
 | S8 | 08 物料清单与交付 | G8 交付验收 |
 
-**专业能力（谁能干什么）：** 27 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现。任何"一个能力只属于一个阶段"的写法都是错的。
+**专业能力（谁能干什么）：** 29 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
 
 **四条硬性专业逻辑（`GUARDRAILS`，有测试覆盖，不得放宽）：**
 
@@ -84,10 +93,13 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 2. **生成式图像不是尺寸依据**：任何图片模型产物必须标 `authoritative = False`，且**不得反推几何**。
 3. **不确定信息必须标记**：从图纸推断（而非实测）的构件带 `uncertain = true`，并在校核报告中作为阻断项出现。不得把推断当事实。
 4. **不虚报工具能力**：适配器必须先 `preflight()`。工具不存在时输出降级产物并明说，不许伪造成功。
-5. **写出的文件必须能读回**：DXF 写完必须用独立解析器复核；OBJ 写完必须复解；不通过即视为失败。
+5. **写出的文件必须能读回**：DXF / OBJ / PPTX 写完必须用**独立实现**复核；不通过即视为失败。
 6. **失败要显形**：能放不下的房间、达不到的最小净宽、被裁剪的分区，都要写进 `warnings`，而不是悄悄压缩。
 7. **变更不可局部手改**：任何修改都要经过 `changes.analyse()`，产出诊断、影响面、回流计划与门禁重开清单。
 8. **不代业主决策**：方案对比只给推荐 + 理由 + 备选，不给"两套都行"的话术。
+9. **不得猜测外部接口**：provider 与 MCP 只能读**已声明**的配置 / 契约；未验证一律 `NOT_CONFIGURED`，不伪造成功。
+10. **不得声称做不到的事**：DXF ≠ DWG、网格 ≠ 参数化 BIM、效果图 ≠ 尺寸依据、未装 IfcOpenShell 就不存在 IFC。完整清单：`python -m omniailab_ai_architect honesty`。
+11. **不得把第三方内容带进用户面**：品牌名、商业站点、推广链接只能出现在 `THIRD_PARTY_NOTICES.md`。新增素材前先说清来源与授权。
 
 ---
 
@@ -97,25 +109,38 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 set PYTHONPATH=E:\SKILL\建筑室内设计skill
 cd /d E:\SKILL\建筑室内设计skill\omniarchitect
 
-python -m omniarchitect doctor                      :: 工具链体检
-python -m omniarchitect stages                      :: 打印八阶段模型
-python -m omniarchitect registry                    :: 能力目录 + 18 份技能→阶段映射
-python -m omniarchitect fusion                      :: arch-skills 融合与归属
-python -m omniarchitect demo --out out              :: 示例项目跑通全部八阶段
-python -m omniarchitect status  --project projects/demo-120
-python -m omniarchitect route   --project projects/demo-120 "出施工图"
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniarchitect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
-python -m omniarchitect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
-python -m omniarchitect verify  --project projects/demo-120
+python -m omniailab_ai_architect doctor               :: 工具链体检
+python -m omniailab_ai_architect stages               :: 打印八阶段模型
+python -m omniailab_ai_architect registry             :: 能力目录 + 29 份技能→阶段映射
+python -m omniailab_ai_architect fusion              :: 能力融合与方法来源归属
+python -m omniailab_ai_architect audit               :: 第三方内容审计
+python -m omniailab_ai_architect notices             :: 打印第三方声明
+python -m omniailab_ai_architect demo --out out        :: 示例项目跑通全部八阶段
+python -m omniailab_ai_architect status  --project projects/demo-120
+python -m omniailab_ai_architect route   --project projects/demo-120 "出施工图"
+python -m omniailab_ai_architect run     --project projects/demo-120 --from-stage S3
+python -m omniailab_ai_architect confirm --project projects/demo-120 --stage S3 --by 业主
+python -m omniailab_ai_architect reject  --project projects/demo-120 --stage S3 --reason "面积要重算"
+python -m omniailab_ai_architect change  --project projects/demo-120 "我不喜欢客厅的电视背景墙"
+python -m omniailab_ai_architect verify  --project projects/demo-120
+
+:: v1.1 新增
+python -m omniailab_ai_architect providers            :: OmniAiLab / 本地 provider 状态
+python -m omniailab_ai_architect tools                :: 工具注册表 + L1–L4 权限
+python -m omniailab_ai_architect honesty              :: 不得声称的能力清单
+python -m omniailab_ai_architect knowledge            :: 12 个原创知识域
+python -m omniailab_ai_architect present --project projects/demo-120 --kind plan-comparison
+python -m omniailab_ai_architect scenario --name all  :: Scenario A/B/C 验收
+python -m omniailab_ai_architect compat               :: Agent Skills 兼容性
+python -m omniailab_ai_architect install --dry-run
+python installer/verify_install.py --check-python
 ```
 
 验证（改完必须跑）：
 
 ```bat
-python scripts/run_tests.py          :: 65 项测试，零第三方依赖
-python scripts/verify_all.py         :: 测试 + 目录自检 + 全流程冒烟
+python scripts/run_tests.py          :: 164 项测试，零第三方依赖
+python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1 子系统
 ```
 
 ---
@@ -133,6 +158,8 @@ python scripts/verify_all.py         :: 测试 + 目录自检 + 全流程冒烟
 | 几何 | `shapely` | **内置矩形-多边形布尔裁剪**（网格分解 + 边界追踪） |
 | Schema | `jsonschema` | **内置子集校验器** |
 | 测试 | `pytest` | `scripts/run_tests.py` |
+| 图像 | `Pillow` | 本地示意图跳过，保留矢量与 DXF |
+| PPTX | `python-pptx` | **内置原生 OOXML 写出器**（零依赖，可被 PowerPoint 打开编辑） |
 
 新增依赖前先问：能不能降级？不能降级的部分必须有明确的"能力缺失"报告路径。
 
@@ -140,9 +167,19 @@ python scripts/verify_all.py         :: 测试 + 目录自检 + 全流程冒烟
 
 ## 6. 第三方归属
 
-`third_party/arch-skills/` 是上游参考仓库（作者 **Gu Jun**，https://arch-skills.com ，代码 MIT / 文档 CC BY 4.0），**原样保留、不得修改**。
+第三方声明、作者署名与许可义务**全部集中**在根目录 `THIRD_PARTY_NOTICES.md`，任何其它文件不得新增第三方品牌名或推广链接。
+`third_party/arch-skills/` 是上游研究方法副本，**原样保留、不得修改**。
 
 吸收进本系统的是**方法论与判据**，不是代码：融合记录在 `registry.py: ARCH_FUSION`，说明见 `docs/ARCH_SKILLS_INTEGRATION.md`。任何使用这些判据的交付物都要在内联标注归属。
+
+**用户面内容必须原创**：`knowledge/`、`cases/`、`skills/`、`templates/`、汇报模板与 PPT 均不得混入第三方品牌广告或不相关宣传链接。
+要去掉某份第三方文档的再分发依赖，只能从通用设计原理与公开工程惯例出发独立原创，**不得复制或仅作同义改写**。
+
+改完必须跑审计（`action_count` 必须为 0）：
+
+```bat
+python -m omniailab_ai_architect audit --write docs
+```
 
 ---
 
@@ -151,8 +188,10 @@ python scripts/verify_all.py         :: 测试 + 目录自检 + 全流程冒烟
 1. 先读 `docs/WORKFLOW.md` 与相关模块，不要凭印象改。
 2. 结构性改动前先说明方案、暴露风险、给出选项。
 3. 只改被授权的位置，不顺手重构别处。
-4. 改完**必须**跑 `scripts/run_tests.py`；涉及管线则再跑 `scripts/verify_all.py`。
-5. 全部通过后再归档（git）。测试没过不得声称完成。
+4. 改完**必须**跑 `scripts/run_tests.py`；涉及管线或新增子系统则再跑 `scripts/verify_all.py`。
+5. 新增或修改用户可见内容后，跑 `python -m omniailab_ai_architect audit`，必须 0 项待处理。
+6. 涉及交付能力（图纸 / 模型 / 汇报）时，跑 `python -m omniailab_ai_architect scenario --name all`。
+7. 全部通过后再归档（git）。测试没过不得声称完成；缺失能力记为 `degraded` 或跳过，**不得记为通过**。
 
 ---
 

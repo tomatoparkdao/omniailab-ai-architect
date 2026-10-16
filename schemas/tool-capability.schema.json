@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omniailabx.com/schemas/tool-capability.schema.json",
+  "title": "OmniArchitect Tool Capability",
+  "description": "Declaration of what a tool may do on this host, how dangerous it is, and how far its output may honestly be trusted.",
+  "type": "object",
+  "required": ["id", "name", "kind", "availability", "operations"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-zA-Z0-9_.:-]+$" },
+    "name": { "type": "string" },
+    "kind": { "type": "string", "enum": ["python", "mcp", "cli", "service"] },
+    "transport": { "type": "string", "enum": ["inprocess", "stdio", "http", "none"] },
+    "availability": {
+      "type": "string",
+      "enum": ["available", "degraded", "unavailable", "not_configured"]
+    },
+    "version": { "type": "string" },
+    "executable": { "type": "string" },
+    "requires": { "type": "array", "items": { "type": "string" } },
+    "degraded_to": { "type": "string" },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "limits": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "What this tool's output may NOT be called."
+    },
+    "attribution": { "type": "string" },
+    "verified": { "type": "boolean" },
+    "verification": { "type": "string" },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "risk"],
+        "properties": {
+          "name": { "type": "string" },
+          "risk": {
+            "type": "string",
+            "enum": ["L1", "L2", "L3", "L4"],
+            "description": "L1 read-only · L2 local write · L3 network · L4 execute/send"
+          },
+          "summary": { "type": "string" },
+          "destructive": { "type": "boolean" },
+          "reversible": { "type": "boolean" },
+          "produces": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Artifact extensions this operation may produce."
+          },
+          "verifiable": { "type": "boolean" },
+          "approval_required": {
+            "type": "boolean",
+            "description": "Derived from the risk tier; advisory in the schema."
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
