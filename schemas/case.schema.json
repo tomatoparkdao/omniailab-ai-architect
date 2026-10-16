@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omniailabx.com/schemas/case.schema.json",
+  "title": "OmniArchitect Generic Project Case",
+  "description": "A project-type case record. Cases are generic design-judgement templates, not records of any third-party practice. Only user-authored projects may be added, and only with permission and provenance.",
+  "type": "object",
+  "required": [
+    "project_type",
+    "area_m2",
+    "design_goals",
+    "spatial_strategy",
+    "material_strategy",
+    "lighting_strategy",
+    "design_decisions",
+    "review_results"
+  ],
+  "properties": {
+    "project_type": {
+      "type": "string",
+      "description": "Type slug, e.g. residential-apartment / office / restaurant.",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "area_m2": { "type": "number", "minimum": 1 },
+    "design_goals": { "$ref": "#/$defs/stringList" },
+    "functional_requirements": { "$ref": "#/$defs/stringList" },
+    "constraints": { "$ref": "#/$defs/stringList" },
+    "style_preferences": { "$ref": "#/$defs/stringList" },
+    "spatial_strategy": { "$ref": "#/$defs/stringList" },
+    "material_strategy": { "$ref": "#/$defs/stringList" },
+    "lighting_strategy": { "$ref": "#/$defs/stringList" },
+    "design_decisions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Each entry reads 'decision — reason — cost'."
+    },
+    "review_results": { "$ref": "#/$defs/stringList" },
+    "generic": {
+      "type": "boolean",
+      "description": "true for built-in type templates; false for real user projects."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["original", "user-authorized", "public-standard"],
+      "description": "Provenance. Anything not 'original' needs a licence/permission note."
+    },
+    "permission_note": {
+      "type": "string",
+      "description": "Required when source is not 'original'."
+    },
+    "media_redistributable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether images/plans may ship with the distribution."
+    },
+    "version": { "type": "string" }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

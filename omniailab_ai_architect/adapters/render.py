@@ -74,9 +74,15 @@ class RenderAdapter(Adapter):
 
     @staticmethod
     def _configured_backends() -> List[str]:
-        # Kept explicit rather than guessing: the orchestrator injects the
-        # actual image tool at runtime. Nothing here claims generation works.
-        return []
+        # Not guessed: ask the provider registry which image/video providers are
+        # actually configured on this machine. Nothing is claimed to work unless
+        # the provider reported itself as connected.
+        try:
+            from ..providers import discover
+
+            return discover().image_backends()
+        except Exception:
+            return []
 
     # ------------------------------------------------------------------
     def build_job_package(
