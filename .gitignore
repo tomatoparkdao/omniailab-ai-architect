@@ -9,6 +9,7 @@ dist/
 
 # local project data that must never be committed
 projects/*/renders/
+projects/*/concept-render/
 projects/*/private/
 
 
