@@ -1,0 +1,312 @@
+"""S2 概念方案设计引擎 —— 一个引擎，两个适配层。
+
+`run --stage S2` 与 `concept --action generate` 都调 `generate_bundle()`，
+所以两者对同一项目产出的成果一致。这一点是硬要求：S1 曾经因为两套实现，
+同一个项目能出两份不同的任务书。
+
+引擎的分工：
+
+| 模块 | 负责 |
+|---|---|
+| `context` | 把 S1 与 G1 基准读成可推理的输入（带出处） |
+| `prototypes` | 空间原型库：按项目类型给出真正不同的组织方式 |
+| `directions` | 用证据选原型、配视觉语言、生成 2–3 套方向 |
+| `palette` | 审美判据的适用性裁量（不再全项目套 60-30-10） |
+| `diagrams` | 确定性 SVG 概念图解 |
+| `moodboard` | 六格意向板 + 真实色板/材料板 |
+| `visual` | OmniAiLab 概念视觉任务（未连接就延后） |
+| `compare` | 带证据的评分与总设计师推荐 |
+| `gate` | G2 审批、概念基准、风格锁定 |
+| `handoff` | `concept-handoff.json` 与 S3 一致性校核 |
+| `deck` | 可编辑概念提案 PPTX |
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAIlab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence
+
+from ..model import Project
+from ..style import load_catalog
+from . import compare as cmp
+from . import deck as deck_mod
+from . import diagrams as dia
+from . import handoff as handoff_mod
+from . import moodboard as mb_mod
+from . import palette as pal
+from . import visual as vis
+from .context import ConceptContext, assert_ready, build_context
+from .directions import ROLE_LABEL, generate_concepts, markdown as options_md, resolve_style_id
+from .gate import (
+    DECISIONS,
+    SOURCES,
+    GateAssessment,
+    Outcome,
+    approval_summary,
+    assess_gate,
+    check_baseline,
+    concept_digest,
+    decide_gate,
+    select,
+)
+from .prototypes import PROTOTYPES, Prototype, THEME_LABEL, for_profile
+from .prototypes import count as prototype_count
+
+BUNDLE_FILES = (
+    "concept-options.json",
+    "concept-options.md",
+    "style-recommendation.json",
+    "concept-comparison.md",
+    "concept-visual-jobs.json",
+    "concept-visual-brief.md",
+    "concept-presentation.pptx",
+    "g2-approval-summary.md",
+    "concept-handoff.json",
+)
+
+
+def _concept_meta(project: Project) -> Dict[str, Any]:
+    """The one live dict — never a copy (see the S1 lesson)."""
+    meta = project.meta if isinstance(project.meta, dict) else {}
+    state = meta.get("concept")
+    if not isinstance(state, dict):
+        state = {}
+        meta["concept"] = state
+    project.meta = meta
+    return state
+
+
+def _dump(path: Path, payload: Any) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8")
+    return str(path)
+
+
+def generate_bundle(project: Project, out_dir: str | Path, *,
+                    limit: int = 3, pre_gate: bool = False,
+                    with_deck: bool = True, submit: bool = False,
+                    authorize: bool = False, max_cost: Optional[float] = None,
+                    project_dir: Optional[str | Path] = None,
+                    summary_text: str = "") -> Dict[str, Any]:
+    """Produce the whole S2 package. Idempotent: rerunning replaces, never appends."""
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    ctx = build_context(project, require_gate=not pre_gate)
+    if not pre_gate:
+        ctx = assert_ready(project)      # raises with a precise reason
+    state = _concept_meta(project)
+
+    concept_set = generate_concepts(ctx, limit=limit, pre_gate=pre_gate)
+    if not concept_set["concepts"]:
+        state["options"] = concept_set
+        return {"count": 0, "files": [], "warnings": concept_set.get("note", ""),
+                "precision": ctx.precision, "profile": ctx.profile_label}
+
+    catalog = load_catalog()
+    style_docs: Dict[str, Dict[str, Any]] = {}
+    policies: Dict[str, Dict[str, Any]] = {}
+    moodboards: Dict[str, Dict[str, Any]] = {}
+    all_diagrams: Dict[str, List[Dict[str, str]]] = {}
+
+    for c in concept_set["concepts"]:
+        primary = c["style_ids"][0]
+        if primary not in style_docs:
+            style_docs[primary] = catalog.load_style(primary)
+        policies[c["concept_id"]] = pal.aesthetic_policy(style_docs[primary], ctx.profile_id)
+        all_diagrams[c["concept_id"]] = dia.build(
+            c, ctx, ctx.program, ctx.needs, out / "concept-diagrams")
+        moodboards[c["concept_id"]] = mb_mod.build(
+            c, style_docs[primary], policies[c["concept_id"]], ctx,
+            out / "moodboards")
+        c["moodboard"] = {
+            "board_svg": moodboards[c["concept_id"]]["board_svg"],
+            "board_md": moodboards[c["concept_id"]]["board_md"],
+            "image_slots": moodboards[c["concept_id"]]["image_slots"],
+        }
+        c["diagrams"] = [{"kind": d["kind"], "path": d["path"]} for d in all_diagrams[c["concept_id"]]]
+
+    comparison = cmp.compare(concept_set, ctx)
+
+    # 视觉任务：编译 + （可选）真实提交
+    jobs: List[Dict[str, Any]] = []
+    for c in concept_set["concepts"]:
+        jobs.extend(vis.build_jobs(c, ctx, project, catalog=catalog))
+    visual_res = vis.submit(jobs, project, out, authorize=authorize,
+                           max_cost=max_cost, project_dir=project_dir)
+    visual_files = vis.write_package(visual_res, concept_set, ctx, out)
+
+    # 落盘：结构化数据 + 人读材料
+    options_json = _dump(out / "concept-options.json", {
+        k: v for k, v in concept_set.items() if not k.startswith("_")
+    })
+    style_rec = _dump(out / "style-recommendation.json", {
+        "project_id": ctx.project_id,
+        "revision": ctx.revision,
+        "request": concept_set.get("style_request"),
+        "options": concept_set.get("style_options"),
+        "preferred_style": ctx.style_preference,
+        "preferred_style_resolved": concept_set.get("preferred_style_resolved"),
+        "per_concept": [
+            {"concept_id": c["concept_id"],
+             "style_ids": c["style_ids"],
+             "style_labels": c["style_labels"],
+             "basis": c["style_basis"],
+             "policy_applied": (c.get("aesthetic_policy") or {}).get("applied"),
+             "policy_skipped": (c.get("aesthetic_policy") or {}).get("skipped"),
+             "ratio_rule": (c.get("aesthetic_policy") or {}).get("ratio_rule")}
+            for c in concept_set["concepts"]
+        ],
+        "note": ("业主已指定风格时保留该方向，只在表达上做差异化；"
+                 "未指定时才按评分推荐。概念方向与风格是两件事。"),
+    })
+
+    md_path = out / "concept-options.md"
+    md_path.write_text("".join([
+        f"# 概念方案 · {ctx.name}\n\n",
+        f"项目：{ctx.project_id}（{ctx.name}）　模型修订 r{ctx.revision}"
+        f"　阶段 S2　生成时间 {concept_set.get('generated_at') or ''}\n\n",
+        "\n".join(f"- {line}" for line in ctx.brief_lines()),
+        "\n\n", options_md(concept_set, ctx), "\n",
+    ]), encoding="utf-8")
+
+    cmp_path = out / "concept-comparison.md"
+    cmp_path.write_text(cmp.markdown(comparison, concept_set) + "\n", encoding="utf-8")
+
+    # 提案 PPTX
+    deck_info: Dict[str, Any] = {}
+    if with_deck:
+        deck = deck_mod.build(project, ctx, concept_set, comparison,
+                              moodboards, all_diagrams, visual_res.to_dict())
+        deck_info = deck_mod.write(deck, out)
+
+    # G2 摘要（先出草稿，确认后重写为正式版）
+    summary_path = out / "g2-approval-summary.md"
+    summary_path.write_text(approval_summary(project, summary_text) + "\n", encoding="utf-8")
+
+    state["options"] = {k: v for k, v in concept_set.items() if not k.startswith("_")}
+    if not state.get("selected") and concept_set["concepts"]:
+        # 提一个默认建议，但**不选定**：选定是业主/主创的动作
+        state["suggested"] = comparison["recommendation"]["concept_id"]
+    state["comparison"] = comparison
+    state["files"] = {
+        "concept_options": options_json,
+        "concept_options_md": str(md_path),
+        "style_recommendation": style_rec,
+        "comparison": str(cmp_path),
+        "visual_jobs": visual_files["jobs"],
+        "visual_brief": visual_files["brief"],
+        "presentation": deck_info.get("pptx", {}).get("path", ""),
+        "presentation_md": deck_info.get("markdown", ""),
+        "g2_summary": str(summary_path),
+        "diagram_dir": str(out / "concept-diagrams"),
+        "moodboard_dir": str(out / "moodboards"),
+    }
+    state["generated_at"] = concept_set.get("generated_at") or ""
+
+    # 概念基准已存在时，重新生成会让它失效——如实标记，不静默沿用
+    base = check_baseline(project)
+    warnings: List[str] = list(ctx.warnings)
+    if base.get("has_baseline") and base.get("changed"):
+        warnings.append("重新生成的概念与已确认基准不一致：须重新提交 G2")
+
+    handoff = handoff_mod.build(project, ctx, concept_set, comparison,
+                                style_docs.get(concept_set["concepts"][0]["style_ids"][0], {}))
+    handoff_path = handoff_mod.write(handoff, out)
+    state["handoff"] = handoff
+
+    return {
+        "count": concept_set["count"],
+        "concept_ids": [c["concept_id"] for c in concept_set["concepts"]],
+        "roles": {c["concept_id"]: ROLE_LABEL[c["role"]] for c in concept_set["concepts"]},
+        "suggested": state.get("suggested", ""),
+        "precision": ctx.precision,
+        "profile": ctx.profile_label,
+        "gate_confirmed": ctx.gate_confirmed,
+        "files": state["files"],
+        "deck": deck_info.get("pptx", {}),
+        "visual": {k: visual_res.to_dict()[k] for k in
+                   ("platform_state", "generated", "deferred", "failed", "job_count")},
+        "comparison": {"ranking": comparison["ranking"],
+                       "recommendation": comparison["recommendation"]},
+        "handoff": handoff_path,
+        "warnings": warnings,
+        "bundle_files": [name for name in BUNDLE_FILES if (out / name).exists()],
+        "context": ctx.to_dict(),
+    }
+
+
+def status(project: Project) -> Dict[str, Any]:
+    state = _concept_meta(project)
+    options = state.get("options") or {}
+    assessment = assess_gate(project)
+    base = check_baseline(project)
+    return {
+        "project_id": project.project_id,
+        "revision": project.revision,
+        "generated": bool(options.get("concepts")),
+        "concept_ids": [c["concept_id"] for c in (options.get("concepts") or [])],
+        "selected": state.get("selected", ""),
+        "suggested": state.get("suggested", ""),
+        "gate": assessment.to_dict(),
+        "baseline": base,
+        "style_lock": state.get("style_lock") or {},
+        "handoff_status": (state.get("handoff") or {}).get("status", "none"),
+        "last_decision": state.get("last_decision") or {},
+        "files": state.get("files") or {},
+    }
+
+
+def lock_style_for(project: Project, out_dir: str | Path) -> Dict[str, Any]:
+    """Write the canonical style lock for the selected concept.
+
+    Uses `style.hooks.lock_style` so there is exactly one lock format in the
+    project, then records the same ids in `meta.concept.style_lock` so G2 can
+    detect a conflict instead of discovering it two stages later.
+    """
+    from ..style.hooks import lock_style
+    from ..style.recommender import RecommendRequest
+
+    state = _concept_meta(project)
+    options = state.get("options") or {}
+    selected = state.get("selected") or ""
+    chosen = next((c for c in (options.get("concepts") or [])
+                   if c["concept_id"] == selected), None)
+    if chosen is None:
+        raise ValueError("尚未选定概念，不能锁定风格")
+
+    request = RecommendRequest(
+        space_type=str(options.get("style_request", {}).get("space_type") or ""),
+        preferences=list(chosen.get("style_ids") or []),
+        stage="S2",
+    )
+    payload = lock_style(chosen["style_ids"][0], request, out_dir=out_dir,
+                         revision=project.revision,
+                         by=str((state.get("baseline") or {}).get("confirmed_by") or "业主"))
+    state["style_lock"] = {
+        "style_ids": list(chosen["style_ids"]),
+        "primary": chosen["style_ids"][0],
+        "labels": list(chosen.get("style_labels") or []),
+        "revision": project.revision,
+        "file": str(Path(out_dir) / f"style-lock-r{project.revision}.json"),
+        "concept_id": selected,
+        "alternatives": payload.get("options_considered") or [],
+    }
+    return state["style_lock"]
+
+
+__all__ = [
+    "concept_bundle", "generate_bundle", "status", "lock_style_for",
+    "select", "decide_gate", "assess_gate", "check_baseline", "approval_summary",
+    "build_context", "assert_ready", "ConceptContext",
+    "for_profile", "prototype_count", "PROTOTYPES", "Prototype", "THEME_LABEL",
+    "ROLE_LABEL", "resolve_style_id", "BUNDLE_FILES", "deck_mod", "handoff_mod",
+    "mb_mod", "dia", "cmp", "pal", "vis",
+    "DECISIONS", "SOURCES", "GateAssessment", "Outcome", "concept_digest",
+]
+
+#: 语义化别名：调用方读起来更像业务动作
+concept_bundle = generate_bundle

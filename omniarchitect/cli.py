@@ -324,7 +324,7 @@ def cmd_run(args) -> int:
         print(f"运行 {m.run_id}")
         for o in m.outcomes:
             print(f"  [{o.status:<10}] {o.stage_name}　{', '.join(o.skills[:3])}")
-            for n in o.notes[:3]:
+            for n in o.notes[:4]:
                 print(f"        · {n}")
             if o.error:
                 print(f"        错误：{o.error}")
@@ -511,6 +511,10 @@ def build_parser() -> argparse.ArgumentParser:
     sp.set_defaults(func=cmd_demo)
 
     # v1.1 surface: compliance, providers, tools, knowledge, decks, scenarios
+    from .concept.cli import register as _register_concept
+
+    _register_concept(sub)
+
     from .cli_v11 import register as _register_v11
 
     _register_v11(sub)

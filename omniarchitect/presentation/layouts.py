@@ -46,6 +46,14 @@ DECK_KINDS: Dict[str, Dict[str, Any]] = {
         "slides": ["cover", "agenda", "summary", "concept", "keywords", "moodboard",
                    "plan", "lighting", "materials", "budget", "open_items", "disclaimer"],
     },
+    "concept-options": {
+        # S2 的多方向提案：一套任务书、三套空间策略，逐套讲完再比较。
+        # 与 "concept" 的区别是后者讲单一已定方向，这里是比选现场用的。
+        "stage": "S2", "title": "概念方案提案（多方向）",
+        "slides": ["cover", "agenda", "summary", "analysis", "section", "concept",
+                   "materials", "perspective", "plan_compare", "decisions",
+                   "open_items", "next_steps", "disclaimer"],
+    },
     "plan-comparison": {
         "stage": "S3", "title": "平面方案比选汇报",
         "slides": ["cover", "agenda", "summary", "plan", "plan_compare", "analysis",

@@ -1,0 +1,414 @@
+"""G2 概念确认：不是确认一个风格名，而是签一份设计依据。
+
+G1 签的是"要做什么"，G2 签的是"往哪个方向做"。所以 G2 必须同时锁定：
+
+概念 ID · 设计主张 · 空间策略 · 风格（可含组合）· 关键材料与色彩 · 视觉语言 ·
+允许 S3 深化的条件 · 未解决风险 · 项目修订 · 确认人。
+
+只确认风格名是最常见的偷懒：风格不决定房间怎么组织，锁定风格却放行 S3，
+等于让平面阶段重新猜一次业主想要什么。
+
+与 S1 一致的两条纪律：
+* `source="demo"` 只确认状态，**不写概念基准**，不得被引用为业主签署；
+* 确认后改动概念/风格/需求，必须走变更回流，不能只返回一个标志位。
+
+© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence
+
+from ..model import Project
+from ..stage_state import (
+    block_stage,
+    confirm_stage,
+    get_state,
+    invalidate_from,
+    reject_stage,
+)
+
+DECISIONS = ("approved", "revision_requested", "blocked")
+SOURCES = ("owner", "demo")
+
+DECISION_LABEL = {
+    "approved": "通过 · 形成概念基准",
+    "revision_requested": "退回修改",
+    "blocked": "阻断 · 需先解决前置条件",
+}
+SOURCE_LABEL = {"owner": "业主签署", "demo": "演示（不形成基准）"}
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def _concept(project: Project) -> Dict[str, Any]:
+    """Return the **same** concept dict every call (a copy would silently diverge)."""
+    meta = project.meta if isinstance(project.meta, dict) else {}
+    state = meta.get("concept")
+    if not isinstance(state, dict):
+        state = {}
+        meta["concept"] = state
+    project.meta = meta
+    return state
+
+
+@dataclass
+class GateAssessment:
+    """What stands between this concept set and S2 being confirmed."""
+
+    has_options: bool = False
+    selected: str = ""
+    blocked_reasons: List[str] = field(default_factory=list)
+    conditions: List[str] = field(default_factory=list)
+    needs_human: List[str] = field(default_factory=list)
+    pre_gate: bool = False
+    style_conflict: List[str] = field(default_factory=list)
+
+    @property
+    def can_approve(self) -> bool:
+        return self.has_options and bool(self.selected) and not self.blocked_reasons
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "has_options": self.has_options,
+            "selected": self.selected,
+            "can_approve": self.can_approve,
+            "blocked_reasons": list(self.blocked_reasons),
+            "conditions": list(self.conditions),
+            "needs_human": list(self.needs_human),
+            "pre_gate": self.pre_gate,
+            "style_conflict": list(self.style_conflict),
+        }
+
+
+def assess_gate(project: Project) -> GateAssessment:
+    """Judge only what G2 is responsible for: may S3 start on this concept?"""
+    from ..intake.gate import check_baseline
+
+    state = _concept(project)
+    options = state.get("options") or {}
+    a = GateAssessment(has_options=bool((options.get("concepts") or [])))
+    if not a.has_options:
+        a.blocked_reasons.append("尚未生成概念方案：先运行 concept --action generate")
+        return a
+
+    a.selected = str(state.get("selected") or "")
+    if not a.selected:
+        a.blocked_reasons.append(
+            "尚未选定概念：G2 必须明确 concept_id，确认一个风格名不等于确认方案")
+    elif not any(c["concept_id"] == a.selected for c in options["concepts"]):
+        a.blocked_reasons.append(f"选定的 {a.selected} 不在本批方案中")
+
+    a.pre_gate = bool(options.get("pre_gate"))
+    if a.pre_gate:
+        a.blocked_reasons.append(
+            "本批概念是在 G1 确认前生成的探索稿：不能作为正式设计依据，"
+            "须在 G1 通过后重跑 generate 再提交 G2")
+
+    base = check_baseline(project)
+    if base.get("requires_change_analysis"):
+        a.blocked_reasons.append(
+            f"任务书基准已变更（{base.get('change_kind')}）：概念须按新任务书重做后再提交 G2")
+
+    # 风格锁定冲突：同一修订下不得存在两个不同的锁定结果
+    lock = state.get("style_lock") or {}
+    chosen = next((c for c in options["concepts"] if c["concept_id"] == a.selected), None)
+    if lock and chosen:
+        locked = set(lock.get("style_ids") or [])
+        want = set(chosen.get("style_ids") or [])
+        if locked and locked != want:
+            a.style_conflict.append(
+                f"已锁定风格 {sorted(locked)} 与选定概念声明的 {sorted(want)} 不一致")
+
+    for c in (options.get("concepts") or []):
+        if c["concept_id"] == a.selected:
+            if not c.get("s1_opportunity_refs"):
+                a.conditions.append("该方向未直接回应对应机会条目，需在 G2 说明原因")
+            if (c.get("spatial_prototype") or {}).get("plan_strategy") == "":
+                a.conditions.append("S3 现有平面算法不支持该原型，需与主创确认落地方式")
+            if any("尺寸未核实" in t for t in (c.get("tradeoffs") or [])):
+                a.conditions.append("尺寸未核实：S3 可做空间验证，但不得据此出正式平面")
+            break
+
+    risk_topics = {u.get("topic") for u in (project.meta.get("intake", {})
+                                            .get("uncertainty") or []) if u.get("open")}
+    if "structural" in risk_topics:
+        a.needs_human.append("结构条件未核实：概念可确认，结构拆改须持证专业人员复核后方可推进")
+    if "regulatory" in risk_topics:
+        a.needs_human.append("报批条件未确认：不得据此出具报审图")
+    return a
+
+
+# --------------------------------------------------------------------------
+def _payload(project: Project) -> Dict[str, Any]:
+    """Exactly what G2 signs — nothing about presentation aesthetics."""
+    state = _concept(project)
+    options = state.get("options") or {}
+    chosen = next((c for c in (options.get("concepts") or [])
+                   if c["concept_id"] == state.get("selected")), None)
+    return {
+        "project_id": project.project_id,
+        "revision": project.revision,
+        "concept_id": state.get("selected") or "",
+        "concept_name": (chosen or {}).get("concept_name", ""),
+        "concept_statement": (chosen or {}).get("concept_statement", ""),
+        "prototype": ((chosen or {}).get("spatial_prototype") or {}).get("prototype_id", ""),
+        "spatial_strategy": ((chosen or {}).get("spatial_prototype") or {}).get("spatial_logic", ""),
+        "style_ids": (chosen or {}).get("style_ids") or [],
+        "materials": [m.get("name") for m in ((chosen or {}).get("material_direction") or [])],
+        "palette": ((chosen or {}).get("palette") or {}).get("dominant") or [],
+        "opportunities": (chosen or {}).get("s1_opportunity_refs") or [],
+    }
+
+
+def concept_digest(project: Project) -> str:
+    blob = json.dumps(_payload(project), ensure_ascii=False, sort_keys=True, default=str)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def select(project: Project, concept_id: str) -> Dict[str, Any]:
+    """Choose a concept — but do not lock it yet. Locking happens at G2."""
+    state = _concept(project)
+    options = state.get("options") or {}
+    if not options.get("concepts"):
+        raise ValueError("尚未生成概念方案")
+    if not any(c["concept_id"] == concept_id for c in options["concepts"]):
+        raise ValueError(f"未知概念 {concept_id}；可选："
+                         + "、".join(c["concept_id"] for c in options["concepts"]))
+    previous = str(state.get("selected") or "")
+    state["selected"] = concept_id
+    state["selected_at"] = _now()
+    from .handoff import refresh as _refresh_handoff
+
+    _refresh_handoff(project)
+
+    changed_after_gate = bool(state.get("baseline")) and previous and previous != concept_id
+    result: Dict[str, Any] = {"selected": concept_id, "previous": previous,
+                              "requires_change_analysis": changed_after_gate,
+                              "reopened_stages": []}
+    if changed_after_gate:
+        # Same rule as S1: a real change after signature reopens, not just reports.
+        from ..revisions import record_change
+
+        reopened = invalidate_from(project, "S2")
+        record_change(project, "concept",
+                      f"G2 之后更换概念：{previous} → {concept_id}",
+                      targets=["S2"], invalidated=reopened)
+        result["reopened_stages"] = reopened
+        result["note"] = ("概念基准已建立后更换方向：S2 与下游已置为返工，"
+                          "原基准保留在记录中，须重新提交 G2")
+    return result
+
+
+@dataclass
+class Outcome:
+    decision: str
+    stage_status: str
+    source: str
+    notes: List[str] = field(default_factory=list)
+    baseline: Dict[str, Any] = field(default_factory=dict)
+    forced: bool = False
+    assessment: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "decision": self.decision,
+            "decision_label": DECISION_LABEL.get(self.decision, self.decision),
+            "stage_status": self.stage_status,
+            "source": self.source,
+            "source_label": SOURCE_LABEL.get(self.source, self.source),
+            "notes": list(self.notes),
+            "baseline": dict(self.baseline),
+            "forced": self.forced,
+            "assessment": dict(self.assessment),
+        }
+
+
+def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
+                source: str = "owner", acknowledge: Sequence[str] = (),
+                force: bool = False, summary_path: str = "") -> Outcome:
+    """Apply one G2 decision. Single entry point for every caller."""
+    if decision not in DECISIONS:
+        raise ValueError(f"unknown decision '{decision}'（应为 {'/'.join(DECISIONS)}）")
+    if source not in SOURCES:
+        raise ValueError(f"unknown source '{source}'（应为 {'/'.join(SOURCES)}）")
+
+    state = _concept(project)
+    assess = assess_gate(project)
+    notes: List[str] = []
+    forced_flag = False
+
+    if decision == "approved":
+        acknowledged = {str(x) for x in acknowledge}
+        open_reasons = [r for r in assess.blocked_reasons
+                        if not any(a in r for a in acknowledged)]
+        if open_reasons and source == "owner":
+            if force:
+                forced_flag = True
+                notes.append("在未选定概念/条件未满足的情况下强制通过；已记录，供后续追溯")
+            else:
+                decision = "blocked"
+                notes.append("不能通过 G2：" + "；".join(open_reasons))
+                notes.append("处理方式：先选定 concept_id；若为需求矛盾，用 --acknowledge <id> 逐项确认")
+        elif open_reasons and source == "demo":
+            notes.append("演示模式：前置条件未满足，本次通过不构成业主签署")
+
+    if decision == "approved":
+        by_label = by or ("业主/主创" if source == "owner" else "演示流程")
+        st = confirm_stage(project, "S2", by=by_label,
+                           note=note or ("G2 概念确认" if source == "owner"
+                                         else "G2 演示确认（--assume-approval）"))
+        payload = _payload(project)
+        entry = {
+            **payload,
+            "digest": concept_digest(project),
+            "confirmed_at": st.confirmed_at,
+            "confirmed_by": st.confirmed_by,
+            "source": source,
+            "forced": forced_flag,
+            "acknowledged": sorted({str(x) for x in acknowledge}),
+            "conditions": list(assess.conditions),
+            "needs_human": list(assess.needs_human),
+            "summary_path": summary_path,
+        }
+        if source == "owner":
+            state["baseline"] = entry
+            state["demo_approval"] = None
+            notes.append(f"已形成概念基准：{entry['concept_id']} / r{project.revision} / "
+                         f"{entry['digest']}")
+            # 与既有风格锁定文件对齐：同一修订只保留一个锁定结果
+            lock = state.get("style_lock") or {}
+            if lock and set(lock.get("style_ids") or []) != set(entry["style_ids"]):
+                state["style_lock"] = {}
+                notes.append("原风格锁定与本次选定概念不一致，已作废，需重新写入锁定文件")
+        else:
+            state["demo_approval"] = entry
+            notes.append("演示模式：未写入概念基准，S3 不得引用本次确认作为设计依据")
+        baseline = entry
+    elif decision == "revision_requested":
+        st = reject_stage(project, "S2", reason=note or "业主对方案提出修改")
+        baseline = state.get("baseline") or {}
+        notes.append("已退回修改；概念基准未变更，S2 需重新提交 G2")
+    else:
+        st = block_stage(project, "S2", note or "存在前置条件未解决")
+        baseline = state.get("baseline") or {}
+        notes.append("已阻断：解决前置条件后重新提交 G2")
+
+    for c in assess.conditions[:2]:
+        notes.append(f"附条件推进：{c}")
+    for h in assess.needs_human[:2]:
+        notes.append(f"须专业复核：{h}")
+    state["last_decision"] = {
+        "decision": decision, "source": source, "by": by, "note": note,
+        "at": _now(), "revision": project.revision, "summary_path": summary_path,
+    }
+    if decision == "approved":
+        from .handoff import refresh as _refresh_handoff
+
+        out_dir = Path(summary_path).parent if summary_path else None
+        _refresh_handoff(project, out_dir)
+    return Outcome(decision=decision, stage_status=st.status, source=source,
+                   notes=notes, baseline=baseline, forced=forced_flag,
+                   assessment=assess.to_dict())
+
+
+def check_baseline(project: Project) -> Dict[str, Any]:
+    """Has the signed concept changed since G2?"""
+    state = _concept(project)
+    base = state.get("baseline") or {}
+    demo = state.get("demo_approval") or {}
+    if not base:
+        return {"has_baseline": False, "changed": False, "demo_only": bool(demo),
+                "reason": "仅有演示确认，未形成可引用概念基准" if demo else "尚未通过 G2"}
+    current = concept_digest(project)
+    changed = current != base.get("digest")
+    return {
+        "has_baseline": True,
+        "changed": changed,
+        "demo_only": False,
+        "baseline_digest": base.get("digest"),
+        "current_digest": current,
+        "concept_id": base.get("concept_id"),
+        "style_ids": list(base.get("style_ids") or []),
+        "baseline_revision": base.get("revision"),
+        "current_revision": project.revision,
+        "confirmed_at": base.get("confirmed_at"),
+        "confirmed_by": base.get("confirmed_by"),
+        "requires_change_analysis": changed,
+        "reason": ("概念/风格/材料已变更，须重做 S2 与下游" if changed
+                   else "与已确认概念基准一致"),
+    }
+
+
+def approval_summary(project: Project, extra: str = "") -> str:
+    """What the client actually signs — human-readable, no scores."""
+    state = _concept(project)
+    options = state.get("options") or {}
+    chosen = next((c for c in (options.get("concepts") or [])
+                   if c["concept_id"] == state.get("selected")), {})
+    assess = assess_gate(project)
+    p = chosen.get("spatial_prototype") or {}
+    lines = [
+        "# G2 概念确认摘要",
+        "",
+        f"项目：{project.name or project.project_id}（{project.project_id}）　"
+        f"模型修订 r{project.revision}",
+        "",
+        "## 一、要确认的是这一套",
+        "",
+        f"- 概念编号：**{chosen.get('concept_id', '未选定')}**",
+        f"- 概念名称：{chosen.get('concept_name', '—')}",
+        f"- 设计主张：{chosen.get('concept_statement', '—')}",
+        f"- 空间原型：{p.get('name', '—')}（{p.get('family_zh', '—')}）",
+        "",
+        "## 二、空间策略",
+        "",
+        p.get("spatial_logic", "—"),
+        "",
+        f"- 动线：{p.get('circulation', '—')}",
+        f"- 分区：{p.get('zoning', '—')}",
+        f"- 采光：{p.get('daylight', '—')}",
+        "",
+        "## 三、视觉语言",
+        "",
+        f"- 风格：{' + '.join(chosen.get('style_labels') or []) or '—'}",
+        f"- 风格依据：{chosen.get('style_basis', '—')}",
+        f"- 配色关系：{(chosen.get('aesthetic_policy') or {}).get('ratio_rule', '—')}",
+        "",
+        "| 材料 | 用在 | 做法 |",
+        "|---|---|---|",
+    ]
+    for m in (chosen.get("material_direction") or []):
+        lines.append(f"| {m.get('name', '')} | {m.get('application', '')} | {m.get('finish', '')} |")
+    lines += ["", "**光**："]
+    lines += [f"- {x}" for x in (chosen.get("lighting_direction") or [])] or ["- —"]
+
+    lines += ["", "## 四、允许 S3 深化的条件", ""]
+    lines += [f"- {c}" for c in assess.conditions] or ["- 无附加条件"]
+    lines += ["", "## 五、需专业复核的事项", ""]
+    lines += [f"- {h}" for h in assess.needs_human] or ["- 无"]
+    lines += ["", "## 六、仍未解决的风险", ""]
+    risks = (chosen.get("technical_risks") or [])[:4]
+    lines += [f"- {r}" for r in risks] or ["- 无已知技术风险记录"]
+
+    gaps = [r for r in assess.blocked_reasons]
+    lines += ["", "## 七、还没解决的问题", ""]
+    lines += [f"- {g}" for g in gaps] or ["- 无阻断项；其余待核实事项见 S1 不确定清单"]
+
+    if extra:
+        lines += ["", "## 补充说明", "", extra]
+    lines += ["", "---", "",
+              "> 确认后本套即成为 S3 的设计依据。之后修改概念、风格或需求，"
+              "系统会重新计算受影响的成果并要求重新确认，原确认版保留在修订记录中。"]
+    return "\n".join(lines)
+
+
+__all__ = ["DECISIONS", "SOURCES", "GateAssessment", "Outcome", "assess_gate",
+           "decide_gate", "select", "concept_digest", "check_baseline",
+           "approval_summary"]

@@ -101,13 +101,13 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
 | **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
 | **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** | 项目刚起步、需求还没成形时先读它（三种情形 / 访谈 / 可行性 / 设计机会） |
+| **S2 概念怎么生成、怎么确认** | **`docs/S2_CONCEPT.md`** | 出 2–3 套空间策略不同的方向、图解、意向板、比较与 G2 基准；概念 ≠ 风格 |
 | 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
 | 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
 
 ### 4a. 不会做就查手册（硬性提醒）
-
 **操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档。** 三种入手方式内容一致、版本同步：
 仓库内 `docs/MANUAL.md`（离线可用）· 飞书 · Notion（地址见任一 `.md` 的 front-matter 里
 `操作手册:` 字段，以及本文件 front-matter 的同一字段）。
@@ -213,6 +213,7 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 ```bash
 python -m omniarchitect demo --out out              # 生成示例并跑通全流程
 python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大平层"  # S1 智能启动
+python -m omniarchitect concept --project <dir> --action generate                 # S2 概念（含图解/意向板/提案）
 python -m omniarchitect status  --project <dir>      # 阶段状态
 python -m omniarchitect route   --project <dir> "帮我出施工图"
 python -m omniarchitect run     --project <dir> --all --assume-approval

@@ -41,8 +41,8 @@ def _schemes(project):
 # --------------------------------------------------------------------------
 def test_every_deck_kind_exists_and_is_a_known_stage():
     assert set(DECK_KINDS) == {
-        "concept", "plan-comparison", "preliminary", "visual", "final",
-        "materials-lighting", "technical-briefing", "delivery", "full",
+        "concept", "concept-options", "plan-comparison", "preliminary", "visual",
+        "final", "materials-lighting", "technical-briefing", "delivery", "full",
         "concept-rendering"}
     for kind, meta in DECK_KINDS.items():
         assert meta["stage"] in {f"S{i}" for i in range(1, 9)}, kind

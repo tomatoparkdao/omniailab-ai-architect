@@ -153,6 +153,9 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
   客户资料与设计文件。
 - **PPT / PDF 交付**默认使用 OmniAiLab 品牌模板（用户可按项目更换封面与品牌），
   不得嵌入外部机构广告、宣传链接、事务所案例或第三方水印。
+- **S2 只有一个生成器**：`concept.generate_bundle()`；`run --stage S2` 只是适配层。
+  G2 必须选定 `concept_id` 才可确认，确认同时写概念基准与风格锁定；
+  `concept-handoff.json` 是 S3 的唯一概念输入，策略不支持时如实报告而非换策略冒充。
 - **G1 只有一个审批入口**：`StageRunner.approve()` → `intake.decide_gate()`。`confirm` 命令、
   `run_stage(confirm=True)`、`--assume-approval` 都经过它；`--assume-approval` 是 `source="demo"`，
   **只确认状态、不写业主基准**，不得被引用为签署。结构/消防/报批限制不归 G1 管，
@@ -209,6 +212,8 @@ python -m omniarchitect criteria            :: 设计判据体系（自有口径
 python -m omniarchitect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniarchitect intake --project <dir> --action start --text "..."  # S1 智能启动
 python -m omniarchitect confirm --project <dir> --stage S1 --by 业主  # G1 唯一确认入口（可 --acknowledge / --force）
+python -m omniarchitect concept --project <dir> --action generate  # S2 概念（图解/意向板/比较/提案）
+python -m omniarchitect concept --project <dir> --action select --concept C-B  # 选定一个方向（不是风格名）
 python -m omniarchitect demo --out out        :: 示例项目跑通全部八阶段
 python -m omniarchitect status  --project projects/demo-120
 python -m omniarchitect route   --project projects/demo-120 "出施工图"

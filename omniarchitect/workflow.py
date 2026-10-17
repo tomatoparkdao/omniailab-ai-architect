@@ -458,6 +458,10 @@ class StageRunner:
         """
         from .intake.gate import decide_gate
 
+        if stage_id == "S2":
+            return self._approve_concept(by=by, note=note, source=source,
+                                         acknowledge=acknowledge, force=force)
+
         if stage_id == "S1":
             outcome = decide_gate(self.project, "approved", by=by, note=note,
                                   source=source, acknowledge=acknowledge,
@@ -492,6 +496,59 @@ class StageRunner:
         actions = self.run_post_gate(stage_id)
         self._persist()
         return {**st.to_dict(), "source": source, "notes": [], "post_gate_actions": actions}
+
+    def _approve_concept(self, by: str = "", note: str = "", source: str = "owner",
+                         acknowledge: Sequence[str] = (), force: bool = False
+                         ) -> Dict[str, Any]:
+        """G2: confirm the concept *and* write the style lock that S3 will read.
+
+        The lock is written here rather than by the caller so that a confirmed
+        concept can never exist without its matching style lock — the failure
+        mode this prevents is "concept says italian-minimal, styles locked as
+        something else two stages later".
+        """
+        from .concept import decide_gate as decide_g2
+        from .concept import lock_style_for
+
+        summary_dir = None
+        try:
+            summary_dir = self.out / "02-concept-design"
+        except Exception:
+            summary_dir = self.out
+
+        outcome = decide_g2(self.project, "approved", by=by, note=note,
+                            source=source, acknowledge=acknowledge, force=force,
+                            summary_path=str(summary_dir / "g2-approval-summary.md"))
+        notes = list(outcome.notes)
+        actions: List[Dict[str, Any]] = []
+        if outcome.decision == "approved":
+            if source == "owner":
+                try:
+                    lock = lock_style_for(self.project, summary_dir)
+                    notes.append(f"风格已锁定：{' + '.join(lock.get('labels') or [])}"
+                                 f"（r{lock.get('revision')}）")
+                except Exception as exc:
+                    notes.append(f"风格锁定写入失败：{type(exc).__name__}: {exc}（须人工处理）")
+            record_change(self.project, "gate",
+                          f"{stage_name('S2')} 概念确认"
+                          f"（{outcome.source}："
+                          f"{(self.project.meta.get('concept', {}).get('baseline') or {}).get('concept_id') or '演示'}）",
+                          targets=["S2"])
+            actions = self.run_post_gate("S2")
+            for action in actions:
+                label = action.get("capability", "")
+                notes.append(
+                    f"门禁后置动作 {label}：{action.get('summary', '')}" if action.get("ran")
+                    else f"门禁后置动作 {label} 未执行：{action.get('reason', '')}"
+                )
+        self._persist()
+        return {
+            **get_state(self.project, "S2").to_dict(),
+            "source": outcome.source,
+            "notes": notes,
+            "assessment": outcome.assessment,
+            "post_gate_actions": actions,
+        }
 
     def confirm(self, stage_id: str, by: str = "业主", note: str = "",
                 source: str = "owner") -> Dict[str, Any]:
@@ -617,108 +674,61 @@ class StageRunner:
     # 02 概念方案设计
     # ==================================================================
     def stage_S2(self) -> StageOutcome:
+        """S2 lives in `omniarchitect/concept` — this is only the adapter.
+
+        Same rule as S1: one generator. `run --stage S2` and
+        `concept --action generate` must produce the same package, so the stage
+        does not build any content of its own.
+        """
+        from .concept import generate_bundle
+
         d = self._dir("S2")
-        style = str((self.project.constraints or {}).get("style") or "现代意式极简")
-        prog = self.project.program or []
-        lines = [
-            f"# 概念方案 — {self.project.name or self.project.project_id}", "",
-            f"**风格定位：{style}**", "",
-            "## 概念一 · 中部服务脊（Service Spine）", "",
-            "| 步 | 内容 |", "|---|---|",
-            "| 锚 | 把不该被看见的东西集中起来，剩下的空间才安静 |",
-            "| 象 | 一条压在户型中段的石质脊 |",
-            "| 法 | 卫生间、储藏、厨房沿中脊排布，两侧均为房间 |",
-            "| 形 | 一条贯穿南北的直线 |",
-            "",
-            "- 空间事件：进门 30 秒内，视线被中脊引导向右，客厅在城市光里展开",
-            "- 优势：采光面最大化，房间进深短、面宽大",
-            "- 风险：中脊无自然采光，须靠机械排风与人工照明补足",
-            "",
-            "## 概念二 · 南北动静横分（Day / Night Band）", "",
-            "| 步 | 内容 |", "|---|---|",
-            "| 锚 | 会客与休息不共享同一条动线 |",
-            "| 象 | 一条水平的走廊像一道缝合线 |",
-            "| 法 | 南侧公共区完全开放，北侧私密区由走廊串起 |",
-            "| 形 | 一条水平主导线，同时是天花造型与灯带走向 |",
-            "",
-            "- 空间事件：从玄关往北走，天花上的弧线一直带着人走到主卧门口",
-            "- 优势：公私分区清晰，开放区面积占比高",
-            "- 风险：走廊面积占比上升，北侧房间进深偏大",
-            "",
-            "## 概念自检（克制美学宪章）", "",
-            "| 判据 | 概念一 | 概念二 |", "|---|---|---|",
-            "| 一句话能说清（动词+材料+空间事件） | 是 | 是 |",
-            "| 在平面上能画出来 | 是 | 是 |",
-            "| 只需要一条主导线 | 是 | 是 |",
-            "| 业主能在电梯里复述 | 是 | 是 |",
-            "| 暖材占比 ≤40% | 待材质方案验证 | 待材质方案验证 |",
-            "",
-            "## 意向板关键词（定下后本轮不再变更）", "",
-            "| 组 | 关键词 |", "|---|---|",
-            "| 气质 | 克制 · 清醒 · 静默的贵 |",
-            "| 材料 | 微水泥 · 暖灰岩板 · 拉丝黑钛 |",
-            "| 光 | 一条发光的面 · 洗墙 · 3000K |",
-            "",
-            f"## 房间清单（{len(prog)} 项）", "",
-            "| 房间 | 目标 m² | 分区 |", "|---|---|---|",
-        ]
-        for p in prog:
-            lines.append(f"| {p.get('name','')} | {p.get('area_m2','')} | {p.get('zone','')} |")
-        lines += ["", "## 照明方向（概念层）", "",
-                  "- 概念一：中脊用线性灯带勾出方向，房间内以洗墙补足",
-                  "- 概念二：天花主导线内嵌灯带，作为『画在天花上的旋律线』",
-                  "", "## 成本影响（R3 · 前期动态估算）", "",
-                  "- 概念阶段成本差异主要来自天花造型复杂度与走廊面积占比",
-                  "", "---", "",
-                  "> 判据为本系统自有口径：克制美学基线、概念四步引擎、意向板协议"
-                  "（见 docs/DESIGN_CRITERIA.md）。",
-                  "> 概念方向须在平面阶段（S3）验证是否成立，不能只活在效果图里。"]
-        lines += [
-            "", "---", "",
-            f"项目：{self.project.name or self.project.project_id}"
-            f"（{self.project.project_id}）　模型修订 r{self.project.revision}"
-            f"　阶段 S2 　生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-            "本文件由 OmniArchitect 依据统一空间模型自动生成，与同一修订的全部下游成果可互相追溯。",
-            "设计判据为通用设计原理与工程惯例；结构、消防、无障碍与法规符合性须由持证专业人员复核签署。",
-        ]
-        (d / "concept-options.md").write_text("\n".join(lines), encoding="utf-8")
-
-        # moodboard protocol
-        mood = [
-            "# 意向板（Moodboard）骨架", "",
-            "| 格位 | 内容 | 判据 |", "|---|---|---|",
-            "| ① 主空间意象 | 1 张定调图 | 能看出冷暖对峙关系 |",
-            "| ② 天花与线条 | 主导线形态参考 | 一条线，不是一堆造型 |",
-            "| ③ 材质拼板 | 4–6 块，按暖/冷/黑分组 | 暖 ≤40%，黑 3–8% |",
-            "| ④ 色调条 | 5 色带占比 | 60-30-10 + 黑 5 |",
-            "| ⑤ 细部大样 | 2–3 个节点特写 | 决定『贵不贵』的地方 |",
-            "| ⑥ 光的性格 | 1 张光的参考 | 必须包含『一个发光的面』 |",
-            "", "## Concept Statement（≤60 字，含一个动词、一个材料、一个空间事件）", "",
-            "（待定——由主创填入并用一句话说清）", "",
-            "## 量化评分口径（跨轮不可更换）", "",
-            "- 200ms 第一印象　- 气质吻合度 0–100　- Design Critic 六维 0–100",
-            "- Color Harmony 60-30-10 拆色　- Design Taste 三维校准（Variance/Motion/Density）",
-            "", "> 迭代方法：意向板六格 → 关键词三组 → 量化打分 → 跨轮整改追踪。",
-            "", "---", "",
-            f"项目：{self.project.project_id}　模型修订 r{self.project.revision}"
-            f"　阶段 S2 　生成时间 {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-        ]
-        (d / "moodboard.md").write_text("\n".join(mood), encoding="utf-8")
-
-        rj = RenderAdapter().build_job_package(
-            self.project, d / "moodboard-render-jobs.json",
-            level_id=self.level_id, lighting="day_soft", style=style,
+        bundle = generate_bundle(
+            self.project, d,
+            pre_gate=False if get_state(self.project, "S1").status == CONFIRMED else True,
+            submit=False, project_dir=self.project_dir,
         )
-        register_artifact(self.project, "art-concept", "document", ["project:program"],
-                          "concept-design", relpath(d / "concept-options.md"), "draft")
-        register_artifact(self.project, "art-moodboard", "document", ["art-concept"],
-                          "moodboard-aesthetic-iteration", relpath(d / "moodboard.md"), "draft")
+        notes = [
+            f"概念方向 {bundle['count']} 套（{bundle['profile']}／{bundle['precision']}）："
+            + "、".join(f"{cid} {role}" for cid, role in (bundle["roles"] or {}).items()),
+        ]
+        if bundle.get("suggested"):
+            notes.append(f"总设计师建议：{bundle['suggested']}（G2 需业主明确选定 concept_id）")
+        visual = bundle.get("visual") or {}
+        notes.append(f"概念视觉：平台 {visual.get('platform_state', '?')}，"
+                     f"已生成 {visual.get('generated', 0)}／待平台 {visual.get('deferred', 0)}")
+        if bundle.get("deck"):
+            notes.append(f"可编辑提案：{bundle['deck'].get('slides')} 页（{bundle['deck'].get('backend')}）")
+        for w in (bundle.get("warnings") or [])[:3]:
+            notes.append(w)
+
+        # 机位任务包与概念视觉任务不是一回事：前者给"每个空间一张图"的批量表现，
+        # 后者给"方向氛围"。两者都要保留，且都如实标注状态。
+        extra: List[str] = []
+        style = str((self.project.constraints or {}).get("style") or "")
+        try:
+            rj = RenderAdapter().build_job_package(
+                self.project, d / "moodboard-render-jobs.json",
+                level_id=self.level_id, lighting="day_soft", style=style,
+            )
+            extra = list(rj.artifacts)
+            shots = len((rj.package or {}).get("shots") or [])
+            notes.append(f"机位任务包：{shots} 个机位（表现用途，非尺寸依据）")
+        except Exception as exc:
+            notes.append(f"机位任务包未生成：{type(exc).__name__}: {exc}")
+
+        files = [v for v in (bundle.get("files") or {}).values()
+                 if isinstance(v, str) and v.endswith((".md", ".json", ".pptx"))]
+        register_artifact(self.project, "art-concept", "document", ["art-brief"],
+                          "concept-design", relpath(d / "concept-options.json"), "draft")
+        register_artifact(self.project, "art-concept-moodboard", "document", ["art-concept"],
+                          "moodboard-aesthetic-iteration",
+                          relpath(d / "moodboards"), "draft")
         return StageOutcome(
             "S2",
-            artifacts=[str(d / "concept-options.md"), str(d / "moodboard.md"), *rj.artifacts],
-            adapter="render",
-            notes=["2 个概念方向 + 意向板骨架 + 概念层照明方向",
-                   "意向板关键词与评分口径已固定，后续轮次不可更换"],
+            artifacts=list(dict.fromkeys(files + extra +
+                                         [str(d / "concept-diagrams")])),
+            notes=notes,
         )
 
     # ==================================================================
@@ -726,12 +736,26 @@ class StageRunner:
     # ==================================================================
     def stage_S3(self) -> StageOutcome:
         d = self._dir("S3")
+        from .concept.handoff import load_for, verify_scheme
+
+        handoff = load_for(self.project)
         gen = PlanGenerator(self.project, self.level_id)
+        wanted = str((handoff.get("spatial") or {}).get("plan_strategy") or "")
+        # The confirmed concept decides which strategy leads; the second variant
+        # stays as a comparison. If the concept needs a strategy this generator
+        # does not have, say so instead of quietly producing something else.
+        lead = wanted if wanted in ("band_day_night", "spine_centre") else "band_day_night"
+        other = "spine_centre" if lead == "band_day_night" else "band_day_night"
         options = [
-            SchemeOptions(variant="A", title="方案A · 南北动静横分", strategy="band_day_night"),
-            SchemeOptions(variant="B", title="方案B · 中部服务脊", strategy="spine_centre"),
+            SchemeOptions(variant="A",
+                          title=f"方案A · {handoff.get('concept_name') or '按要求'}"
+                                f"（{lead}）",
+                          strategy=lead),
+            SchemeOptions(variant="B", title="方案B · 对照方案", strategy=other),
         ]
         self.schemes = {o.variant: gen.generate(o) for o in options}
+        concept_check = verify_scheme(handoff, self.schemes["A"], self.project) \
+            if handoff.get("status") in ("locked", "selected_not_confirmed") else None
 
         rows = ["# 平面方案对比（S3）", "", "## 面积表", "",
                 "| 房间 | 方案A m² | 方案B m² | 目标 m² | 偏差 |", "|---|---|---|---|---|"]
@@ -763,6 +787,26 @@ class StageRunner:
         rows += [f"- {i.code} {i.message}" for i in erg_lines] or ["- 无净宽/门宽问题"]
         rows += ["", "## 造价影响（R3）", ""]
         rows += [f"- {n}" for n in _cost_delta(self.project, self.schemes)]
+        if concept_check is not None:
+            rows += ["", "## 概念一致性校核（S2 → S3）", "",
+                     f"选定概念：**{handoff.get('concept_id')} {handoff.get('concept_name')}**　"
+                     f"结论：**{concept_check['conformance']}**", ""]
+            if handoff.get("stale"):
+                rows.append("- ⚠ 概念基准已变更，本平面不得作为最终依据")
+            rows += ["| 检查 | 结果 | 说明 |", "|---|---|---|"]
+            rows += [f"| {c['check']} | {'通过' if c['ok'] else '不通过'} | {c['detail']} |"
+                     for c in concept_check["checks"]]
+            for m in concept_check.get("manual_review") or []:
+                rows.append(f"\n- 待人工复核：{m}")
+            for c in concept_check["conflicts"]:
+                rows.append(f"\n- ⚠ {c['id']}（{c['severity']}）：{c['detail']}")
+            if handoff.get("verify_before_plan"):
+                rows += ["", "**进平面阶段前应核实**："]
+                rows += [f"- {v}" for v in handoff["verify_before_plan"]]
+        else:
+            rows += ["", "## 概念一致性校核", "",
+                     "- 无已确认概念：本轮平面为探索性验证，**不得签发 G3**。"]
+
         rows += ["", "## 推荐", "", _recommendation(self.schemes)]
         for v, s in self.schemes.items():
             if s.warnings:
@@ -801,11 +845,20 @@ class StageRunner:
         register_artifact(self.project, "art-schemes", "document",
                           ["project:program", "shell"], "space-planning",
                           relpath(d / "scheme-comparison.md"), "draft")
-        return StageOutcome(
-            "S3", artifacts=arts, adapter="dxf",
-            notes=[f"生成 {len(self.schemes)} 套平面方案 + 对比分析 + 造价影响", note_dxf,
-                   "等待业主选定方案（门禁 G3）"],
-        )
+        notes = [f"生成 {len(self.schemes)} 套平面方案 + 对比分析 + 造价影响", note_dxf,
+                 "等待业主选定方案（门禁 G3）"]
+        if concept_check is not None:
+            notes.insert(0, f"概念承接：{handoff.get('concept_id')} "
+                            f"{handoff.get('concept_name')}（{handoff.get('status')}）")
+            notes.append(f"概念一致性：{concept_check['conformance']}")
+            for c in concept_check["conflicts"][:2]:
+                notes.append(f"概念冲突 {c['id']}：{c['detail']}")
+            if not (handoff.get("spatial") or {}).get("plan_strategy_supported", True):
+                notes.append("该概念要求 S3 现有算法不支持的平面策略，已用最近策略出图，"
+                             "结果不能视为概念的直接落地")
+        else:
+            notes.append("无已确认概念：平面仅供探索，不得签发 G3")
+        return StageOutcome("S3", artifacts=arts, adapter="dxf", notes=notes)
 
     # ==================================================================
     # 04 初步设计与方案深化

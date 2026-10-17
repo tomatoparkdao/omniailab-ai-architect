@@ -523,6 +523,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 共 15 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
 | 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | 八个阶段各自的门禁、产出、退回规则与门禁后置动作 |
 | **S1 项目启动怎么做（一句话也能开工）** | [docs/S1_INTAKE.md](docs/S1_INTAKE.md) | 三种启动情形、按项目类型的访谈、五态置信度、五类可行性、设计机会与 G1 基准 |
+| **S2 概念方案怎么做（2–3 套方向怎么比）** | [docs/S2_CONCEPT.md](docs/S2_CONCEPT.md) | 空间原型库、按证据选方向、条件化审美判据、确定性图解、真实色板、G2 基准与 S3 交接 |
 | 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 入口 / 子能力 / 执行层 / 统一空间模型四层结构 |
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | 九组设计判据的可判定口径，以及每组落在哪个阶段 |
 | 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | 契约字段、凭据位置、三步接入流程与创作独占硬规则 |

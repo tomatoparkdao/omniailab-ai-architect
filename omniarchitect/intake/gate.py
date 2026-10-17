@@ -403,6 +403,18 @@ def decide_gate(project: Project, decision: str, by: str = "",
     if source not in SOURCES:
         raise ValueError(f"unknown source '{source}'（应为 {'/'.join(SOURCES)}）")
 
+    # 基准摘要里含问答与来源；如果访谈状态是在确认之后才建立的，
+    # brief_digest 会在下一次读取时突然变化，看起来像"业主改了需求"（真实踩过）。
+    # 所以签名前先把访谈状态落定，再计算摘要。
+    from .interview import ensure_intake
+
+    ensure_intake(project)
+    # 基准摘要里含问答与来源；如果访谈状态是在确认之后才建立的，
+    # brief_digest 会在下一次读取时突然变化，看起来像"业主改了需求"（真实踩过）。
+    # 所以签名前先把访谈状态落定，再计算摘要。
+    from .interview import ensure_intake
+
+    ensure_intake(project)
     store_precision(project)
     assess = assess_gate(project)
     notes: List[str] = []
