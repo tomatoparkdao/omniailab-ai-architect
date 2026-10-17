@@ -153,6 +153,10 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
   客户资料与设计文件。
 - **PPT / PDF 交付**默认使用 OmniAiLab 品牌模板（用户可按项目更换封面与品牌），
   不得嵌入外部机构广告、宣传链接、事务所案例或第三方水印。
+- **G1 只有一个审批入口**：`StageRunner.approve()` → `intake.decide_gate()`。`confirm` 命令、
+  `run_stage(confirm=True)`、`--assume-approval` 都经过它；`--assume-approval` 是 `source="demo"`，
+  **只确认状态、不写业主基准**，不得被引用为签署。结构/消防/报批限制不归 G1 管，
+  由 `intake.guard.check_stage()` 在 S3/S4/S7 执行，`--force` 解不开。
 - **自有确定性输出与 AI 生成彻底分开**：本地栅格化只声明 `schematic_diagram`，
   输出示意图（非写实渲染），**不得**冒称 AI 效果图，也不得成为生成式能力的隐式替代。
 - **两个自有入口可以挂在用户面材料里，但各有边界**：参考图素材库
@@ -204,6 +208,7 @@ python -m omniarchitect canvas-models       :: 画布模型声明与选择规则
 python -m omniarchitect criteria            :: 设计判据体系（自有口径）
 python -m omniarchitect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniarchitect intake --project <dir> --action start --text "..."  # S1 智能启动
+python -m omniarchitect confirm --project <dir> --stage S1 --by 业主  # G1 唯一确认入口（可 --acknowledge / --force）
 python -m omniarchitect demo --out out        :: 示例项目跑通全部八阶段
 python -m omniarchitect status  --project projects/demo-120
 python -m omniarchitect route   --project projects/demo-120 "出施工图"

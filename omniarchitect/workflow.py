@@ -237,6 +237,9 @@ class StageRunner:
             self.manifest.add(out)
             return out
 
+        from .intake.guard import check_stage
+
+        guard = check_stage(self.project, stage_id)
         start_stage(self.project, stage_id)
         handler = getattr(self, f"stage_{stage_id}", None)
         if handler is None:
@@ -255,6 +258,12 @@ class StageRunner:
         out.skills = out.skills or skills_for_stage(stage_id)
         out.stage_name = out.stage_name or f"{st.code} {st.name}"
         out.seconds = time.time() - t0
+        # A limited stage still runs; the restriction is part of its record so
+        # nobody later mistakes its output for unrestricted work.
+        for r in guard.restrictions:
+            out.notes.append(f"限制：{r}")
+        for h in guard.needs_human:
+            out.notes.append(f"须专业复核：{h}")
 
         if out.status in ("failed", "blocked"):
             from .stage_state import block_stage
@@ -264,21 +273,28 @@ class StageRunner:
             submit_for_confirmation(self.project, stage_id, out.notes[0] if out.notes else "")
             out.next_action = f"提交确认：{st.gate.label}（{st.gate.approver}）"
             if confirm:
-                confirm_stage(self.project, stage_id, by="业主/主创（假设）",
-                              note="由 --assume-approval 自动确认")
-                out.next_action = "已确认，可进入下一阶段"
-                actions = self.run_post_gate(stage_id)
-                out.gate_actions = actions
-                for action in actions:
-                    label = action.get("capability", "")
-                    if action.get("ran"):
-                        out.notes.append(
-                            f"门禁后置动作 {label}：{action.get('summary', '')}"
-                        )
-                    else:
-                        out.notes.append(
-                            f"门禁后置动作 {label} 未执行：{action.get('reason', '')}"
-                        )
+                approval = self.approve(stage_id, source="demo",
+                                        note="由 --assume-approval 自动确认（演示，非业主签署）")
+                if approval["status"] == CONFIRMED:
+                    out.next_action = ("已确认（演示模式，未形成业主基准）"
+                                       if approval.get("source") == "demo"
+                                       else "已确认，可进入下一阶段")
+                    out.gate_actions = approval.get("post_gate_actions") or []
+                    for action in out.gate_actions:
+                        label = action.get("capability", "")
+                        if action.get("ran"):
+                            out.notes.append(
+                                f"门禁后置动作 {label}：{action.get('summary', '')}"
+                            )
+                        else:
+                            out.notes.append(
+                                f"门禁后置动作 {label} 未执行：{action.get('reason', '')}"
+                            )
+                    for n in approval.get("notes") or []:
+                        out.notes.append(n)
+                else:
+                    out.notes.append("自动确认未通过：" + "；".join(
+                        approval.get("notes") or []))
         self.manifest.add(out)
         return out
 
@@ -427,16 +443,77 @@ class StageRunner:
     def run_remaining(self) -> RunManifest:
         return self.run_all(confirm_all=self.assume_approval)
 
-    def confirm(self, stage_id: str, by: str = "业主", note: str = "") -> Dict[str, Any]:
-        st = confirm_stage(self.project, stage_id, by=by, note=note)
-        record_change(self.project, "gate", f"{stage_name(stage_id)} 确认通过（{by}）",
-                      targets=[stage_id])
+    def approve(self, stage_id: str, by: str = "", note: str = "",
+                source: str = "owner", acknowledge: Sequence[str] = (),
+                force: bool = False) -> Dict[str, Any]:
+        """The single approval entry point for every caller.
+
+        G1 goes through `intake.decide_gate`, so the CLI, the stage runner and
+        `--assume-approval` all get the same checks. ``source="demo"`` marks a
+        demonstration: it confirms the stage so a pipeline can continue, but it
+        never writes an owner baseline and never claims to be a signature.
+
+        S2–S8 gates have no brief-level review to run; they still record the
+        change and honour post-gate actions.
+        """
+        from .intake.gate import decide_gate
+
+        if stage_id == "S1":
+            outcome = decide_gate(self.project, "approved", by=by, note=note,
+                                  source=source, acknowledge=acknowledge,
+                                  force=force)
+            if outcome.decision == "approved":
+                record_change(self.project, "gate",
+                              f"{stage_name(stage_id)} 确认通过"
+                              f"（{outcome.source}：{self.project.meta.get('intake', {}).get('baseline', {}).get('confirmed_by') or '演示'}）",
+                              targets=[stage_id])
+                actions = self.run_post_gate(stage_id)
+                self._persist()
+                return {
+                    **get_state(self.project, stage_id).to_dict(),
+                    "source": outcome.source,
+                    "notes": outcome.notes,
+                    "assessment": outcome.assessment,
+                    "post_gate_actions": actions,
+                }
+            self._persist()
+            return {
+                **get_state(self.project, stage_id).to_dict(),
+                "source": outcome.source,
+                "notes": outcome.notes,
+                "assessment": outcome.assessment,
+                "post_gate_actions": [],
+            }
+
+        st = confirm_stage(self.project, stage_id, by=by or (
+            "业主" if source == "owner" else "演示流程"), note=note)
+        record_change(self.project, "gate",
+                      f"{stage_name(stage_id)} 确认通过（{source}）", targets=[stage_id])
         actions = self.run_post_gate(stage_id)
         self._persist()
-        return {**st.to_dict(), "post_gate_actions": actions}
+        return {**st.to_dict(), "source": source, "notes": [], "post_gate_actions": actions}
+
+    def confirm(self, stage_id: str, by: str = "业主", note: str = "",
+                source: str = "owner") -> Dict[str, Any]:
+        """Backwards-compatible wrapper around `approve`."""
+        return self.approve(stage_id, by=by, note=note, source=source)
 
     def reject(self, stage_id: str, reason: str = "") -> Dict[str, Any]:
         from .stage_state import reject_stage
+
+        if stage_id == "S1":
+            from .intake.gate import decide_gate
+
+            outcome = decide_gate(self.project, "revision_requested", note=reason)
+            cleared = self.project.meta.get("gate_actions", {})
+            for slug in post_gate_actions_for_stage(stage_id):
+                if slug in cleared:
+                    cleared.pop(slug)
+            record_change(self.project, "gate",
+                          f"{stage_name(stage_id)} 未通过：{reason}", targets=[stage_id])
+            self._persist()
+            return {**get_state(self.project, stage_id).to_dict(),
+                    "notes": outcome.notes}
 
         st = reject_stage(self.project, stage_id, reason)
         # A rejected gate invalidates anything that gate had produced.
@@ -490,104 +567,51 @@ class StageRunner:
     # 01 项目启动与设计任务书
     # ==================================================================
     def stage_S1(self) -> StageOutcome:
+        """S1 lives in `omniarchitect/intake` — this is only the adapter.
+
+        There is exactly one task-brief generator in the project. Running the
+        stage and running `omniarchitect intake --action analyze` therefore
+        produce the same professional data and the same eight files; the only
+        difference is where the output directory points.
+        """
+        from .intake import assess_gate, generate_bundle
+        from .intake.diligence import blocking_stages
+
         d = self._dir("S1")
-        prog = self.project.program or []
-        cons = self.project.constraints or {}
-        budget = cons.get("budget_cny")
+        self.ensure_intake()
 
-        lines = [
-            f"# 设计任务书 — {self.project.name or self.project.project_id}", "",
-            f"- 项目编号：`{self.project.project_id}`　修订：r{self.project.revision}",
-            f"- 单位制：{self.project.units}",
-            f"- 设计阶段：方案（非施工图深度）",
+        # The estimate is produced inside the bundle so both entry points agree.
+        bundle = generate_bundle(self.project, d)
+
+        assess = assess_gate(self.project)
+        blocks = blocking_stages(self.project)
+        notes = [
+            f"S1 成果包 {bundle['count']} 份（{bundle['precision']}）："
+            f"完整度 {bundle['completeness'] * 100:.0f}%，"
+            f"需求 {bundle['opportunities']} 个设计机会",
         ]
-        for k, v in cons.items():
-            if k.startswith("_") or k == "budget_cny":
-                continue
-            lines.append(f"- {k}：{v}")
-        if budget:
-            lines.append(f"- 预算：{budget:,.0f} CNY")
-        lines += ["", "## 功能任务书", "",
-                  "| # | 房间 | 用途 | 目标面积 m² | 分区 | 需采光 |", "|---|---|---|---|---|---|"]
-        for i, p in enumerate(prog, 1):
-            rec = str(p.get("recipe", ""))
-            day = rec in ("living", "dining", "kitchen", "master_bedroom", "bedroom", "study")
-            lines.append(
-                f"| {i} | {p.get('name','')} | {rec} | {p.get('area_m2','')} "
-                f"| {p.get('zone','')} | {'是' if day else '否'} |"
-            )
-        total = sum(float(p.get("area_m2") or 0) for p in prog)
-        lines += ["", f"**任务书面积合计：{total:.1f} m²**", "", "## 已知条件与信息来源", ""]
-        for s in self.project.sources or []:
-            lines.append(
-                f"- {s.get('type','')} `{s.get('file','')}`　置信度 {s.get('confidence','')}"
-                f"　{s.get('note','')}"
-            )
-        lines += ["", "## 假设（未确认，不得当作事实）", ""]
-        lines += [f"- {a}" for a in (self.project.assumptions or [])] or ["- 无"]
-
-        # --- early cost estimate (R3) ---
-        est = None
-        if budget:
-            est = quantities.takeoff(self.project, self.level_id)
-            lines += ["", "## 预算口径（前期估算，非报价）", "",
-                      f"- 估算区间：{est.cost['subtotal_low']:,.0f} – {est.cost['subtotal_high']:,.0f} CNY",
-                      f"- 单位造价：{est.cost['per_m2_low']:,.0f} – {est.cost['per_m2_high']:,.0f} 元/m²"]
-            lines += [f"- {n}" for n in est.notes]
-        lines += ["", "## 验收标准", "",
-                  "1. 功能任务书与面积指标经业主确认；",
-                  "2. 预算口径与设计标准一致；",
-                  "3. 原始条件中的不确定性已列明并标记为待现场核对。"]
-        (d / "design-brief.md").write_text("\n".join(lines), encoding="utf-8")
-
-        # --- site / existing condition report ---
-        env = envelope_polygon(self.project, self.level_id)
-        xs = [p[0] for p in env]
-        ys = [p[1] for p in env]
-        ex, ey = entry_point(self.project, env)
-        uncertain = [e for e in self.project.elements if e.uncertain]
-        walls = [w for w in self.project.by_type("wall") if w.level_id == self.level_id]
-        lvl_height = next(
-            (l.height_mm for l in self.project.levels if l.id == self.level_id), 0.0
+        if blocks:
+            notes.append("后续阶段仍受限：" + "；".join(
+                f"{sid} {len(v)} 项" for sid, v in blocks.items()))
+        if assess.blocks_gate:
+            notes.append("G1 前需业主决定：" + "；".join(
+                b["problem"] for b in assess.blocks_gate[:2]))
+        return StageOutcome(
+            "S1",
+            artifacts=[str(d / name) for name in bundle["files"]],
+            notes=notes,
         )
-        site = [
-            f"# 原始条件报告 — {self.project.project_id}", "",
-            "## 外壳", "",
-            f"- 内表面外包尺寸：{(max(xs)-min(xs))/1000:.2f} m × {(max(ys)-min(ys))/1000:.2f} m",
-            f"- 外轮廓顶点数：{len(env)}（{'矩形' if len(env) == 4 else '非矩形，分区会被裁剪'}）",
-            f"- 入户位置（推断）：({ex:.0f}, {ey:.0f})",
-            f"- 层高：{lvl_height:.0f} mm",
-            "", "## 既有构件", "",
-            f"- 墙体 {len(walls)} 段，其中推断所得 {len(uncertain)} 段",
-            "", "## 图纸解析", "",
-            "- 图层识别：A-WALL（结构墙）/ A-WALL-PART（隔墙）/ A-DOOR / A-GLAZ / A-ANNO-DIMS",
-            "- 推断内容与实测内容已分离标记（`uncertain` 字段）",
-            "", "## 不确定信息（必须现场核对）", "",
-        ]
-        if uncertain:
-            for e in uncertain[:20]:
-                site.append(
-                    f"- `{e.id}` {e.type}　置信度 {e.confidence:.2f}　"
-                    f"{e.properties.get('note','由图纸推断，非实测')}"
-                )
-        else:
-            site.append("- 无")
-        site += ["", "> 梁柱与承重墙不得依据图纸推定；须现场探测或由原设计单位确认。"]
-        (d / "site-report.md").write_text("\n".join(site), encoding="utf-8")
 
-        for aid, path, deps in (
-            ("art-brief", d / "design-brief.md", ["project:program"]),
-            ("art-site", d / "site-report.md", ["shell", "existing_walls"]),
-        ):
-            register_artifact(self.project, aid, "document", deps,
-                              "design-brief" if aid == "art-brief" else "site-analysis",
-                              relpath(path), "draft")
-        notes = [f"任务书 {len(prog)} 项功能，合计 {total:.1f} m²",
-                 f"{len(uncertain)} 个构件标记为须现场核对"]
-        if est:
-            notes.append(f"前期估算 {est.cost['subtotal_low']:,.0f}–{est.cost['subtotal_high']:,.0f} CNY")
-        return StageOutcome("S1", artifacts=[str(d / "design-brief.md"), str(d / "site-report.md")],
-                            notes=notes)
+    def ensure_intake(self) -> None:
+        """Make sure S1 has an interview state before it generates anything.
+
+        A project may arrive with drawings only, or with a sentence, or with a
+        full programme. In every case the bundle needs a profile and a start
+        mode, so they are established once and then left alone.
+        """
+        from .intake.interview import ensure_intake
+
+        ensure_intake(self.project)
 
     # ==================================================================
     # 02 概念方案设计

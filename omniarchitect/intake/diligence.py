@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from ..model import Project
@@ -42,9 +43,13 @@ CONFIDENCE_LABEL: Dict[str, str] = {
 }
 
 # What an unresolved item actually invalidates. Keyed by topic.
+# `blocks` applies to inferred / unknown / conflicting. `documented_blocks` is
+# the narrower set that a *document* still cannot satisfy: a drawing is evidence
+# that something was designed, not that it was built that way.
 BLOCKING_SCOPES: Dict[str, Dict[str, Any]] = {
     "structural": {
         "blocks": ("S4", "S7"),
+        "documented_blocks": ("S4", "S7"),
         "reason": "结构与承重条件未证实：可以讨论非结构方案，不得承诺拆改、"
                   "不得出结构相关图纸",
         "needs_human": True,
@@ -52,32 +57,40 @@ BLOCKING_SCOPES: Dict[str, Dict[str, Any]] = {
     "dimension": {
         # S3 is where the plan is built at real size, so an unverified
         # dimension bites earlier than most people expect.
-        "blocks": ("S3", "S4"),
+        "blocks": ("S3", "S4", "S7"),
+        # A CAD file supports scheme drawings; it does not support a
+        # construction drawing, because the revision may be stale.
+        "documented_blocks": ("S7",),
         "reason": "关键尺寸未证实：可出概念方向与示意，不得出依赖精确尺寸的图纸与工程量",
         "needs_human": False,
     },
     "regulatory": {
         "blocks": ("S7",),
+        "documented_blocks": ("S7",),
         "reason": "法规与报批条件未确认：不得出具可报审图纸，结论须由持证人员复核",
         "needs_human": True,
     },
     "budget": {
         "blocks": (),
+        "documented_blocks": (),
         "reason": "预算口径未定：不阻断设计，但造价结论只能给区间并注明假设",
         "needs_human": False,
     },
     "aesthetic": {
         "blocks": (),
+        "documented_blocks": (),
         "reason": "审美方向未定：不阻断，S2 概念阶段收敛即可",
         "needs_human": False,
     },
     "scope": {
         "blocks": (),
+        "documented_blocks": (),
         "reason": "设计范围未定：不阻断，但交付清单须标注待确认",
         "needs_human": False,
     },
     "services": {
         "blocks": ("S4",),
+        "documented_blocks": ("S4",),
         "reason": "机电条件未确认：不得承诺净高、点位与容量，须机电专业复核",
         "needs_human": True,
     },
@@ -174,15 +187,24 @@ class UncertaintyItem:
             "action_needed": self.action_needed or str(scope["reason"]),
             "needs_human": bool(scope["needs_human"]),
             "owner": self.owner,
-            "open": self.state in ("unknown", "inferred", "conflicting"),
+            # Open means "still limits something", not "not verified": a
+            # documented structure still forbids demolition.
+            "open": bool(scope["blocks"]),
         }
 
 
 def blocking_scope(topic: str, state: str) -> Dict[str, Any]:
     """What does an unresolved item of this kind actually block?"""
     scope = BLOCKING_SCOPES.get(topic) or BLOCKING_SCOPES["scope"]
-    if state in ("verified", "documented"):
+    if state == "verified":
         return {"blocks": [], "reason": "", "needs_human": False}
+    if state == "documented":
+        # A document satisfies *some* topics and not others. Structure and
+        # statutory approval are the two that always need a site check or an
+        # official confirmation, so `documented` keeps its limits there.
+        blocks = list(scope.get("documented_blocks") or ())
+        return {"blocks": blocks, "reason": str(scope["reason"]),
+                "needs_human": bool(scope["needs_human"]) and bool(blocks)}
     if state == "conflicting":
         # A contradiction blocks harder than a blank: a blank can be filled,
         # a contradiction can be acted on wrongly.
@@ -193,8 +215,63 @@ def blocking_scope(topic: str, state: str) -> Dict[str, Any]:
             "needs_human": bool(scope["needs_human"])}
 
 
-def register_source(project: Project, entry: SourceEntry) -> SourceEntry:
-    """Add (or replace) a source in the project-level register."""
+_VERIFY_HINTS = ("已核验", "实测", "现场量", "签认", "复核", "测绘")
+
+
+def _file_present(name: str, base_dir: Optional[Path] = None) -> bool:
+    """Is the referenced file actually reachable?
+
+    A registered filename proves nothing on its own: the whole point of
+    `verified` is that someone can go back to the artifact.
+    """
+    if not (name or "").strip():
+        return False
+    p = Path(name)
+    if p.is_absolute() and p.exists():
+        return True
+    if base_dir is not None:
+        cand = Path(base_dir) / name
+        if cand.exists():
+            return True
+    return p.exists()
+
+
+def source_credibility(entry: SourceEntry,
+                       base_dir: Optional[Path] = None) -> Tuple[str, List[str]]:
+    """What a source may claim, and what is missing for it to claim more.
+
+    A `measure` entry reaches `verified` only when all three exist: a named
+    verifier, a date or revision, and a file that can be found. Anything less
+    stays `documented` — and `documented` never unlocks structural approval.
+    """
+    if entry.kind != "measure":
+        return "documented", []
+    missing: List[str] = []
+    if not (entry.verified_by or "").strip():
+        missing.append("缺少核验人")
+    if not (entry.obtained_at or entry.revision or "").strip():
+        missing.append("缺少核验时间或版本")
+    if not _file_present(entry.file, base_dir):
+        missing.append("来源文件未找到")
+    elif not any(h in (entry.note or "") for h in _VERIFY_HINTS) and not entry.verified_by:
+        missing.append("未登记核验结论")
+    return ("documented", missing) if missing else ("verified", [])
+
+
+def register_source(project: Project, entry: SourceEntry,
+                    base_dir: Optional[Path] = None) -> SourceEntry:
+    """Add (or replace) a source in the project-level register.
+
+    A `measure` entry is only accepted as `verified` when the evidence is
+    there; otherwise it is downgraded and the reason is written into the note,
+    so nobody can claim site-verified dimensions by typing a filename.
+    """
+    if entry.kind == "measure":
+        state, missing = source_credibility(entry, base_dir)
+        if state != "verified":
+            entry.confidence = "documented"
+            tail = "；".join(missing)
+            entry.note = (entry.note + "　" if entry.note else "") + f"未达 verified：{tail}"
     intake = _store(project)
     reg = list(intake.get("sources") or [])
     reg = [r for r in reg if r.get("id") != entry.id]
@@ -216,6 +293,49 @@ def register_uncertainty(project: Project, item: UncertaintyItem) -> Uncertainty
     reg.append(item.to_dict())
     intake["uncertainty"] = reg
     return item
+
+
+def update_uncertainty(project: Project, item_id: str, *,
+                       state: Optional[str] = None,
+                       statement: Optional[str] = None,
+                       evidence: str = "",
+                       owner: str = "") -> Dict[str, Any]:
+    """Update an open item in place — used when a condition gets verified.
+
+    Closing an item is how a limitation is lifted: the register keeps the
+    record, but `open` turns false so downstream guards stop firing.
+    """
+    intake = _store(project)
+    reg = list(intake.get("uncertainty") or [])
+    for i, item in enumerate(reg):
+        if item.get("id") != item_id:
+            continue
+        if state:
+            if state not in CONFIDENCE_STATES:
+                raise ValueError(f"unknown state '{state}'")
+            item["state"] = state
+            item["state_label"] = CONFIDENCE_LABEL.get(state, state)
+        if statement:
+            item["statement"] = statement
+        if evidence:
+            item["action_needed"] = evidence
+        if owner:
+            item["owner"] = owner
+        scope = blocking_scope(str(item.get("topic") or ""), str(item.get("state") or ""))
+        item["blocks_stages"] = list(scope["blocks"])
+        item["needs_human"] = bool(scope["needs_human"])
+        item["open"] = item["state"] in ("unknown", "inferred", "conflicting")
+        reg[i] = item
+        intake["uncertainty"] = reg
+        return item
+    raise KeyError(item_id)
+
+
+def close_uncertainty(project: Project, item_id: str,
+                      evidence: str = "已核验") -> Dict[str, Any]:
+    """Mark an item verified, which lifts its limitations."""
+    return update_uncertainty(project, item_id, state="verified",
+                              evidence=evidence)
 
 
 def uncertainty_register(project: Project) -> List[Dict[str, Any]]:
@@ -240,7 +360,13 @@ def assess_sources(project: Project) -> Dict[str, Any]:
     reg = source_register(project)
     kinds = [str(r.get("kind") or "") for r in reg]
     has_cad = any(k in _DIMENSIONAL_KINDS for k in kinds)
-    has_measure = "measure" in kinds
+    # A measure only counts when it actually reached `verified`; a filename is
+    # not a measurement.
+    has_measure = any(
+        r.get("kind") == "measure" and r.get("confidence") == "verified"
+        for r in reg
+    )
+    has_measure_entry = "measure" in kinds
     has_visual = any(k in _VISUAL_KINDS for k in kinds)
     has_task_doc = "task_doc" in kinds
     counts: Dict[str, int] = {}
@@ -260,7 +386,11 @@ def assess_sources(project: Project) -> Dict[str, Any]:
     if not has_cad:
         gaps.append("没有 CAD/DXF 或实测记录：尺寸只能推断，不能作为图纸依据")
     if not has_measure:
-        gaps.append("没有现场实测记录：图纸标注与现场是否一致未核验")
+        if has_measure_entry:
+            gaps.append("有实测登记但未达核验要求（缺核验人 / 时间 / 可查文件），"
+                        "按 documented 处理：可出方案图，不得作为施工依据")
+        else:
+            gaps.append("没有现场实测记录：图纸标注与现场是否一致未核验")
     if not has_task_doc:
         gaps.append("没有书面任务书：需求只来自对话，须在 G1 前确认")
 

@@ -1,6 +1,7 @@
 ---
 domain: architectural-design-principles
 name: 建筑设计原理
+description: 建筑设计原理 —— 方案阶段对全局负责的判断依据：功能、场地、法规、造价与可实施性是否自洽
 stage_affinity: [S1, S2, S3, S4]
 loads_when: 当任务涉及总体布局、体型生成、功能分区、流线组织或形体与场地关系判断时加载
 load_cost: medium

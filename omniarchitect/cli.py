@@ -344,8 +344,21 @@ def cmd_confirm(args) -> int:
     out = ensure_output_dir(args.out, "out")
     runner = StageRunner(project, out, level_id=args.level, scheme_variant=args.scheme,
                          project_dir=Path(args.project))
-    st = runner.confirm(args.stage, by=args.by or "业主", note=args.note or "")
-    print(f"{args.stage} → {st['status']}（{st['confirmed_by']}）")
+    ack = [a.strip() for a in (getattr(args, "acknowledge", "") or "").split(",") if a.strip()]
+    st = runner.approve(args.stage, by=args.by or "业主", note=args.note or "",
+                        source="owner", acknowledge=ack, force=bool(getattr(args, "force", False)))
+    print(f"{args.stage} → {st['status']}（{st.get('confirmed_by') or '—'}）")
+    for n in st.get("notes") or []:
+        print(f"  · {n}")
+    if st["status"] != "confirmed":
+        assess = st.get("assessment") or {}
+        if assess.get("blocks_gate"):
+            print("\n需业主决定：")
+            for b in assess["blocks_gate"]:
+                print(f"  [{b['id']}] {b['problem']}")
+                print(f"       依据：{b['evidence']}")
+                print(f"       需要：{b['needs']}")
+        return 1
     return 0
 
 
@@ -474,6 +487,10 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--by", default="业主")
     sp.add_argument("--note", default="")
     sp.add_argument("--out", default=None)
+    sp.add_argument("--acknowledge", default="",
+                    help="G1：逐项确认需业主取舍的问题编号，用逗号分隔")
+    sp.add_argument("--force", action="store_true",
+                    help="G1：在需求矛盾未处理时强制通过（会记录，且不解除安全类限制）")
     sp.set_defaults(func=cmd_confirm)
 
     sp = add_project(sub.add_parser("reject", help="阶段成果不通过，退回返工"))

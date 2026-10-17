@@ -284,6 +284,24 @@ def generate_bundle(project: Project, out_dir: str | Path,
     d = Path(out_dir)
     d.mkdir(parents=True, exist_ok=True)
 
+    # Same starting point for every caller, so the bundle never depends on
+    # whether the caller remembered to start an interview first.
+    from .interview import ensure_intake
+
+    ensure_intake(project)
+
+    # Cost estimate is part of the brief (R3), so it is produced here rather
+    # than by the caller — otherwise `run` and `intake analyze` disagree on the
+    # same project. Absent budget or geometry simply yields no estimate.
+    if est is None and (project.constraints or {}).get("budget_cny"):
+        try:
+            from .. import quantities
+
+            level = project.levels[0].id if project.levels else "L1"
+            est = quantities.takeoff(project, level)
+        except Exception:
+            est = None
+
     matrix = build_need_matrix(project)
     feas = run_feasibility(project)
     opps = find_opportunities(project)

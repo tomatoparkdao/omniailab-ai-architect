@@ -1,6 +1,7 @@
 ---
 domain: bim-modeling-principles
 name: BIM 建模原理
+description: BIM 建模原理 —— 用三维模型承载设计信息：几何、属性、关系三者统一；约束建模精度、命名、参数与协同
 stage_affinity: [S5, S7]
 loads_when: 当任务涉及三维建模、模型精度、构件参数、协同校核、碰撞检查或模型交付时加载
 load_cost: medium

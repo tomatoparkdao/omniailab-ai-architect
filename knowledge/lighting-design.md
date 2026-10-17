@@ -1,6 +1,7 @@
 ---
 domain: lighting-design
 name: 照明设计
+description: 照明设计 —— 自然光与人工光统一到同一策略，输出照度、色温、显色与灯具控制的可执行判据
 stage_affinity: [S4, S5, S6]
 loads_when: 当任务涉及照度标准、色温选择、灯具布置、自然光策略或照明场景控制时加载
 load_cost: medium

@@ -65,6 +65,7 @@ REQUIRED_PATHS = [
     "docs/REFERENCE_SOURCES.md", "docs/VIDEO_PRODUCTION.md",
     "omniarchitect/reference.py",
     "docs/S1_INTAKE.md", "omniarchitect/intake/__init__.py",
+    "omniarchitect/intake/guard.py", "omniarchitect/intake/gate.py",
     "schemas/intake.schema.json",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",

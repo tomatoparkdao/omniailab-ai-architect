@@ -95,8 +95,15 @@ S1 原来只做一件事：把已有信息整理成任务书。问题是，大�
 | 预算口径 | 不阻断 | 造价结论改为给区间并注明假设 |
 | 审美方向 | 不阻断 | S2 收敛即可 |
 
+**`verified` 不是自己说了算**。登记一份 `measure` 资料时，系统要同时看到三样东西才认：
+核验人（`verified_by`）、时间或版本、以及能找到的来源文件。缺一样就降级为 `documented`，
+并把缺什么写进 note。只写一个文件名不会改变任何阶段准入——这条有测试守着。
+
 **来源冲突比空白更危险**：空白可以补，冲突会让人照着错的那个干活。所以 `conflicting`
 在自身阻断范围之外**额外阻断 S2**——先澄清，再谈概念。
+
+**核实之后要主动关闭**：`--action verify --uid U-STRUCTURAL` 把该项标为 `verified`，
+`blocks_stages` 清空、`open` 变 false，相关限制立刻解除。不关闭就会留下永久性阻断。
 
 ## 五、五类可行性
 
@@ -127,7 +134,22 @@ S1 原来只做一件事：把已有信息整理成任务书。问题是，大�
 - 每项的 `next_stage_recommendation` 指向 S2 或 S3 的具体动作。
 - 结构、消防、无障碍、法规的结论不在其中，须持证人员复核。
 
-## 七、S1 成果包
+## 七、统一执行入口
+
+S1 只有**一个**任务书生成器。`run --stage S1` 与 `intake --action analyze` 都是它的适配层：
+
+| 入口 | 实际做的事 | 差别 |
+|---|---|---|
+| `python -m omniarchitect run --stage S1` | `StageRunner.stage_S1` → `intake.generate_bundle` | 输出到 `out/<run>/01-*/` |
+| `python -m omniarchitect intake --action analyze` | 直接调 `intake.generate_bundle` | 输出到 `--out` 指定目录 |
+
+两者对同一项目产出的 8 份成果**逐字节一致**（除「生成时间」一行），
+测试 `test_the_two_entry_points_produce_the_same_bundle` 守着这件事。
+
+无几何资料也能跑：`envelope_polygon` 取不到轮廓时，条件报告会明确写「尚无几何数据，
+本报告只汇总已知资料，不含任何尺寸结论」，而不是抛异常。
+
+## 八、S1 成果包
 
 | 文件 | 回答什么问题 |
 |---|---|
@@ -143,24 +165,77 @@ S1 原来只做一件事：把已有信息整理成任务书。问题是，大�
 全部绑定 `project_id` + `revision`，并登记为 artifact；上游一变即可标 stale。
 可编辑 PPTX 任务书汇报按需由 `design-presentation` 生成，不强制每次都出。
 
-## 八、G1 门禁
+## 九、G1 门禁：四类后果，不是一个开关
 
-三种决策，映射到既有状态机，不另造一套：
+G1 只回答一个问题：**能不能进 S2**。它不决定结构能不能拆——那是 S4/S7 的事。
+把两件事混在一起，会得到一个永远开不了的门禁，和一堆看不见的限制。
 
-| 决策 | 状态机结果 | 含义 |
+所以判定拆成四类：
+
+| 类别 | 含义 | 例子 |
 |---|---|---|
-| `approved` | `confirmed` | 形成任务书基准 |
-| `revision_requested` | `rework` | 退回修改，基准不变 |
-| `blocked` | `blocked` | 有前置条件未解决 |
+| **阻断当前门禁** `blocks_gate` | 业主必须做取舍才能进 S2 | 需求 400 m² 装进 131 m²；完全没有需求 |
+| **限制后续阶段** `limited_stages` | S2 照常，但 S3/S4/S7 带具体限制 | 结构未核验 → 不得拆改；尺寸未确认 → 不得出正式平面 |
+| **要求专业复核** `needs_human` | 必须由持证人员签署才算数 | 结构、消防、报批条件 |
+| **允许附条件推进** `conditions` | 可以进，但要把前提写在记录里 | 预算低于目标档次、需求全为推断 |
 
-**存在阻断级可行性问题时不能直接 `approved`**，会被自动降级为 `blocked`；
-确实要过，得显式 `--force` 并在基准里记 `forced: true`，供后续追溯。
+三种决策仍映射既有状态机：`approved → confirmed`、`revision_requested → rework`、
+`blocked → blocked`。
 
-确认时记录基准摘要（`baseline_digest`：program + constraints + answers + 假设 + 不确定项 id）。
-之后任何改动都会让摘要不一致，`check_baseline()` 返回 `requires_change_analysis = true`，
-**原确认版保留在修订记录里，不会被覆盖**。
+**放行方式分两级**：
 
-## 九、S1 进入条件已放宽
+- `--acknowledge F-AREA-01`：业主逐项确认「我已理解并选择继续」，每项单独留痕；
+- `--force`：等价的快捷方式，基准里记 `forced: true`。它**只对需求矛盾生效**，
+  结构、消防、报批这类安全限制不归 G1 管，force 也解不开——它们由阶段守卫生效。
+
+**签署来源分开记**：
+
+| 来源 | 是否写基准 | 用途 |
+|---|---|---|
+| `owner`（`confirm` / 默认） | 写 `baseline` | 业主真实确认，后续阶段据此比对 |
+| `demo`（`--assume-approval`） | 只写 `demo_approval` | 演示与测试，**不得被当作业主签署引用** |
+
+`check_baseline()` 会明确回答「是否只有演示确认」，避免演示结果被拿来当签字。
+
+## 十、基准与变更联动
+
+基准摘要拆成两个，因为两种变化的性质不同：
+
+| 摘要 | 覆盖 | 变化意味着 |
+|---|---|---|
+| `brief_digest` | program + constraints + answers + 来源 | 业主改了需求 → **必须走变更影响分析** |
+| `baseline_digest` | 上面这些 + 每个不确定项的状态 | 只是限制变了（如已核验）→ 任务书没变 |
+
+G1 确认后修改需求，系统**不只是返回一个标志位**：
+
+1. `invalidate_from(project, "S1")` 把 S1 及下游已确认阶段置为返工；
+2. 写一条 `change_log`（含被作废的阶段）；
+3. `check_baseline()` 返回 `change_kind = "brief"` 与 `requires_change_analysis = true`。
+
+原确认版保留在修订记录中，不会被覆盖；要继续就必须重新提交 G1。
+
+
+## 十一、阶段守卫：限制按工作内容判，不按阶段一刀切
+
+`intake.guard.check_stage(project, stage)` 回答「这个阶段能做哪些工作」：
+
+| 阶段 | 结构未核实 | 尺寸未确认 | 报批未确认 |
+|---|---|---|---|
+| S2 | 可讨论非拆改方案 | 可讨论方向，不得给实际尺寸 | — |
+| S3 | 平面不得以拆改为前提 | 可做比较与示意，不出正式平面 | — |
+| S4 | 不得出拆改与加固图纸 | 不得出依赖精确尺寸的图纸 | — |
+| S7 | **阻断**（施工图不得基于未证实结构） | **阻断** | **阻断** |
+| S8 | — | 工程量不得作为结算依据 | — |
+
+要点：
+
+1. **限制不等于阻断**：S3/S4 仍可推进，只是具体工作被点名禁止，并且限制会写进阶段产出的
+   `notes`，后续不会被误当成无限制成果；
+2. **只对已登记的项生效**：模型自带的 `uncertain` 标记仍走原有校核逻辑，旧项目与 demo
+   的行为完全不变；
+3. **`documented` 不是通关证**：结构、法规类即使有图纸，仍保持限制——图画过不等于现场就是那样。
+
+## 十二、S1 进入条件已放宽
 
 旧条件写的是「需求、场地、原始图纸已收集」，这不符合真实业务——真实项目常常从一句话开始。
 
@@ -179,7 +254,7 @@ S1 原来只做一件事：把已有信息整理成任务书。问题是，大�
 
 `diagnostic` 的项目在 `can_start` 里会被直接拒绝进入 S4/S5/S7，理由写明「资料仅支持诊断级」。
 
-## 十、命令行
+## 十三、命令行
 
 ```bash
 python -m omniarchitect intake --project P --action start --text "150㎡ 大平层，一家三口"
@@ -189,12 +264,19 @@ python -m omniarchitect intake --project P --action answer --id res.future --sta
 python -m omniarchitect intake --project P --action register --uncertainty --topic structural
 python -m omniarchitect intake --project P --action status
 python -m omniarchitect intake --project P --action analyze
+python -m omniarchitect intake --project P --action verify --uid U-STRUCTURAL --note "现场探测已确认"
 python -m omniarchitect intake --project P --action gate --decision approved --by 业主
+python -m omniarchitect intake --project P --action gate --decision approved --acknowledge F-AREA-01
+python -m omniarchitect intake --project P --action gate --decision approved --source demo
+
+# 主流程入口（与上面同一个引擎）
+python -m omniarchitect run     --project P --stage S1
+python -m omniarchitect confirm --project P --stage S1 --by 业主 [--acknowledge ID] [--force]
 ```
 
 `--json` 对所有命令可用，便于被 Agent 或脚本直接消费。
 
-## 十一、边界
+## 十四、边界
 
 1. 不虚构面积、预算、结构条件与法规条款；没有依据的一律 `unknown`。
 2. 不把推断当事实，不把「业主可能想要」写成需求。

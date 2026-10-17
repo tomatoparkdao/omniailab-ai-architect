@@ -19,10 +19,12 @@ from .diligence import (
     UncertaintyItem,
     assess_sources,
     blocking_stages,
+    close_uncertainty,
     precision_level,
     register_source,
     register_uncertainty,
     store_precision,
+    uncertainty_register,
 )
 from .feasibility import run_feasibility
 from .gate import check_baseline, decide_gate
@@ -165,8 +167,10 @@ def _action_gate(project: Project, args) -> Dict[str, Any]:
     decision = args.decision or "approved"
     out = _out_dir(args, _project_path(args.project))
     bundle = generate_bundle(project, out, summary_text=args.note or "")
+    ack = [a.strip() for a in (getattr(args, "acknowledge", "") or "").split(",") if a.strip()]
     outcome = decide_gate(project, decision, by=args.by or "",
-                          note=args.note or "", force=bool(args.force),
+                          note=args.note or "", source=getattr(args, "source", "owner"),
+                          acknowledge=ack, force=bool(args.force),
                           summary_path=str(out / "s1-approval-summary.md"))
     return {
         "outcome": outcome.to_dict(),
@@ -176,11 +180,29 @@ def _action_gate(project: Project, args) -> Dict[str, Any]:
     }
 
 
+def _action_verify(project: Project, args) -> Dict[str, Any]:
+    """Close an uncertainty item after the condition is actually verified."""
+    item_id = args.uid or ""
+    if not item_id:
+        raise SystemExit("--uid 必填（不确定项编号，见 status 输出）")
+    # Snapshot before closing: the register returns live dicts, so a shallow
+    # reference would show the already-updated state.
+    before = [dict(u) for u in uncertainty_register(project) if u.get("id") == item_id]
+    item = close_uncertainty(project, item_id, evidence=args.note or "已核验")
+    return {
+        "updated": item,
+        "previous_state": (before[0] if before else {}).get("state"),
+        "blocking_after": blocking_stages(project),
+        "precision": precision_level(project),
+    }
+
+
 ACTIONS = {
     "start": _action_start,
     "ask": _action_ask,
     "answer": _action_answer,
     "register": _action_register,
+    "verify": _action_verify,
     "status": _action_status,
     "analyze": _action_analyze,
     "gate": _action_gate,
@@ -256,9 +278,16 @@ def cmd_intake(args) -> int:
         print(f"设计机会：{payload['opportunities']['count']} 项　"
               f"需求行：{payload['needs']['rows']} 条")
         print(f"精度：{PRECISION_LABEL.get(payload['precision'], payload['precision'])}")
+    elif action == "verify":
+        print(f"{payload['updated']['id']}：{payload['previous_state']} → "
+              f"{payload['updated']['state']}")
+        if payload["blocking_after"]:
+            print("仍受限：" + "、".join(payload["blocking_after"]))
+        else:
+            print("相关限制已解除")
     elif action == "gate":
         o = payload["outcome"]
-        print(f"G1 决策：{o['decision_label']}")
+        print(f"G1 决策：{o['decision_label']}　来源：{o['source_label']}")
         print(f"阶段状态：{o['stage_status']}")
         for n in o["notes"]:
             print(f"  · {n}")
@@ -291,6 +320,10 @@ def add_parser(sub) -> None:
     sp.add_argument("--out", default="", help="analyze/gate：成果目录")
     sp.add_argument("--decision", default="approved",
                     help="gate：approved / revision_requested / blocked")
+    sp.add_argument("--source", default="owner",
+                    help="gate：owner（业主签署，形成基准）/ demo（演示，不形成基准）")
+    sp.add_argument("--acknowledge", default="",
+                    help="gate：逐项确认需业主取舍的问题编号，用逗号分隔")
     sp.add_argument("--by", default="", help="gate：确认人")
     sp.add_argument("--force", action="store_true", help="gate：存在阻断项时强制通过")
     sp.add_argument("--json", action="store_true")

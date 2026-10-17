@@ -1,6 +1,7 @@
 ---
 domain: construction-detailing
 name: 构造与施工深化
+description: 构造与施工深化 —— 把设计意图落到可施工的节点：基层、收口、防水、变形与检修的工程做法判据
 stage_affinity: [S6, S7]
 loads_when: 当任务涉及节点大样、收口做法、基层构造、防水防潮或材料交接时加载
 load_cost: heavy

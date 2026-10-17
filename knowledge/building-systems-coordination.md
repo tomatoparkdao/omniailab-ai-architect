@@ -1,6 +1,7 @@
 ---
 domain: building-systems-coordination
 name: 机电与设备协同
+description: 机电与设备协同 —— 暖通、给排水、电气、消防、智能化五类系统在吊顶与管井中的综合排布与净高协调框架
 stage_affinity: [S4, S6, S7]
 loads_when: 当任务涉及净高协调、管井布置、设备机房、风管水管桥架走向或末端点位综合时加载
 load_cost: heavy

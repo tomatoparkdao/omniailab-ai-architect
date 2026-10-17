@@ -1,6 +1,7 @@
 ---
 domain: spatial-planning
 name: 空间规划
+description: 空间规划 —— 把功能意向落成房间、面积与动线；方案阶段密度最高的判断领域，直接决定使用便利性与运营效率
 stage_affinity: [S3, S4, S5]
 loads_when: 当任务涉及房间划分、面积指标、动线组织、功能气泡图或平面优化时加载
 load_cost: heavy

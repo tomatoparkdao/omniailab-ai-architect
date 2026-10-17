@@ -1,6 +1,7 @@
 ---
 domain: cad-drawing-standards
 name: CAD 制图标准
+description: CAD 制图标准 —— 图层、线型、标注、文字、比例、图框与图纸组织的统一约定，让成果能被读懂与反复修改
 stage_affinity: [S7]
 loads_when: 当任务涉及图层命名、线型线宽、尺寸标注、图框比例、图纸编号或制图规范时加载
 load_cost: medium

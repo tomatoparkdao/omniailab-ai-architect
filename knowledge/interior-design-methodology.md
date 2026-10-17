@@ -1,6 +1,7 @@
 ---
 domain: interior-design-methodology
 name: 室内设计方法论
+description: 室内设计方法论 —— 建筑壳体确定后的内部功能、界面与氛围框架，把空间条件翻译为可施工、可运营的室内方案
 stage_affinity: [S1, S2, S3, S4, S6]
 loads_when: 当任务涉及室内功能重塑、界面设计、风格落地、软装策略或室内与建筑的边界处理时加载
 load_cost: medium

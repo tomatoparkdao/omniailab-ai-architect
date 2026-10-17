@@ -20,11 +20,14 @@ from .diligence import (
     UncertaintyItem,
     assess_sources,
     blocking_scope,
+    close_uncertainty,
     precision_level,
     register_source,
+    source_credibility,
     store_precision,
     register_uncertainty,
     uncertainty_register,
+    update_uncertainty,
 )
 from .feasibility import CONFLICT_SEVERITIES, Conflict, run_feasibility
 from .interview import (
@@ -49,17 +52,26 @@ from .profiles import PROFILES, QUESTION_INDEX, SLOTS, Question, Profile, profil
 from .report import S1_BUNDLE_FILES, generate_bundle
 from .gate import (
     ApprovalOutcome,
+    GateAssessment,
     approval_summary_text,
+    assess_gate,
     baseline_digest,
     check_baseline,
     decide_gate,
 )
+from .guard import (
+    STAGES_GUARDED,
+    GuardResult,
+    allowed_work,
+    check_stage,
+    signature_blockers,
+)
 
 __all__ = [
     "CONFIDENCE_STATES", "BLOCKING_SCOPES", "SourceEntry", "UncertaintyItem",
-    "assess_sources", "blocking_scope", "precision_level", "store_precision",
-    "register_source", "register_uncertainty",
-    "uncertainty_register",
+    "assess_sources", "blocking_scope", "close_uncertainty", "precision_level",
+    "source_credibility", "store_precision", "register_source",
+    "register_uncertainty", "uncertainty_register", "update_uncertainty",
     "CONFLICT_SEVERITIES", "Conflict", "run_feasibility",
     "ANSWER_STATES", "Answer", "InterviewState", "answer_question", "completeness",
     "detect_start_mode", "mark_asked",
@@ -69,6 +81,8 @@ __all__ = [
     "OPPORTUNITY_FIELDS", "Opportunity", "find_opportunities",
     "PROFILES", "QUESTION_INDEX", "SLOTS", "Question", "Profile", "profile_for",
     "S1_BUNDLE_FILES", "generate_bundle",
-    "ApprovalOutcome", "approval_summary_text", "baseline_digest",
-    "check_baseline", "decide_gate",
+    "ApprovalOutcome", "GateAssessment", "approval_summary_text", "assess_gate",
+    "baseline_digest", "check_baseline", "decide_gate",
+    "STAGES_GUARDED", "GuardResult", "allowed_work", "check_stage",
+    "signature_blockers",
 ]

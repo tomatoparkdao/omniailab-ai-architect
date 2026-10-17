@@ -1,6 +1,7 @@
 ---
 domain: human-ergonomics
 name: 人体工学与尺度
+description: 人体工学与尺度 —— 可被直接引用的尺寸判据：通行净宽、家具尺度、操作面与净距，把舒适度变成可校核的数值
 stage_affinity: [S3, S4, S7]
 loads_when: 当任务涉及家具尺寸、通行宽度、洁具间距、操作台高度或任何人体活动尺度校核时加载
 load_cost: medium

@@ -389,6 +389,85 @@ precision / interview.answers / sources / uncertainty / baseline）。已用 jso
 - `audit` 内容 0 / 策略 0；`policy` 待处理 0；`check_tables` 91 文件 0 违规
 - 端到端实测：一句话需求 → 访谈 6 轮 → 成果包 8 份 → G1 自动因结构未证实降级为 `blocked`
 
+### S1 正式验收前的集成修复：让智能 S1 真正接管主工作流
+
+上一轮把 S1 引擎建起来了，但它和主流程是**两套并行实现**：`workflow.stage_S1()` 仍是旧版
+只出两份文件；G1 有五个确认入口，其中四个绕过审查；`--assume-approval` 直接把人写成
+「业主/主创（假设）」。本轮不增功能，只把这几处接好。
+
+**一、一个 S1 引擎，两个适配层**
+
+`workflow.stage_S1()` 不再自己拼任务书，改为调用 `intake.generate_bundle()`；
+成本估算也下沉进 bundle（原先只有 `run` 算，CLI 不算，导致同一项目两份 brief 不一致）。
+实测同一项目：`run --stage S1` 与 `intake --action analyze` 的 8 份成果**除「生成时间」一行外
+逐字节一致**，测试 `test_the_two_entry_points_produce_the_same_bundle` 守着。
+
+无几何资料不再有崩溃风险：`envelope_polygon` 取不到轮廓时条件报告写明「尚无几何数据，
+本报告只汇总已知资料，不含任何尺寸结论」，S1 正常产出 8 份（精度 `diagnostic`）。
+
+**二、G1 只剩一个入口**
+
+新增 `StageRunner.approve()` 作为唯一审批通道。`confirm` 命令、`run_stage(confirm=True)`、
+`--assume-approval`、`intake --action gate` 全部经过它，S1 一律走 `intake.decide_gate`。
+`--assume-approval` 现在带 `source="demo"`：**确认阶段状态照旧，但不写 `baseline`**，
+只写 `demo_approval`，`check_baseline()` 会明确回「仅有演示确认，未形成可引用基准」。
+
+**三、G1 判定改成四类后果**
+
+旧逻辑是「有 blocker 就挡住」，结果是结构一根墙没核实，S2 都进不去。
+现在拆成：**阻断当前门禁**（需求矛盾、无需求）/ **限制后续阶段**（结构、尺寸、报批）/
+**要求专业复核** / **允许附条件推进**（预算、推断需求）。
+
+| 情况 | 旧行为 | 新行为 |
+|---|---|---|
+| 结构未核验 | G1 全挡 | G1 可过，S4/S7 受限，须专业复核 |
+| 尺寸未确认 | G1 全挡 | G1 可过，S3 不得出正式平面 |
+| 需求 400m² 装 131m² | 自动挡 | 挡，且逐项 `--acknowledge` 才放行 |
+| `--force` | 什么都能过 | 只解需求矛盾；安全类限制不归 G1 管，解不开 |
+
+**四、阶段守卫把限制落到工作内容上**
+
+新增 `intake/guard.py`：`check_stage()` 按「哪个阶段做哪类工作」给结论。
+S3/S4 是**限制**（可推进，但点名禁止拆改图、禁止精确尺寸图），S7 是**阻断**
+（施工图不得基于未证实条件）。限制会写进阶段产出的 `notes`，后续不会被误当成无限制成果。
+
+只对**已登记**的项生效——模型自带的 `uncertain` 仍走原有校核，旧项目与 demo 行为不变。
+
+**五、可信度不能靠文件名升级**
+
+`verified` 现在要求三样齐：核验人、时间或版本、能找到的来源文件。缺一样降级 `documented`
+并写明缺什么。`documented` 的结构仍**不许拆改**——图画过不等于现场就是那样。
+判据细化到主题：`documented_blocks` 让尺寸类（有 CAD）可以出方案图，但结构类仍受限。
+
+核实后可用 `--action verify --uid U-STRUCTURAL` 关闭该项，限制立刻解除；不关闭就会留下
+永久性阻断。
+
+**六、基准与变更真正联动**
+
+`baseline_digest` 拆成两个：`brief_digest`（需求/约束/来源）与完整摘要（再加不确定项状态）。
+前者变 = 业主改了需求，必须走变更分析；只有后者变 = 条件核实了，任务书没变。
+
+确认后修改需求不再只是"返回一个标志位"：`invalidate_from("S1")` 把 S1 及下游置为返工、
+写 `change_log`、`check_baseline()` 返回 `change_kind="brief"`。原确认版保留，不会被覆盖。
+
+**七、测试**
+
+新增 `test_s1_integration.py` 13 项，对应验收 A–I：
+
+| 场景 | 断言 |
+|---|---|
+| A 一句话 → 访谈 → 成果包 → G1 | 无几何也出 8 份，精度诊断级，业主确认成基准 |
+| B G1 后进 S2 | S2 可运行且无阻断 |
+| C 结构未核验限制 S4 | S4 不阻断但带限制，S7 整体受阻 |
+| D 尺寸未确认限制 S3 | S3 可示意、不可出正式平面 |
+| E 旧 confirm 不能绕 | 需求矛盾时 `runner.confirm` 也返回非 confirmed |
+| F 演示不冒充业主 | `baseline` 为空、`demo_approval` 标注 demo |
+| G 核实解除限制 | S7 由阻断转为放行，基准记为「限制变化」 |
+| H 确认后改需求 | S1 回 pending、change_log 有记录、`change_kind=brief` |
+| I 全流程回归 | 八阶段 `run_all` 无失败阶段 |
+
+全量 `run_tests.py` **390 passed / 0 failed**（24 模块）。
+
 ---
 
 ## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充

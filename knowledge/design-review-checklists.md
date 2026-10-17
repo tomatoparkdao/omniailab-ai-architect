@@ -1,6 +1,7 @@
 ---
 domain: design-review-checklists
 name: 设计评审清单
+description: 设计评审清单 —— 按阶段、按对象、可勾选的质量控制检查项，用于提交前发现问题、评审中统一口径
 stage_affinity: [S1, S4, S6, S8]
 loads_when: 当任务涉及方案自检、阶段评审、提交前检查或交付验收时加载
 load_cost: heavy

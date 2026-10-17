@@ -381,6 +381,24 @@ def start_interview(project: Project, text: str = "",
     )
 
 
+def ensure_intake(project: Project) -> str:
+    """Make sure an interview state exists; return the profile id.
+
+    Both entry points need the same starting point: without it, `run` seeds a
+    profile from the project name while `intake analyze` would start blank, and
+    the same project would yield different completeness. Seeding lives here so
+    there is one place that decides it.
+    """
+    state = _store(project)
+    if state.get("profile_id"):
+        return str(state["profile_id"])
+    text = " ".join(filter(None, [
+        project.name or "",
+        str((project.constraints or {}).get("style") or ""),
+    ]))
+    return start_interview(project, text).profile_id
+
+
 def load_interview(project: Project) -> InterviewState:
     state = _store(project)
     return InterviewState(
@@ -559,6 +577,7 @@ def answer_question(project: Project, qid: str, value: str,
 
     uncertainty_id = _sync_uncertainty(project, q, value, state_name)
     changed = bool(previous) and str(previous.get("value")) != rec["value"]
+    reopened: List[str] = []
     result = {
         "uncertainty_registered": uncertainty_id,
         "question_id": qid,
@@ -568,13 +587,28 @@ def answer_question(project: Project, qid: str, value: str,
         "changed": changed,
         "previous": (previous or {}).get("value", ""),
         "requires_change_analysis": bool(changed and was_confirmed),
+        "reopened_stages": reopened,
         "completeness": completeness(project),
     }
     if changed and was_confirmed:
-        # The baseline is never overwritten silently: the caller must run the
-        # change-impact analysis, which will mark S1 and downstream as rework.
-        result["note"] = ("任务书已确认，此次修改需走变更影响分析；"
-                          "原确认版仍保留在 S1 修订记录中")
+        # Editing what the client already signed is a change, not an update.
+        # The confirmed states are reopened immediately — returning a flag and
+        # leaving `confirmed` in place is how a stale baseline gets reused.
+        from ..revisions import record_change
+        from ..stage_state import invalidate_from
+
+        reopened = invalidate_from(project, "S1")
+        record_change(
+            project, "brief",
+            f"任务书确认后修改需求：{qid} → {rec['value'] or '（空）'}",
+            targets=["S1"], invalidated=reopened,
+        )
+        # Rebind through the dict too: assigning `reopened = ...` alone would
+        # leave the earlier (empty) list in the result payload.
+        result["reopened_stages"] = reopened
+        result["note"] = ("任务书已确认，此次修改已触发变更影响分析："
+                          "S1 与受影响阶段已置为返工，原确认版保留在修订记录中")
+        _intake(project)["baseline_stale"] = True
     return result
 
 

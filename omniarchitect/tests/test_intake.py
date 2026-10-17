@@ -213,13 +213,29 @@ def test_d_photo_only_is_inferred_not_documented():
 
 
 def test_d_verified_source_raises_precision():
+    """精度升级要有真凭据：文件名本身不算实测。"""
     from omniarchitect.intake.diligence import SourceEntry, register_source
 
     with tempfile.TemporaryDirectory() as d:
-        p = build_demo_project(Path(d) / "proj")
+        tmp = Path(d)
+        p = build_demo_project(tmp / "proj")
         assert precision_level(p) == "schematic"      # 有几何，无实测
-        register_source(p, SourceEntry(id="S-M1", kind="measure",
+
+        # 只写一个文件名：降级为 documented，精度不动
+        register_source(p, SourceEntry(id="S-NAME", kind="measure",
                                        file="现场实测记录.pdf",
+                                       confidence="verified"))
+        assert precision_level(p) == "schematic"
+        entry = [s for s in p.meta["intake"]["sources"] if s["id"] == "S-NAME"][0]
+        assert entry["confidence"] == "documented"
+        assert "未达 verified" in entry["note"]
+
+        # 有核验人 + 可查文件 + 版本：才升到 authoritative_capable
+        f = tmp / "实测记录.pdf"
+        f.write_text("measure", encoding="utf-8")
+        register_source(p, SourceEntry(id="S-REAL", kind="measure",
+                                       file=str(f), revision="2026-10-01",
+                                       verified_by="现场负责人 李工",
                                        confidence="verified"))
         assert precision_level(p) == "authoritative_capable"
 
