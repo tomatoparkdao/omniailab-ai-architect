@@ -148,7 +148,7 @@ DESIGN_CRITERIA: Dict[str, Dict[str, object]] = {
         "applies_to_capabilities": ["delivery", "design-review"],
         "criteria": [
             "逐条核销的批注台账机制：跨轮 ledger、问题闭环；",
-            "主文档 + 意见 → 批注版交付物的流程约定。",
+            "成果主文件 + 意见 → 批注版交付物的流程约定。",
         ],
         "lands_in": "变更影响分析的数据结构（ChangeEntry + 失效重算 + 跨轮追踪）",
         "out_of_scope": "外部 PDF 批注脚本；批注以结构化 JSON 与本系统自有渲染输出。",

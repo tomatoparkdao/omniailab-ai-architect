@@ -553,3 +553,45 @@ def test_landing_page_tables_are_wide_enough():
                 f"{rel} 表 {n}（行 {table['line']}）总宽 {sum(widths)} "
                 f"< {mod.MIN_TABLE_WIDTH}，列宽 {widths}"
             )
+
+
+# --------------------------------------------------------------------------
+# manual carrier naming (飞书 / Notion)
+# --------------------------------------------------------------------------
+def test_the_manual_carrier_is_named_feishu_and_notion_only():
+    """手册载体只写「飞书」「Notion」，不带任何限定词。
+
+    这条规则返工过两次：第一次带了限定词，第二次换成了另一个限定词，仍不合要求。
+    最终口径是**只写载体名本身**。
+
+    注意三个坑：
+    * 徽章文案是 URL 编码的（`%E9%A3%9E%E4%B9%A6...`），只 grep 原文会漏 —— 必须**解码后**再查一遍；
+    * 禁用词是**拼接构造**的，不是字面量。否则本文件自己就会命中「全文搜索禁止出现」这条检查，
+      等于要求全仓唯一例外是检查器本身——那不如让检查器自己也不出现这些词。
+    """
+    from urllib.parse import unquote
+
+    feishu, notion = "飞书", "Notion"
+    banned = (
+        feishu + "主" + "文档",      # 手册载体不带「主」
+        feishu + "文档",             # 也不带「文档」——只写载体名
+        notion + " 镜像",
+        notion + "镜像",
+        notion + "（镜像）",
+    )
+    skip_dirs = {"out", "projects", ".git", "__pycache__", ".pytest_cache", "_backup"}
+    exts = {".md", ".py", ".json", ".yaml", ".yml", ".toml", ".txt", ".cfg"}
+
+    bad = []
+    for p in sorted(ROOT.rglob("*")):
+        if not p.is_file() or p.suffix.lower() not in exts:
+            continue
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if set(Path(rel).parts[:-1]) & skip_dirs:
+            continue
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        for form, body in (("原文", text), ("URL 解码后", unquote(text))):
+            for term in banned:
+                if term in body:
+                    bad.append(f"{rel}：出现禁用写法（{form}）")
+    assert not bad, bad

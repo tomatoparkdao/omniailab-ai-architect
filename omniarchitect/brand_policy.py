@@ -84,7 +84,7 @@ ALLOWED_HOSTS: Dict[str, str] = {
 }
 
 # 本产品自有 URL —— 与「自有站点」同等对待，任何位置都允许：
-# 自己的源码仓库、自己的操作手册（飞书文档 + Notion）。
+# 自己的源码仓库、自己的操作手册（飞书 + Notion）。
 # 它们不是"第三方推广链接"，而是本产品的官方地址，所以登记为自有。
 OWN_URLS: Tuple[str, ...] = (
     "https://github.com/tomatoparkdao/omniailab-ai-architect",

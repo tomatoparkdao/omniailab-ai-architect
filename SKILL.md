@@ -107,7 +107,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 ### 4a. 不会做就查手册（硬性提醒）
 
 **操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档。** 三种入手方式内容一致、版本同步：
-仓库内 `docs/MANUAL.md`（离线可用）· 飞书文档 · Notion（地址见任一 `.md` 的 front-matter 里
+仓库内 `docs/MANUAL.md`（离线可用）· 飞书 · Notion（地址见任一 `.md` 的 front-matter 里
 `操作手册:` 字段，以及本文件 front-matter 的同一字段）。
 
 **触发规则——出现下列任一情况，必须先查手册再动手，并把结论说出来：**

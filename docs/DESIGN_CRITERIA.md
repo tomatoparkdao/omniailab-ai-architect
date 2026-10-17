@@ -86,7 +86,7 @@ agent_created: true
 - 执行能力：`delivery`、`design-review`
 
 - 逐条核销：每一轮意见进入台账，跨轮可追踪、可核销；
-- 交付形式：主文档 + 意见 → 批注版交付物。
+- 交付形式：成果主文件 + 意见 → 批注版交付物。
 
 ### 6. 提案版式（`proposal-layout`）
 
