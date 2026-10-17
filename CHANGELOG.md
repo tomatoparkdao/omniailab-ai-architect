@@ -6,7 +6,7 @@ author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
-操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 变更记录
@@ -248,12 +248,24 @@ URL 也算了进去。GitHub 只渲染链接文字、URL 藏在 `href` 里一个
 
 顺带修掉 `normalize_attribution.py` 里一句会过期的注释（原写「直接以居中的 HTML 标题开始」）。
 
-### 手册地址换新：飞书带来源参数、Notion 换到公开站点
+### 手册地址换新：Notion 换到公开站点，飞书统一为干净地址
 
 | 载体 | 旧 | 新 |
 |---|---|---|
-| 飞书 | `…/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd` | 同址 + `?from=from_copylink` |
+| 飞书 | 同一 wiki 页 | 同一 wiki 页，**不带任何来源追踪参数** |
 | Notion | `app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d` | `tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73` |
+
+**关于来源参数**：中途曾按用户给的「复制链接」版本给飞书地址加上来源追踪后缀，
+实测后确认它只是**来源标记，不改变文档权限**——匿名访问时新旧写法都会跳到登录页。
+既然对可达性没有帮助，只会让同一份地址在仓库里出现两种写法，已按用户要求
+统一为**不含参数的干净地址**，并加守卫测试防止再引入变体。
+
+**可达性实测（两个地址都验过，结论不同）**：
+
+| 地址 | 匿名访问结果 |
+|---|---|
+| 飞书 wiki 页 | 15 次跳转到 `accounts.feishu.cn` 登录页 → **外部用户打不开**，需在飞书侧把分享设为「互联网上获得链接的人可阅读」 |
+| Notion 公开页 | `200`、零跳转，抓到真实标题「建筑与室内设计 Skill 操作手册」→ **外部可读** |
 
 **改动源头只有一处**：`omniarchitect/paths.py` 的 `MANUAL_CN_URL` / `MANUAL_NOTION_URL`。
 front-matter 的「操作手册」字段由 `normalize_attribution.py` 从这两个常量取，
@@ -374,7 +386,7 @@ Agent 拿到 `ergonomics` 这个能力名时无处定位。18 份编号文件还
 
 - front-matter 的标准尾部两项改为**真实地址**（原为「待发布」）：
   `开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect` ·
-  `操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink`。
+  `操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd`。
   **这就是「手册能被技能调用」的机制**：读到本仓任一 `.md` 的 front-matter 即可拿到仓库与手册地址。
 - 地址**唯一来源**收敛到 `paths.py`（`REPO_URL` / `MANUAL_CN_URL` / `MANUAL_NOTION_URL`），
   `registry.FRONTMATTER_TAIL`、`manual.py`、`scripts/normalize_attribution.py` 全部从那里读。

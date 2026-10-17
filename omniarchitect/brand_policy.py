@@ -88,7 +88,7 @@ ALLOWED_HOSTS: Dict[str, str] = {
 # 它们不是"第三方推广链接"，而是本产品的官方地址，所以登记为自有。
 OWN_URLS: Tuple[str, ...] = (
     "https://github.com/tomatoparkdao/omniailab-ai-architect",
-    "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink",
+    "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd",
     # Notion 手册页 + 站点前缀（前缀覆盖站内任意页面，含上面的手册页）
     "https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73",
     "https://tomatopark.notion.site/",

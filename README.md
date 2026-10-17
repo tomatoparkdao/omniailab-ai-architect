@@ -12,7 +12,7 @@
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
+  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
   <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 30 能力">
   <img src="https://img.shields.io/badge/%E4%BA%A4%E4%BB%98-%E6%96%B9%E6%A1%88_%7C_%E6%96%BD%E5%B7%A5%E5%9B%BE-1d76db?style=flat-square" alt="交付 方案 | 施工图">
@@ -46,7 +46,7 @@
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
 | 运行要求 | Python 3.10+ | 零硬依赖：DXF、网格、PPTX 都有内置写出器 |
 | 开源仓库 | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | 全部源码、文档与验收脚本 |
-| 操作手册 | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) · `docs/MANUAL.md` | 三处内容一致，版本与 Skill 同步 |
+| 操作手册 | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) · `docs/MANUAL.md` | 三处内容一致，版本与 Skill 同步 |
 
 调用名是**全小写连字符**写法（`omniailab-ai-architect`），不是「OmniAiLab AI 建筑与室内设计总设计师」这个显示名。支持 skill 的工具直接用调用名最稳；不支持原生 skill 的工具，用自然语言描述设计任务也能触发。
 
@@ -484,7 +484,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 本 README 覆盖操作手册的全部要点；**完整手册同时发布在飞书与 Notion 两处，内容一致**，版本与 Skill 版本严格同步：
 
-- **操作手册（飞书）**：<https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink>
+- **操作手册（飞书）**：<https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
 - **操作手册（Notion）**：<https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73>
 - **操作手册（Skill 内，离线可用）**：[docs/MANUAL.md](docs/MANUAL.md)
 - **开源仓库**：<https://github.com/tomatoparkdao/omniailab-ai-architect>
@@ -504,7 +504,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | 渠道 | 地址 | 适合用来 |
 |---|---|---|
 | **操作手册（离线，最快）** | [docs/MANUAL.md](docs/MANUAL.md) | 安装、命令、报错、术语；**第 12 节避坑总表**最省时间，断网也能查 |
-| **操作手册（在线）** | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 同上；可批注、可分享给同事，适合团队一起看 |
+| **操作手册（在线）** | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 同上；可批注、可分享给同事，适合团队一起看 |
 | **Skill 内直接问** | 对 Skill 说「查手册第 X 节」或「查手册避坑总表」 | 它会读 `docs/MANUAL.md` 并返回对应小节，不用自己翻，也不必记章节号 |
 | **命令行定位** | `python -m omniarchitect manual --topic <主题>` | 23 个主题 → 手册章节对照；拿不准该看哪一节时，用它定位 |
 | **仓库 issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | 反馈 bug、提功能建议；留在仓库里最不容易丢，也方便后来的人检索到同一个问题 |
@@ -520,7 +520,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 | 想了解 | 看这里 | 里面有什么 |
 |---|---|---|
-| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 共 15 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
+| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 共 15 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
 | 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | 八个阶段各自的门禁、产出、退回规则与门禁后置动作 |
 | 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 入口 / 子能力 / 执行层 / 统一空间模型四层结构 |
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | 九组设计判据的可判定口径，以及每组落在哪个阶段 |
@@ -585,7 +585,7 @@ python scripts/check_tables.py --check          # 表格规范：列数 / 空格
 - 开发者：**Mochiball**
 - 设计知识（`knowledge/` 13 域）、项目类型案例（`cases/`）、专业能力说明（`skills/`）与设计判据（[docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)）均由本项目**独立撰写**，来源为通用设计原理与公开工程惯例；不复制、不改写任何外部文档。
 - 本 Skill 的原生平台为 **OmniAiLab**；对 Blender / FreeCAD / AutoCAD / IfcOpenShell 等外部工具只做**适配声明与降级路径**，不附带其代码，也不依赖其存在。
-- 操作手册同步发布：[飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73)。
+- 操作手册同步发布：[飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73)。
 
 ---
 

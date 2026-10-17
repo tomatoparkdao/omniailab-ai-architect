@@ -6,7 +6,7 @@ author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
-操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
 ---
 
 # 交付清单（收尾自查）

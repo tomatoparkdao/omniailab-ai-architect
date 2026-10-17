@@ -12,7 +12,7 @@ Working with the OmniAiLab AI creation platform and professional MCP tools, AI m
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
+  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
   <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 30 能力">
   <img src="https://img.shields.io/badge/%E4%BA%A4%E4%BB%98-%E6%96%B9%E6%A1%88_%7C_%E6%96%BD%E5%B7%A5%E5%9B%BE-1d76db?style=flat-square" alt="交付 方案 | 施工图">
@@ -46,7 +46,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
 | Requirements | Python 3.10+ | Zero hard dependencies: DXF, mesh and PPTX all have built-in writers |
 | Open-source repo | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | All source, documentation and acceptance scripts |
-| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
+| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
 
 The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect for Architecture & Interior Design". Tools that support skills are safest with the invocation name; tools without native skill support still trigger from a natural-language design task.
 
@@ -483,7 +483,7 @@ Execution-layer tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell remain 
 
 This README covers all the key points of the operation manual; **the full manual is published in both Feishu and Notion, with identical content**, and its version is strictly synced with the Skill version:
 
-- **Operation manual (Feishu)**: <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink>
+- **Operation manual (Feishu)**: <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
 - **Operation manual (Notion)**: <https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73>
 - **Operation manual (in the Skill, works offline)**: [docs/MANUAL.md](docs/MANUAL.md)
 - **Open-source repo**: <https://github.com/tomatoparkdao/omniailab-ai-architect>
@@ -503,7 +503,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | Channel | Where | Best for |
 |---|---|---|
 | **Operation manual (offline, fastest)** | [docs/MANUAL.md](docs/MANUAL.md) | Install, commands, errors, terminology; **section 12, the pitfall table**, saves the most time |
-| **Operation manual (online)** | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | Same as above; supports commenting and sharing with colleagues |
+| **Operation manual (online)** | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | Same as above; supports commenting and sharing with colleagues |
 | **Ask inside the Skill** | Tell the Skill "look up section X of the manual" or "look up the manual's pitfall table" | It reads `docs/MANUAL.md` and returns the matching section — no flipping through it yourself |
 | **Locate from the command line** | `python -m omniarchitect manual --topic <topic>` | 23 topics → manual chapter mapping; use it when unsure which section to read |
 | **Repository issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | Report bugs, suggest features; leaving it in the repository is the least likely to be lost |
@@ -519,7 +519,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 
 | To learn about | Read | What's inside |
 |---|---|---|
-| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
+| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
 | How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entry / sub-capabilities / execution layer / canonical spatial model |
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
@@ -583,7 +583,7 @@ python scripts/normalize_attribution.py --check # repository-wide head/tail form
 - Developer: **Mochiball**
 - The design knowledge (`knowledge/`, 13 domains), project-type cases (`cases/`), professional capability briefs (`skills/`) and design criteria ([docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)) are all **written independently** for this project, drawing on general design principles and public engineering practice; nothing is copied from or paraphrased out of any external document.
 - The native platform of this Skill is **OmniAiLab**; external tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell receive only **adapter declarations and degraded paths** — no code from them is bundled and none of them is required.
-- The operation manual is published in sync: [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73).
+- The operation manual is published in sync: [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73).
 
 ---
 
