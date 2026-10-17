@@ -6,8 +6,8 @@
 
 三种入手方式，内容一致、版本与 Skill 同步：
 
-* 飞书主文档（可批注、可分享）
-* Notion 镜像
+* 飞书文档（可批注、可分享）
+* Notion
 * 仓库内 `docs/MANUAL.md`（**离线可用，Skill 自己读的就是这一份**）
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
@@ -74,7 +74,7 @@ def pointer(topic: str = "") -> str:
     else:
         lines.append(f"  - 本仓（离线可用）：{MANUAL_LOCAL}")
         lines.append(f"  - 飞书（可批注）：{MANUAL_CN}")
-    lines.append(f"  - Notion（镜像）：{MANUAL_NOTION}")
+    lines.append(f"  - Notion：{MANUAL_NOTION}")
     lines.append(f"  - 源码仓库：{REPO}")
     return "\n".join(lines)
 

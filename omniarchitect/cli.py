@@ -381,7 +381,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="OmniArchitect — AI 建筑 / 室内设计总设计师（八阶段工作流）",
         epilog=(
             "不会用或卡住了？先看操作手册（离线可用）：" + MANUAL_LOCAL + "\n"
-            "飞书主文档：" + MANUAL_CN + "\n"
+            "飞书文档：" + MANUAL_CN + "\n"
             "源码仓库：" + REPO + "\n"
             "也可直接运行：python -m omniarchitect manual"
         ),

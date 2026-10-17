@@ -42,7 +42,7 @@
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
 | 运行要求 | Python 3.10+ | 零硬依赖：DXF、网格、PPTX 都有内置写出器 |
 | 开源仓库 | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | 全部源码、文档与验收脚本 |
-| 操作手册 | [飞书主文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion 镜像](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | 三处内容一致，版本与 Skill 同步 |
+| 操作手册 | [飞书文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | 三处内容一致，版本与 Skill 同步 |
 
 调用名是**全小写连字符**写法（`omniailab-ai-architect`），不是「OmniAiLab AI 建筑与室内设计总设计师」这个显示名。支持 skill 的工具直接用调用名最稳；不支持原生 skill 的工具，用自然语言描述设计任务也能触发。
 
@@ -500,7 +500,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | 渠道 | 地址 | 适合用来 |
 |---|---|---|
 | **操作手册（离线，最快）** | [docs/MANUAL.md](docs/MANUAL.md) | 安装、命令、报错、术语；**第 12 节避坑总表**最省时间 |
-| **操作手册（在线）** | [飞书主文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion 镜像](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 同上；可批注、可分享给同事 |
+| **操作手册（在线）** | [飞书文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 同上；可批注、可分享给同事 |
 | **Skill 内直接问** | 对 Skill 说「查手册第 X 节」或「查手册避坑总表」 | 它会读 `docs/MANUAL.md` 并返回对应小节，不用自己翻 |
 | **命令行定位** | `python -m omniarchitect manual --topic <主题>` | 23 个主题 → 手册章节对照；拿不准看哪节时用 |
 | **仓库 issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | 反馈 bug、提功能建议；留在仓库里最不容易丢 |

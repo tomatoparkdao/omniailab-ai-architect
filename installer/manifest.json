@@ -59,13 +59,13 @@
       "style-space-check.md"
     ],
     "lines": 387,
-    "bytes": 20766,
+    "bytes": 20756,
     "issues": []
   },
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
   "file_count": 260,
-  "total_bytes": 3265580,
+  "total_bytes": 3264455,
   "files": [
     {
       "path": ".gitignore",
@@ -119,8 +119,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size": 43359,
-      "sha256_16": "23f959872f64db45"
+      "size": 42758,
+      "sha256_16": "acd9d8358e80db15"
     },
     {
       "path": "compatibility/agent-skills.md",
@@ -145,12 +145,12 @@
     {
       "path": "docs/brand-policy.json",
       "size": 41394,
-      "sha256_16": "3d6029fda224f8d2"
+      "sha256_16": "439deae4eb927f9d"
     },
     {
       "path": "docs/BRAND_POLICY.md",
       "size": 20811,
-      "sha256_16": "d4bd2cb115a9c8fc"
+      "sha256_16": "78c0e5dd9dc36b96"
     },
     {
       "path": "docs/CONCEPT_RENDER.md",
@@ -160,12 +160,12 @@
     {
       "path": "docs/content-audit.json",
       "size": 1491,
-      "sha256_16": "6818e92ee04435cd"
+      "sha256_16": "e40998bbe32781a4"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
       "size": 2163,
-      "sha256_16": "2d844ac1f52d3f31"
+      "sha256_16": "ba687aab8d890569"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
@@ -184,8 +184,8 @@
     },
     {
       "path": "docs/MANUAL.md",
-      "size": 37413,
-      "sha256_16": "b77a5b2447be27f9"
+      "size": 37386,
+      "sha256_16": "9dcdd34c5f60d0cf"
     },
     {
       "path": "docs/MCP_TOOLS.md",
@@ -290,7 +290,7 @@
     {
       "path": "installer/manifest.json",
       "size": 36580,
-      "sha256_16": "44bddaa90bf378dc"
+      "sha256_16": "70e6c2d7a94859aa"
     },
     {
       "path": "installer/verify_install.py",
@@ -679,8 +679,8 @@
     },
     {
       "path": "omniarchitect/brand_policy.py",
-      "size": 60547,
-      "sha256_16": "51d610110cfcbcd1"
+      "size": 60537,
+      "sha256_16": "a50c087eea737673"
     },
     {
       "path": "omniarchitect/changes.py",
@@ -689,8 +689,8 @@
     },
     {
       "path": "omniarchitect/cli.py",
-      "size": 19407,
-      "sha256_16": "e2251d845b03ec20"
+      "size": 19404,
+      "sha256_16": "f5653e42fe9862bc"
     },
     {
       "path": "omniarchitect/cli_v11.py",
@@ -749,8 +749,8 @@
     },
     {
       "path": "omniarchitect/manual.py",
-      "size": 3946,
-      "sha256_16": "4ba6c882cec7fbb2"
+      "size": 3924,
+      "sha256_16": "c3e0671cd779a852"
     },
     {
       "path": "omniarchitect/model.py",
@@ -1124,13 +1124,13 @@
     },
     {
       "path": "README.md",
-      "size": 50097,
-      "sha256_16": "082ec4f839dae5c0"
+      "size": 50077,
+      "sha256_16": "fd443a682b555be1"
     },
     {
       "path": "README_EN.md",
-      "size": 53884,
-      "sha256_16": "82369e2ec02dc3fc"
+      "size": 53828,
+      "sha256_16": "fa2b1bc59e4d0b22"
     },
     {
       "path": "requirements.txt",
@@ -1199,8 +1199,8 @@
     },
     {
       "path": "SKILL.md",
-      "size": 21142,
-      "sha256_16": "1af2d53cca1deebb"
+      "size": 20756,
+      "sha256_16": "e29ee0da2725a3a7"
     },
     {
       "path": "skills/3d-modeling.md",

@@ -42,7 +42,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
 | Requirements | Python 3.10+ | Zero hard dependencies: DXF, mesh and PPTX all have built-in writers |
 | Open-source repo | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | All source, documentation and acceptance scripts |
-| Operation manual | [Feishu main doc](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion mirror](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
+| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
 
 The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect for Architecture & Interior Design". Tools that support skills are safest with the invocation name; tools without native skill support still trigger from a natural-language design task.
 
@@ -479,8 +479,8 @@ Execution-layer tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell remain 
 
 This README covers all the key points of the operation manual; **the full manual is published in both Feishu and Notion, with identical content**, and its version is strictly synced with the Skill version:
 
-- **Operation manual (Feishu, main doc)**: <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
-- **Operation manual (Notion, same content)**: <https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d>
+- **Operation manual (Feishu)**: <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
+- **Operation manual (Notion)**: <https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d>
 - **Operation manual (in the Skill, works offline)**: [docs/MANUAL.md](docs/MANUAL.md)
 - **Open-source repo**: <https://github.com/tomatoparkdao/omniailab-ai-architect>
 
@@ -499,7 +499,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | Channel | Where | Best for |
 |---|---|---|
 | **Operation manual (offline, fastest)** | [docs/MANUAL.md](docs/MANUAL.md) | Install, commands, errors, terminology; **section 12, the pitfall table**, saves the most time |
-| **Operation manual (online)** | [Feishu main doc](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion mirror](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | Same as above; supports commenting and sharing with colleagues |
+| **Operation manual (online)** | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | Same as above; supports commenting and sharing with colleagues |
 | **Ask inside the Skill** | Tell the Skill "look up section X of the manual" or "look up the manual's pitfall table" | It reads `docs/MANUAL.md` and returns the matching section — no flipping through it yourself |
 | **Locate from the command line** | `python -m omniarchitect manual --topic <topic>` | 23 topics → manual chapter mapping; use it when unsure which section to read |
 | **Repository issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | Report bugs, suggest features; leaving it in the repository is the least likely to be lost |
