@@ -28,7 +28,7 @@ COMPATIBILITY = ROOT / "compatibility"
 # 生成器的报告头，全部读这里，避免同一串地址在多个文件里各写一份。
 REPO_URL = "https://github.com/tomatoparkdao/omniailab-ai-architect"
 MANUAL_CN_URL = "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"
-MANUAL_NOTION_URL = "https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73"
+MANUAL_NOTION_URL = "https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d"
 
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:

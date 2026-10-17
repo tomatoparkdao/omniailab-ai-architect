@@ -46,7 +46,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
 | Requirements | Python 3.10+ | Zero hard dependencies: DXF, mesh and PPTX all have built-in writers |
 | Open-source repo | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | All source, documentation and acceptance scripts |
-| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
+| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) · `docs/MANUAL.md` | The three are identical in content and synced with the Skill version |
 
 The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect for Architecture & Interior Design". Tools that support skills are safest with the invocation name; tools without native skill support still trigger from a natural-language design task.
 
@@ -484,7 +484,7 @@ Execution-layer tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell remain 
 This README covers all the key points of the operation manual; **the full manual is published in both Feishu and Notion, with identical content**, and its version is strictly synced with the Skill version:
 
 - **Operation manual (Feishu)**: <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd>
-- **Operation manual (Notion)**: <https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73>
+- **Operation manual (Notion)**: <https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d>
 - **Operation manual (in the Skill, works offline)**: [docs/MANUAL.md](docs/MANUAL.md)
 - **Open-source repo**: <https://github.com/tomatoparkdao/omniailab-ai-architect>
 
@@ -503,7 +503,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | Channel | Where | Best for |
 |---|---|---|
 | **Operation manual (offline, fastest)** | [docs/MANUAL.md](docs/MANUAL.md) | Install, commands, errors, terminology; **section 12, the pitfall table**, saves the most time |
-| **Operation manual (online)** | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | Same as above; supports commenting and sharing with colleagues |
+| **Operation manual (online)** | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | Same as above; supports commenting and sharing with colleagues |
 | **Ask inside the Skill** | Tell the Skill "look up section X of the manual" or "look up the manual's pitfall table" | It reads `docs/MANUAL.md` and returns the matching section — no flipping through it yourself |
 | **Locate from the command line** | `python -m omniarchitect manual --topic <topic>` | 23 topics → manual chapter mapping; use it when unsure which section to read |
 | **Repository issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | Report bugs, suggest features; leaving it in the repository is the least likely to be lost |
@@ -519,7 +519,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 
 | To learn about | Read | What's inside |
 |---|---|---|
-| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
+| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
 | How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entry / sub-capabilities / execution layer / canonical spatial model |
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
@@ -583,7 +583,7 @@ python scripts/normalize_attribution.py --check # repository-wide head/tail form
 - Developer: **Mochiball**
 - The design knowledge (`knowledge/`, 13 domains), project-type cases (`cases/`), professional capability briefs (`skills/`) and design criteria ([docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)) are all **written independently** for this project, drawing on general design principles and public engineering practice; nothing is copied from or paraphrased out of any external document.
 - The native platform of this Skill is **OmniAiLab**; external tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell receive only **adapter declarations and degraded paths** — no code from them is bundled and none of them is required.
-- The operation manual is published in sync: [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73).
+- The operation manual is published in sync: [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d).
 
 ---
 

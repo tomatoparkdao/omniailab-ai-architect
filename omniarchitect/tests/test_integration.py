@@ -601,25 +601,28 @@ def test_the_manual_carrier_is_named_feishu_and_notion_only():
 # manual URLs (single canonical form)
 # --------------------------------------------------------------------------
 def test_manual_urls_carry_no_tracking_parameters():
-    """手册地址只有一种写法：`paths.py` 里的常量，不带来源追踪参数。
+    """手册地址只有一种写法：`paths.py` 里的常量，不带任何查询参数。
 
-    飞书「复制链接」会给地址附加来源标记。那个参数**不改变文档权限**，
-    只会让同一份地址在仓库里出现两种写法，读者无法判断哪个才是准的。
-    所以地址一律取 `paths.MANUAL_CN_URL` / `MANUAL_NOTION_URL`，不得出现变体。
+    两个载体都会在「复制链接」时附带来源标记（飞书的 from、Notion 的 pvs）。
+    那些参数**不改变文档权限**，只会让同一份地址在仓库里出现两种写法，
+    读者无法判断哪个才是准的。所以地址一律取
+    `paths.MANUAL_CN_URL` / `MANUAL_NOTION_URL`，不得出现变体。
     """
     from urllib.parse import unquote
 
     from omniarchitect.paths import MANUAL_CN_URL, MANUAL_NOTION_URL
 
     assert "?" not in MANUAL_CN_URL, f"飞书地址不得带查询参数：{MANUAL_CN_URL}"
+    assert "?" not in MANUAL_NOTION_URL, f"Notion 地址不得带查询参数：{MANUAL_NOTION_URL}"
     assert MANUAL_NOTION_URL.startswith("https://tomatopark.notion.site/"), MANUAL_NOTION_URL
 
     feishu_id = MANUAL_CN_URL.rsplit("/", 1)[-1]
+    notion_id = MANUAL_NOTION_URL.rsplit("/", 1)[-1].removeprefix("Skill-")
     skip_dirs = {"out", "projects", ".git", "__pycache__", ".pytest_cache", "_backup"}
     exts = {".md", ".py", ".json", ".yaml", ".yml", ".toml", ".txt"}
 
     bad: list[str] = []
-    seen = 0
+    seen_cn = seen_intl = 0
     for p in sorted(ROOT.rglob("*")):
         if not p.is_file() or p.suffix.lower() not in exts:
             continue
@@ -630,7 +633,11 @@ def test_manual_urls_carry_no_tracking_parameters():
         for form, body in (("原文", text), ("URL 解码后", unquote(text))):
             if feishu_id + "?" in body:
                 bad.append(f"{rel}：飞书地址带查询参数（{form}）")
-        seen += text.count(MANUAL_CN_URL)
+            if notion_id + "?" in body:
+                bad.append(f"{rel}：Notion 地址带查询参数（{form}）")
+        seen_cn += text.count(MANUAL_CN_URL)
+        seen_intl += text.count(MANUAL_NOTION_URL)
 
     assert not bad, bad
-    assert seen > 80, f"规范飞书地址只出现 {seen} 次，疑似被换成了别的写法"
+    assert seen_cn > 80, f"规范飞书地址只出现 {seen_cn} 次，疑似被换成了别的写法"
+    assert seen_intl > 5, f"规范 Notion 地址只出现 {seen_intl} 次，疑似被换成了别的写法"

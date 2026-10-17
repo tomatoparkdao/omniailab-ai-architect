@@ -14,7 +14,7 @@ agent_created: true
 
 > 规则集：`brand-and-provider-policy` —— 品牌统一 · 第三方来源合规隔离 · OmniAiLab 创作工具独占
 
-- 扫描时间：2026-10-17 14:17:46
+- 扫描时间：2026-10-17 14:21:04
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
 - 扫描文本文件：**228**
 - 待处理：**0**（禁止项 0，待审 0）
