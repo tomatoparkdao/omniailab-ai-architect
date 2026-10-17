@@ -62,6 +62,8 @@ REQUIRED_PATHS = [
     "docs/WORKFLOW.md", "docs/DESIGN_CRITERIA.md", "docs/ARCHITECTURE.md",
     "docs/OMNIAILAB_INTEGRATION.md", "docs/CONTENT_AUDIT.md",
     "docs/BRAND_POLICY.md", "docs/CONCEPT_RENDER.md",
+    "docs/REFERENCE_SOURCES.md", "docs/VIDEO_PRODUCTION.md",
+    "omniarchitect/reference.py",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
     "scripts/normalize_attribution.py",

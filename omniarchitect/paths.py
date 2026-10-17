@@ -30,6 +30,18 @@ REPO_URL = "https://github.com/tomatoparkdao/omniailab-ai-architect"
 MANUAL_CN_URL = "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"
 MANUAL_NOTION_URL = "https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d"
 
+# 参考图素材库（自有站点）：汇总主流设计平台的前沿作品，用于**方向调研与视觉语言比对**。
+# 用法边界见 docs/REFERENCE_SOURCES.md —— 结论可以进交付物（关键词、比例、材质组合），
+# 原图不可以（版权归原作者，不等于授权）。
+REFERENCE_LIBRARY_URL = (
+    "https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa"
+)
+
+# 影视级导演 Skill（自有原生技能）：方案视频需要叙事结构、镜头语言与节奏时移交。
+# 它负责**分镜与运镜脚本**，不是生成后端——出片仍由 OmniAiLab 平台完成，
+# 见 docs/VIDEO_PRODUCTION.md 的移交边界。
+DIRECTOR_SKILL_URL = "https://github.com/tomatoparkdao/omniailab-ai-director"
+
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:
     p = Path(path) if path else (ROOT / default)

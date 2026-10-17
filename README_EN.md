@@ -79,7 +79,7 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 | `existing-drawing-analysis` | Existing drawing analysis | S1 | Separates verifiable facts from inference in drawings |
 | `architectural-design` | Architectural design | S1 · S4 | Organises programme, site and orientation into massing |
 | `concept-design` | Concept design | S2 · S3 | Turns the brief into a testable claim and spatial prototype |
-| `moodboard-aesthetic-iteration` | Moodboard and aesthetic iteration | S2 · S5 | Anchors aesthetic goals, scores them, tracks fixes |
+| `moodboard-aesthetic-iteration` | Moodboard and aesthetic iteration | S2 · S5 | Anchors aesthetic goals, scores them, tracks fixes; references split into research and delivery tiers |
 | `create-draw` | Concept diagramming and review | S2 · S4 · S7 | Draws judgements with agreed semantics; reviews stay auditable |
 | `lighting-design` | Lighting design | S2 · S4 · S7 | Unifies daylight and artificial light into one strategy |
 | `space-planning` | Space planning | S3 | Turns brief and concept into rooms, areas and circulation |
@@ -93,7 +93,7 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 | `3d-modeling` | 3D spatial modelling | S5 | Turns the confirmed model into an editable 3D scene |
 | `scene-rendering` | Scene rendering | S5 | Renders batches by camera, material and light; views stay consistent |
 | `ai-visualization` | AI visualisation | S5 | Generates supporting visuals via OmniAiLab; marked non-authoritative |
-| `walkthrough` | Walkthrough and multi-view visualisation | S5 | Turns spatial sequence into panoramas and walkthroughs |
+| `walkthrough` | Walkthrough and multi-view visualisation | S5 | Turns spatial sequence into panoramas and walkthroughs; hands off to the directing skill when narrative is needed |
 | `bim-modeling` | BIM modelling | S5 · S7 | Turns the model into parametric components for take-off |
 | `design-review` | Design review | S6 · S7 | Screens output against a checkable list: pass / conditional / return |
 | `coordination-check` | Cross-discipline coordination check | S6 · S7 | Finds clashes among structure, MEP, ceiling heights and details |
@@ -525,6 +525,8 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
 | How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | Contract fields, credential location, three steps, creative-exclusivity rules |
 | How to produce concept renderings after the layout is confirmed | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) | G3 post-gate action: cameras, prompts, task pack and three red lines |
+| Finding reference images and building moodboards | [docs/REFERENCE_SOURCES.md](docs/REFERENCE_SOURCES.md) | How to use the library: takeaways yes, images no; red lines and a five-step method |
+| Making the scheme video more engaging | [docs/VIDEO_PRODUCTION.md](docs/VIDEO_PRODUCTION.md) | When to hand off to the directing skill, which part, and why the generator stays the same |
 | Brand and vendor policy | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | Nine rules, four hit classes and the creative-exclusivity verdict |
 | Third-party licences and attribution | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Optional dependencies and host software registered item by item |
 | Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 permission tiers, tool registry and file data flows |

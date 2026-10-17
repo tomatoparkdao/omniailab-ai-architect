@@ -40,6 +40,7 @@ agent_created: true
 | 想看别人怎么跟它对话 | 第 5 节 |
 | 正卡在某个阶段，要一步步照做 | 第 6 节 |
 | 平面刚确认，要看概念效果图怎么出 | 第 7 节 |
+| 要找参考图做意向板、或把方案视频做生动 | 第 7b 节 |
 | 想查某项能力归哪个阶段、怎么调 | 第 8 节 |
 | 报错了、环境不对、工具没装 | 第 9、12、13 节 |
 | 要接平台、要出真实效果图 | 第 10 节 |
@@ -406,6 +407,28 @@ python -m omniarchitect canvas-models                                           
 3. 提交生成属 **L3 联网**，需要 `--submit --authorize` 显式授权；图像永远 `authoritative = false`。
 
 细节见 `docs/CONCEPT_RENDER.md` 与 `knowledge/ai-concept-visualization.md`。
+
+---
+
+## 7b. 参考图与方案视频（两个自有入口）
+
+这两个入口都是本项目自有的，可以放心用；但各自有边界，越界会出问题。
+
+| 你要做什么 | 去哪里 | 能拿回来什么 |
+|---|---|---|
+| 想看看现在流行什么、给方向找依据 | [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa) | **结论**：关键词、比例、材质组合；原图不进交付物 |
+| 方案视频要更生动、要有叙事 | [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director) | **分镜与运镜脚本**；出片仍由平台完成 |
+
+**为什么素材库的图不能直接用**：库里是各设计平台公开发布的作品，版权属于原作者。
+"公开发布"不等于"授权复制"。所以能带走的是描述——比如"深色石材到顶、木饰面只做腰线以下
+900mm"——不是那张图。业主看到贴满别人作品的意向板，第一反应会以为那就是他家的方案。
+
+**为什么导演技能不接管出片**：它解决"怎么讲"（叙事结构、镜头语言、节奏），
+不解决"讲的是什么"（空间事实只认已确认模型），也不负责生成。
+移交出去的只是**脚本**，生成主体一律是 OmniAiLab 平台。
+
+细则见 `docs/REFERENCE_SOURCES.md` 与 `docs/VIDEO_PRODUCTION.md`；
+命令行随时可查：`python -m omniarchitect reference`。
 
 ---
 

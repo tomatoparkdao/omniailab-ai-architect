@@ -146,6 +146,29 @@ def cmd_manual(args) -> int:
     return 0
 
 
+def cmd_reference(args) -> int:
+    """打印参考图素材库与方案视频的入口，连同使用边界。"""
+    from .reference import as_list
+
+    entries = as_list()
+    if args.json:
+        _print_json({"entries": entries})
+        return 0
+
+    print("参考图与方案视频（两个自有入口，可用但不等于无边界）")
+    print()
+    for e in entries:
+        print(f"  {e['title']}")
+        print(f"    {e['url']}")
+        print(f"    用途：{e['purpose']}")
+        print(f"    边界：{e['boundary']}")
+        print(f"    细则：{e['doc']}")
+        print()
+    print("两个入口都是本项目自有：素材库用于调研、导演技能用于脚本，")
+    print("生成式图像与视频的唯一被授权主体仍是 OmniAiLab 平台。")
+    return 0
+
+
 def cmd_stages(args) -> int:
     if args.json:
         _print_json([s.to_dict() for s in STAGES])
@@ -407,6 +430,10 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--section", default=None, help="配合 --read，只打印匹配该关键词的章节")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_manual)
+
+    sp = sub.add_parser("reference", help="参考图素材库与方案视频的两个自有入口")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_reference)
 
     sp = sub.add_parser("stages", help="打印八阶段模型")
     sp.add_argument("--json", action="store_true")

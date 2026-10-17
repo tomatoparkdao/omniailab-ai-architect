@@ -41,6 +41,8 @@ SECTIONS: Dict[str, str] = {
     "troubleshoot": "5.4 中途救火（最常见的故障）",
     "stage-detail": "6. 逐阶段操作细则（S1–S8）",
     "concept": "7. 门禁后置动作：平面确认后的概念效果图",
+    "reference": "7b. 参考图与方案视频（两个自有入口）",
+    "video": "7b. 参考图与方案视频（两个自有入口）",
     "capabilities": "8. 能力与技能调度速查（30 项）",
     "tools": "9. 工具与权限",
     "degraded": "9.2 工具缺失时的行为（这是设计，不是故障）",

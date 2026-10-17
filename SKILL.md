@@ -99,6 +99,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
 | 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
 | 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
+| **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
 | 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
@@ -237,6 +238,7 @@ python -m omniarchitect providers       # OmniAiLab / 本地 provider 状态
 python -m omniarchitect honesty         # 不得声称的能力清单
 python -m omniarchitect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniarchitect policy          # 品牌与供应商策略（品牌 / 第三方隔离 / 创作独占）
+python -m omniarchitect reference       # 参考图素材库与方案视频的两个自有入口
 python -m omniarchitect compat          # Agent Skills 兼容性
 python -m omniarchitect manifest        # 生成安装清单
 python -m omniarchitect install --dry-run
@@ -331,6 +333,15 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 **禁止删除法律要求的署名**，也禁止把第三方代码或文档宣称为 OmniAiLab 原创。
 **专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，
 可以继续调用，但不得包装成外部商业 AI 设计平台的推广入口；MCP 一律登记在 Tool Registry。
+
+---
+
+## 7c. 参考图与方案视频（两个自有入口）
+
+两个入口都是本项目自有的，可以挂在用户面材料里，但边界不同、不能混用：
+
+- [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**（权利属各自创作者）。见 `docs/REFERENCE_SOURCES.md`。
+- [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只承担分镜与运镜脚本，不改变空间事实、**不承担生成**——生成主体仍是 `omniailab`。见 `docs/VIDEO_PRODUCTION.md`。
 
 ---
 

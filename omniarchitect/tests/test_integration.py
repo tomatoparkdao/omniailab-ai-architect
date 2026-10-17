@@ -16,6 +16,12 @@ from omniarchitect.integration import agent_skills as sk  # noqa: E402
 from omniarchitect.integration import installer as inst  # noqa: E402
 from omniarchitect.paths import ROOT  # noqa: E402
 
+# 全仓文档扫描统一跳过的目录：运行时产物、用户项目数据与工具缓存。
+# `.pytest_cache/` 是真实踩过的坑——pytest 会在里面写一个 README.md，
+# 既没有 front-matter 也没有本仓署名，不跳过就会让格式类测试无故失败。
+SCAN_SKIP_PREFIXES = ("out/", "projects/", ".git/", ".pytest_cache/",
+                      "__pycache__/", "_backup/", ".venv/", "node_modules/")
+
 
 # --------------------------------------------------------------------------
 # SKILL.md contract
@@ -184,7 +190,7 @@ def test_every_document_carries_the_omniailab_signature():
     missing = []
     for p in sorted(ROOT.rglob("*.md")):
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
-        if rel.startswith(("out/", "projects/")):
+        if rel.startswith(SCAN_SKIP_PREFIXES):
             continue
         text = p.read_text(encoding="utf-8")
         if not any(mark in text for mark in
@@ -365,7 +371,7 @@ def test_frontmatter_tail_is_identical_in_every_markdown():
     bad = []
     for p in sorted(ROOT.rglob("*.md")):
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
-        if rel.startswith(("out/", "projects/")) or rel in no_fm:
+        if rel in no_fm or rel.startswith(SCAN_SKIP_PREFIXES):
             continue
         text = p.read_text(encoding="utf-8")
         assert text.startswith("---"), rel
@@ -641,3 +647,73 @@ def test_manual_urls_carry_no_tracking_parameters():
     assert not bad, bad
     assert seen_cn > 80, f"规范飞书地址只出现 {seen_cn} 次，疑似被换成了别的写法"
     assert seen_intl > 5, f"规范 Notion 地址只出现 {seen_intl} 次，疑似被换成了别的写法"
+
+
+# --------------------------------------------------------------------------
+# reference library & directing skill (first-party entries)
+# --------------------------------------------------------------------------
+def test_reference_and_director_entries_are_first_party():
+    """参考图素材库与导演技能的地址只有一种写法，且都登记为自有 URL。
+
+    这两个入口都是本项目自有的，所以可以出现在用户面文档里；但地址若出现变体
+    （例如重新带上「复制链接」的来源参数），读者就无法判断哪个是准的。
+    """
+    import re
+    from urllib.parse import unquote
+
+    from omniarchitect import brand_policy as bp
+    from omniarchitect.paths import DIRECTOR_SKILL_URL, REFERENCE_LIBRARY_URL
+
+    assert "?" not in REFERENCE_LIBRARY_URL, REFERENCE_LIBRARY_URL
+    assert "?" not in DIRECTOR_SKILL_URL, DIRECTOR_SKILL_URL
+    assert REFERENCE_LIBRARY_URL.startswith("https://tomatopark.notion.site/"), REFERENCE_LIBRARY_URL
+    assert DIRECTOR_SKILL_URL.startswith("https://github.com/tomatoparkdao/"), DIRECTOR_SKILL_URL
+
+    # 自有 URL 登记表必须真的覆盖这两个地址，否则合规审计会把它们当外部推广链接
+    for url in (REFERENCE_LIBRARY_URL, DIRECTOR_SKILL_URL):
+        assert any(url.startswith(own) for own in bp.OWN_URLS), f"未登记为自有 URL：{url}"
+
+    skip_dirs = {"out", "projects", ".git", "__pycache__", ".pytest_cache", "_backup"}
+    exts = {".md", ".py", ".json", ".yaml", ".yml", ".toml", ".txt"}
+    url_re = re.compile(r"https?://[^\s)\"'<>\]），。；、]+")
+
+    # 允许两种形态：规范地址本身，或 OWN_URLS 里登记过的自有前缀
+    # （登记表用前缀匹配，`.../Luxora-AI-` 这类短写是正当的）。
+    # 但带查询参数的完整地址两种都不是 —— 那才是要抓的变体。
+    allowed = {REFERENCE_LIBRARY_URL, DIRECTOR_SKILL_URL, *bp.OWN_URLS}
+
+    bad: list[str] = []
+    seen_lib = seen_dir = 0
+    for p in sorted(ROOT.rglob("*")):
+        if not p.is_file() or p.suffix.lower() not in exts:
+            continue
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
+        if set(Path(rel).parts[:-1]) & skip_dirs:
+            continue
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        for form, body in (("原文", text), ("URL 解码后", unquote(text))):
+            for url in url_re.findall(body):
+                if "Luxora-AI" in url and url not in allowed:
+                    bad.append(f"{rel}：素材库地址出现变体（{form}）：{url}")
+                if "omniailab-ai-director" in url and url not in allowed:
+                    bad.append(f"{rel}：导演技能地址出现变体（{form}）：{url}")
+        seen_lib += text.count(REFERENCE_LIBRARY_URL)
+        seen_dir += text.count(DIRECTOR_SKILL_URL)
+
+    assert not bad, bad
+    assert seen_lib >= 3, f"素材库地址只出现 {seen_lib} 次，疑似被换掉"
+    assert seen_dir >= 3, f"导演技能地址只出现 {seen_dir} 次，疑似被换掉"
+
+
+def test_reference_command_lists_both_entries():
+    """`python -m omniarchitect reference` 要能直接把两个入口和边界打出来。"""
+    from omniarchitect.reference import ENTRIES, as_list
+
+    assert set(ENTRIES) == {"reference", "video"}
+    entries = as_list()
+    assert [e["id"] for e in entries] == ["reference", "video"]
+    for e in entries:
+        assert e["url"].startswith("https://"), e
+        assert e["boundary"], e          # 没有边界说明就等于在教人越界
+        assert e["doc"].startswith("docs/"), e
+        assert (ROOT / e["doc"]).exists(), f"细则文档缺失：{e['doc']}"

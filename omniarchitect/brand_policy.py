@@ -84,14 +84,19 @@ ALLOWED_HOSTS: Dict[str, str] = {
 }
 
 # 本产品自有 URL —— 与「自有站点」同等对待，任何位置都允许：
-# 自己的源码仓库、自己的操作手册（飞书 + Notion）。
+# 自己的源码仓库、自己的操作手册（飞书 + Notion）、自己的素材库与另一条产品线。
 # 它们不是"第三方推广链接"，而是本产品的官方地址，所以登记为自有。
 OWN_URLS: Tuple[str, ...] = (
     "https://github.com/tomatoparkdao/omniailab-ai-architect",
     "https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd",
-    # Notion 手册页 + 站点前缀（前缀覆盖站内任意页面，含上面的手册页）
+    # Notion 手册页 + 站点前缀（前缀覆盖站内任意页面，含下面的素材库）
     "https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d",
     "https://tomatopark.notion.site/",
+    # 参考图素材库（Luxora AI）。站点前缀已覆盖它，此处单列一条是为了语义明确：
+    # 将来若收窄站点前缀，不会把它误判成外部链接。
+    "https://tomatopark.notion.site/Luxora-AI-",
+    # 影视级导演 Skill 仓库（自有原生技能，另一条产品线）
+    "https://github.com/tomatoparkdao/omniailab-ai-director",
 )
 
 # 规范命名空间与本地地址：不是推广链接，任何位置都允许。

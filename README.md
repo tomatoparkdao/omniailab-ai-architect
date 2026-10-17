@@ -79,7 +79,7 @@
 | `existing-drawing-analysis` | 原始图纸解析 | S1 | 识别图层、墙体、尺寸与门窗，区分可置信的事实与推断，并逐条标注待现场核对项 |
 | `architectural-design` | 建筑设计 | S1 · S4 | 把功能、场地与朝向组织成自洽的体量、立面和楼层策略 |
 | `concept-design` | 概念方案设计 | S2 · S3 | 把任务书翻成一句可验证的设计主张、空间原型与风格语言 |
-| `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 | 用关键词锚定审美目标，按固定框架量化打分，并跨轮追踪整改闭环 |
+| `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 | 用关键词锚定审美目标，按固定框架量化打分，并跨轮追踪整改闭环；参考图分调研级与交付级 |
 | `create-draw` | 概念图解与评图 | S2 · S4 · S7 | 用约定图形语义把设计判断画成一张可读的图，评图意见跨轮可核销 |
 | `lighting-design` | 灯光设计 | S2 · S4 · S7 | 把自然光与人工光统一成一套策略，输出照度、色温与灯位判据 |
 | `space-planning` | 空间规划 | S3 | 把任务书与概念方向翻成房间划分、面积配比与流线 |
@@ -93,7 +93,7 @@
 | `3d-modeling` | 3D 空间建模 | S5 | 把已确认的统一空间模型翻成可编辑的三维场景与构件 |
 | `scene-rendering` | 场景渲染 | S5 | 按机位、材质与光影批量出图，多视角一致，图像一律非权威 |
 | `ai-visualization` | AI 视觉表现 | S5 | 经 OmniAiLab 平台生成辅助表现材料，输出一律标注非权威 |
-| `walkthrough` | 漫游与多视角表现 | S5 | 把空间序列翻成全景与漫游，验证动线与观感，标注非权威 |
+| `walkthrough` | 漫游与多视角表现 | S5 | 把空间序列翻成全景与漫游，验证动线与观感，标注非权威；需要叙事时移交导演技能 |
 | `bim-modeling` | BIM 建模 | S5 · S7 | 翻成带参数的构件与信息模型，支撑出图、算量与专业协同 |
 | `design-review` | 设计审核 | S6 · S7 | 按可判定的清单逐项初筛，输出通过 / 有条件通过 / 退回 |
 | `coordination-check` | 专业协调校核 | S6 · S7 | 查结构、机电、吊顶净高、点位与做法的冲突，出碰撞记录 |
@@ -526,6 +526,8 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | 九组设计判据的可判定口径，以及每组落在哪个阶段 |
 | 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | 契约字段、凭据位置、三步接入流程与创作独占硬规则 |
 | 平面确认后怎么出概念效果图 | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) | G3 后置动作：机位、提示词、任务包与三条不许越过的线 |
+| 找参考图、做意向板 | [docs/REFERENCE_SOURCES.md](docs/REFERENCE_SOURCES.md) | 素材库怎么用：能带走结论、不能带走图；红线与五步用法 |
+| 方案视频怎么做得更生动 | [docs/VIDEO_PRODUCTION.md](docs/VIDEO_PRODUCTION.md) | 什么时候移交导演技能、移交哪一段、生成主体为何不变 |
 | 品牌与供应商策略 | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | 九条规则、四类命中与创作能力独占的判定依据 |
 | 第三方许可证与署名 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | 可选依赖与本地宿主软件的许可证逐项登记与来源 |
 | 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 权限分级、工具注册表与文件数据流向 |

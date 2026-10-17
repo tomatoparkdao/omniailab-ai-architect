@@ -280,6 +280,42 @@ front-matter 的「操作手册」字段由 `normalize_attribution.py` 从这两
 - 飞书 → `200`，跳转 `accounts.feishu.cn` 登录页（私有 wiki 的正常行为，wiki ID 保留在 redirect 里）
 - Notion → `200`，最终 URL 与所给完全一致
 
+### 两个自有入口：参考图素材库与导演技能
+
+两件事：素材库（Luxora AI）作为找参考图的入口；方案视频需要更生动时，可调用另一条自有技能
+（`omniailab-ai-director`）。两者都是本项目自有，所以可以挂在用户面材料里。
+
+**参考图素材库** —— 这里有一个不能含糊的边界：库里汇总的是各设计平台公开发布的作品，
+**权利属于各自的创作者**，"公开发布"不等于"授权复制"。所以定为两层：
+
+| 层级 | 能做什么 | 产出 | 进交付物 |
+|---|---|---|---|
+| 调研级 | 看构图 / 材质 / 色调，提取可验证特征 | `reference-log.md`、`keywords.json` | 只有**结论**能进 |
+| 交付级 | 用自有、已授权或本系统产出的图 | 意向板、汇报 PPTX | 图本身能进 |
+
+新增 `docs/REFERENCE_SOURCES.md`：两类来源、两层判据、五步用法（先有词再看 → 只看关系 →
+提取可验证特征 → 落成词与比例 → 记来源）与六条红线。
+
+**导演技能** —— 移交的是**分镜与运镜脚本**，不是生成任务。它解决"怎么讲"，
+不解决"讲的是什么"（空间事实只认已确认模型），也不负责出片；`video_generation` 与
+`architectural_walkthrough` 的唯一被授权主体仍是 `omniailab`。新增 `docs/VIDEO_PRODUCTION.md`：
+三种形态的区分、五个移交信号、四段分工、六条硬性边界与六项移交清单。
+
+**代码**：新增 `omniarchitect/reference.py` 与 CLI `reference`（打印两个入口与各自边界，
+`--json` 可机读）。两个地址登记进 `brand_policy.OWN_URLS`，合规审计不再视为外部推广链接。
+
+**守卫**：`test_reference_and_director_entries_are_first_party` 要求两个地址只有一种写法
+（不允许重新带上来源参数）、且必须被 `OWN_URLS` 覆盖；`test_reference_command_lists_both_entries`
+要求每个入口都带边界说明，且它指向的细则文档真实存在。
+
+**顺带修掉两个真实缺陷**：
+
+1. `SKILL.md` 加完 7c 节后涨到 416 行，超过渐进式加载上限（400 行）——已把细节下沉到两份 docs，
+   入口只留一行指针，现为 398 行；
+2. `test_every_document_carries_the_omniailab_signature` 与 front-matter 一致性测试不跳过
+   `.pytest_cache/`——**跑过一次 pytest 就必然失败**（pytest 会在里面写一个没有本仓署名的
+   `README.md`）。已抽出统一的 `SCAN_SKIP_PREFIXES` 供多处复用。
+
 ---
 
 ## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充
