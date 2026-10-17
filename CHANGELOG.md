@@ -6,7 +6,7 @@ author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
-操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink
 ---
 
 # 变更记录
@@ -248,6 +248,26 @@ URL 也算了进去。GitHub 只渲染链接文字、URL 藏在 `href` 里一个
 
 顺带修掉 `normalize_attribution.py` 里一句会过期的注释（原写「直接以居中的 HTML 标题开始」）。
 
+### 手册地址换新：飞书带来源参数、Notion 换到公开站点
+
+| 载体 | 旧 | 新 |
+|---|---|---|
+| 飞书 | `…/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd` | 同址 + `?from=from_copylink` |
+| Notion | `app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d` | `tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73` |
+
+**改动源头只有一处**：`omniarchitect/paths.py` 的 `MANUAL_CN_URL` / `MANUAL_NOTION_URL`。
+front-matter 的「操作手册」字段由 `normalize_attribution.py` 从这两个常量取，
+`python -m omniarchitect manual` 与生成器报告头也读这里——所以改常量 + 跑一次统一化即可。
+
+实际改动：**91 个文件、飞书 103 处、Notion 13 处**（含 90 处 front-matter 与 README/文档正文链接、
+徽章 href、`brand_policy.OWN_URLS` 登记）。
+
+`OWN_URLS` 同步为新的 Notion 页与站点前缀；旧的 `app.notion.com` 条目随之替换，不再保留。
+
+**可达性实测**（改完即验证，避免换成一个更糟的死链）：
+- 飞书 → `200`，跳转 `accounts.feishu.cn` 登录页（私有 wiki 的正常行为，wiki ID 保留在 redirect 里）
+- Notion → `200`，最终 URL 与所给完全一致
+
 ---
 
 ## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充
@@ -354,7 +374,7 @@ Agent 拿到 `ergonomics` 这个能力名时无处定位。18 份编号文件还
 
 - front-matter 的标准尾部两项改为**真实地址**（原为「待发布」）：
   `开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect` ·
-  `操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd`。
+  `操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink`。
   **这就是「手册能被技能调用」的机制**：读到本仓任一 `.md` 的 front-matter 即可拿到仓库与手册地址。
 - 地址**唯一来源**收敛到 `paths.py`（`REPO_URL` / `MANUAL_CN_URL` / `MANUAL_NOTION_URL`），
   `registry.FRONTMATTER_TAIL`、`manual.py`、`scripts/normalize_attribution.py` 全部从那里读。

@@ -6,7 +6,7 @@ author: OmniAiLab
 developer: Mochiball
 agent_created: true
 开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
-操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink
 ---
 
 # 建筑与室内设计 Skill 操作手册
@@ -18,8 +18,8 @@ agent_created: true
 
 | 载体 | 位置 | 适合 |
 |---|---|---|
-| 飞书 | <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd> | 在线查阅、批注、分享给同事 |
-| Notion | <https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d> | 习惯用 Notion 的团队 |
+| 飞书 | <https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd?from=from_copylink> | 在线查阅、批注、分享给同事 |
+| Notion | <https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d?pvs=73> | 习惯用 Notion 的团队 |
 | Skill 内（离线可用） | `docs/MANUAL.md` | 断网、或让 Skill 自己读 |
 | 仓库首页 | <https://github.com/tomatoparkdao/omniailab-ai-architect> | 看源码与版本 |
 
