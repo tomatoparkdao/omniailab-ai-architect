@@ -504,3 +504,48 @@ def test_version_agrees_across_every_declaration():
         if needle not in path.read_text(encoding="utf-8"):
             problems.append(f"{rel}: 未找到 {needle!r}")
     assert not problems, problems
+
+
+# --------------------------------------------------------------------------
+# Markdown table spec (docs/TABLES.md)
+# --------------------------------------------------------------------------
+def _table_checker():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "check_tables", ROOT / "scripts" / "check_tables.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)          # type: ignore[union-attr]
+    return mod
+
+
+def test_every_table_follows_the_table_spec():
+    """表格规范（docs/TABLES.md）：列数一致、无空格、紧凑分隔行、落地页撑满正文区。
+
+    GitHub 的表格宽度由内容撑开，源码无法指定宽度——所以「左右对齐」只能靠
+    内容宽度达标来保证。这条测试就是那个判据，不允许随内容改动悄悄退化。
+    """
+    mod = _table_checker()
+    report = mod.run(root=ROOT)
+    assert report["count"] == 0, [
+        f'{v["rule"]} {v["path"]}:{v["line"]} {v["detail"]}'
+        for v in report["violations"]
+    ]
+    assert report["files"] > 50, report["files"]
+    assert report["tables"] > 100, report["tables"]
+
+
+def test_landing_page_tables_are_wide_enough():
+    """中英文 README 的每一张表都必须 ≥ MIN_TABLE_WIDTH，否则右边界缩进。"""
+    mod = _table_checker()
+    for rel in mod.LANDING_PAGES:
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        for n, table in enumerate(mod.iter_tables(text), 1):
+            widths = [mod.display_width(c) for c in table["header"]]
+            for row in table["body"]:
+                for ci, cell in enumerate(row[:len(widths)]):
+                    widths[ci] = max(widths[ci], mod.display_width(cell))
+            assert sum(widths) >= mod.MIN_TABLE_WIDTH, (
+                f"{rel} 表 {n}（行 {table['line']}）总宽 {sum(widths)} "
+                f"< {mod.MIN_TABLE_WIDTH}，列宽 {widths}"
+            )

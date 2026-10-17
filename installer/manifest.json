@@ -64,8 +64,8 @@
   },
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "file_count": 258,
-  "total_bytes": 3234449,
+  "file_count": 260,
+  "total_bytes": 3265580,
   "files": [
     {
       "path": ".gitignore",
@@ -99,8 +99,8 @@
     },
     {
       "path": "AGENTS.md",
-      "size": 21456,
-      "sha256_16": "25758d4d1baf206e"
+      "size": 21279,
+      "sha256_16": "8c4a46ac9e4bcc63"
     },
     {
       "path": "cases/generic-apartment-120.md",
@@ -119,8 +119,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size": 40405,
-      "sha256_16": "712c2ff59bcabffd"
+      "size": 43359,
+      "sha256_16": "23f959872f64db45"
     },
     {
       "path": "compatibility/agent-skills.md",
@@ -145,12 +145,12 @@
     {
       "path": "docs/brand-policy.json",
       "size": 41394,
-      "sha256_16": "b18c942020eeeec0"
+      "sha256_16": "3d6029fda224f8d2"
     },
     {
       "path": "docs/BRAND_POLICY.md",
       "size": 20811,
-      "sha256_16": "20ba2d655c55d76e"
+      "sha256_16": "d4bd2cb115a9c8fc"
     },
     {
       "path": "docs/CONCEPT_RENDER.md",
@@ -160,12 +160,12 @@
     {
       "path": "docs/content-audit.json",
       "size": 1491,
-      "sha256_16": "49bcbbbe3f8d0c74"
+      "sha256_16": "6818e92ee04435cd"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
       "size": 2163,
-      "sha256_16": "bb2c25960b5a1bba"
+      "sha256_16": "2d844ac1f52d3f31"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
@@ -184,8 +184,8 @@
     },
     {
       "path": "docs/MANUAL.md",
-      "size": 37893,
-      "sha256_16": "f49045b7332ce349"
+      "size": 37413,
+      "sha256_16": "b77a5b2447be27f9"
     },
     {
       "path": "docs/MCP_TOOLS.md",
@@ -206,6 +206,11 @@
       "path": "docs/STYLE_INTEGRATION.md",
       "size": 6313,
       "sha256_16": "617a9612ef78622a"
+    },
+    {
+      "path": "docs/TABLES.md",
+      "size": 7372,
+      "sha256_16": "d735b1fa770cd5b7"
     },
     {
       "path": "docs/WORKFLOW.md",
@@ -284,8 +289,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 36492,
-      "sha256_16": "8ab0a9253a7df5c2"
+      "size": 36580,
+      "sha256_16": "44bddaa90bf378dc"
     },
     {
       "path": "installer/verify_install.py",
@@ -609,8 +614,8 @@
     },
     {
       "path": "LICENSES/README.md",
-      "size": 2790,
-      "sha256_16": "b061a74d897ce54b"
+      "size": 2782,
+      "sha256_16": "f1bac195b4c09536"
     },
     {
       "path": "omniarchitect/__init__.py",
@@ -924,8 +929,8 @@
     },
     {
       "path": "omniarchitect/tests/test_integration.py",
-      "size": 21156,
-      "sha256_16": "bd372cb15dfea3df"
+      "size": 23114,
+      "sha256_16": "22a43e5aabbfca67"
     },
     {
       "path": "omniarchitect/tests/test_knowledge.py",
@@ -1119,13 +1124,13 @@
     },
     {
       "path": "README.md",
-      "size": 44635,
-      "sha256_16": "7fe823738afc8451"
+      "size": 50097,
+      "sha256_16": "082ec4f839dae5c0"
     },
     {
       "path": "README_EN.md",
-      "size": 52037,
-      "sha256_16": "4d23268b61426e27"
+      "size": 53884,
+      "sha256_16": "82369e2ec02dc3fc"
     },
     {
       "path": "requirements.txt",
@@ -1168,6 +1173,11 @@
       "sha256_16": "4bee5bb01dcad37c"
     },
     {
+      "path": "scripts/check_tables.py",
+      "size": 10691,
+      "sha256_16": "1a8b1f08d902e320"
+    },
+    {
       "path": "scripts/normalize_attribution.py",
       "size": 17246,
       "sha256_16": "2728dedb7de95a95"
@@ -1184,8 +1194,8 @@
     },
     {
       "path": "scripts/verify_all.py",
-      "size": 19714,
-      "sha256_16": "71da471ae2dd4f61"
+      "size": 21146,
+      "sha256_16": "8e8a3d3033ac31d6"
     },
     {
       "path": "SKILL.md",
@@ -1344,8 +1354,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "size": 7083,
-      "sha256_16": "c47baca445ff34e1"
+      "size": 7075,
+      "sha256_16": "7d52372cab9ff313"
     },
     {
       "path": "VERSION",

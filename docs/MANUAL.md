@@ -662,14 +662,16 @@ python -m omniarchitect verify --project <项目目录>
 
 ```bash
 python scripts/run_tests.py        # 全量测试（全部模块，零外部依赖）
-python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统
+python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统 + 表格规范
 python -m omniarchitect audit --write docs && python -m omniarchitect policy --write docs
 ```
 
 **文档格式约定**（有测试守着，不会漂移）：
 
 1. 每份 `.md` 的开头是统一的 front-matter，结尾是署名行（README 例外，按参考仓库做法不带元数据）；
-2. 表格用 `|---|---|` 写法（不补空格），内容要足够长，保证在 GitHub 上撑满宽度、各处宽度一致；
+2. 表格用 `|---|---|` 写法（不补空格）；**中英文 README 的每张表总显示宽度必须 ≥ 140 单位**，
+   否则在 GitHub 上撑不满正文区、右边界会缩进——完整规则与换算依据见 [TABLES.md](TABLES.md)，
+   由 `python scripts/check_tables.py --check` 守住；
 3. 版本号在 `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README 之间保持一致。
 
 **获取帮助**：与文档或 Skill 本体有关的问题，欢迎在

@@ -227,9 +227,10 @@ python -m omniarchitect policy --write docs  :: 生成 docs/BRAND_POLICY.md
 
 ```bat
 python scripts/run_tests.py          :: 全量测试，零外部依赖（改完必须跑）
-python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1+ 子系统 + 资产体积
+python scripts/verify_all.py         :: 目录 + 目录自检 + 工具链 + 闭环 + 测试 + v1.1+ 子系统 + 资产体积 + 表格规范
 python scripts/check_assets.py       :: 资产体积守卫：单文件 ≥1MB 或媒体二进制一律拦截
 python scripts/normalize_attribution.py --check  :: 全仓开头结尾格式一致性
+python scripts/check_tables.py --check           :: 表格规范：列数 / 空格 / 分隔行 / 落地页表宽 ≥140
 ```
 
 > 若本机装有 `Pillow` 等可选依赖的解释器与裸解释器不同，请用**装有依赖的那个解释器**跑验证，

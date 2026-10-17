@@ -68,38 +68,38 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 
 ### Capability list (30, grouped by stage served)
 
-| Capability | Name | Stage served |
-|---|---|---|
-| `design-brief` | Design brief | S1 · S6 |
-| `site-analysis` | Site and building-conditions analysis | S1 |
-| `existing-drawing-analysis` | Existing drawing analysis | S1 |
-| `architectural-design` | Architectural design | S1 · S4 |
-| `concept-design` | Concept design | S2 · S3 |
-| `moodboard-aesthetic-iteration` | Moodboard and aesthetic iteration | S2 · S5 |
-| `create-draw` | Concept diagramming and review | S2 · S4 · S7 |
-| `lighting-design` | Lighting design | S2 · S4 · S7 |
-| `space-planning` | Space planning | S3 |
-| `layout-optimization` | Layout optimization | S3 · S6 |
-| `ergonomics` | Ergonomics and dimensions | S3 · S4 |
-| `concept-visualization` | Concept renderings | S3 · S4 (post-gate action of G3) |
-| `interior-design` | Interior design | S4 · S6 |
-| `material-design` | Material and colour design | S4 · S5 · S8 |
-| `building-services` | MEP and services coordination | S4 · S6 · S7 |
-| `cad-drafting` | CAD drafting | S4 · S7 |
-| `3d-modeling` | 3D spatial modelling | S5 |
-| `scene-rendering` | Scene rendering | S5 |
-| `ai-visualization` | AI visualisation | S5 |
-| `walkthrough` | Walkthrough and multi-view visualisation | S5 |
-| `bim-modeling` | BIM modelling | S5 · S7 |
-| `design-review` | Design review | S6 · S7 |
-| `coordination-check` | Cross-discipline coordination check | S6 · S7 |
-| `construction-detailing` | Construction detailing and joints | S7 |
-| `cost-check` | Budget fit | S1–S6 |
-| `quantity-takeoff` | Quantity take-off | S1–S8 |
-| `material-schedule` | Material and finish schedule | S8 |
-| `documentation` | Delivery documentation | S8 |
-| `delivery` | Version management and delivery | S8 |
-| `design-presentation` | Design presentation and proposals | S2–S8 |
+| Capability | Name | Stage served | What it does |
+|---|---|---|---|
+| `design-brief` | Design brief | S1 · S6 | Turns needs, budget and acceptance into a checkable brief |
+| `site-analysis` | Site and building-conditions analysis | S1 | Reads site, orientation, daylight and limits into constraints |
+| `existing-drawing-analysis` | Existing drawing analysis | S1 | Separates verifiable facts from inference in drawings |
+| `architectural-design` | Architectural design | S1 · S4 | Organises programme, site and orientation into massing |
+| `concept-design` | Concept design | S2 · S3 | Turns the brief into a testable claim and spatial prototype |
+| `moodboard-aesthetic-iteration` | Moodboard and aesthetic iteration | S2 · S5 | Anchors aesthetic goals, scores them, tracks fixes |
+| `create-draw` | Concept diagramming and review | S2 · S4 · S7 | Draws judgements with agreed semantics; reviews stay auditable |
+| `lighting-design` | Lighting design | S2 · S4 · S7 | Unifies daylight and artificial light into one strategy |
+| `space-planning` | Space planning | S3 | Turns brief and concept into rooms, areas and circulation |
+| `layout-optimization` | Layout optimization | S3 · S6 | Compares proportions, depth and openness with trade-offs |
+| `ergonomics` | Ergonomics and dimensions | S3 · S4 | Converts "is it enough" into checkable clearances and heights |
+| `concept-visualization` | Concept renderings | S3 · S4 (post-gate action of G3) | Generates concept images on the approved plan via OmniAiLab |
+| `interior-design` | Interior design | S4 · S6 | Develops the plan into interfaces, ceilings and finishes |
+| `material-design` | Material and colour design | S4 · S5 · S8 | Yields purchasable, buildable, maintainable materials and samples |
+| `building-services` | MEP and services coordination | S4 · S6 · S7 | Turns MEP and fire needs into coordination points and clearances |
+| `cad-drafting` | CAD drafting | S4 · S7 | Produces drawing sets at schematic and construction depth |
+| `3d-modeling` | 3D spatial modelling | S5 | Turns the confirmed model into an editable 3D scene |
+| `scene-rendering` | Scene rendering | S5 | Renders batches by camera, material and light; views stay consistent |
+| `ai-visualization` | AI visualisation | S5 | Generates supporting visuals via OmniAiLab; marked non-authoritative |
+| `walkthrough` | Walkthrough and multi-view visualisation | S5 | Turns spatial sequence into panoramas and walkthroughs |
+| `bim-modeling` | BIM modelling | S5 · S7 | Turns the model into parametric components for take-off |
+| `design-review` | Design review | S6 · S7 | Screens output against a checkable list: pass / conditional / return |
+| `coordination-check` | Cross-discipline coordination check | S6 · S7 | Finds clashes among structure, MEP, ceiling heights and details |
+| `construction-detailing` | Construction detailing and joints | S7 | Develops intent into buildable junctions and details |
+| `cost-check` | Budget fit | S1–S6 | Estimates from S1 on and judges budget fit with range bands |
+| `quantity-takeoff` | Quantity take-off | S1–S8 | Rolls quantities each stage; formal bill only at S8 |
+| `material-schedule` | Material and finish schedule | S8 | Specs, quantities, waste and substitutes; price kept apart |
+| `documentation` | Delivery documentation | S8 | Assembles an indexed, bounded and signed archive |
+| `delivery` | Version management and delivery | S8 | Tracks changes by revision and freezes the delivered version |
+| `design-presentation` | Design presentation and proposals | S2–S8 | Turns stage output into decision-ready proposals and PPTX |
 
 ```bash
 python -m omniarchitect registry     # print the capability catalogue and the full skill→stage map

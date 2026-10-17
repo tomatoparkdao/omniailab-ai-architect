@@ -51,6 +51,7 @@ REQUIRED_PATHS = [
     "installer/install.py", "installer/manifest.json",
     "compatibility/agent-skills.md",
     "cases/generic-apartment-120.md",
+    "docs/TABLES.md", "scripts/check_tables.py",
     PACKAGE + "/tests/test_stages.py", PACKAGE + "/tests/test_changes.py",
     PACKAGE + "/tests/test_workflow.py", PACKAGE + "/tests/test_provider.py",
     PACKAGE + "/tests/test_tools.py", PACKAGE + "/tests/test_presentation.py",
@@ -453,15 +454,44 @@ def check_assets() -> int:
     return 0
 
 
+def check_tables() -> int:
+    section("9. Markdown 表格规范（左右对齐）")
+    proc = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "check_tables.py"), "--json"],
+        capture_output=True, text=True, encoding="utf-8", cwd=str(ROOT))
+    try:
+        rep = json.loads(proc.stdout or "{}")
+    except Exception:                                            # noqa: BLE001
+        print("  FAIL  表格检查器无法解析输出")
+        print(f"    {(proc.stderr or proc.stdout or '')[:300]}")
+        return 1
+    print(f"  扫描 {rep.get('files', 0)} 个文件 / {rep.get('tables', 0)} 张表")
+    bad = rep.get("violations") or []
+    if bad:
+        by_rule: dict[str, int] = {}
+        for v in bad:
+            by_rule[v["rule"]] = by_rule.get(v["rule"], 0) + 1
+        print(f"  FAIL  {len(bad)} 处违规：" +
+              "　".join(f"{k}×{v}" for k, v in sorted(by_rule.items())))
+        for v in bad[:10]:
+            print(f"    {v['rule']}  {v['path']}:{v['line']}  {v['detail']}")
+        print("  → 规范见 docs/TABLES.md（落地页每张表总显示宽度须 ≥ 140）")
+        return len(bad)
+    print("  ok  T1 列数一致 / T2 无空单元格 / T3 分隔行紧凑 / "
+          "T4 落地页表宽 ≥140 / T5 列数 ≤6")
+    return 0
+
+
 def main() -> int:
     print("OmniArchitect 完整性验证")
     print(f"项目根目录：{ROOT}")
     total = (check_paths() + check_catalogue() + check_doctor() + check_smoke()
-             + check_tests() + check_v11() + check_style() + check_assets())
+             + check_tests() + check_v11() + check_style() + check_assets()
+             + check_tables())
     section("结论")
     if total == 0:
         print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、"
-              "v1.1 子系统正常、风格系统就绪、资产体积达标")
+              "v1.1 子系统正常、风格系统就绪、资产体积达标、表格规范达标")
         return 0
     print(f"  {total} 项问题，需处理")
     return 1

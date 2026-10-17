@@ -14,9 +14,9 @@ agent_created: true
 
 > 规则集：`brand-and-provider-policy` —— 品牌统一 · 第三方来源合规隔离 · OmniAiLab 创作工具独占
 
-- 扫描时间：2026-10-17 12:45:01
+- 扫描时间：2026-10-17 13:07:11
 - 扫描根目录：`E:\SKILL\建筑室内设计skill\omniailab-ai-architect`
-- 扫描文本文件：**226**
+- 扫描文本文件：**228**
 - 待处理：**0**（禁止项 0，待审 0）
 - 已抑制：25（宣告某平台不被允许的表述，不计入待处理）
 - 结论：**品牌统一、第三方来源隔离与创作工具独占三项均无未处理命中**
@@ -79,10 +79,10 @@ agent_created: true
 | 文件 | 行 | 规则 | 命中 | 原因 |
 |---|---|---|---|---|
 | `AGENTS.md` | 149 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 157 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 157 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 157 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
-| `CHANGELOG.md` | 355 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 200 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 200 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 200 | `user-facing-content` | `WorkBuddy` | WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
+| `CHANGELOG.md` | 398 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Codex` | OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Claude` | Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
 | `README.md` | 14 | `user-facing-content` | `Cursor` | Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过） |
