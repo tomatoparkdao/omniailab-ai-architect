@@ -513,24 +513,25 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 
 ## Documentation map
 
-| To learn about | Read |
-|---|---|
-| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) |
-| How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
-| How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
-| How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
-| How to produce concept renderings after the layout is confirmed | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
-| Brand and vendor policy | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) |
-| Third-party licences and attribution | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
-| Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
-| How to install and run standalone | [docs/INSTALL.md](docs/INSTALL.md) |
-| How presentations and PPTX are produced | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
-| Content compliance self-check | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) |
-| Design criteria and knowledge (13 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) |
-| Project-type cases | [cases/](cases/) |
-| Development conventions (for coding agents) | [AGENTS.md](AGENTS.md) |
-| Version history | [CHANGELOG.md](CHANGELOG.md) |
+| To learn about | Read | What's inside |
+|---|---|---|
+| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
+| How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
+| How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entry / sub-capabilities / execution layer / canonical spatial model |
+| What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
+| How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | Contract fields, credential location, three steps, creative-exclusivity rules |
+| How to produce concept renderings after the layout is confirmed | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) | G3 post-gate action: cameras, prompts, task pack and three red lines |
+| Brand and vendor policy | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | Nine rules, four hit classes and the creative-exclusivity verdict |
+| Third-party licences and attribution | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Optional dependencies and host software registered item by item |
+| Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 permission tiers, tool registry and file data flows |
+| How to install and run standalone | [docs/INSTALL.md](docs/INSTALL.md) | Where to place it per host, how to verify, how to stay offline |
+| How presentations and PPTX are produced | [docs/PRESENTATION.md](docs/PRESENTATION.md) | Ten presentation types, layout rules and the brand template |
+| Content compliance self-check | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) | Scan results for attribution / privacy / links / licences |
+| Why tables must be left-right aligned | [docs/TABLES.md](docs/TABLES.md) | Width maths, five hard rules, correct fixes and checker usage |
+| Design criteria and knowledge (13 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) | Thirteen original domains, progressive loading and lookup |
+| Project-type cases | [cases/](cases/) | Three generic brief samples: apartment, office, restaurant |
+| Development conventions (for coding agents) | [AGENTS.md](AGENTS.md) | Collaboration rules, forbidden zones and mandatory commands |
+| Version history | [CHANGELOG.md](CHANGELOG.md) | What changed in each version, why, and the verification result |
 
 ---
 

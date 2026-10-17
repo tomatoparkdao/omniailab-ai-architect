@@ -536,15 +536,19 @@ def test_every_table_follows_the_table_spec():
 
 
 def test_landing_page_tables_are_wide_enough():
-    """中英文 README 的每一张表都必须 ≥ MIN_TABLE_WIDTH，否则右边界缩进。"""
+    """中英文 README 的每一张表都必须 ≥ MIN_TABLE_WIDTH，否则右边界缩进。
+
+    宽度按**渲染后可见文字**量（链接按链接文字、不按 URL）。按原始 Markdown 量会高估，
+    从而放过窄表——本仓就因此漏过「文档地图」那张只有 81 单位的表。
+    """
     mod = _table_checker()
     for rel in mod.LANDING_PAGES:
         text = (ROOT / rel).read_text(encoding="utf-8")
         for n, table in enumerate(mod.iter_tables(text), 1):
-            widths = [mod.display_width(c) for c in table["header"]]
+            widths = [mod.cell_width(c) for c in table["header"]]
             for row in table["body"]:
                 for ci, cell in enumerate(row[:len(widths)]):
-                    widths[ci] = max(widths[ci], mod.display_width(cell))
+                    widths[ci] = max(widths[ci], mod.cell_width(cell))
             assert sum(widths) >= mod.MIN_TABLE_WIDTH, (
                 f"{rel} 表 {n}（行 {table['line']}）总宽 {sum(widths)} "
                 f"< {mod.MIN_TABLE_WIDTH}，列宽 {widths}"

@@ -18,6 +18,11 @@ GitHub 仓库页正文区约 950 px；ASCII 约 8 px/字，中日韩字符约 16
 把「中日韩字符记 2、其余记 1」得到**显示宽度单位**，正文区约合 119 单位。
 本检查器取 `MIN_TABLE_WIDTH = 140`（约 18% 余量），保证在较窄的窗口下也不会掉出满宽。
 
+**量的是「渲染后可见文字」，不是原始 Markdown。** 链接按链接文字计宽、不按 URL，
+HTML 标签不计，`<br>` 取换行后最宽的一段。这条容易写错：按原始 Markdown 量宽时，
+`[操作手册](https://example.org/very/long/path)` 会把一百多个字符的 URL 算进去，于是窄表被误判为达标——
+本仓就因此漏掉过「文档地图」那张只有 81 单位的表。
+
 检查项
 ------
 | 编号 | 规则 | 适用范围 |
@@ -64,6 +69,33 @@ SKIP_DIRS = {".git", "out", "__pycache__", ".pytest_cache", "node_modules",
 SKIP_TOP = {"projects"}
 
 SEP_CELL_RE = re.compile(r"^:?-{3,}:?$")
+
+_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
+_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+_TAG_RE = re.compile(r"<(?!/?br\b)[^>]+>", re.I)
+_BR_RE = re.compile(r"<br\s*/?>", re.I)
+_EMPH_RE = re.compile(r"\*\*|__|`")
+
+
+def rendered_text(cell: str) -> str:
+    """单元格在页面上**实际显示**的文字。
+
+    这一步是测量的关键：链接按**链接文字**计宽，不按 URL ——
+    GitHub 只渲染 `[文字](https://example.org/very/long/path)` 里的「文字」，URL 藏在 href 里，
+    一个字符都不占宽度。按原始 Markdown 量宽会严重高估，
+    于是「看起来满了、其实还是窄的」这种表会被漏掉。
+    """
+    s = _IMAGE_RE.sub("", cell)                     # 图片不占文字宽度
+    s = _LINK_RE.sub(lambda m: m.group(1), s)       # 链接只留链接文字
+    s = _TAG_RE.sub("", s)                          # HTML 标签不占宽度
+    s = _EMPH_RE.sub("", s)                         # **粗体** / `代码` 的标记
+    return s.strip()
+
+
+def cell_width(cell: str) -> int:
+    """单元格的显示宽度；`<br>` 是换行，取最宽的那一行。"""
+    parts = _BR_RE.split(rendered_text(cell))
+    return max((display_width(p) for p in parts), default=0)
 
 
 def display_width(text: str) -> int:
@@ -183,12 +215,12 @@ def check_text(text: str, rel: str, full_width: bool) -> list[dict]:
                            f"实为 {table['separator_raw'].strip()}"),
             })
 
-        # T4 —— 总显示宽度
+        # T4 —— 总显示宽度（按渲染后可见文字计）
         if full_width:
-            widths = [display_width(c) for c in table["header"]]
+            widths = [cell_width(c) for c in table["header"]]
             for row in table["body"]:
                 for ci, cell in enumerate(row[:len(widths)]):
-                    widths[ci] = max(widths[ci], display_width(cell))
+                    widths[ci] = max(widths[ci], cell_width(cell))
             total = sum(widths)
             if total < MIN_TABLE_WIDTH:
                 problems.append({

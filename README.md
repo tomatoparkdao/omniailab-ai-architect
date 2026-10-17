@@ -72,7 +72,7 @@
 |---|---|---|---|
 | `design-brief` | 设计任务书 | S1 · S6 | 把需求、预算与验收标准翻成可勾选的功能任务书与面积指标 |
 | `site-analysis` | 场地与建筑条件分析 | S1 | 把建筑条件、朝向采光、动线与限制读成可核对的约束清单 |
-| `existing-drawing-analysis` | 原始图纸解析 | S1 | 识别图层、墙体、尺寸与门窗，区分可置信的事实与推断，并标注待核对项 |
+| `existing-drawing-analysis` | 原始图纸解析 | S1 | 识别图层、墙体、尺寸与门窗，区分可置信的事实与推断，并逐条标注待现场核对项 |
 | `architectural-design` | 建筑设计 | S1 · S4 | 把功能、场地与朝向组织成自洽的体量、立面和楼层策略 |
 | `concept-design` | 概念方案设计 | S2 · S3 | 把任务书翻成一句可验证的设计主张、空间原型与风格语言 |
 | `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 | 用关键词锚定审美目标，按固定框架量化打分，并跨轮追踪整改闭环 |
@@ -99,7 +99,7 @@
 | `material-schedule` | 材料与物料表 | S8 | 出规格、用量、损耗与替代，数量与单价分列，可直接采购 |
 | `documentation` | 交付文档 | S8 | 组织成带索引、边界说明与署名的归档文本，供审查与交底 |
 | `delivery` | 版本管理与交付 | S8 | 用修订号追踪变更、失效重算与交付索引，完成版本冻结 |
-| `design-presentation` | 设计汇报与提案 | S2–S8 | 把阶段成果转译为可决策的提案与可编辑 PPTX，每份含免责与边界页 |
+| `design-presentation` | 设计汇报与提案 | S2–S8 | 把阶段成果转译为可决策的提案与可编辑 PPTX，每份都含免责与边界页 |
 
 ```bash
 python -m omniarchitect registry     # 打印能力目录与技能→阶段完整映射
@@ -212,7 +212,7 @@ python -m omniarchitect present --project projects/demo-120 --kind plan-comparis
 | 人体尺度校核 | `只做尺度，帮我核一下通道和家具间距够不够` | 通道净宽 / 家具间距 / 洁具间距的数值校核清单 |
 | 材料与饰面 | `只做材料，给我一套可采购可施工的材料体系` | 材料选型 + 规格排版 + 样板清单 |
 | 灯光 | `只做灯光，给我照度、色温与灯位方案` | 照度标准 / 色温 / 显色 / 灯位与回路建议 |
-| 概念效果图 | `只做概念效果图，平面我确认了` | 画布任务包（机位 + 提示词 + 参考图）+ 逐张状态；未接平台时逐张标 `awaiting_platform` |
+| 概念效果图 | `只做概念效果图，平面我确认了` | 画布任务包（机位 + 提示词 + 参考图 + 回填位置）+ 逐张状态；未接平台时逐张标 `awaiting_platform` |
 | CAD 图纸 | `只做图纸，出方案深度的 DXF` | 可编辑 DXF（方案深度 `schematic`）+ 独立解析复核实体数与图层 |
 | 工程量与造价 | `只做工程量，算一下这套方案的量和估算` | 分空间工程量 + 量价分离估算 + 与预算的适配结论 |
 | 设计汇报 | `只做汇报，把这个阶段的成果做成提案` | 可编辑 PPTX（含免责与边界页）+ Markdown + HTML |
@@ -499,12 +499,12 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 | 渠道 | 地址 | 适合用来 |
 |---|---|---|
-| **操作手册（离线，最快）** | [docs/MANUAL.md](docs/MANUAL.md) | 安装、命令、报错、术语；**第 12 节避坑总表**最省时间 |
-| **操作手册（在线）** | [飞书文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 同上；可批注、可分享给同事 |
-| **Skill 内直接问** | 对 Skill 说「查手册第 X 节」或「查手册避坑总表」 | 它会读 `docs/MANUAL.md` 并返回对应小节，不用自己翻 |
-| **命令行定位** | `python -m omniarchitect manual --topic <主题>` | 23 个主题 → 手册章节对照；拿不准看哪节时用 |
-| **仓库 issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | 反馈 bug、提功能建议；留在仓库里最不容易丢 |
-| **OmniAiLab 官方** | [国内站](https://www.omniailabx.com/) · [海外站](https://omniailab.cn/) | 平台能力、模型路由与账号相关 |
+| **操作手册（离线，最快）** | [docs/MANUAL.md](docs/MANUAL.md) | 安装、命令、报错、术语；**第 12 节避坑总表**最省时间，断网也能查 |
+| **操作手册（在线）** | [飞书文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 同上；可批注、可分享给同事，适合团队一起看 |
+| **Skill 内直接问** | 对 Skill 说「查手册第 X 节」或「查手册避坑总表」 | 它会读 `docs/MANUAL.md` 并返回对应小节，不用自己翻，也不必记章节号 |
+| **命令行定位** | `python -m omniarchitect manual --topic <主题>` | 23 个主题 → 手册章节对照；拿不准该看哪一节时，用它定位 |
+| **仓库 issue** | [tomatoparkdao/omniailab-ai-architect/issues](https://github.com/tomatoparkdao/omniailab-ai-architect/issues) | 反馈 bug、提功能建议；留在仓库里最不容易丢，也方便后来的人检索到同一个问题 |
+| **OmniAiLab 官方** | [国内站](https://www.omniailabx.com/) · [海外站](https://omniailab.cn/) | 平台能力、模型路由与账号相关；设计方法问题仍走上面几条 |
 
 > 提问前建议先翻本 README 的[避坑总表](#避坑总表)与操作手册对应章节。发问时带上
 > **项目类型、当前阶段、你用的工具（Codex / Claude / WorkBuddy / OmniAiLab）与报错原文**，
@@ -514,25 +514,25 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 ## 文档地图
 
-| 想了解 | 看这里 |
-|---|---|
-| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) |
-| 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
-| 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) |
-| 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) |
-| 平面确认后怎么出概念效果图 | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) |
-| 品牌与供应商策略 | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) |
-| 第三方许可证与署名 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
-| 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) |
-| 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) |
-| 汇报与 PPT 怎么出 | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
-| 内容合规自检 | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) |
-| 表格为什么必须左右对齐、怎么改 | [docs/TABLES.md](docs/TABLES.md) |
-| 设计判据与知识（13 域） | [knowledge/INDEX.md](knowledge/INDEX.md) |
-| 项目类型化案例 | [cases/](cases/) |
-| 开发约定（面向编码 Agent） | [AGENTS.md](AGENTS.md) |
-| 版本变更 | [CHANGELOG.md](CHANGELOG.md) |
+| 想了解 | 看这里 | 里面有什么 |
+|---|---|---|
+| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书文档](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://app.notion.com/p/tomatopark/3fba28d2e37880ac9be5dd199c99677d) | 共 15 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
+| 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | 八个阶段各自的门禁、产出、退回规则与门禁后置动作 |
+| 系统怎么分层 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 入口 / 子能力 / 执行层 / 统一空间模型四层结构 |
+| 判断依据是什么 | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | 九组设计判据的可判定口径，以及每组落在哪个阶段 |
+| 平台怎么接 | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | 契约字段、凭据位置、三步接入流程与创作独占硬规则 |
+| 平面确认后怎么出概念效果图 | [docs/CONCEPT_RENDER.md](docs/CONCEPT_RENDER.md) | G3 后置动作：机位、提示词、任务包与三条不许越过的线 |
+| 品牌与供应商策略 | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | 九条规则、四类命中与创作能力独占的判定依据 |
+| 第三方许可证与署名 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | 可选依赖与本地宿主软件的许可证逐项登记与来源 |
+| 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 权限分级、工具注册表与文件数据流向 |
+| 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) | 各宿主放哪、如何验证、离线怎么跑通完整闭环 |
+| 汇报与 PPT 怎么出 | [docs/PRESENTATION.md](docs/PRESENTATION.md) | 10 种汇报类型、版式规则与品牌模板用法 |
+| 内容合规自检 | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) | 署名 / 隐私 / 外链 / 许可四类扫描结果与待处理项 |
+| 表格为什么必须左右对齐、怎么改 | [docs/TABLES.md](docs/TABLES.md) | 宽度换算、五条硬规则、正误做法与检查器用法 |
+| 设计判据与知识（13 域） | [knowledge/INDEX.md](knowledge/INDEX.md) | 13 个原创知识域、渐进加载机制与检索入口 |
+| 项目类型化案例 | [cases/](cases/) | 住宅 / 办公 / 商业三类通用任务书样本 |
+| 开发约定（面向编码 Agent） | [AGENTS.md](AGENTS.md) | 协作规则、禁区、必跑命令与交付纪律 |
+| 版本变更 | [CHANGELOG.md](CHANGELOG.md) | 每个版本的改动、原因与验证结论 |
 
 ---
 

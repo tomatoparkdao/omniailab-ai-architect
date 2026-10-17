@@ -48,6 +48,10 @@ BENIGN_URL_HOSTS = (
     "img.shields.io",      # badge images
     "example.invalid",     # documentation placeholders (RFC 2606)
     "example.com",
+    # 注意：这里**不**登记 example.net —— 测试夹具故意用它构造"外部推广链接"样本
+    # （test_a_user_facing_file_with_external_promotion_is_flagged），
+    # 登记进来会让那条用例失去意义。example.org 用于文档里的链接举例。
+    "example.org",
 )
 
 # Values that look like a client name but are actually role words.
