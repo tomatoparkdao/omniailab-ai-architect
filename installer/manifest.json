@@ -65,7 +65,7 @@
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
   "file_count": 260,
-  "total_bytes": 3277368,
+  "total_bytes": 3278865,
   "files": [
     {
       "path": ".gitignore",
@@ -119,8 +119,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size": 46800,
-      "sha256_16": "cdd67925dc0ecb83"
+      "size": 48121,
+      "sha256_16": "133a503b33bb171f"
     },
     {
       "path": "compatibility/agent-skills.md",
@@ -144,13 +144,13 @@
     },
     {
       "path": "docs/brand-policy.json",
-      "size": 41394,
-      "sha256_16": "02295d394c384a5c"
+      "size": 41456,
+      "sha256_16": "a9a3577e35af7b8e"
     },
     {
       "path": "docs/BRAND_POLICY.md",
       "size": 20811,
-      "sha256_16": "95e579eddf1c160f"
+      "sha256_16": "960e847334cbdfd6"
     },
     {
       "path": "docs/CONCEPT_RENDER.md",
@@ -160,12 +160,12 @@
     {
       "path": "docs/content-audit.json",
       "size": 1491,
-      "sha256_16": "66534fecd1fe06dd"
+      "sha256_16": "5bc59e8f99e8032d"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
       "size": 2163,
-      "sha256_16": "4a61cc3fcd4ea227"
+      "sha256_16": "a51e90efde7746ae"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
@@ -290,7 +290,7 @@
     {
       "path": "installer/manifest.json",
       "size": 36580,
-      "sha256_16": "a62ea0283174ca9d"
+      "sha256_16": "8b2e07e66d683f77"
     },
     {
       "path": "installer/verify_install.py",
@@ -1124,13 +1124,13 @@
     },
     {
       "path": "README.md",
-      "size": 51898,
-      "sha256_16": "eae209bb3238c3ea"
+      "size": 51938,
+      "sha256_16": "0c6e620073073349"
     },
     {
       "path": "README_EN.md",
-      "size": 55645,
-      "sha256_16": "9b4f625e63b085ec"
+      "size": 55703,
+      "sha256_16": "f9b514717765c6b2"
     },
     {
       "path": "requirements.txt",
@@ -1179,8 +1179,8 @@
     },
     {
       "path": "scripts/normalize_attribution.py",
-      "size": 17246,
-      "sha256_16": "2728dedb7de95a95"
+      "size": 17262,
+      "sha256_16": "c85c4c35ff3a3138"
     },
     {
       "path": "scripts/omniarchitect.cmd",

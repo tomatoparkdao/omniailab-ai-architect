@@ -1,11 +1,14 @@
-<h1 align="center">OmniAiLab AI 建筑与室内设计总设计师</h1>
+# OmniAiLab AI 建筑与室内设计总设计师
 
-<p align="center">
-  <b>建筑与室内设计全流程 AI 总设计师 Skill，也是一个在关键节点逼你做判断的设计系统</b><br>
-  八个业务阶段并行 30 项专业能力　｜　从设计任务书到施工图与物料清单　｜　产出可编辑 DXF、三维模型、AI 概念效果图与可编辑 PPTX
-</p>
+**不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。**
 
-<p align="center">
+从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付。
+
+**一个 Skill · 8 大设计阶段 · 30 项专业能力 · 47 种设计风格**
+
+通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
+
+<p>
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
@@ -16,9 +19,8 @@
   <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="兼容 Codex / Claude / Cursor / WorkBuddy">
 </p>
 
-<p align="center">
-  <b>简体中文</b>　｜　<a href="README_EN.md">English</a>
-</p>
+**简体中文**　｜　[English](README_EN.md)
+
 
 > © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 

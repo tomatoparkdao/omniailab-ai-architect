@@ -1,11 +1,14 @@
-<h1 align="center">OmniAiLab AI Architect</h1>
+# OmniAiLab AI Architect
 
-<p align="center">
-  <b>An end-to-end AI chief-designer Skill for architecture and interior design — and a design system that forces a judgement at every key point</b><br>
-  Eight business stages running 30 professional capabilities　｜　From the design brief to construction drawings and material schedules　｜　Produces editable DXF, 3D models, AI concept renderings and editable PPTX
-</p>
+**Not just producing renderings — AI taking part in the whole architecture and interior design process.**
 
-<p align="center">
+From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery.
+
+**One Skill · 8 design stages · 30 professional capabilities · 47 design styles**
+
+Working with the OmniAiLab AI creation platform and professional MCP tools, AI moves from design advice to real design execution.
+
+<p>
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
@@ -16,9 +19,8 @@
   <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="兼容 Codex / Claude / Cursor / WorkBuddy">
 </p>
 
-<p align="center">
-  <a href="README.md">简体中文</a>　｜　<b>English</b>
-</p>
+[简体中文](README.md)　｜　**English**
+
 
 > © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 

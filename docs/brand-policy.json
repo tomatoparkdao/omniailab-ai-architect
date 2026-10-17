@@ -2,7 +2,7 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-17 13:52:10",
+  "scanned_at": "2026-10-17 13:55:08",
   "files_scanned": 228,
   "by_disposition": {
     "authorized-dependency": 30
@@ -71,7 +71,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Codex",
-      "line": 16,
+      "line": 19,
       "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -80,8 +80,8 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Claude",
-      "line": 16,
-      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"",
+      "line": 19,
+      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -89,8 +89,8 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Cursor",
-      "line": 16,
-      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">",
+      "line": 19,
+      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜　[English](",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -98,8 +98,8 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "WorkBuddy",
-      "line": 16,
-      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">   <b>简体中文</b>",
+      "line": 19,
+      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜　[English](README_EN.m",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -107,7 +107,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Codex",
-      "line": 16,
+      "line": 19,
       "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -116,8 +116,8 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Claude",
-      "line": 16,
-      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"",
+      "line": 19,
+      "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](REA",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -125,8 +125,8 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Cursor",
-      "line": 16,
-      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">",
+      "line": 19,
+      "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](README.md)　｜　*",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -134,8 +134,8 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "WorkBuddy",
-      "line": 16,
-      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  <p align=\"center\">   <a href=\"RE",
+      "line": 19,
+      "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](README.md)　｜　**English**",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {

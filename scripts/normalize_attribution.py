@@ -76,8 +76,9 @@ TAIL_FIXED: Dict[str, str] = {
     "操作手册": MANUAL_CN_URL,
 }
 
-# README 是 GitHub 首页：按参考仓库（omniailab-ai-director）的做法**不加 front-matter**，
-# 直接以居中的 HTML 标题开始，避免首页顶部被渲染成一张元数据表。
+# README 是 GitHub 首页：不加 front-matter，直接以标题开始，
+# 避免首页顶部被渲染成一张元数据表。开头整块**左对齐**（不居中），
+# 与正文的阅读起点保持一致。
 NO_FRONTMATTER: Tuple[str, ...] = ("README.md", "README_EN.md")
 
 # 英文 README 用英文页脚署名（与参考仓库做法一致）；其余文件用中文标准署名。
