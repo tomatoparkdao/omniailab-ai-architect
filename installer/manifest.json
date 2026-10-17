@@ -64,8 +64,8 @@
   },
   "issues": [],
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "file_count": 259,
-  "total_bytes": 3233125,
+  "file_count": 258,
+  "total_bytes": 3234449,
   "files": [
     {
       "path": ".gitignore",
@@ -119,8 +119,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size": 37159,
-      "sha256_16": "1cf0a04b6d7c08bb"
+      "size": 40405,
+      "sha256_16": "712c2ff59bcabffd"
     },
     {
       "path": "compatibility/agent-skills.md",
@@ -145,12 +145,12 @@
     {
       "path": "docs/brand-policy.json",
       "size": 41394,
-      "sha256_16": "951ba714c05c3c36"
+      "sha256_16": "b18c942020eeeec0"
     },
     {
       "path": "docs/BRAND_POLICY.md",
       "size": 20811,
-      "sha256_16": "b9cfbf0da631efc3"
+      "sha256_16": "20ba2d655c55d76e"
     },
     {
       "path": "docs/CONCEPT_RENDER.md",
@@ -160,12 +160,12 @@
     {
       "path": "docs/content-audit.json",
       "size": 1491,
-      "sha256_16": "e3db05e63d00b94a"
+      "sha256_16": "49bcbbbe3f8d0c74"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
       "size": 2163,
-      "sha256_16": "c7cbd0befaf3215f"
+      "sha256_16": "bb2c25960b5a1bba"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
@@ -284,8 +284,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 36929,
-      "sha256_16": "d6d5c4592540b1e9"
+      "size": 36492,
+      "sha256_16": "8ab0a9253a7df5c2"
     },
     {
       "path": "installer/verify_install.py",
@@ -608,14 +608,9 @@
       "sha256_16": "1633de4ae5f31bd5"
     },
     {
-      "path": "LICENSES/LICENSE-chrzamz_ui-styles-skill.txt",
-      "size": 1660,
-      "sha256_16": "41b20c22d55d3d96"
-    },
-    {
       "path": "LICENSES/README.md",
-      "size": 2728,
-      "sha256_16": "9b7b280e6292b9da"
+      "size": 2790,
+      "sha256_16": "b061a74d897ce54b"
     },
     {
       "path": "omniarchitect/__init__.py",
@@ -1349,8 +1344,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "size": 6970,
-      "sha256_16": "027d77de2fd8ff66"
+      "size": 7083,
+      "sha256_16": "c47baca445ff34e1"
     },
     {
       "path": "VERSION",

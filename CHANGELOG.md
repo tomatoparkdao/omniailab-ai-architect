@@ -96,12 +96,25 @@ agent_created: true
 | `docs/STYLE_REFERENCE_AUDIT.md` | 五个第三方仓库（其中两个是第三方 Skill）的参考审计全文，含项目名与仓库标识 |
 | `LICENSES/LICENSE-jac2020-2020_architectural-visualization-prompt-library.txt` | 第三方许可证原文；本仓未复用、不分发其任何内容，非法律必需 |
 | `LICENSES/LICENSE-ur-grue_autopunk-media-skills.txt` | 同上 |
+| `LICENSES/LICENSE-chrzamz_ui-styles-skill.txt` | 同上；且其附注含一条指向 `TonnyWong1052/UI-Prompt`（Web 前端 UI 风格提示词库）的外链，与建筑室内设计毫无关系 |
 | `THIRD_PARTY_NOTICES.md`「设计风格系统的参考项目审计」一节 | 改写为「内容来源（全部自有）」声明，不再出现任何第三方项目名与仓库标识 |
 | `installer/manifest.json` 4 条失效记录 | 随上述文件重新生成 |
 
 **并修掉一个真实缺陷**：`normalize_attribution.py` 会往 `LICENSES/LICENSE-*.txt` 上盖本仓署名——
 这会把别人的许可证读成「本仓出具的许可证」，属冒充自研/混淆归属。已加
 `NO_ATTRIBUTION_PREFIXES` 守卫，这类文件一律不加本仓署名。
+
+**修完这一轮后 `LICENSES/` 只剩 `README.md`**——本仓不含任何第三方作品内容，
+也就没有任何需要留档的许可证原文。目录本身保留（策略规则 `licence-completeness`
+要求它存在，用于承接将来真正需要随附的许可证）。
+
+**本机另清掉一份参考 Skill 副本**：`out/ref-director/`（`omniailab-ai-director` 的只读副本，
+7 个文件 314 KB）。删除前已逐字节核对：`SKILL.md` / `README.md` / `README_EN.md` /
+`openai.yaml` / `VERSION` 与上游 `main` 完全一致，`ref-camera.md` 与
+`ref-onboarding.md` 分别是上游 `references/CAMERA-LIGHT SKILL.md` 与
+`references/ONBOARDING SKILL.md` 的原样改名。**无任何本地独有内容**；
+该目录位于 gitignore 的 `out/` 内，从未进入仓库历史，需要时从上游仓库重拉即可。
+链路核查：全仓 0 处引用、installer 打包 259 个文件不含它、`out/` 完全未被 git 跟踪。
 
 **保留项**（真实依赖，不属于「不必要的第三方内容」）：可选 Python 库
 （ezdxf / Pillow / python-pptx / jsonschema / shapely / pytest）与用户自备的本地专业工具
