@@ -100,6 +100,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
 | 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
 | **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
+| **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** | 项目刚起步、需求还没成形时先读它（三种情形 / 访谈 / 可行性 / 设计机会） |
 | 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
@@ -132,8 +133,6 @@ python -m omniarchitect manual --read --section "避坑"  # 离线读手册正�
 **不要凭印象回答手册里写清楚的事。** 拿不准时宁可先 `manual --read --section` 读一遍，
 再把手册结论转述给用户，也不要自己编一套说法。
 
-知识库支持渐进式加载，避免一次拉全 2700 行：
-
 ```bash
 python -m omniarchitect knowledge --resolve "客厅采光不足，想做开放式" --stage S3
 python -m omniarchitect knowledge --domain lighting-design --outline
@@ -144,8 +143,8 @@ python -m omniarchitect knowledge --domain lighting-design --section "数值与�
 
 ## 4b. 平面确认后的概念效果图（G3 门禁后置动作）
 
-平面一通过 **G3**，系统立即以该平面为依据生成**概念效果图**，供业主建立空间感受。
-这是**门禁后置动作**，不是独立阶段：它没有自己的门禁，也不允许在平面确认之前发生。
+平面一通过 **G3**，系统立即以该平面为依据生成**概念效果图**供业主建立空间感受。
+这是**门禁后置动作**，不是独立阶段：没有自己的门禁，也不允许在平面确认之前发生。
 
 - 平台：**OmniAiLab 画布（canvas）**；
 - 推荐模型：**OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）；
@@ -213,6 +212,7 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 
 ```bash
 python -m omniarchitect demo --out out              # 生成示例并跑通全流程
+python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大平层"  # S1 智能启动
 python -m omniarchitect status  --project <dir>      # 阶段状态
 python -m omniarchitect route   --project <dir> "帮我出施工图"
 python -m omniarchitect run     --project <dir> --all --assume-approval

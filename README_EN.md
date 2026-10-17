@@ -521,6 +521,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 |---|---|---|
 | **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
+| **How S1 starts (one sentence is enough)** | [docs/S1_INTAKE.md](docs/S1_INTAKE.md) | Three entry situations, per-type interview, five confidence states, five feasibility checks, design opportunities and the G1 baseline |
 | How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entry / sub-capabilities / execution layer / canonical spatial model |
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
 | How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | Contract fields, credential location, three steps, creative-exclusivity rules |

@@ -435,6 +435,10 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_reference)
 
+    from .intake.cli import add_parser as _add_intake
+
+    _add_intake(sub)
+
     sp = sub.add_parser("stages", help="打印八阶段模型")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_stages)

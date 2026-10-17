@@ -64,6 +64,8 @@ REQUIRED_PATHS = [
     "docs/BRAND_POLICY.md", "docs/CONCEPT_RENDER.md",
     "docs/REFERENCE_SOURCES.md", "docs/VIDEO_PRODUCTION.md",
     "omniarchitect/reference.py",
+    "docs/S1_INTAKE.md", "omniarchitect/intake/__init__.py",
+    "schemas/intake.schema.json",
     "docs/MCP_TOOLS.md", "docs/INSTALL.md", "docs/PRESENTATION.md",
     "scripts/run_tests.py",
     "scripts/normalize_attribution.py",

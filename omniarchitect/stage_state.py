@@ -100,6 +100,16 @@ def can_start(project: Project, stage_id: str) -> Tuple[bool, str]:
     if current.status == CONFIRMED:
         return False, f"{stage_name(stage_id)} 已确认；如需修改请走变更影响分析"
 
+    # S1 intake precision: a project with no geometry at all cannot produce
+    # dimension-dependent output. Checked before the upstream-stage rule, because
+    # "the information cannot support this stage" is the more fundamental answer.
+    intake = (project.meta or {}).get("intake") or {}
+    if intake.get("precision") == "diagnostic" and stage_id in ("S4", "S5", "S7"):
+        return False, (
+            "资料仅支持诊断级：没有可用几何与尺寸依据，"
+            "本阶段成果无法成立。请先补充图纸或实测数据"
+        )
+
     missing = [s for s in REQUIRES_CONFIRMED.get(stage_id, []) if not confirmed(project, s)]
     if missing:
         labels = "、".join(stage_name(m) for m in missing)

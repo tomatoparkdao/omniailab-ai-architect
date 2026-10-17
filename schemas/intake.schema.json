@@ -1,0 +1,140 @@
+{
+  "$comment": "© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "S1 intelligent intake state",
+  "description": "Persisted at project.meta.intake. Describes how the brief was built: which project type drove the interview, which of the three entry situations applied, every answer, every registered source, every unresolved claim, and the baseline that G1 signed. Extended, not replaced, by later revisions.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "profile_id": {
+      "description": "Project-type profile that decided the question set.",
+      "enum": ["residential", "office", "hospitality", "retail", "exhibition", "architecture"]
+    },
+    "start_mode": {
+      "description": "Which entry situation S1 was started from.",
+      "enum": ["words_only", "with_assets", "complete"]
+    },
+    "precision": {
+      "description": "Deepest output the collected information can honestly support.",
+      "enum": ["diagnostic", "schematic", "authoritative_capable"]
+    },
+    "completeness": {
+      "type": "object",
+      "description": "Slot-coverage snapshot at the time it was last computed.",
+      "additionalProperties": true,
+      "properties": {
+        "ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "verdict": { "enum": ["thin", "working", "complete"] }
+      }
+    },
+    "interview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": { "type": "string" },
+        "start_mode": { "type": "string" },
+        "started_at": { "type": "string" },
+        "updated_at": { "type": "string" },
+        "rounds": { "type": "integer", "minimum": 0 },
+        "note": { "type": "string" },
+        "asked": {
+          "description": "question id -> ISO timestamp when it was handed to the client.",
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "answers": {
+          "description": "question id -> answer record. One slot is answered once.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["question_id", "value", "state"],
+            "properties": {
+              "question_id": { "type": "string" },
+              "value": { "type": "string" },
+              "state": {
+                "description": "answered: client said something. unknown: client said they do not know. deferred: can wait. assumed: system filled it to keep going — always reported.",
+                "enum": ["answered", "unknown", "deferred", "assumed"]
+              },
+              "at": { "type": "string" },
+              "revision": { "type": "integer", "minimum": 0 },
+              "source": { "enum": ["user", "text", "profile", "document"] },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "description": "Registered input documents and observations.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": {
+            "enum": ["cad", "pdf", "image", "scan", "photo", "task_doc", "measure", "note"]
+          },
+          "file": { "type": "string" },
+          "revision": { "type": "string" },
+          "obtained_at": { "type": "string" },
+          "confidence": {
+            "enum": ["verified", "documented", "inferred", "unknown", "conflicting"]
+          },
+          "confidence_label": { "type": "string" },
+          "verified_by": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "array",
+      "description": "Open claims with an explicit blocking scope.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "topic", "statement", "state"],
+        "properties": {
+          "id": { "type": "string" },
+          "topic": {
+            "description": "Decides what an unresolved item invalidates.",
+            "enum": ["structural", "dimension", "regulatory", "budget", "aesthetic",
+                     "scope", "services"]
+          },
+          "statement": { "type": "string" },
+          "state": {
+            "enum": ["verified", "documented", "inferred", "unknown", "conflicting"]
+          },
+          "state_label": { "type": "string" },
+          "sources": { "type": "array", "items": { "type": "string" } },
+          "affects": { "type": "string" },
+          "blocks_stages": {
+            "type": "array",
+            "items": { "enum": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"] }
+          },
+          "action_needed": { "type": "string" },
+          "needs_human": { "type": "boolean" },
+          "owner": { "type": "string" },
+          "open": { "type": "boolean" }
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "description": "What G1 signed. Never overwritten by an edit; a change is detected by digest mismatch.",
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "integer", "minimum": 0 },
+        "digest": { "type": "string" },
+        "confirmed_at": { "type": "string" },
+        "confirmed_by": { "type": "string" },
+        "precision": { "type": "string" },
+        "completeness": { "type": "number" },
+        "forced": { "type": "boolean" },
+        "summary_path": { "type": "string" }
+      }
+    }
+  }
+}

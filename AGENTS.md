@@ -203,6 +203,7 @@ python -m omniarchitect concept-render      :: 平面确认后的概念效果图
 python -m omniarchitect canvas-models       :: 画布模型声明与选择规则
 python -m omniarchitect criteria            :: 设计判据体系（自有口径）
 python -m omniarchitect audit               :: 内容合规自检（署名 / 隐私 / 外链 / 许可）
+python -m omniarchitect intake --project <dir> --action start --text "..."  # S1 智能启动
 python -m omniarchitect demo --out out        :: 示例项目跑通全部八阶段
 python -m omniarchitect status  --project projects/demo-120
 python -m omniarchitect route   --project projects/demo-120 "出施工图"

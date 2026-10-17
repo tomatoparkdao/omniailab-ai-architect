@@ -316,6 +316,79 @@ front-matter 的「操作手册」字段由 `normalize_attribution.py` 从这两
    `.pytest_cache/`——**跑过一次 pytest 就必然失败**（pytest 会在里面写一个没有本仓署名的
    `README.md`）。已抽出统一的 `SCAN_SKIP_PREFIXES` 供多处复用。
 
+### S1 专业智能化升级：从被动生成任务书到主动项目启动
+
+**升级前**：S1 只做一件半事——把已有的 `program` 与 `constraints` 拼成 `design-brief.md` 与
+`site-report.md`。进入条件写的是「需求、场地、原始图纸已收集」，真实项目根本满足不了；
+整个阶段没有提问机制，也不记录「哪条是推断、哪条没核实」。业主只给一句话时，系统只能干等
+或拿模板填满。
+
+**升级后**：S1 成为真正的启动过程。代码在 `omniarchitect/intake/`（9 个模块），
+全部规则驱动、可测、可复现，不依赖任何模型调用。
+
+| 能力 | 落点 | 关键行为 |
+|---|---|---|
+| 三种启动情形 | `interview.detect_start_mode` | 一句话 / 有资料 / 资料齐，决定先问还是先读 |
+| 按类型的动态访谈 | `profiles.py` + `interview.py` | 6 类项目 11–19 问；同槽不重问、依赖门控、每轮 ≤3 问 |
+| 首句信息提取 | `interview.seed_from_text` | 面积 / 城市 / 人数 / 风格自动记下，标注「待 G1 确认」 |
+| 使用行为矩阵 | `needs.py` | 记活动而非房间；11 条活动线索；每行带来源与状态 |
+| 资料尽职调查 | `diligence.py` | 五态置信度 + 按影响面阻断，不是一律阻断 |
+| 五类可行性 | `feasibility.py` | 面积 / 行为 / 预算 / 周期 / 技术，逐条带证据与备选 |
+| 设计机会 | `opportunities.py` | 9 字段；只输出有证据的项，不足 3 项就少于 3 项 |
+| S1 成果包 | `report.py` | 8 份，绑定 id + revision 并登记 artifact |
+| G1 基准 | `gate.py` | 三决策映射既有状态机 + 基准摘要比对 |
+
+**S1 进入条件已改（代码 + 文档 + 门禁 + 测试同步）**：
+
+- 旧：`需求、场地、原始图纸已收集` / `预算区间与目标入住时间已知`
+- 新：`业主提出项目想法、初步需求或已上传资料即可启动（不必先集齐全部资料）` +
+  `资料完整度决定本轮可产出的精度：缺尺寸不出依赖尺寸的权威成果，缺结构不批准结构改造`
+- 新增精度三级 `diagnostic / schematic / authoritative_capable`，`diagnostic` 的项目在
+  `stage_state.can_start` 里被拒绝进入 S4/S5/S7，理由写明「资料仅支持诊断级」
+
+**阻断范围按影响面定**（这是本轮最重要的判断）：结构未证实 → 挡 S4 且不批准拆改；
+尺寸未证实 → 挡 S3（平面要在真实尺寸上成立）；报批未确认 → 挡 S7；
+预算与审美 → 不阻断，只降级为区间与假设。`conflicting` 比空白更危险，额外挡 S2 要求先澄清。
+
+**G1 不再是一个按钮**：`approved / revision_requested / blocked` 映射到既有的
+`confirmed / rework / blocked`，不另造状态机。存在阻断级可行性问题时 `approved` 会被
+自动降级为 `blocked`，确实要过必须显式 `force` 并在基准里记 `forced: true`。
+确认时记录 `baseline_digest`（program + constraints + answers + 假设 + 不确定项 id），
+之后任何改动都会让摘要不一致，`check_baseline()` 返回 `requires_change_analysis = true`，
+**原确认版保留，不静默覆盖**。
+
+**新增数据模型**：`schemas/intake.schema.json`（`project.meta.intake`，含 profile / start_mode /
+precision / interview.answers / sources / uncertainty / baseline）。已用 jsonschema 实测校验通过。
+
+**新增 CLI**：`python -m omniarchitect intake --action start|ask|answer|register|status|analyze|gate`，
+`--json` 全可用，逻辑全在包内，CLI 只做加载—调用—保存。
+
+**开发中修掉的三个真实问题**（都不是「跑通就行」）：
+
+1. 首句说了「150㎡ 在杭州，一家三口」，系统仍重复问面积与人数——补了 `seed_from_text`
+   与中文数字解析（`三` → 3），完整度从 4% 直接到 46%；
+2. 业主答「结构不清楚」没有进入不确定登记，尽职调查形同空转——补了问答→登记联动
+   （`_UNCERTAINTY_FROM_ANSWER` 与 `_evidence_state`），五态映射刻意悲观：
+   「有图纸」记 documented、「只有拍照」记 inferred；
+3. 预算答案写「硬装 80 万」却没被解析，可行性一直报「预算未定」——补了 `_budget_from_text`，
+   现在能算出 `5,333 元/m²` 并落在参考区间内。
+
+**限制（如实列出，未做的不假装做了）**：
+
+- 访谈是规则驱动，不理解语义歧义；业主表述绕时需要人工介入改写答案；
+- 使用行为矩阵的活动识别基于关键词，未命中时保留原句并标 `inferred`；
+- 五类可行性只看已有数据，几何为空时只报「需核实」不给结论；
+- 造价参考区间是规划口径，不是当地报价，也不替代造价咨询；
+- 结构、消防、无障碍、法规符合性仍须持证专业人员复核签署。
+
+**验证**：
+
+- `run_tests.py` 377 passed / 0 failed（23 模块，新增 `test_intake.py` 21 项）
+- `verify_all.py` 九段全通过
+- `schemas/intake.schema.json` 用 jsonschema 对实际 `project.meta.intake` 校验通过
+- `audit` 内容 0 / 策略 0；`policy` 待处理 0；`check_tables` 91 文件 0 违规
+- 端到端实测：一句话需求 → 访谈 6 轮 → 成果包 8 份 → G1 自动因结构未证实降级为 `blocked`
+
 ---
 
 ## v1.3.0 · 后续补充三 — 全盘检查：能力说明补齐、安装引导对齐参考、示例库扩充
