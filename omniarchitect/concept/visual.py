@@ -125,24 +125,41 @@ def build_jobs(concept: Dict[str, Any], ctx: Any, project: Project,
 
 
 def _params(job: Dict[str, Any], project: Project) -> Dict[str, Any]:
+    """请求参数：参考图、阶段、目标、能力域、修订号都要真的传下去。
+
+    旧版本这里固定 `workflow=concept`、`stage=S2`，也不带 `references`——
+    也就是说 `drawing-visuals.json` 里的 SVG/PNG 从来没进过模型请求。
+    现在按任务自己的来源取值，并把参考图路径交给 provider 按契约装载。
+    """
     p = job.get("prompt") or {}
     positive = (p.get("positive") or {}).get("zh") or ""
     negative = "；".join((p.get("negative") or {}).get("zh") or [])
+    refs = [str(x) for x in (job.get("references") or []) if str(x).strip()]
+    target = str(job.get("target", ""))
+    if job.get("text_overlay") and "文字" not in negative:
+        negative += "；画面内不得出现任何文字、数字、尺寸标注"
     return {
         "prompt": positive,
         "negative_prompt": negative,
         "aspect_ratio": "16:10",
         "style_ids": list(job.get("style_ids") or []),
         "consistency_key": job.get("consistency_key", ""),
-        "workflow": "concept",
-        "stage": "S2",
-        "target": job.get("target", ""),
+        "workflow": str(job.get("workflow")
+                        or ("drawing" if job.get("family") else "concept")),
+        "stage": str(job.get("stage") or p.get("stage") or "S2"),
+        "target": target,
         "scope": job.get("scope", "image_generation"),
         "job_kind": job.get("kind", ""),
         "label": job.get("label", ""),
         "units": 1,
         "project_id": project.project_id,
         "revision": project.revision,
+        # 参考图必须随请求下发；具体怎么装（base64/url/asset_id/multipart）
+        # 由平台契约声明，provider 不猜。
+        "references": refs,
+        "reference_count": len(refs),
+        "plan_confirmed": bool((p.get("gate") or {}).get("plan_confirmed")),
+        "requires_geometry_review": bool(refs),
     }
 
 
@@ -366,6 +383,23 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             res.deferred += 1
             continue
 
+        # -- 2b. 参考图与修订号 -------------------------------------------------
+        refs = [str(x) for x in (job.get("references") or []) if str(x).strip()]
+        if refs:
+            job_rev = int(job.get("revision") or project.revision)
+            if job_rev != project.revision:
+                job["status"] = "blocked_stale_reference"
+                job["reason"] = (f"参考图来自 r{job_rev}，当前模型已到 r{project.revision}："
+                                 "平面变了，参考图必须重出，不能拿旧图生成")
+                res.held += 1
+                continue
+            missing = [r for r in refs if not Path(r).is_file()]
+            if missing:
+                job["status"] = "blocked_stale_reference"
+                job["reason"] = "参考图文件不存在：" + "、".join(Path(m).name for m in missing)
+                res.held += 1
+                continue
+
         # -- 3. 费用可知 -------------------------------------------------
         # 能力域先定下来：计价按"这张图属于哪类活儿"查，不按默认值查。
         scope = str(job.get("scope") or "image_generation")
@@ -477,6 +511,17 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
                 entry["links"] = [l.to_dict() for l in links]
                 entry["artifacts"] = art_ids
                 _advance(entry, "project_linked", artifacts=len(art_ids))
+                if refs:
+                    # 提示词只说明"应该一致"，不能证明"确实一致"。
+                    entry["geometry_review"] = {
+                        "required": True, "status": "pending",
+                        "reference_revision": project.revision,
+                        "checks": ["把生成图与参考图叠合，逐间核对房间数量与隔墙",
+                                   "核对门窗洞口位置与开启方向",
+                                   "核对固定家具是否穿过墙体",
+                                   "尺寸与文字标注须由矢量图纸叠加，不得沿用图中字样"],
+                        "note": "未完成几何对照前，资产状态保持 needs_review，不得作为交付依据",
+                    }
                 job["asset_ids"] = art_ids
                 job["state"] = "project_linked"
             else:
@@ -580,6 +625,30 @@ def write_package(res: VisualResult, concept_set: Dict[str, Any],
 
 def project_id_of(concept_set: Dict[str, Any]) -> str:
     return str(concept_set.get("project_id") or "")
+
+
+def record_geometry_review(out_dir: str | Path, job_key: str, *,
+                           reviewer: str, passed: bool, note: str = "") -> Dict[str, Any]:
+    """人工几何对照的落点：谁看的、看了哪几项、结论。
+
+    不调用它，`geometry_review.status` 一直是 pending——也就是说资产可以存在，
+    但不能被当成"几何已核对"的交付物。
+    """
+    path = Path(out_dir) / LEDGER_NAME
+    ledger = load_ledger(path)
+    entry = (ledger.get("entries") or {}).get(job_key)
+    if entry is None:
+        raise KeyError(f"台账里没有 {job_key}")
+    entry["geometry_review"] = {
+        **(entry.get("geometry_review") or {}),
+        "required": True,
+        "status": "passed" if passed else "rejected",
+        "reviewer": reviewer,
+        "note": note,
+        "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+    _save_ledger(path, ledger)
+    return entry["geometry_review"]
 
 
 # --------------------------------------------------------------------------
@@ -807,6 +876,8 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
             "target": target,
             "label": recipe.name_zh,
             "family": recipe.family,
+            "workflow": "drawing",
+            "stage": stage,
             "scope": recipe.scope,
             "status": "awaiting_authorization",
             "reason": "平面已确认、数据齐全；提交属联网计费操作，需显式授权",
@@ -873,4 +944,5 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
 
 __all__ = ["build_jobs", "submit", "write_package", "VisualResult", "STATUS_LABEL",
            "load_ledger", "LEDGER_NAME", "build_plan_visuals", "PLAN_TARGETS",
-           "resume_pending", "STATE_ORDER", "REQUIRED_DATA"]
+           "resume_pending", "STATE_ORDER", "REQUIRED_DATA",
+           "record_geometry_review"]

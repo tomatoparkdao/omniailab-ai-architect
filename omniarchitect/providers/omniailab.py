@@ -402,6 +402,120 @@ class OmniAiLabProvider(MediaProvider):
         return round(per_unit * units, 4)
 
     # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # 参考图：怎么传给平台由契约说了算
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _reference_spec(contract: Dict[str, Any]) -> Dict[str, Any]:
+        spec = contract.get("references") or {}
+        return {
+            "mode": str(spec.get("mode") or "").strip().lower(),
+            "field": str(spec.get("field") or "references"),
+            "accepted_formats": [str(x).lower().lstrip(".")
+                                 for x in (spec.get("accepted_formats") or [])],
+            "max_bytes": int(spec.get("max_bytes") or 0),
+        }
+
+    @staticmethod
+    def load_reference(path: str | Path, spec: Dict[str, Any]) -> Dict[str, Any]:
+        """读一张参考图并自证：存在、格式被接受、没超限、字节完整。"""
+        import base64
+        import hashlib
+
+        p = Path(path)
+        if not p.exists():
+            raise ProviderError(f"参考图不存在：{p}")
+        raw = p.read_bytes()
+        fmt = p.suffix.lower().lstrip(".")
+        accepted = spec.get("accepted_formats") or []
+        if not accepted:
+            raise ProviderError(
+                "契约未声明 references.accepted_formats：不默认任何模型支持该格式，"
+                "请由平台在契约里写明可接收的参考图格式（如 png/jpg）")
+        if fmt not in accepted:
+            raise ProviderError(
+                f"契约只接受 {accepted}，参考图 {p.name} 是 {fmt}")
+        if spec.get("max_bytes") and len(raw) > int(spec["max_bytes"]):
+            raise ProviderError(
+                f"参考图 {p.name} 为 {len(raw)} 字节，超过契约上限 {spec['max_bytes']}")
+        if fmt == "png" and not raw.startswith(b"\x89PNG\r\n\x1a\n"):
+            raise ProviderError(f"参考图 {p.name} 扩展名是 png 但内容不是 PNG")
+        if fmt == "svg":
+            import xml.etree.ElementTree as ET
+
+            try:
+                ET.fromstring(raw.decode("utf-8"))
+            except Exception as exc:  # noqa: BLE001
+                raise ProviderError(f"参考图 {p.name} 不是可解析的 SVG：{exc}") from exc
+        mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
+                "webp": "image/webp", "svg": "image/svg+xml"}.get(fmt, "application/octet-stream")
+        return {
+            "name": p.name, "format": fmt, "mime": mime, "bytes": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "raw": raw, "b64": base64.b64encode(raw).decode("ascii"),
+        }
+
+    def _attach_references(self, body: Dict[str, Any], params: Dict[str, Any],
+                           contract: Dict[str, Any], key: str,
+                           cfg: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """把参考图装进请求。返回 multipart 描述（None 表示仍走 JSON）。"""
+        refs = [str(x) for x in (params.get("references") or []) if str(x).strip()]
+        if not refs:
+            return None
+        spec = self._reference_spec(contract)
+        mode = spec["mode"]
+        if mode not in ("base64", "url", "asset_id", "multipart"):
+            raise ProviderError(
+                "契约未声明可用的 references.mode（base64 / url / asset_id / multipart）："
+                "不猜测参考图字段，任务保持未提交")
+
+        loaded = [self.load_reference(r, spec) for r in refs]
+        meta = [{k: v for k, v in item.items() if k not in ("raw", "b64")} for item in loaded]
+        # 本地路径本身不发出去：只发内容或平台侧的资产 ID
+        body["params"].pop("references", None)
+        body["params"]["reference_meta"] = meta
+        body["params"]["reference_count"] = len(loaded)
+
+        field = spec["field"]
+        if mode == "base64":
+            body[field] = [{"name": i["name"], "mime": i["mime"], "data": i["b64"]}
+                           for i in loaded]
+            return None
+        if mode == "url":
+            # url 模式要求参考图本身就是平台可访问地址；本地文件必须先上传
+            remote = [r for r in refs if r.startswith(("http://", "https://"))]
+            if len(remote) != len(refs):
+                raise ProviderError(
+                    f"契约 references.mode=url，但 {len(refs) - len(remote)} 个参考图是本地文件；"
+                    "需平台提供上传端点或改用 base64/multipart")
+            body[field] = remote
+            return None
+        if mode == "asset_id":
+            upload = str((contract.get("endpoints") or {}).get("upload") or "")
+            if not upload:
+                raise ProviderError(
+                    "契约 references.mode=asset_id 但未声明 endpoints.upload：无法上传参考图")
+            ids = []
+            for item in loaded:
+                got = self._upload_reference(upload, item, contract, key, cfg)
+                ids.append(got)
+            body[field] = ids
+            return None
+        return {"fields": body, "files": loaded, "field": field}
+
+    def _upload_reference(self, endpoint: str, item: Dict[str, Any],
+                          contract: Dict[str, Any], key: str,
+                          cfg: Dict[str, Any]) -> str:
+        payload = self._post_multipart(
+            endpoint,
+            {"filename": item["name"], "mime": item["mime"]},
+            [(item["name"], item["raw"], item["mime"])],
+            contract, key, cfg)
+        asset_id = str(payload.get("asset_id") or payload.get("id") or "")
+        if not asset_id:
+            raise ProviderError("上传参考图后平台未返回 asset_id")
+        return asset_id
+
     def submit(self, operation: str, params: Dict[str, Any]) -> ProviderJob:
         # 品牌与供应商策略：创作能力域只有原生平台可以承担。这一句是运行时裁决，
         # 不依赖调用方是否读过文档。
@@ -431,7 +545,18 @@ class OmniAiLabProvider(MediaProvider):
         if idem and str(contract.get("idempotency") or "") == "body":
             body["idempotency_key"] = idem
         try:
-            payload = self._post(endpoint, body, contract, key, cfg, extra_headers=extra)
+            multipart = self._attach_references(body, params, contract, key, cfg)
+            if multipart:
+                payload = self._post_multipart(
+                    endpoint, {k: v for k, v in multipart["fields"].items()
+                               if not isinstance(v, (dict, list))},
+                    [(f["name"], f["raw"], f["mime"]) for f in multipart["files"]],
+                    contract, key, cfg, extra_headers=extra,
+                    json_fields={k: v for k, v in multipart["fields"].items()
+                                 if isinstance(v, (dict, list))})
+            else:
+                payload = self._post(endpoint, body, contract, key, cfg,
+                                     extra_headers=extra)
         except ProviderError as exc:
             msg = str(exc)
             # 4xx：平台明确拒收，没有建任务，可以安全放弃/换路径
@@ -492,6 +617,55 @@ class OmniAiLabProvider(MediaProvider):
         return saved
 
     # ------------------------------------------------------------------
+    def _post_multipart(self, endpoint: str, fields: Dict[str, Any],
+                        files: Sequence[tuple], contract: Dict[str, Any],
+                        key: str, cfg: Dict[str, Any], method: str = "POST",
+                        extra_headers: Optional[Dict[str, str]] = None,
+                        json_fields: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """multipart/form-data 提交（参考图走文件体，其余字段走表单）。"""
+        import uuid
+
+        base = str(contract.get("base_url") or "").rstrip("/")
+        if not endpoint:
+            raise ProviderError("契约未声明该端点——拒绝调用未知 URL")
+        url = endpoint if endpoint.startswith("http") else f"{base}/{endpoint.lstrip('/')}"
+        if str(contract.get("auth")) == "query-token":
+            sep = "&" if "?" in url else "?"
+            url = f"{url}{sep}token={key}"
+        boundary = "----omniailab" + uuid.uuid4().hex
+        chunks: List[bytes] = []
+        for name, value in (fields or {}).items():
+            chunks.append(f"--{boundary}\r\n".encode())
+            chunks.append(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode())
+            chunks.append(str(value).encode("utf-8") + b"\r\n")
+        for name, value in (json_fields or {}).items():
+            chunks.append(f"--{boundary}\r\n".encode())
+            chunks.append(f'Content-Disposition: form-data; name="{name}"\r\n'.encode())
+            chunks.append(b"Content-Type: application/json\r\n\r\n")
+            chunks.append(json.dumps(value, ensure_ascii=False).encode("utf-8") + b"\r\n")
+        for filename, raw, mime in files:
+            chunks.append(f"--{boundary}\r\n".encode())
+            chunks.append(
+                f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'.encode())
+            chunks.append(f"Content-Type: {mime}\r\n\r\n".encode())
+            chunks.append(raw + b"\r\n")
+        chunks.append(f"--{boundary}--\r\n".encode())
+        data = b"".join(chunks)
+
+        headers = {"Content-Type": f"multipart/form-data; boundary={boundary}",
+                   "Accept": "application/json"}
+        headers.update(self._auth_headers(contract, key))
+        if extra_headers:
+            headers.update({k: v for k, v in extra_headers.items() if v})
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:  # noqa: S310
+                return json.loads(resp.read().decode("utf-8") or "{}")
+        except urllib.error.HTTPError as exc:
+            raise ProviderError(f"{method} {url} -> HTTP {exc.code}: {exc.reason}")
+        except Exception as exc:
+            raise ProviderError(f"{method} {url} 失败：{type(exc).__name__}: {exc}")
+
     def _post(self, endpoint: str, body: Dict[str, Any], contract: Dict[str, Any],
               key: str, cfg: Dict[str, Any], method: str = "POST",
               extra_headers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:

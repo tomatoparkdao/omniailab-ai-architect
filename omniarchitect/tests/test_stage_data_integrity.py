@@ -54,7 +54,9 @@ def _office(tmp: Path) -> Project:
     answer_question(p, "off.meeting", "每天 3-5 场，客户来访多")
     answer_question(p, "off.visitor", "访客不少，但不进工位区")
     answer_question(p, "base.needs", "专注工作要安静；客户来了要有体面的前场")
-    decide_g1(p, "approved", by="业主")
+    # 60 人挤进 131㎡：G1 会先拦下，业主书面接受"减少常驻人数"后才继续
+    decide_g1(p, "approved", by="业主", acknowledge=["F-CAP-01"],
+              note="业主接受：先按 40 人常驻设计，其余轮用")
     return p
 
 

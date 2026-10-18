@@ -305,6 +305,31 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
             conflicts.append({"id": "H-FUNCTION", "severity": "minor",
                               "detail": f"概念要求「{head}」相邻，但平面中未找到 {missing}"})
 
+    # 4b. 办公容量：这张平面自己能不能坐得下这些人
+    #     G1 的书面接受不等于平面成立；这里按实际开放办公面积重算一次。
+    try:
+        from ..finishes import project_profile
+        from ..intake.feasibility import _headcount
+
+        if project_profile(project) == "office":
+            head = _headcount(project)
+            # 按整套可用面积算人均（含会议/接待/交通），不是只算工位区
+            usable = sum(float(sp.area_m2 or 0) for sp in scheme.spaces
+                         if sp.use != "envelope")
+            if head and usable:
+                per = usable / head
+                ok = per >= 4.0
+                checks.append({"check": "人均可用面积", "ok": ok,
+                               "detail": f"{usable:.1f}㎡ / {head} 人 = {per:.1f}㎡/人"})
+                if not ok:
+                    conflicts.append({
+                        "id": "H-CAPACITY", "severity": "major",
+                        "detail": (f"人均仅 {per:.1f}㎡：这一版平面装不下 {head} 人，"
+                                   "须减少常驻人数或改轮用工位"),
+                    })
+    except Exception:
+        pass
+
     # 5. 隔离要求：访客动线不得穿越私密区（用走廊是否贴着私密房间的间接证据不足，
     #    这里只做"私密区是否有独立门禁位置"的可判定检查）
 
@@ -415,7 +440,9 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
             })
         # 只有"确实有一个已确认概念"时，"平面没实现它"才是独立问题；
         # 完全没有概念的情况已经由 G3-NO-CONCEPT-BASELINE 报过，不重复指责。
-        if rec.get("implements_concept") is False and rec.get("concept_id"):
+        if (rec.get("implements_concept") is False and rec.get("concept_id")
+                and any(c["id"] == "H-STRATEGY-UNSUPPORTED"
+                        for c in (rec.get("conflicts") or []))):
             blockers.append({
                 "id": "G3-PROTOTYPE-UNSUPPORTED",
                 "text": "所选概念的空间原型没有对应的平面策略：本轮平面是通用策略的近似结果，"

@@ -167,6 +167,39 @@ def assess_gate(project: Project) -> GateAssessment:
         a.blockers.append(_risk(
             "G2-UNKNOWN-CONCEPT", f"选定的 {a.selected} 不在本批方案中"))
 
+    # S1 的可行性结论必须进入 G2 依据：面积口径、容量、会议位
+    from ..intake.feasibility import run_feasibility
+
+    feas = run_feasibility(project)
+    # G1 时业主书面接受过的限制，到 G2 不再重复阻断，但必须继续写在条件里
+    _raw = ((project.meta or {}).get("intake") or {}).get("baseline") or {}
+    acked = {str(x) for x in (_raw.get("acknowledged") or [])}
+    for c in feas.get("conflicts") or []:
+        if c["category"] not in ("area", "capacity"):
+            continue
+        if c["severity"] not in ("blocker", "major"):
+            continue
+        if c["id"] in acked:
+            a.condition_items.append({
+                "id": f"G2-ACKED-{c['id']}",
+                "text": f"业主已在 G1 书面接受：{c['problem']}（{c['evidence']}）",
+                "source": "S1 可行性 · 已接受",
+            })
+            continue
+        if c["severity"] == "blocker":
+            a.blockers.append(_risk(
+                f"G2-FEAS-{c['id']}",
+                f"{c['problem']}：概念不能建立在明显装不下的前提上，"
+                "先解决容量或面积口径",
+                SOFT if c.get("needs_human") is False else HARD,
+            ))
+        else:
+            a.condition_items.append({
+                "id": f"G2-COND-{c['id']}",
+                "text": f"{c['problem']}（{c['evidence']}）",
+                "source": "S1 可行性",
+            })
+
     a.pre_gate = bool(options.get("pre_gate"))
     if a.pre_gate:
         a.blockers.append(_risk(

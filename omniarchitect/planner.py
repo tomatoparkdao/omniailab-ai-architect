@@ -136,6 +136,8 @@ class SchemeOptions:
     window_sill_mm: float = 900.0
     wall_height_mm: float = 2800.0
     furnish: bool = True
+    #: 办公策略用：把会议/接待带换到另一侧，用来生成第二套可比方案
+    flip: bool = False
 
     @classmethod
     def from_dict(cls, d: Dict[str, object], variant: str = "A") -> "SchemeOptions":
@@ -447,6 +449,8 @@ class PlanGenerator:
             return self._band_day_night(core, specs, opts)
         if opts.strategy == "spine_centre":
             return self._spine_centre(core, specs, opts)
+        if opts.strategy == "office_cluster":
+            return self._office_cluster(core, specs, opts)
         raise ModelError(f"unknown strategy '{opts.strategy}'")
 
     def _band_day_night(self, core: Rect, specs: List[RoomSpec],
@@ -503,6 +507,104 @@ class PlanGenerator:
             )
             zones.update(n_placed)
             self._deviations.update(n_dev)
+        return zones
+
+    def _office_cluster(self, core: Rect, specs: List[RoomSpec],
+                        opts: SchemeOptions) -> Dict[str, Rect]:
+        """办公布局：前场接待/会议带 → 主通道 → 开放办公 + 专注/服务后场。
+
+        与住宅的 band / spine 是**不同算法**，不是把 office 房间塞进住宅带：
+        * 会议与接待共用一条前场带（访客动线止于通道，不进工位区）；
+        * 开放办公是**一整块**连续空间，不切小间——办公的价值在连续可用面宽；
+        * 专注间与服务靠后场竖排，形成声环境上的"硬边"；
+        * 两套方案靠 `flip` 把前场带与后场列换到另一侧，其余参数不变。
+        """
+        x0, y0, x1, y1 = core
+        W, H = x1 - x0, y1 - y0
+        entry = [s for s in specs if s.zone == "entry"]
+        meeting = [s for s in specs if s.recipe in ("meeting", "boardroom")]
+        focus = [s for s in specs if s.recipe in ("focus", "phone_booth")]
+        svc = [s for s in specs if s.zone == "service"]
+        claimed = {s.key for s in entry + meeting + focus + svc}
+        open_specs = [s for s in specs if s.key not in claimed]
+        self._deviations = {}
+        self._overrun = 0.0
+        self._residual = 0.0
+
+        corr = max(1100.0, float(opts.corridor_width_mm))
+        front_specs = entry + meeting
+        front_a = sum(s.target_area_m2 for s in front_specs) * 1e6
+        front_min = max([s.min_depth for s in front_specs] or [3000.0])
+        front_h = min(max(front_a / max(W, 1.0) * 1.2, front_min), H * 0.45)
+        front_h = max(front_h, min(H * 0.4, 2400.0))
+
+        if opts.flip:
+            front: Rect = (x0, y1 - front_h, x1, y1)
+            corr_rect: Rect = (x0, front[1] - corr, x1, front[1])
+            back: Rect = (x0, y0, x1, corr_rect[1])
+        else:
+            front = (x0, y0, x1, y0 + front_h)
+            corr_rect = (x0, front[3], x1, front[3] + corr)
+            back = (x0, corr_rect[3], x1, y1)
+
+        zones: Dict[str, Rect] = {}
+        if front_specs:
+            order = sorted(entry, key=lambda s: s.priority) + \
+                sorted(meeting, key=lambda s: s.priority)
+            if opts.flip:
+                order = list(reversed(order))
+            placed, dev, residual = _strip(front, order, "x")
+            zones.update(placed)
+            self._deviations.update(dev)
+            self._residual = residual
+        zones["corridor"] = corr_rect
+
+        back_h = max(back[3] - back[1], 1.0)
+        col_specs = focus + svc
+        col_w = 0.0
+        if col_specs:
+            col_a = sum(s.target_area_m2 for s in col_specs) * 1e6
+            # 竖排一列要塞下专注间 + 服务间：宽度必须按"总面积 ÷ 后场高度"留
+            # 余量，否则 _strip 会按比例把最后一间压成 1–2㎡（真实踩过）。
+            col_w = min(max(col_a / back_h * 1.2,
+                            max(s.min_width_mm for s in col_specs)), W * 0.42)
+            if back_h * col_w < col_a:
+                self._deviations["office-column"] = (
+                    f"后场竖列仅 {back_h * col_w / 1e6:.1f}㎡，不足 {col_a / 1e6:.1f}㎡："
+                    "专注与服务空间会被压缩，需主创决定减项")
+            if opts.flip:
+                col: Rect = (back[0], back[1], back[0] + col_w, back[3])
+                open_rect: Rect = (back[0] + col_w, back[1], back[2], back[3])
+            else:
+                col = (back[2] - col_w, back[1], back[2], back[3])
+                open_rect = (back[0], back[1], back[2] - col_w, back[3])
+            placed, dev, _ = _strip(col, sorted(col_specs, key=lambda s: -s.target_area_m2), "y")
+            zones.update(placed)
+            self._deviations.update(dev)
+        else:
+            open_rect = back
+
+        # 逐间核对：实得面积明显小于目标的，必须写进 warnings，由主创决定减项
+        for spec in specs:
+            r = zones.get(spec.key)
+            if not r:
+                continue
+            got = max(0.0, (r[2] - r[0]) * (r[3] - r[1])) / 1e6
+            if spec.target_area_m2 and got < spec.target_area_m2 * 0.8:
+                self._deviations[spec.key] = (
+                    f"{spec.name}：目标 {spec.target_area_m2:.1f}㎡，实得 {got:.1f}㎡，"
+                    "差额需主创决定从哪让出")
+
+        if open_specs:
+            # 开放办公优先整体一块；多于一项时按面积横向分带
+            if len(open_specs) == 1:
+                zones[open_specs[0].key] = open_rect
+            else:
+                placed, dev, residual = _strip(
+                    open_rect, sorted(open_specs, key=lambda s: -s.target_area_m2), "x")
+                zones.update(placed)
+                self._deviations.update(dev)
+                self._residual = max(self._residual, residual)
         return zones
 
     def _spine_centre(self, core: Rect, specs: List[RoomSpec],

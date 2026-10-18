@@ -127,7 +127,8 @@ def _snapshot(project: Project, runner: StageRunner) -> Dict[str, Any]:
 
 def run_project(key: str, one_liner: str, answers: Dict[str, str],
                 *, program: List[Dict[str, Any]] | None,
-                constraints: Dict[str, Any], label: str) -> Dict[str, Any]:
+                constraints: Dict[str, Any], label: str,
+                resolve_conflict=None) -> Dict[str, Any]:
     tmp = OUT / key
     if tmp.exists():
         shutil.rmtree(tmp)
@@ -145,6 +146,10 @@ def run_project(key: str, one_liner: str, answers: Dict[str, str],
     client = Client(key, answers)
     session: Dict[str, Any] = {
         "key": key, "label": label, "one_liner": one_liner,
+        # 证据等级：脚本化代理 + 预置几何。不是真实客户验收。
+        "evidence_level": "scripted_e2e",
+        "evidence_note": ("客户由脚本代理应答、几何来自 demo 壳体；"
+                          "本用例只证明门禁与流程正确，不代表真实业主授权"),
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "rounds": [], "stages": [], "errors": [], "next_steps": [],
         "modifications": [], "resume": {},
@@ -165,6 +170,18 @@ def run_project(key: str, one_liner: str, answers: Dict[str, str],
     session["gates"] = session.get("gates", []) + [
         {"gate": "G1", "decision": g1.decision, "status": g1.stage_status,
          "notes": list(g1.notes)}]
+
+    if g1.decision != "approved" and resolve_conflict is not None:
+        # 门禁把矛盾摆出来之后，客户做取舍；系统重新判定，而不是强行放行
+        session["conflict_round"] = {
+            "blocked": True, "blocked_notes": list(g1.notes),
+            "client_decision": resolve_conflict(project),
+        }
+        g1 = decide_g1(project, "approved", by="业主（脚本化代理）",
+                       note="客户做出取舍后重新提交")
+        session["gates"].append({"gate": "G1", "decision": g1.decision,
+                                 "status": g1.stage_status,
+                                 "notes": list(g1.notes)})
     project.save(proj_dir / "project.json")
 
     # -- S2：概念 ------------------------------------------------------
@@ -255,6 +272,79 @@ def run_project(key: str, one_liner: str, answers: Dict[str, str],
     return session
 
 
+def run_fresh(key: str = "C-fresh") -> Dict[str, Any]:
+    """C 案：只给一句话，没有图纸、没有几何、没有方案。
+
+    要验证的不是"能不能跑完"，而是：
+    * 缺图纸时系统怎么继续（能推进到哪一步）；
+    * 什么时候要求客户补资料；
+    * 哪些结果只是探索稿。
+    """
+    from omniarchitect.model import Project
+    from omniarchitect.intake.diligence import precision_level
+
+    tmp = OUT / key
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    proj_dir = tmp / "proj"
+    proj_dir.mkdir(parents=True, exist_ok=True)
+
+    project = Project(project_id="fresh-001", name="老房改造（客户只有一句话）")
+    project.save(proj_dir / "project.json")
+    start_interview(project, "我这套老房子想重新装一下，一百来平，住着舒服就行")
+
+    client = Client(key, {
+        "location": "成都，老小区，南向",
+        "site_conditions": "老房，没有原始图纸，需要现场量",
+        "deliverable_depth": "先看方案，施工图后面再说",
+        "needs": "收纳不够，厨房太小，卫生间返味",
+    })
+    session: Dict[str, Any] = {
+        "key": key, "label": "无图纸的首次使用", "evidence_level": "scripted_e2e",
+        "evidence_note": "只给一句话、无几何：验证系统如何要求补资料，而非假装能出平面",
+        "one_liner": "我这套老房子想重新装一下，一百来平，住着舒服就行",
+        "rounds": [{"stage": "S1", "answers": _answer_round(project, client)}],
+        "stages": [], "errors": [], "next_steps": [], "client": {},
+    }
+    runner = StageRunner(project, tmp / "out", project_dir=proj_dir,
+                         assume_approval=False)
+    s1 = runner.run_stage("S1", confirm=False)
+    session["stages"].append({"id": "S1", "status": s1.status,
+                              "notes": s1.notes[:4], "next": s1.next_action,
+                              "error": s1.error})
+    session["precision"] = precision_level(project)
+    g1 = decide_g1(project, "approved", by="业主（脚本化代理）",
+                   note="客户确认：先做方案，图纸待现场测量")
+    session["gates"] = [{"gate": "G1", "decision": g1.decision,
+                         "status": g1.stage_status, "notes": list(g1.notes)[:4]}]
+
+    s2 = runner.run_stage("S2", confirm=False)
+    session["stages"].append({"id": "S2", "status": s2.status,
+                              "notes": s2.notes[:4], "next": s2.next_action,
+                              "error": s2.error})
+    s3 = runner.run_stage("S3", confirm=False)
+    session["stages"].append({"id": "S3", "status": s3.status,
+                              "notes": s3.notes[:3], "next": s3.next_action,
+                              "error": s3.error})
+    session["blocked_at"] = "S3" if s3.status == "blocked" else ""
+    session["what_client_must_provide"] = [
+        "原始平面图或现场实测尺寸（墙、门窗、梁柱）",
+        "层高与管道位置（卫生间返味需要看立管）",
+        "确认是否拆改承重墙（须物业/结构专业确认）",
+    ]
+    session["client"] = {"asked": client.asked, "repeats": client.repeats}
+    (tmp / "session.json").write_text(
+        json.dumps(session, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return session
+
+
+def _resolve_capacity(project: Project) -> Dict[str, Any]:
+    """系统说装不下之后，客户的决定：改成 25 人常驻、其余轮用。"""
+    answer_question(project, "off.headcount", "实际常驻 25 人，其余轮用工位")
+    return {"action": "减少常驻人数至 25 人，其余轮用工位",
+            "why": "人均可用面积从 2.2㎡ 提到 5.3㎡，仍属紧凑，需在方案里说明"}
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     a = run_project(
@@ -269,7 +359,10 @@ def main() -> int:
                  {"name": "接待前厅", "recipe": "reception", "area_m2": 10, "zone": "entry"},
                  {"name": "打印与储物", "recipe": "storage", "area_m2": 6, "zone": "service"}],
         constraints={"style": "", "budget_cny": 3_200_000},
-        label="办公空间（既有 131㎡ 楼层改造，60 人）")
+        label="办公空间（既有 131㎡ 楼层改造，60 人）",
+        resolve_conflict=lambda p: _resolve_capacity(p))
+
+    c = run_fresh()
 
     summary = {
         "A": {"profile": a["profile"], "style": a["style"],
@@ -280,6 +373,11 @@ def main() -> int:
               "repeats": b["client"]["repeats"],
               "stages_ok": [s["id"] for s in b["stages"] if s["status"] == "ok"],
               "errors": b["errors"]},
+        "C": {"profile": "无图纸", "precision": c.get("precision"),
+              "repeats": c["client"]["repeats"],
+              "stages": [(s["id"], s["status"]) for s in c["stages"]],
+              "blocked_at": c.get("blocked_at"), "errors": c["errors"]},
+        "evidence_level": "scripted_e2e",
     }
     (OUT / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

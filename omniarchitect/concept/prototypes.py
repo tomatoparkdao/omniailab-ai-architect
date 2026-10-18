@@ -257,7 +257,8 @@ OFFICE: List[Prototype] = [
         maintenance="开放空间清洁与整理成本高；长桌与线槽是主要维护对象。",
         risks=("电话多时安静无法维持", "缺少私密空间会让 1v1 谈话无处可去"),
         answers=("focus", "area", "collaboration"),
-        plan_strategy="",
+        # 已实现：前场接待/会议带 + 主通道 + 开放办公 + 专注/服务后场
+        plan_strategy="office_cluster",
         suitable_when=("10–40 人", "以个体深度工作为主", "预算敏感"),
         tags=("minimal", "open", "library"),
     ),

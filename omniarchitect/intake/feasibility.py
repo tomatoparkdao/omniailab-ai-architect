@@ -214,6 +214,169 @@ def _check_area(project: Project) -> List[Conflict]:
     return out
 
 
+def _area_basis(project: Project) -> Dict[str, Any]:
+    """把"面积"这件事拆开：客户说的、合同写的、模型量的，不是同一个数。"""
+    stated = _stated_area_m2(project)
+    model = _model_area_m2(project)
+    envelope = _envelope_area_m2(project)
+    cons = _constraints(project)
+    declared_basis = str(cons.get("area_basis")
+                         or _answer(project, "base.area_basis") or "").strip()
+    diff = (abs(stated - model) / stated) if (stated > 0 and model > 0) else 0.0
+    return {
+        "stated_m2": round(stated, 1),
+        "model_usable_m2": round(model, 1),
+        "model_envelope_m2": round(envelope, 1),
+        "declared_basis": declared_basis or "未说明",
+        "diff_ratio": round(diff, 3),
+        "labels": {
+            "stated": "客户口头/文字给出的面积",
+            "model_usable": "模型实测套内使用面积（不含墙体与公摊）",
+            "model_envelope": "模型外轮廓面积（含墙体，不等于建筑面积）",
+            "note": "建筑面积含公摊，套内面积不含公摊，使用面积再扣墙体——三者不可混用",
+        },
+    }
+
+
+# --------------------------------------------------------------------------
+# 1b. the number on the contract vs the number in the model
+# --------------------------------------------------------------------------
+def _check_area_basis(project: Project) -> List[Conflict]:
+    """客户说 150、模型只有 131：这不是小数差，是承诺差。"""
+    basis = _area_basis(project)
+    stated = float(basis["stated_m2"])
+    model = float(basis["model_usable_m2"])
+    if stated <= 0 or model <= 0:
+        return []
+    diff = abs(stated - model)
+    ratio = basis["diff_ratio"]
+    if ratio <= 0.05:
+        return []
+    bigger = "客户口径更大" if stated > model else "模型更大"
+    return [Conflict(
+        id="F-AREA-BASIS",
+        category="area",
+        problem=(f"客户说的 {stated:.0f}㎡ 与模型实测 {model:.1f}㎡ 对不上"
+                 f"（差 {diff:.1f}㎡，{ratio * 100:.0f}%）"),
+        evidence=(f"口径：{basis['declared_basis']}；{bigger}；"
+                  f"外轮廓 {basis['model_envelope_m2']:.1f}㎡"),
+        affected="方案容量、造价与交付承诺",
+        severity="major",
+        recommendation=("先确认以哪个面积为准：以实测为准要同步下调功能目标；"
+                        "以合同建筑面积为准要扣除公摊后再算"),
+        alternatives=[
+            "按实测套内面积做方案，并把功能/预算按同一口径调整",
+            "提供带公摊的建筑面积与图纸，重新核算可用面积",
+            "确认是否为两套合并或含赠送面积，补充依据",
+        ],
+        needs_human=True,
+    )]
+
+
+# --------------------------------------------------------------------------
+# 1c. how many people actually fit
+# --------------------------------------------------------------------------
+def _headcount(project: Project) -> int:
+    import re
+
+    cons = _constraints(project)
+    for key in ("headcount", "occupants"):
+        try:
+            v = int(float(cons.get(key)))
+            if v > 0:
+                return v
+        except (TypeError, ValueError):
+            pass
+    for qid in ("occupants", "off.headcount", "base.headcount"):
+        text = _answer(project, qid)
+        m = re.search(r"(\d{1,4})\s*(?:人|位|工位)?", text or "")
+        if m:
+            try:
+                v = int(m.group(1))
+                if v > 1:
+                    return v
+            except ValueError:
+                continue
+    return 0
+
+
+def _check_capacity(project: Project) -> List[Conflict]:
+    """办公/商业：人数与面积的关系要在选方案之前说清楚。
+
+    人均面积用的是**规划经验区间**，不是任何地区的法规指标——法规符合性由
+    持证专业人员在项目所在地复核。这里只回答一个朴素问题：装不装得下。
+    """
+    from .profiles import profile_for
+
+    pid = str((load_interview(project).answers or {}).get("profile_id") or "") or \
+        profile_for(project.name or "").id
+    if pid not in ("office", "retail", "exhibition"):
+        return []
+
+    n = _headcount(project)
+    area = _model_area_m2(project) or _stated_area_m2(project)
+    if not n or not area:
+        return []
+
+    per = area / n
+    out: List[Conflict] = []
+    base_evidence = (f"{n} 人 ÷ 可用 {area:.1f}㎡ = 人均 {per:.1f}㎡（含交通与辅助，"
+                     "经验区间，不是法规指标）")
+
+    if per < 4.0:
+        out.append(Conflict(
+            id="F-CAP-01", category="capacity",
+            problem=f"{n} 个人放进 {area:.0f}㎡ 明显装不下（人均仅 {per:.1f}㎡）",
+            evidence=base_evidence,
+            affected="工位数量、会议室、通行与消防疏散",
+            severity="blocker",
+            recommendation="先解决容量矛盾，再谈风格与效果",
+            alternatives=[
+                f"减少常驻人数到 {int(area / 6)} 人左右（人均 6㎡ 的紧凑口径）",
+                "改用轮用工位/混合办公，按同时在座人数而非编制人数设计",
+                "换更大场地，或把会议、接待移到共享空间",
+            ],
+            needs_human=True,
+            blocks_stage="S2",
+        ))
+    elif per < 6.0:
+        out.append(Conflict(
+            id="F-CAP-02", category="capacity",
+            problem=f"人均 {per:.1f}㎡ 偏紧，只能做紧凑布局",
+            evidence=base_evidence,
+            affected="工位尺寸、会议与专注空间的取舍",
+            severity="major",
+            recommendation="明确取舍：要么压缩会议/接待，要么减少固定工位",
+            alternatives=["用轮用工位释放面积", "把大会议改为两间小会议室"],
+            needs_human=True,
+        ))
+    elif per > 12.0:
+        out.append(Conflict(
+            id="F-CAP-04", category="capacity",
+            problem=f"人均 {per:.1f}㎡ 偏宽裕，可按品质型办公规划",
+            evidence=base_evidence,
+            affected="可增加会议、专注间与休闲区",
+            severity="info",
+            recommendation="余量优先给会议与专注空间，而不是放大工位",
+        ))
+
+    # 会议位：经验值 1 间 / 12–15 人
+    meetings = [p for p in (project.program or [])
+                if str(p.get("recipe") or "") in ("meeting", "boardroom")]
+    need_rooms = max(1, round(n / 15))
+    if len(meetings) < need_rooms:
+        out.append(Conflict(
+            id="F-CAP-03", category="capacity",
+            problem=f"会议位偏少：{n} 人只有 {len(meetings)} 间会议空间",
+            evidence=f"经验配置约每 12–15 人 1 间；{n} 人至少需要 {need_rooms} 间",
+            affected="会议排队与电话间占用",
+            severity="major",
+            recommendation="补会议/电话间，或明确采用共享会议策略",
+            alternatives=["把大空间拆成 2 间小会议", "设置 2–3 个电话亭替代部分会议需求"],
+        ))
+    return out
+
+
 # --------------------------------------------------------------------------
 # 2. behaviour vs spatial conditions
 # --------------------------------------------------------------------------
@@ -500,8 +663,8 @@ def _check_technical(project: Project) -> List[Conflict]:
 def run_feasibility(project: Project) -> Dict[str, Any]:
     """Run all five families and return a ranked, evidenced verdict."""
     conflicts: List[Conflict] = []
-    for fn in (_check_area, _check_behavior, _check_budget,
-               _check_schedule, _check_technical):
+    for fn in (_check_area, _check_area_basis, _check_capacity,
+               _check_behavior, _check_budget, _check_schedule, _check_technical):
         try:
             conflicts.extend(fn(project))
         except Exception as exc:  # a check must never take S1 down
@@ -535,6 +698,8 @@ def run_feasibility(project: Project) -> Dict[str, Any]:
         "verdict": verdict,
         "headline": headline,
         "conflicts": [c.to_dict() for c in conflicts],
+        "area_basis": _area_basis(project),
+        "headcount": _headcount(project),
         "counts": {
             "blocker": len(blockers), "major": len(majors),
             "minor": len([c for c in conflicts if c.severity == "minor"]),

@@ -126,25 +126,29 @@ def assess_gate(project: Project) -> GateAssessment:
     res = GateAssessment(precision=precision_level(project))
     feas = run_feasibility(project)
     matrix = build_need_matrix(project)
-    answered_needs = bool(
-        (load_interview(project).answers or {}).get("base.needs", {}).get("value")
-    )
+    # 客户可能只用一句话讲需求（没有功能表）。这时"有没有需求"要看他到底说没说过，
+    # 而不是看功能表是否为空——否则"没有图纸但说了痛点"的客户会被误判成没需求。
+    _answers = load_interview(project).answers or {}
+    answered_needs = bool(_answers.get("base.needs", {}).get("value")) or any(
+        str(k).endswith("needs") and (v or {}).get("value") for k, v in _answers.items()
+    ) or any(r.get("state") in ("answered", "inferred") for r in (matrix.get("rows") or []))
 
     # --- 1. contradictions the client has to resolve ----------------------
     for c in feas["conflicts"]:
-        if c["severity"] != "blocker":
-            continue
-        if c["category"] == "area":
+        if c["severity"] == "blocker" and c["category"] in ("area", "capacity"):
             res.blocks_gate.append({
                 "id": c["id"],
-                "kind": "requirement_contradiction",
+                "kind": ("capacity_infeasible" if c["category"] == "capacity"
+                         else "requirement_contradiction"),
                 "problem": c["problem"],
                 "evidence": c["evidence"],
-                "needs": "业主决定取舍：合并功能、压缩次要空间，或调整面积目标",
+                "needs": ("业主决定：减少人数/工位、改用轮用工位、换场地，"
+                          "或书面接受紧凑布局的后果"
+                          if c["category"] == "capacity"
+                          else "业主决定取舍：合并功能、压缩次要空间，或调整面积目标"),
             })
-        else:
-            # Budget and other commercial constraints are caveats, not blocks:
-            # the client may knowingly proceed.
+        elif c["severity"] in ("blocker", "major"):
+            # 预算、面积口径这类问题不阻断，但必须写进确认摘要与后续门禁
             res.conditions.append(f"{c['problem']}（{c['evidence']}）")
 
     # --- 2. is there a brief at all? --------------------------------------
@@ -311,6 +315,27 @@ def approval_summary_text(project: Project, extra: str = "") -> str:
                   for b in assess.blocks_gate]
     if not unc and not assess.blocks_gate:
         lines.append("- 无")
+
+    # --- 面积口径与容量：客户最先要听懂的两个人话问题 ---
+    ab = feas.get("area_basis") or {}
+    cap = [c for c in feas["conflicts"] if c["category"] == "capacity"]
+    if ab.get("stated_m2") or cap:
+        lines += ["", "## 面积与容量（先说清楚这个）", ""]
+        if ab:
+            lines.append(
+                f"- 你说的面积：{ab.get('stated_m2') or '未提供'} ㎡；"
+                f"模型实测套内：{ab.get('model_usable_m2') or 0:.1f} ㎡；"
+                f"外轮廓：{ab.get('model_envelope_m2') or 0:.1f} ㎡")
+            if float(ab.get("diff_ratio") or 0) > 0.05:
+                lines.append(
+                    f"- **两者差 {float(ab['diff_ratio']) * 100:.0f}%**："
+                    "建筑面积含公摊、套内不含，使用面积还要再扣墙体——"
+                    "方案与造价必须按同一个口径算，请确认以哪个为准")
+        hc = feas.get("headcount") or 0
+        if hc:
+            lines.append(f"- 使用人数：{hc} 人")
+        for c in cap:
+            lines.append(f"- {c['problem']}。可选：{'；'.join(c['alternatives'][:3])}")
 
     lines += ["", "## 8. S2 概念设计的研究重点", ""]
     if opps["items"]:

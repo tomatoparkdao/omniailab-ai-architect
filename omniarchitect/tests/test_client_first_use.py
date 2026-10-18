@@ -112,7 +112,7 @@ def test_residential_runs_to_s8_with_real_gates():
 
 
 def test_office_gate_blocks_instead_of_faking_an_approval():
-    """办公原型没有对应平面策略 → G3 必须拦，S4 必须起不来。"""
+    """办公：容量先拦 G1；业主接受后，若平面仍装不下，G3 继续拒绝。"""
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td)
         p = build_demo_project(tmp / "proj")
@@ -128,23 +128,31 @@ def test_office_gate_blocks_instead_of_faking_an_approval():
         p.save(tmp / "proj" / "project.json")
         start_interview(p, "公司要搬办公室，一百多平，六十人")
         answer_question(p, "off.headcount", "60 人")
-        decide_g1(p, "approved", by="业主")
         assert finishes.project_profile(p) == "office"
 
+        # 1) 容量矛盾必须在 G1 就暴露
+        from omniarchitect.intake.gate import assess_gate as assess_g1
+
+        assert "F-CAP-01" in [b["id"] for b in assess_g1(p).blocks_gate]
+        assert decide_g1(p, "approved", by="业主").decision != "approved"
+
+        # 2) 业主书面接受后可以进 S2/S3，但平面自己还得站得住
+        assert decide_g1(p, "approved", by="业主",
+                         acknowledge=["F-CAP-01"],
+                         note="业主接受：先看紧凑方案").decision == "approved"
         runner = StageRunner(p, tmp / "out", project_dir=tmp / "proj",
                              assume_approval=False)
         runner.run_stage("S2", confirm=False)
         supported = [c for c in p.meta["concept"]["options"]["concepts"]
                      if (c.get("spatial_prototype") or {}).get("plan_strategy")]
-        assert not supported, "办公方向不该有可落地策略——若有了，本测试要改"
-        C.select(p, p.meta["concept"]["options"]["concepts"][0]["concept_id"])
+        assert supported, "办公应已有可落地策略"
+        C.select(p, supported[0]["concept_id"])
         assert runner.approve("S2", by="业主")["status"] == CONFIRMED
         runner.run_stage("S3", confirm=False)
 
+        # 3) 60 人放不进 131㎡：G3 必须继续拒绝，理由是人話+编号
         g3 = runner.approve("S3", by="业主")
-        assert g3["status"] != CONFIRMED, "没有平面策略却签发了 G3"
-        ids = " ".join(g3["notes"])
-        assert "G3-PROTOTYPE-UNSUPPORTED" in ids
-        # 上游没签，S4 不许开跑
-        s4 = runner.run_stage("S4", confirm=False)
-        assert s4.status == "blocked"
+        assert g3["status"] != CONFIRMED, "装不下的平面被签发了"
+        joined = " ".join(g3["notes"])
+        assert "G3-CONCEPT-CONFLICT" in joined
+        assert "人均" in joined

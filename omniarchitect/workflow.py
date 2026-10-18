@@ -349,7 +349,8 @@ class StageRunner:
             basis = basis.fork()
             forked = True
             gen = PlanGenerator(basis, self.level_id)
-            s = self.schemes.get(chosen) or gen.generate(_scheme_options(chosen))
+            s = self.schemes.get(chosen) or gen.generate(
+                _scheme_options(chosen, finishes.project_profile(self.project)))
             _install_scheme(basis, s)
             resolve_host_axes(basis)
 
@@ -847,25 +848,57 @@ class StageRunner:
     # ==================================================================
     def stage_S3(self) -> StageOutcome:
         d = self._dir("S3")
+        # 没有几何就出不了平面：这是"缺资料"，不是"程序坏了"。
+        # 用 blocked + 人话 + 下一步，而不是把技术异常抛给客户。
+        if not [s for s in self.project.spaces if s.use == "envelope"] \
+                and not self.project.by_type("wall"):
+            return StageOutcome(
+                "S3", "03 平面方案设计", skills_for_stage("S3"), adapter="dxf",
+                status="blocked",
+                error=("没有可用的平面几何：目前只有文字需求，无法生成可核对的方案。"
+                       "这不是系统故障。"),
+                next_action=("请提供原始户型图，或现场实测（墙、门窗、梁柱位置与尺寸）；"
+                             "补齐后重跑 S3 即可"),
+                notes=["概念与任务书仍然有效，补图后不需要重做 S1/S2"],
+            )
         from .concept.gate import concept_digest
         from .concept.handoff import load_for, store_plan_record, verify_scheme
 
         handoff = load_for(self.project)
         gen = PlanGenerator(self.project, self.level_id)
-        supported = ("band_day_night", "spine_centre")
+        supported = ("band_day_night", "spine_centre", "office_cluster")
         wanted = str((handoff.get("spatial") or {}).get("plan_strategy") or "")
+        profile = finishes.project_profile(self.project)
         # The confirmed concept decides which strategy leads; the second variant
         # stays as a comparison. If the concept needs a strategy this generator
         # does not have, say so instead of quietly producing something else.
-        lead = wanted if wanted in supported else "band_day_night"
-        other = "spine_centre" if lead == "band_day_night" else "band_day_night"
-        options = [
-            SchemeOptions(variant="A",
-                          title=f"方案A · {handoff.get('concept_name') or '按要求'}"
-                                f"（{lead}）",
-                          strategy=lead),
-            SchemeOptions(variant="B", title="方案B · 对照方案", strategy=other),
-        ]
+        default_lead = "office_cluster" if profile == "office" else "band_day_night"
+        lead = wanted if wanted in supported else default_lead
+        if lead == "band_day_night":
+            other = "spine_centre"
+        elif lead == "spine_centre":
+            other = "band_day_night"
+        else:
+            other = "office_cluster"
+        if lead == "office_cluster":
+            options = [
+                SchemeOptions(variant="A",
+                              title=f"方案A · {handoff.get('concept_name') or '按要求'}"
+                                    f"（{lead}）",
+                              strategy="office_cluster", corridor_width_mm=1200.0,
+                              flip=False),
+                SchemeOptions(variant="B", title="方案B · 对照方案（会议带换边）",
+                              strategy="office_cluster", corridor_width_mm=1500.0,
+                              flip=True),
+            ]
+        else:
+            options = [
+                SchemeOptions(variant="A",
+                              title=f"方案A · {handoff.get('concept_name') or '按要求'}"
+                                    f"（{lead}）",
+                              strategy=lead),
+                SchemeOptions(variant="B", title="方案B · 对照方案", strategy=other),
+            ]
         self.schemes = {o.variant: gen.generate(o) for o in options}
         concept_check = verify_scheme(handoff, self.schemes["A"], self.project) \
             if handoff.get("status") in ("locked", "selected_not_confirmed") else None
@@ -1471,7 +1504,7 @@ class StageRunner:
         scheme = self.schemes.get(variant)
         if scheme is None:
             scheme = PlanGenerator(self.project, self.level_id).generate(
-                _scheme_options(variant))
+                _scheme_options(variant, finishes.project_profile(self.project)))
         _install_scheme(base, scheme)
         resolve_host_axes(base)
         return base
@@ -1490,7 +1523,8 @@ class StageRunner:
             return variant
         if not self.schemes:
             gen = PlanGenerator(self.project, self.level_id)
-            o = _scheme_options(self.scheme_variant)
+            o = _scheme_options(self.scheme_variant,
+                                finishes.project_profile(self.project))
             self.schemes = {o.variant: gen.generate(o)}
         variant = self.scheme_variant if self.scheme_variant in self.schemes else sorted(self.schemes)[0]
         _install_scheme(self.project, self.schemes[variant])
@@ -1502,8 +1536,19 @@ class StageRunner:
 
 
 # --------------------------------------------------------------------------
-def _scheme_options(variant: str) -> "SchemeOptions":
-    """The deterministic scheme definition for a variant letter."""
+def _scheme_options(variant: str, profile: str = "residential") -> "SchemeOptions":
+    """The deterministic scheme definition for a variant letter.
+
+    办公不是把住宅带式布局换个名字：住宅用 band / spine，办公用 office_cluster，
+    两套办公方案靠 flip 换边，而不是靠随机数。
+    """
+    if profile in ("office",):
+        return SchemeOptions(
+            variant=variant, title=f"方案{variant}",
+            strategy="office_cluster",
+            corridor_width_mm=1200.0 if variant == "A" else 1500.0,
+            flip=(variant == "B"),
+        )
     return SchemeOptions(
         variant=variant, title=f"方案{variant}",
         strategy="band_day_night" if variant == "A" else "spine_centre",

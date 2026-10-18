@@ -139,6 +139,34 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 未确认平面拒收、文字不让模型写、三处登记一致、指纹跨配方一致）；`verify_all.py` 九段通过；
 `check_tables` 93 文件 356 表 0 违规；`normalize --check` 0 不一致。
 
+### 后续补充九 — 第二轮验收：参考图真进请求、可行性前置、办公策略落地
+
+**一、参考图进入请求。** 旧 `_params()` 不带 `references`、`workflow` 固定 concept、
+`stage` 固定 S2——`drawing-visuals.json` 里的 SVG/PNG 从未进过模型请求。现在按任务
+自身传 `stage/target/scope/revision/references`；传输方式由契约声明（base64 / url /
+asset_id / multipart），契约没写就拒发；DXF 明确不可作图像输入；契约只接受 png 时
+SVG 会被拒。7 项测试用假契约截获请求体，逐字节比对 sha256 与本地路径不外发。
+
+**二、可行性提到选方案之前。** `feasibility` 新增面积口径（客户说 150 / 模型 131.6，
+差 12% → `F-AREA-BASIS`）与办公容量（60 人 / 132㎡ = 2.2㎡/人 → `F-CAP-01` 阻断）。
+G1 摘要新增「面积与容量」人话一节；结论进 G2 条件；G1 书面接受的项到 G2 降为条件
+不再重复阻断。人均面积标注为"经验区间，不是法规指标"。
+
+**三、办公有了真策略。** `PlanGenerator` 新增 `office_cluster`：前场接待/会议带 →
+主通道 → 一整块开放办公 → 后场专注/服务竖列；两套方案靠会议带换边与通道宽度区分。
+一致性校核新增 `H-CAPACITY`（人均 <4㎡ 判失败），所以 60 人版即使 G1 接受也在 G3 被拒，
+25 人版正式通过。仅实现一个原型，其余仍是 `plan_strategy=""`——刻意保留的边界。
+
+**四、证据分级。** A/B 用例标 `scripted_e2e` 并写明"不代表真实业主授权"；
+新增无图纸 C 案：一句话 → S1/S2 可跑 → S3 以人话阻断并给出补图清单。
+
+**五、桌面端能力发现。** 本机已装 Omni AiLab Studio：任务记录含 `skillId` 与 `canvas`
+字段（均未使用），`connectors/*/runtime` 为空，无 CLI、无 `mcp.json`。
+结论：有 Skill 与画布的数据结构，但没有公开调用契约——需要客户端提供 CLI / MCP / IPC。
+
+验证：`run_tests.py` 469 项全绿（新增 `test_reference_transport.py` 7 项、
+`test_office_strategy.py` 4 项）；`verify_all.py` 九段通过；报告 `docs/ACCEPTANCE_ROUND2.md`。
+
 ### 后续补充八 — 执行闭环验收第一轮：参考图、生命周期、客户首用
 
 **参考图不再是 DXF 路径。** 新增 `omniarchitect/reference_plan.py`：用与 DXF 同一份
