@@ -23,9 +23,9 @@ agent_created: true
 
 ### 1. 空间体验层（`omniarchitect/design/vocabulary.py`）
 
-10 条体验手法全部有公开专业依据：压缩与释放、前景与庇护（Appleton 1975）、
+11 条体验手法全部有公开专业依据：压缩与释放、前景与庇护（Appleton 1975）、
 门槛与过渡、套间序列、框景、借景、节奏与重复、光的层次、材料的真实与触感、
-比例与层高关系（Palladio）。每条必须写四件事：机制、做法、**在图上怎么核验**、
+比例与层高关系（Palladio）、到达序列。每条必须写四件事：机制、做法、**在图上怎么核验**、
 用错了会怎样——没有第四项的术语只是装饰。
 
 由此得到三样东西：
@@ -56,9 +56,23 @@ agent_created: true
 
 ### 验收
 
-- `run_tests.py` 547 passed / 0 failed，**原有 520 项全部保留通过**，新增 27 项；
-- `verify_all.py` 九段全过（SKILL.md 399 行、资产 4.04 MB 无超限、102 文件 417 表 0 违规）；
+- `run_tests.py` 548 passed / 0 failed，**原有 520 项全部保留通过**，新增 28 项；
+- `verify_all.py` 九段全过（SKILL.md 399 行、资产无超限、102 文件 420 表 0 违规）；
 - `normalize --check` 261 文件 0 不一致；`compliance_audit` 0 项待处理。
+
+### 文档同步（同一轮内补正，不另起版本）
+
+- 两份 README 新增「⑧ 设计能力：空间体验」「⑨ 技术为实现让路」两条，补 R6/R7 两条专业逻辑、
+  三条避坑（27–29）、S1/S2 的作答要点、`design/` 目录与三项交付物；
+- `docs/MANUAL.md` 新增第 7c 节「结构与机电：是实现路径，不是审批口」，
+  在 6.1 / 6.2 写明「感受」那道题与四拍经历的读法，避坑表补 27–30；
+- **修正两处会误导用户的错误**：`docs/DESIGN_CAPABILITY.md` 原先写 `python -m omniailab design …`
+  三条命令，而 CLI 并无 `design` 子命令（包名也是 `omniarchitect`）——已改为实测可运行的
+  Python 调用；`manual.py` 的 `design`/`feeling`/`sequence`/`enabling` 四个主题原先指向
+  「6.2 设计能力」，而手册 6.2 实际是「S2｜概念方案设计」——已改指真实章节；
+- 词表条数由 10 改为 11（`proportion` 之外另有 `arrival_sequence`），README / 文档 / CHANGELOG 三处同步；
+- 新增守卫 `test_the_section_title_still_says_what_the_topic_means`：此前只比章节编号，
+  编号对上而标题被换掉仍会通过，这正是本次偏差逃过测试的原因。
 
 ## v1.4.0 · 后续补充四 — S2 概念方案设计专业化升级
 

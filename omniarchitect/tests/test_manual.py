@@ -74,6 +74,23 @@ def test_every_topic_maps_to_a_section_that_really_exists():
     assert not bad, bad
 
 
+def test_the_section_title_still_says_what_the_topic_means():
+    """章节号对上还不够：编号对了而标题被改掉，指过去照样是错的。
+
+    这里比的是标题正文（去掉编号后的部分），避免只靠 "6.2" 这种编号蒙对。
+    """
+    text = (ROOT / M.MANUAL_LOCAL).read_text(encoding="utf-8")
+    headings = [ln.strip() for ln in text.splitlines() if ln.startswith("#")]
+    bad = []
+    for topic, section in M.topics().items():
+        num, _, title = section.partition(" ")
+        if not title:
+            continue
+        if not any(h.startswith("#") and num in h and title in h for h in headings):
+            bad.append(f"{topic} -> {section}")
+    assert not bad, bad
+
+
 def test_hint_names_the_section_and_the_manual():
     h = M.hint("degraded")
     assert "操作手册" in h

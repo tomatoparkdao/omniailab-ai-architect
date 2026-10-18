@@ -38,9 +38,9 @@ agent_created: true
 
 | 内容 | 说明 |
 |---|---|
-| `VOCABULARY`（10 条） | 压缩与释放 / 前景与庇护 / 门槛与过渡 / 套间序列 / 框景 / 借景 / 节奏与重复 / 光的层次 / 材料的真实与触感 / 比例与层高关系 / 到达序列 |
+| `VOCABULARY`（11 条） | 压缩与释放 / 前景与庇护 / 门槛与过渡 / 套间序列 / 框景 / 借景 / 节奏与重复 / 光的层次 / 材料的真实与触感 / 比例与层高关系 / 到达序列 |
 | `FAMILY_DEVICES` | 每个空间家族**天然擅长**哪些手法（结构性判断，不是词面匹配） |
-| `ENTRY_EVENT` | 每套原型一句「进门先看到什么」，必须具体到能画 |
+| `ENTRY_EVENT` | 22 套原型各一句「进门先看到什么」，必须具体到能画 |
 | `read_feelings()` | 业主原话 → 手法 id（长词优先，「不压抑」不会被读成「压抑」） |
 | `sequence_for()` | 原型 → 体验序列（第一眼 / 转折 / 主空间 / 留下什么） |
 | `fit()` | 业主要的感觉，这套方向给不给得出：`met` / `at_risk` / `not_stated` |
@@ -105,20 +105,35 @@ S2 全部审美方向的依据。业主第一句话里已经说了「敞亮」�
 
 ## 五、怎么用
 
+**不需要额外命令。** S2 每次生成时自动包含这两层：
+
+| 落点 | 你会看到什么 |
+|---|---|
+| `concept-options.md` | 每套概念下多出「走进去会经历什么」一节：第一眼 / 转折 / 主空间 / 记住的是，每步标出用了哪个手法 |
+| `concept-comparison.md` | 美学维度引用 `feeling_fit` 的结论——这套方向对你说的那种感觉，是强项、够用、还是勉强 |
+| `concept-diagrams/*.svg` | 序列图上的每一步是一个空间事件，不是被截断的原文 |
+| `concept-handoff.json` | `experience_sequence` 与 `feeling_fit` 随交接传给 S3 |
+
+想直接看词表与判定结果，用 Python 读：
+
 ```bash
-# 看词表（每条带判据与误用）
-python -m omniailab design vocabulary
+export PYTHONPATH=<你的路径>/omniailab-ai-architect
 
-# 看某个项目类型各原型的体验序列
-python -m omniailab design sequence --project <id>
+# 看词表：每条含机制、做法、图上怎么核验、用错了会怎样
+python -c "from omniarchitect.design import vocabulary as v; print('\n'.join(f'{d.id}｜{d.name}｜{d.test}' for d in v.VOCABULARY.values()))"
 
-# 看这套概念的技术实现路径
-python -m omniailab design enable --project <id>
+# 看业主原话被读成了哪些手法
+python -c "from omniarchitect.design import vocabulary as v; print(v.read_feelings('要敞亮一点，进门别一眼看穿'))"
+
+# 看某个原型走进去的经历（以住宅的默认原型为例）
+python -c "from omniarchitect.design import vocabulary as v; from omniarchitect.concept import prototypes as p; print(v.sequence_for(p.for_profile('residential')[0].to_dict()))"
+
+# 看某个技术目标有哪些实现路径、各自要谁签字
+python -c "from omniarchitect.design import enabling as e; r=e.structure_paths('想做通高客厅'); [print(p['name'],'|',p['trades'],'|',p['sign_off']) for g in r['goals'] for p in g['paths']]"
 ```
 
-S2 生成时无需额外命令：`concept-options.md` 每套概念下自动多出
-「走进去会经历什么」一节，`concept-comparison.md` 的美学维度会引用
-`feeling_fit` 的结论。
+> 这些是模块能力，不是步骤。它们没有独立命令，因为**不该由你手动触发**——
+> 触发点是 S2 生成那一刻，和业主在 S1 说的那句话。
 
 > 免责边界：本层给出的是设计判断与实现方向，不产生结构计算、机电负荷计算、
 > 也不判定当地法规符合性。上述内容须由项目所在地持证专业人员在方案复核后签署。

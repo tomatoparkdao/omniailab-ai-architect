@@ -30,6 +30,8 @@ Working with the OmniAiLab AI creation platform and professional MCP tools, AI m
 
 Hand it one requirement — even just a floor plan plus a line like "make it Italian minimalist" — and it first pins down function and budget, then advances stage by stage to deliverable drawings, models and material schedules. At the end of every stage you only answer "confirmed" or "change item X".
 
+**It does not say "this scheme is more modern". It says "walking in here you meet a wall first; three steps to the left and it opens up."** Every direction it proposes at S2 comes with a verifiable spatial experience and a direct answer to what you asked for.
+
 | Scope | What it covers |
 |---|---|
 | **Applicable · any project type** | Residential flats, large flats, villas, offices, retail, restaurants, hotels, showrooms; both the schematic stage and the development stage are in scope. **Architecture and interior are the core**; outdoor and landscape work is limited to **interface coordination** (outdoor equipment positions, landscape lighting connections, setbacks and interface finishes) — no landscape schemes are produced |
@@ -69,6 +71,8 @@ The invocation name is written **all-lowercase with hyphens** (`omniailab-ai-arc
 | **⑤ It really writes files** | Editable DXF (schematic and construction depth kept apart), OBJ 3D meshes, schematics, editable PPTX proposals, Markdown and print-ready HTML, quantity and cost-estimate JSON, change-impact reports. **Every written file is re-read by an independent implementation**; if it cannot be read back, the step is failed. |
 | **⑥ It does not pretend** | No Blender / FreeCAD / IfcOpenShell → it outputs **runnable scripts** and marks the stage `degraded`; platform not configured → `NOT_CONFIGURED` plus exactly what is missing; DXF is never renamed to DWG, a mesh is never called parametric BIM, a render is never used as a dimensional basis. |
 | **⑦ Design style system** | A structured library of **47 architectural and interior design styles** (eight families: modern / oriental / classic / deco-retro / industrial / natural-organic / regional / experimental), each with 20 professional fields (history, spatial principles, proportion, palette, materials, furniture language, lighting, applicable spaces, cost and construction notes, compatible and conflicting elements, positive prompt components, geometry preservation rules, negative constraints, quality checklist). **Index and data are separate**: query `catalog.json` (179 tags) first, then load a single style on demand — never all 47 at once. Ships a three-option recommender and a bilingual prompt compiler (14 targets: 8 spatial views plus 6 drawing-derived and board recipes — coloured plan, isometric axon, orthographic section, three-panel presentation board, concept sheet, physical material moodboard; the drawing-derived ones require G3 and their text is overlaid by the layout layer). |
+| **⑧ Design capability: spatial experience** | The prototype says how rooms are arranged, the style says what it looks like — the layer in between, **what a person actually experiences walking through**, used to be missing. **11 spatial devices** (compression and release, prospect and refuge, threshold, enfilade, framing, borrowed view, rhythm and repetition, layering of light, material honesty, proportion driving ceiling height, arrival sequence), each with its mechanism, execution, **how to verify it on the drawing**, and what goes wrong when misused. **The 22 prototypes belong to different spatial families**, so their natural strengths differ — which is why three directions never say the same sentence. Tell it "I want it bright, don't let me see straight through the door", and S1 records it, then S2 answers each point: deliverable (`met`), stretched (`at_risk`), or not asked (`not_stated`) — **if you never said it, it will not decide for you**. |
+| **⑨ Technology yields to design** | Structure and MEP are **supporting disciplines, not approval gates**. When a concept calls for a double-height void, it does not judge "not feasible"; it returns three implementation paths — raised edge beam / steel frame / local cantilever — each stating **what it gains, what it costs, and which licensed professional must sign off**. 8 technical goals, 24 paths (structure: double-height void / removing load-bearing walls / added load / long span; MEP: exposed ceiling / relocating wet zones / windowless space / open kitchen). **What is physically impossible is called impossible** (a skylight on a middle floor, natural light in a basement), with alternatives, and no fake options. |
 
 ### Capability list (30, grouped by stage served)
 
@@ -155,6 +159,11 @@ python installer/verify_install.py --check-python
 1. **You upload the original drawings / design brief directly** — it reads them, parses them with `existing-drawing-analysis`, and goes straight into S1.
 2. **You give nothing and just say "start"** — it first asks four things (project type / functional requirements / budget basis and delivery depth / what material you have), and **will not invent a set of requirements on its own**; only when you explicitly say "run the sample project" does it use the built-in 120㎡ residential sample.
 3. **You give one requirement in a single line** (e.g. "120㎡ three-bedroom, modern Italian minimalist, budget 300k") — it first organises a confirmable version of the design brief for you to confirm, and only then enters S1.
+
+> **One more question is worth answering carefully**: it will always ask "if you had to describe in one sentence how you want to feel when you push the door open, what would you say?".
+> This question **deliberately offers no options** — options would frame your answer into the few we preloaded. That one sentence is the basis for every aesthetic direction at S2:
+> say "bright, make it feel bigger" and it works with borrowed views and layered light; say "don't let me see straight through the door" and it works with threshold and transition.
+> **If you already said it in your first sentence, it records it and does not ask twice.**
 
 ### 3. The starting command
 
@@ -251,6 +260,8 @@ S2 (concept lighting direction), S4 (lighting scheme) and S7 (fixture positionin
 | **R3** | Cost and quantities are estimated dynamically from S1; only at S8 do they become a formal schedule | Estimates converge across stages — they are not guessed at the very end |
 | **R4** | No formal drawings before the layout is confirmed; no local hand-editing once locked | It must go through change-impact analysis |
 | **R5** | Concept renderings are generated only from a client-confirmed layout | Change the layout and the whole batch is void and regenerated |
+| **R6** | Technical feasibility is not the premise of design but its result | Decide what it must become first, then choose the implementation path. A double-height void is not a veto but three approaches with their costs; **only the physically impossible is called impossible**, and then an alternative follows |
+| **R7** | If the client never said how they want it to feel, do not decide for them | `not_stated` stays `not_stated`. Recommending "warm and cosy" out of nowhere disguises our preference as their requirement |
 
 ---
 
@@ -258,8 +269,8 @@ S2 (concept lighting direction), S4 (lighting scheme) and S7 (fixture positionin
 
 | Stage | The judgement you make | Common capabilities | Watch out |
 |---|---|---|---|
-| **S1** Start and brief | Do the functional requirements, area targets and budget basis add up | Design brief, site analysis, drawing analysis, budget fit | Data inferred from drawings rather than measured carries `uncertain = true` and must be verified on site |
-| **S2** Concept design | Do you accept the concept direction and moodboard | Concept design, moodboard iteration, concept lighting direction, presentation | The scoring basis is never changed mid-project |
+| **S1** Start and brief | Do the functional requirements, area targets and budget basis add up | Design brief, site analysis, drawing analysis, budget fit | Data inferred from drawings rather than measured carries `uncertain = true` and must be verified on site. **The "how do you want it to feel" question is worth answering carefully** — it feeds every aesthetic judgement at S2 |
+| **S2** Concept design | Do you accept the concept direction and moodboard; **is the experience of walking through right** | Concept design, moodboard iteration, concept lighting direction, presentation | The scoring basis is never changed mid-project. Every direction comes with a four-beat experience (first sight / turn / main space / what you remember) and the devices behind it; **three directions are different spaces, not different colours** |
 | **S3** Plan layout | **The most important sign-off**: which layout to choose | Space planning, ergonomics, layout optimization | The four layout questions: is the daylight face monopolised, does circulation cross private zones, is there a real dominant line, is a "void" left |
 | **S3·post** Concept renderings | Is the spatial feel right | Concept renderings (run automatically after G3 passes) | Can only be generated from a confirmed layout; changing the layout voids the whole batch |
 | **S4** Preliminary design | Construction methods, materials and MEP coordination | Interiors, architecture, material and colour, lighting, MEP coordination, CAD drafting | R2: CAD can be produced from this step, at `schematic` depth |
@@ -343,8 +354,11 @@ Hit any one of these and you may, at best, redo a stretch of work — at worst, 
 | 24 | Install a dependency and use it without asking "can it degrade" | Breaks zero hard dependencies | Before adding a dependency, ask first: can it degrade? |
 | 25 | Delete `omniarchitect/` as a duplicate directory | The project will not run at all | It is the **code itself** (the internal engine codename), not a duplicate |
 | 26 | Committing reference photos / site videos / exported renders | The push fails and history is bloated forever | A single file of 1 MB or more, or any media binary, is never committed (`scripts/check_assets.py` guards this); if it must be kept, record its **external location and digest** in a JSON data file |
+| 27 | Picking a style without reading the spatial experience, then signing off G2 | You get a scheme that photographs well and lives badly | G2 recognises a `concept_id`; read "what you experience walking through" before choosing |
+| 28 | Treating a technical difficulty in the concept as a veto | Good design gets rejected by drawing progress, and work grows more conservative | A technical requirement triggers **implementation paths** (with cost and sign-off), not a veto; only the physically impossible is `blocked` |
+| 29 | Reading implementation paths as if the engineering were already done | Building on "how it could be done" as if it were "it is safe" | Every path carries `sign_off`: structural calculations, load calculations, fire and code conclusions still require a licensed professional's signature |
 
-The full version is in section 12 of the operation manual.
+The full version is in section 12 of the operation manual. Criteria for the spatial-experience layer and implementation paths are in [docs/DESIGN_CAPABILITY.md](docs/DESIGN_CAPABILITY.md).
 
 ---
 
@@ -372,6 +386,7 @@ omniailab-ai-architect/          ← Skill root (this repository)
 │   ├── integration/ installer/  Agent Skills verification and installation
 │   ├── brand_policy.py          Brand and vendor policy + creative-capability exclusivity ruling
 │   ├── style/                   Design style system (library / recommendation / prompt compiler / stage hooks)
+│   ├── design/                  Design capability: spatial devices and sequences, client-feeling fit, structure/MEP paths
 │   └── tests/                   test modules (full regression)
 ├── knowledge/                   13 original design knowledge domains (progressive loading)
 │   └── styles/                  47 design styles, structured + catalog.json index
@@ -396,6 +411,8 @@ omniailab-ai-architect/          ← Skill root (this repository)
 | CAD drawings | `.dxf` | Schematic and construction depth named apart; after writing, an independent parser re-checks entity counts, layers and closure |
 | 3D model | `.obj` | Millimetre units, Z-up, with material groups; a mesh **does not masquerade as** parametric BIM |
 | Spatial schematic | `.png` | Rasterised from the canonical model, always stamped "schematic · not a photoreal render · not a dimensional basis for construction" |
+| Concept schemes | `.md` + `.json` + `.svg` | Each direction includes a spatial-experience sequence (first sight / turn / main space / what you remember) with the devices behind it, its answer to the client's stated feeling, deterministic diagrams and a real-colour moodboard |
+| Technical implementation paths | `.json` + `.md` | Structure and MEP paths with their costs and the licensed discipline that must sign off; alternatives for physically impossible items |
 | Concept renderings | `.png` + `.json` + `.md` | Generated on the OmniAiLab canvas after the layout is confirmed (G3); when the platform is not connected it delivers the **complete task package** and a presentation PPTX, not a placeholder image |
 | Design presentation | `.pptx` / `.md` / `.html` | Editable PPTX (10 deck types: concept, plan comparison, **concept renderings**, preliminary design, visualisation, final, materials & lighting, technical briefing, delivery, full project) |
 | Quantities and estimate | `.json` / tables | Per-space quantities, a cost/quantity-separated estimate basis, and a budget-fit conclusion |
@@ -414,6 +431,12 @@ No. `doctor`, `stages`, `demo`, `scenario` and DXF / mesh / PPTX export all run 
 
 **Does it make decisions for me?**
 It never says "either works". A comparison gives only a recommendation + reasons + alternatives; the final decision and the gate confirmation are made by the client / lead designer.
+
+**What makes it say one scheme is better than another?**
+Not adjectives. Eleven checkable spatial devices (e.g. "entry-to-main-space ceiling ratio ≥1:1.3", "is there a solid surface within 600mm behind the main seat") each carry a way to verify them on the drawing; on top of that comes the sentence you said yourself, judged as a strength, adequate, or barely met. When none of the three can produce a criterion, it will not hand you a score.
+
+**Will structure and MEP block my design again?**
+No. They are supporting disciplines, and they only appear when your concept actually touches them — and what comes back is implementation paths (how, what it gains, what it costs, who signs), not a verdict. The only exception is what is physically impossible, such as a skylight on a middle floor or natural light in a basement; then it says so plainly and offers an alternative.
 
 **Can I do just one small part?**
 Yes. `route` automatically fills in the prerequisite stages: say "just draw the ceiling construction plan" and it brings along the preceding stages that must already be confirmed, instead of running everything from scratch.
@@ -523,6 +546,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
 | **How S1 starts (one sentence is enough)** | [docs/S1_INTAKE.md](docs/S1_INTAKE.md) | Three entry situations, per-type interview, five confidence states, five feasibility checks, design opportunities and the G1 baseline |
 | **How S2 concepts are produced and compared** | [docs/S2_CONCEPT.md](docs/S2_CONCEPT.md) | Spatial prototype library, evidence-driven direction picking, conditional aesthetic rules, deterministic diagrams, real colour boards, the G2 baseline and the S3 handoff |
+| **Why the schemes read like an architect's (spatial-experience layer)** | [docs/DESIGN_CAPABILITY.md](docs/DESIGN_CAPABILITY.md) | 11 spatial devices and how to verify them, how the 22 prototypes differ by spatial family, the three-state client-feeling verdict, 24 structure/MEP implementation paths with sign-off responsibility |
 | How the system is layered | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entry / sub-capabilities / execution layer / canonical spatial model |
 | What the judgements are based on | [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md) | Nine criteria sets, each written as a checkable statement |
 | How to connect the platform | [docs/OMNIAILAB_INTEGRATION.md](docs/OMNIAILAB_INTEGRATION.md) · [providers/README.md](providers/README.md) | Contract fields, credential location, three steps, creative-exclusivity rules |
