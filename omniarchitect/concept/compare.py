@@ -162,6 +162,15 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
     elif not evaluated_checks:
         score -= 5
         why += "；配色缺少数值声明，未能校核"
+    # 业主说过的感受：这是"美学"里唯一有业主原话支撑的部分，必须计入。
+    # 不计入的后果是——业主明确要"仪式感"，推荐却只看风格匹配，等于没听他说话。
+    fit = concept.get("feeling_fit") or {}
+    if fit.get("status") in ("met", "at_risk"):
+        w = float(fit.get("weight") or 0.0)
+        # 把 0–1 的代表性映射成 ±分：全中强项接近 +100，全靠补接近 -20
+        score = score * 0.75 + (20 + 80 * w) * 0.25
+        why += (f"；业主感受诉求（{'、'.join(fit.get('asked') or [])}）"
+                f"匹配度 {w:.2f}，{fit.get('headline') or ''}")
     rows.append({"id": "aesthetic", "name": "美学与业主偏好", "weight": _w(ctx, "aesthetic", 0.12),
                  "score": _clamp(score), "reason": why, "evaluated": True})
 

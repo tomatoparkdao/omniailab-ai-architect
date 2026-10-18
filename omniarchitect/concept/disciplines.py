@@ -28,9 +28,10 @@
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from .. import disciplines as D
+from ..design import enabling as _enable
 
 PROPOSED = "proposed"
 NEEDS_INPUT = "requires_input"
@@ -108,7 +109,8 @@ def _direction(did: str, *, goal: str, strategy: str,
                deliverables: List[str], open_questions: List[str],
                status: str = PROPOSED, evidence: str = "",
                demanded_by: Sequence[str] = (),
-               interfaces: Sequence[str] = ()) -> Dict[str, Any]:
+               interfaces: Sequence[str] = (),
+               implementation_paths: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     d = D.DISCIPLINES[did]
     return {
         "discipline": did,
@@ -123,8 +125,31 @@ def _direction(did: str, *, goal: str, strategy: str,
         "demanded_by": list(demanded_by),
         "interfaces": list(interfaces),
         "evidence": evidence,
+        # 实现路径：不是"做不做得到"，而是"这样做要拿什么换什么、谁来核"。
+        # 结构与机电才用；没有触发任何具体诉求时为空，不列通用清单。
+        "implementation_paths": implementation_paths or {},
         "note": d.note,
     }
+
+
+def _floor_context(project: Any) -> str:
+    """楼层与场地上下文——天窗、地下层这类"物理上做不到"要靠它判定。
+
+    只读已经知道的字段，不推断楼层数；读不到就是空串，`enabling` 会按
+    「条件未满足」处理而不是当成顶层放行。
+    """
+    cons = getattr(project, "constraints", None) or {}
+    keys = ("floor", "floors", "storey", "level", "site_context", "site", "building_type")
+    parts = [str(cons.get(k) or "") for k in keys]
+    for ans_key in ("base.site_conditions", "base.project_type"):
+        try:
+            from ..intake.interview import load_interview
+
+            ans = (load_interview(project).answers or {}).get(ans_key) or {}
+            parts.append(str(ans.get("value") or ""))
+        except Exception:                             # noqa: BLE001
+            pass
+    return " ".join(p for p in parts if p)
 
 
 def for_concept(project: Any, scope: D.DisciplineScope,
@@ -188,14 +213,20 @@ def for_concept(project: Any, scope: D.DisciplineScope,
     if "structure" in active:
         e = scope.entries.get("structure")
         unverified = bool(e and e.state in (D.INFERRED, D.UNKNOWN, D.REQUIRED))
+        # 实现路径：先给「怎么做」，再谈「资料到没到」。
+        # 反面教材是旧逻辑——概念一提挑空就整条标 needs_input，
+        # 于是好方案在比较表里被当成「不可推荐」，而设计本身早就知道有钢梁这条路。
+        paths = _enable.structure_paths(text, floor_context=_floor_context(project))
         if struct_words:
-            # 这套概念真的向结构提了要求：列出它要回答的具体问题
             asks = _structure_asks(struct_words, proto)
-            strategy = ("这套概念要求结构回答：" + "；".join(asks) +
-                        "。做法是先鉴定、再定拆改，不做无依据的假定。")
-            goal = "确认这套空间主张在结构上能不能成立"
+            heads = [g["question"] for g in paths["goals"]]
+            strategy = ("这套概念要求结构实现：" + "；".join(heads) +
+                        "。各条路径的代价与签字责任已列出，先定路径再出计算书。")
+            goal = "让这套空间主张在结构上成立，而不是先问能不能做"
             demanded: Sequence[str] = struct_words
-            status = NEEDS_INPUT          # 有要求但没资料 → 待输入
+            # 有诉求 → 做法已给出 → 状态是「已提出」；资料缺失记在 open_questions，
+            # 不因为缺图纸就把设计判成不可行（那是工程管理软件的行为）。
+            status = PROPOSED
         else:
             strategy = ("这套概念不改变结构体系：结构按现状复核即可，"
                         "重点是确认后续深化不产生新的荷载或开洞需求。")
@@ -217,16 +248,22 @@ def for_concept(project: Any, scope: D.DisciplineScope,
             demanded_by=demanded,
             interfaces=[i for i in ("IF-STR-SPACE", "IF-STR-OPENING", "IF-STR-LOAD")
                         if _iface_active(i, active)],
+            implementation_paths=paths,
         )
 
     if "mep" in active:
         e = scope.entries.get("mep")
         unverified = bool(e and e.state in (D.INFERRED, D.UNKNOWN, D.REQUIRED))
+        paths = _enable.mep_paths(text + " " + daylight, floor_context=_floor_context(project))
         if mep_words or daylight:
             asks = _mep_asks(mep_words, daylight, proto)
-            strategy = ("这套概念要求机电配套：" + "；".join(asks) +
-                        "。负荷与管综由机电工程师计算，系统只提条件。")
-            status = NEEDS_INPUT
+            heads = [g["question"] for g in paths["goals"]]
+            strategy = ("这套概念要求机电配合：" +
+                        ("；".join(heads) if heads else "；".join(asks)) +
+                        "。每条做法都写明了代价与签字责任——目标是让设备不成为空间的对手。")
+            # 同上：机电不是审批口。给了具体做法就是「已提出」，
+            # 容量与管综的计算书仍必须由工程师出（写在 open_questions 与 sign_off 里）。
+            status = PROPOSED
         else:
             strategy = ("这套概念不新增机电系统：按现有容量核对点位即可，"
                         "重点是末端位置随家具走。")
@@ -234,7 +271,7 @@ def for_concept(project: Any, scope: D.DisciplineScope,
             status = PROPOSED if not unverified else NEEDS_INPUT
         out["mep"] = _direction(
             "mep",
-            goal="让机电容量与点位配得上这套空间，而不是后期打补丁",
+            goal="让设备从空间里消失，而不是把设备藏起来就算完成",
             strategy=strategy,
             deliverables=["点位与容量提资", "管综走向示意", "消防与排烟条件"],
             open_questions=["机电系统现状", "可用容量", "消防审批要求"],
@@ -245,6 +282,7 @@ def for_concept(project: Any, scope: D.DisciplineScope,
             demanded_by=mep_words,
             interfaces=[i for i in ("IF-MEP-HEIGHT", "IF-MEP-WET", "IF-MEP-LAND",
                                     "IF-FACADE-MEP") if _iface_active(i, active)],
+            implementation_paths=paths,
         )
 
     if "landscape" in active:

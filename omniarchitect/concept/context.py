@@ -228,6 +228,11 @@ class ConceptContext:
     target_area_m2: float = 0.0
 
     style_preference: str = ""
+    #: 业主原话里的空间感受诉求：{原词: [手法 id]}。
+    #: 这是 S2 用来判断「这套方向给不给得出他要的感觉」的唯一依据；
+    #: 业主没说就是空字典，不替他推断（见 `design/vocabulary.fit`）。
+    feelings: Dict[str, List[str]] = field(default_factory=dict)
+    feeling_text: str = ""
     location: str = ""
     budget_cny: float = 0.0
     budget_tier: str = ""
@@ -309,6 +314,8 @@ class ConceptContext:
             "area_available_m2": self.area_available_m2,
             "target_area_m2": self.target_area_m2,
             "style_preference": self.style_preference,
+            "feelings": dict(self.feelings),
+            "feeling_text": self.feeling_text,
             "location": self.location,
             "budget_cny": self.budget_cny,
             "budget_tier": self.budget_tier,
@@ -347,6 +354,9 @@ class ConceptContext:
             lines.append(f"需求面积：{self.target_area_m2:.0f} m²（无几何，未核对）")
         if self.style_preference:
             lines.append(f"业主指定风格：{self.style_preference}（尊重，不替换）")
+        if self.feelings:
+            lines.append("业主说的感受：" + "、".join(f"「{w}」" for w in self.feelings)
+                         + "（S2 据此校核空间序列）")
         if self.budget_note:
             lines.append(f"预算档位：{self.budget_tier or '未定'}　{self.budget_note}")
         if self.opportunities:
@@ -406,6 +416,12 @@ def build_context(project: Project, *, require_gate: bool = True) -> ConceptCont
         ctx.warnings.append(f"主导专业判定失败，按室内主导处理：{type(exc).__name__}")
     cons = project.constraints or {}
     ctx.style_preference = str(cons.get("style") or "").strip()
+    # 感受诉求来自业主原话（S1 的 base.feeling 或首句解析），不做推断。
+    from ..design import vocabulary as _vocab
+
+    _feeling_text = _answer(project, "base.feeling")
+    ctx.feeling_text = _feeling_text
+    ctx.feelings = _vocab.read_feelings(_feeling_text) if _feeling_text else {}
     ctx.location = _answer(project, "base.location")
     ctx.budget_cny = float(cons.get("budget_cny") or 0) or _parse_budget(_answer(project, "base.budget"))
     # 没有几何时用任务书面积估算档位：否则预算项拿不到分，风格推荐会退化成

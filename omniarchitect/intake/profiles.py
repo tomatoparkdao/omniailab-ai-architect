@@ -41,6 +41,7 @@ SLOTS: Dict[str, Dict[str, object]] = {
     "site_conditions": {"weight": 2, "critical": False, "label": "现场与建筑条件"},
     "structure": {"weight": 2, "critical": False, "label": "结构与机电信息"},
     "style": {"weight": 1, "critical": False, "label": "审美与风格倾向"},
+    "feeling": {"weight": 2, "critical": False, "label": "想要的空间感受"},
     "deliverable_depth": {"weight": 1, "critical": False, "label": "交付深度"},
 }
 
@@ -199,6 +200,20 @@ _Q_STYLE = Question(
     text="审美上有明确方向吗？如果没有，也可以说「暂时没想好」。",
     why="风格可以在概念阶段收敛；它不该拖住任务书。",
 )
+# 唯一一道问「感受」的题。它不是审美题，是空间题：
+# 「仪式感」在专业上对应到达序列，「开阔」对应压缩释放与借景，
+# 所以业主用大白话回答，S2 就能落到可指认的手法上（见 `design/vocabulary.py`）。
+# 措辞刻意避开「风格」「氛围」这类让他答不上来的词，也不给选项——
+# 选项会把他的答案框成我们预设的那几种。
+_Q_FEELING = Question(
+    id="base.feeling", slot="feeling", priority="important", affects="S2",
+    text="如果用一句话形容推开门那一刻想要的感受，你会怎么说？"
+         "（例如「一进门就很安静」「客厅要显得很大」）",
+    why="这一句决定空间序列怎么排：人要经过什么、在哪一步被放开、第一眼看到什么。"
+        "它比风格名有用得多——风格只说看起来像什么，感受说走进去是什么样。",
+    examples=("进门不要一眼看穿，走两步再放开", "要显得敞亮、显大",
+              "回家要有仪式感，像酒店那样"),
+)
 _Q_DEPTH = Question(
     id="base.deliverable_depth", slot="deliverable_depth", priority="deferrable",
     affects="S7",
@@ -210,7 +225,7 @@ _Q_DEPTH = Question(
 
 BASE_QUESTIONS: Tuple[Question, ...] = (
     _Q_TYPE, _Q_LOCATION, _Q_AREA, _Q_NEEDS, _Q_BUDGET, _Q_SCHEDULE,
-    _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_DEPTH,
+    _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_FEELING, _Q_DEPTH,
 )
 
 

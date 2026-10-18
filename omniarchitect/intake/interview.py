@@ -313,6 +313,12 @@ def seed_from_text(project: Project, text: str) -> List[str]:
     m = re.search(r"(\d{1,3})\s*(?:间)?\s*客房", text)
     if m:
         put("hos.keys", f"{m.group(1)} 间客房（业主原话）")
+    # 感受词只在首句里被"说出来"时才记；没说不等于没需求，但不替他说
+    from ..design import vocabulary as _vocab
+
+    feelings = _vocab.read_feelings(text)
+    if feelings:
+        put("base.feeling", "业主原话：" + "、".join(feelings))
 
     if seeded:
         state["answers"] = answers

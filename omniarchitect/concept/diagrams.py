@@ -614,40 +614,42 @@ def sequence(concept: Dict[str, Any], ctx: Any) -> str:
 
 
 def _sequence_steps(concept: Dict[str, Any]) -> List[Tuple[str, str]]:
-    """Derive the sequence from the prototype's own circulation statement."""
-    p = concept["spatial_prototype"]
-    fam = p["family"]
-    circ = p["circulation"]
-    if fam == "courtyard":
-        return [("落客", "从外部进入，视线先被院墙收住"),
-                ("穿院", "经过院落，光与天气成为第一个空间事件"),
-                ("环廊", circ[:28]),
-                ("入室", "主空间朝向院内，外部噪声被墙挡在身后")]
-    if fam == "layered":
-        return [("入户", "先卸下东西，不直接看见主体空间"),
-                ("过渡", "换鞋、挂衣、放包——脏与净在此分开"),
-                ("进入", "视线打开，主要空间作为第二眼出现"),
-                ("深入", circ[:28])]
-    if fam == "radial":
-        return [("入口", "看到核心体块，不知道后面有多深"),
-                ("绕行", circ[:28]),
-                ("展开", "绕过核心后空间一次打开"),
-                ("回望", "回头能看到另一条路径，空间有两个方向")]
-    if fam == "hall":
-        return [("进入", "先感受到体量与光，而不是看到家具"),
-                ("站定", "光成为空间的主体，人在其中被照亮"),
-                ("铺开", circ[:28]),
-                ("收纳", "服务功能被压到暗处，不打断光的关系")]
-    if fam == "cluster":
-        return [("到达", "先看到一组体量，不是一个门厅"),
-                ("选择", "有两条以上路径，访客自行选择方向"),
-                ("停留", circ[:28]),
-                ("离开", "回头仍能看清整体关系")]
-    # linear 默认
-    return [("入户", "一条明确的界面把外部挡住"),
-            ("转向", "空间在第一个转折处展开"),
-            ("主厅", circ[:28]),
-            ("私密", "走廊尽端是私人领域的门")]
+    """Derive the sequence from the concept's own experience sequence.
+
+    这一版不再把 `circulation` 原文截断 28 个字贴到图上——那正是"机器生成"
+    的痕迹（图上一段被切断的句子，业主读不出任何东西）。改为读
+    `design/vocabulary.sequence_for()` 给出的空间事件，并附上手法名称，
+    让每一步都能被指认、被反对。
+    """
+    seq = concept.get("experience_sequence") or {}
+    steps = seq.get("steps") or []
+    if not steps:
+        # 老数据（camel 之前生成的概念）没有该字段：按家族给一句可读的事件，
+        # 不再贴 circulation 原文。
+        fallback = {
+            "courtyard": [("落客", "从外部进入，视线先被院墙收住"),
+                          ("穿院", "光与天气成为第一个空间事件")],
+            "layered": [("入户", "先卸下东西，不直接看见主体空间"),
+                        ("过渡", "换鞋、挂衣、放包——脏与净在此分开")],
+            "radial": [("入口", "看到核心体块，不知道后面有多深"),
+                       ("绕行", "绕过核心后空间一次打开")],
+            "hall": [("进入", "先感受到体量与光，而不是看到家具"),
+                     ("站定", "光成为空间的主体，人在其中被照亮")],
+            "cluster": [("到达", "先看到一组体量，不是一个门厅"),
+                        ("选择", "有两条以上路径，访客自行选择方向")],
+        }
+        return fallback.get(str((concept.get("spatial_prototype") or {}).get("family")),
+                            [("入户", "一条明确的界面把外部挡住"),
+                             ("转向", "空间在第一个转折处展开")])
+
+    from ..design import vocabulary as _vocab
+
+    out: List[Tuple[str, str]] = []
+    for s in steps:
+        dev = _vocab.VOCABULARY.get(str(s.get("device") or ""))
+        note = str(s.get("event") or "")
+        out.append((f"{s.get('step', '')}" + (f" · {dev.name}" if dev else ""), note))
+    return out
 
 
 # --------------------------------------------------------------------------

@@ -18,6 +18,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
+from ..design import vocabulary as vocab
 from ..style import load_catalog
 from ..style.recommender import PREFERENCE_SYNONYMS, RecommendRequest, recommend
 from . import palette as pal
@@ -156,6 +157,11 @@ class Concept:
     palette: Dict[str, Any] = field(default_factory=dict)
     aesthetic_policy: Dict[str, Any] = field(default_factory=dict)
     scores: Dict[str, float] = field(default_factory=dict)
+    #: 走进去经历什么（`design/vocabulary.sequence_for`）。
+    #: 有了这一段，方案才从「房间这么排」变成「人会这样走过」。
+    experience_sequence: Dict[str, Any] = field(default_factory=dict)
+    #: 业主诉求 vs 这套方向能不能给（`design/vocabulary.fit`）。
+    feeling_fit: Dict[str, Any] = field(default_factory=dict)
     revision: int = 1
     pre_gate: bool = False
 
@@ -185,6 +191,8 @@ class Concept:
             "style_basis": self.style_basis,
             "palette": self.palette,
             "aesthetic_policy": self.aesthetic_policy,
+            "experience_sequence": self.experience_sequence,
+            "feeling_fit": self.feeling_fit,
             "scores": {k: round(v, 1) for k, v in self.scores.items()},
             "revision": self.revision,
             "pre_gate": self.pre_gate,
@@ -442,6 +450,8 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
 
         problem, evidence, refs = _evidence_for(p, ctx)
         labels = [catalog.get(s).label for s in style_ids]
+        _seq = vocab.sequence_for(p.to_dict())
+        _fit = vocab.fit(ctx.feelings, p.to_dict())
 
         advantages: List[str] = []
         if item["functional"] >= 12:
@@ -499,6 +509,8 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
                               ("applied", "skipped", "ratio_rule", "warm_cap_pct", "note")},
             scores={"functional": item["functional"], "experiential": item["experiential"],
                     "feasibility": item["feasibility"], "total": item["total"]},
+            experience_sequence=_seq,
+            feeling_fit=_fit,
             revision=ctx.revision,
             pre_gate=pre_gate,
         ))
@@ -520,6 +532,48 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
                  "说明生成有误，应重跑而不是沿用。"),
         "_concepts": concepts,      # 内部用，不写盘
     }
+
+
+def _sequence_md(c: Dict[str, Any]) -> List[str]:
+    """把「走进去经历什么」写成业主能直接反对的一段。
+
+    这段是本轮新增的核心：不给形容词，只给可指认的空间事件，让业主能说
+    「不对，我进门应该先看到院子」。能这样被反驳的方案，才是设计。
+    """
+    seq = c.get("experience_sequence") or {}
+    fit = c.get("feeling_fit") or {}
+    out: List[str] = []
+    steps = seq.get("steps") or []
+    if steps:
+        out += ["**走进去会经历什么**：", "", "| 段落 | 空间事件 | 手法 |", "|---|---|---|"]
+        for s in steps:
+            d = vocab.VOCABULARY.get(s.get("device") or "")
+            out.append(f"| {s['step']} | {s['event']} | {d.name if d else '—'} |")
+        out.append("")
+    if seq.get("devices"):
+        names = "、".join(vocab.VOCABULARY[d].name for d in seq["devices"] if d in vocab.VOCABULARY)
+        out += [f"这套空间家族天然擅长的手法：{names}", ""]
+    if seq.get("missing_steps"):
+        out += [f"> 本原型没有可指认的「{'、'.join(seq['missing_steps'])}」段落——"
+                "如实标出，不用形容词补。", ""]
+
+    if fit.get("status") == "met":
+        # 「都能给」时更要写出差别：哪一句是这套方案的主张，哪一句只是勉强够用。
+        out += [f"**对业主诉求的回应**：{fit.get('headline') or ''}", ""]
+        for m in fit.get("primary") or []:
+            out.append(f"- 「{m['word']}」—— {m['how']}")
+        for m in fit.get("supported") or []:
+            out.append(f"- 「{m['word']}」—— {m['how']}")
+        out.append("")
+    elif fit.get("status") == "at_risk":
+        out += ["**对业主诉求的回应**："]
+        for m in fit.get("met") or []:
+            out.append(f"- 「{m['word']}」可以给：{m['how']}")
+        for r in fit.get("at_risk") or []:
+            tail = f"；起步做法：{r['fix']}" if r.get("fix") else ""
+            out.append(f"- 「{r['word']}」需要额外补：{r['how']}{tail}")
+        out.append("")
+    return out
 
 
 def markdown(result: Dict[str, Any], ctx: ConceptContext) -> str:
@@ -549,6 +603,7 @@ def markdown(result: Dict[str, Any], ctx: ConceptContext) -> str:
             "",
             c["user_experience"],
             "",
+            ] + _sequence_md(c) + [
             f"### 视觉语言：{' + '.join(c['style_labels'])}",
             "",
             f"- 风格依据：{c['style_basis']}",
