@@ -60,6 +60,17 @@ S1_BUNDLE_FILES = (
     "s1-approval-summary.md",
 )
 
+#: 案例研究两份：**条件产出**，不是永远产出。
+#:
+#: 研究要联网，离网时（测试、安装自检、演示、`OMNIAILAB_NO_NETWORK`）根本
+#: 没有结果可写。把它们放进 ``S1_BUNDLE_FILES`` 会让「清单」和「实际产出」
+#: 对不上——清单说有、目录里没有，下游会把它当成丢件。
+#: 因此单列一份，由实际写出与否决定。
+RESEARCH_BUNDLE_FILES = (
+    "reference-shortlist.md",
+    "reference-shortlist.json",
+)
+
 #: 多专业项目额外产出的六份。
 #:
 #: 单专业（纯室内）项目不生成——空表比没有更危险：一份"全部 not_applicable"
@@ -286,12 +297,21 @@ def _write_json(path: Path, payload: Dict[str, Any]) -> None:
 
 
 def generate_bundle(project: Project, out_dir: str | Path,
-                    est: Any = None, summary_text: str = "") -> Dict[str, Any]:
+                    est: Any = None, summary_text: str = "",
+                    research: bool = False,
+                    fetch_fn: Any = None,
+                    verify_pages: bool = True) -> Dict[str, Any]:
     """Write the whole S1 bundle and register every file as an artifact.
 
     ``out_dir`` is the stage output directory (``01-brief-and-brief`` or
     whatever the runner uses), so files land next to the runner's own output
     rather than in a second parallel tree.
+
+    ``research`` is off by default **on purpose**: this function is called by
+    tests, by scenarios and by the installer's smoke checks, and a default that
+    reaches the network would make the whole suite depend on eight foreign
+    websites being up. The live S1 stage passes ``research=True`` explicitly.
+    ``fetch_fn`` and ``verify_pages`` are the seams tests use.
     """
     from .gate import approval_summary_text
 
@@ -358,6 +378,35 @@ def generate_bundle(project: Project, out_dir: str | Path,
     (d / "s1-approval-summary.md").write_text(
         approval_summary_text(project, summary_text), encoding="utf-8")
     written.append("s1-approval-summary.md")
+
+    # --- 案例研究：不等所有问题问完，也不等 G1 --------------------------
+    # 这是 S1 的一部分，不是新阶段：客户刚说完"三层极简别墅"，就应该能看到
+    # 真正的建成案例。检索失败是允许的，编造案例不允许——所以失败时文件照写，
+    # 里面写清为什么没有。
+    import os as _os
+
+    network_ok = _os.environ.get("OMNIAILAB_NO_NETWORK", "").strip().lower() not in (
+        "1", "true", "yes", "on")
+    if research and network_ok:
+        from .. import research as research_mod
+
+        try:
+            res = research_mod.run(project, out_dir=d, fetch_fn=fetch_fn,
+                                   verify_pages=verify_pages)
+            written.extend(name for name in
+                           (research_mod.SHORTLIST_MD, research_mod.SHORTLIST_JSON)
+                           if (d / name).exists())
+            research_info = {
+                "cases": len(res.cases),
+                "verified": len(res.verified),
+                "attempts": len(res.log),
+            }
+        except Exception as exc:      # pragma: no cover - defensive
+            research_info = {"cases": 0, "verified": 0, "error": str(exc)[:160]}
+    elif research:
+        research_info = {"skipped": True, "reason": "OMNIAILAB_NO_NETWORK 已置位，未联网检索"}
+    else:
+        research_info = {"skipped": True}
 
     # --- 多专业范围：谁在范围、谁缺资料、谁和谁会打架 --------------------
     # 这四份不是"补充材料"：G1 确认的就是它们。没有它们，多专业项目在
@@ -426,8 +475,12 @@ def generate_bundle(project: Project, out_dir: str | Path,
     for name in written:
         aid = f"art-s1-{name.replace('.', '-')}"
         kind = "document" if name.endswith(".md") else "data"
-        register_artifact(project, aid, kind,
-                          ["project:program", "project:constraints"],
+        deps = ["project:program", "project:constraints"]
+        if name.startswith("reference-shortlist"):
+            # Cases depend on the brief, not on geometry: a case list built
+            # from a stale brief is exactly what must go stale with it.
+            deps = ["project:constraints"]
+        register_artifact(project, aid, kind, deps,
                           "design-brief", relpath(d / name), "draft")
 
     return {
@@ -438,4 +491,5 @@ def generate_bundle(project: Project, out_dir: str | Path,
         "verdict": feas["verdict"],
         "opportunities": opps["count"],
         "completeness": completeness(project)["ratio"],
+        "research": research_info,
     }

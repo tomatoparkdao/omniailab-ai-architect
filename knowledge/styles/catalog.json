@@ -1,6 +1,6 @@
 {
   "name": "OmniAiLab Design Style Catalog",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "schema_id": "https://omniailabx.com/schemas/design-style.schema.json",
   "generated_from": "knowledge/styles/",
   "count": 47,

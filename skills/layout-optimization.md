@@ -3,7 +3,7 @@ name: omniailab-layout-optimization
 description: 布局优化 —— 对房间比例、进深与开放度做多方案量化比较，把平面收敛到被选方案并说清代价
 capability: layout-optimization
 stages: [S3, S6]
-version: 1.4.0
+version: 1.5.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

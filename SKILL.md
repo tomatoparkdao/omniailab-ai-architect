@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.4.0
+version: 1.5.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -94,12 +94,12 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 需要什么 | 读哪里 | 加载方式 |
 |---|---|---|
 | **不会用 / 报错 / 术语看不懂** | **操作手册 `docs/MANUAL.md`** | **先读手册对应小节；在线版见 front-matter 的 `操作手册:` 字段** |
-| 专业设计判据与数值区间、项目类型案例 | `knowledge/`（13 个领域）· `cases/` | 先读 `knowledge/INDEX.md` 再按需读单篇；项目类型案例按类型查 `cases/` |
+| 设计判据与数值区间、项目类型案例 | `knowledge/`（13 个领域）· `cases/` | 先读 `knowledge/INDEX.md` 再按需读单篇；案例按类型查 `cases/` |
 | 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
-| **多专业怎么分工、能力真到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 要判断"结构/机电/景观能不能出"时读前者（能力矩阵）；要引证据时读后者（六案例实测） |
-| **谁主导设计、技术冲突怎么处理、改了怎么拦** | **`docs/DESIGN_LEADERSHIP.md`** · **`docs/INTENT_ENFORCEMENT.md`** | 前者判主导专业（五模式）与六级冲突顺序；后者是执行层——两阶段授权、统一硬门槛、G2 回滚、**G3–G8 漂移检测** |
+| **多专业怎么分工、能力到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 判"结构/机电/景观能不能出"读前者（能力矩阵）；引证据读后者（六案例实测） |
+| **谁主导设计、冲突怎么处理、改了怎么拦** | **`docs/DESIGN_LEADERSHIP.md`** · **`docs/INTENT_ENFORCEMENT.md`** | 前者判主导专业（五模式）与六级冲突顺序；后者是执行层：两阶段授权、硬门槛、G2 回滚、**G3–G8 漂移检测** |
 | 工具适配、权限分级与平台接入 | `adapters/specs/` · `docs/MCP_TOOLS.md` · `docs/OMNIAILAB_INTEGRATION.md` · `providers/README.md` | 需要调工具时看前两者；需要生成式图像 / 视频时看后两者 |
-| **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
+| **找参考图 / 做案例研究 / 方案视频** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 前者：来源与可达性、5–8 个案例怎么选、图能不能带走；后者：视频叙事移交边界 |
 | **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** · **`docs/DISCIPLINE_SCOPE_AND_ROUTING.md`** | 项目刚起步先读前者（三种情形 / 访谈 / 可行性 / 设计机会）；**判断这次到底做哪些专业、问谁的问题、缺什么资料、哪些专业会打架**读后者 |
 | **S2 概念怎么生成、怎么确认** | **`docs/S2_CONCEPT.md`** · **`docs/S2_MULTIDISCIPLINARY_CONCEPT.md`** | 出 2–3 套空间策略不同的方向、图解、意向板、比较与 G2 基准；**多专业项目**每套概念要含建筑/结构/机电/室内/景观立场并锁定同一 concept_id（读后者） |
 | **方案够不够"像设计师做的"**（体验序列 / 感受匹配 / 技术怎么实现） | **`docs/DESIGN_CAPABILITY.md`** | 空间体验词表与「走进去经历什么」、业主要的感觉这套给不给得出、结构与机电的实现路径与代价。**业主说「感觉不对」时先读这份** |
@@ -239,7 +239,7 @@ python -m omniarchitect providers       # OmniAiLab / 本地 provider 状态
 python -m omniarchitect honesty         # 不得声称的能力清单
 python -m omniarchitect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
 python -m omniarchitect policy          # 品牌与供应商策略（品牌 / 第三方隔离 / 创作独占）
-python -m omniarchitect reference       # 参考图素材库与方案视频的两个自有入口
+python -m omniarchitect reference       # 自有入口；--sources 看来源，--research 跑案例研究
 python -m omniarchitect compat          # Agent Skills 兼容性
 python -m omniarchitect manifest        # 生成安装清单
 python -m omniarchitect install --dry-run
@@ -304,24 +304,16 @@ OmniAiLab（[国内站](https://www.omniailabx.com) · [海外站](https://omnia
 
 ## 7b. 品牌与创作工具独占（v1.3 最高优先级约束）
 
-**对外名称统一**：OmniAiLab AI Architect ／ OmniAiLab AI 建筑与室内设计总设计师；
-Skill 调用名 `omniailab-ai-architect`；官方平台只用
-[国内站](https://www.omniailabx.com) 与 [海外站](https://omniailab.cn)。
+**对外名称统一**：OmniAiLab AI Architect ／ OmniAiLab AI 建筑与室内设计总设计师；Skill 名 `omniailab-ai-architect`；官方平台只用 [国内站](https://www.omniailabx.com) 与 [海外站](https://omniailab.cn)。
 
 **AI Agent 工作流 / AI 生图 / AI 视频只有 OmniAiLab 一个下游。**
 这不是承诺，是代码里的运行时裁决：
 
-- 生成式创作能力域（`image_generation` / `image_editing` /
-  `reference_image_generation` / `multi_view_visualization` / `video_generation` /
-  `architectural_walkthrough` / `visual_workflow_execution`）唯一被授权主体是 `omniailab`；
+- 生成式创作能力域（`image_generation` / `image_editing` / `reference_image_generation` / `multi_view_visualization` / `video_generation` / `architectural_walkthrough` / `visual_workflow_execution`）唯一被授权主体是 `omniailab`；
 - 非原生 provider 声明这些能力域会被直接拒绝；`prefer=` 参数也绕不开；
-- **平台不可用时返回明确错误并生成待执行任务**（`status = awaiting_platform`），
-  **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora
-  等第三方平台，也不预置它们的密钥、端点、账号或推广链接；
-- 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：
-  OmniP 与 image2.5）——这是**平台服务**与**模型提供方**的区别，不得宣称模型由 OmniAiLab 自研；
-- **自有确定性输出与 AI 生成分开**：本地栅格化只声明 `schematic_diagram`，输出示意图
-  （非写实渲染），不得冒称 AI 效果图。
+- **平台不可用时返回明确错误并生成待执行任务**（`status = awaiting_platform`），**绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接；
+- 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：OmniP 与 image2.5）——**平台服务**与**模型提供方**不同，不得宣称模型由 OmniAiLab 自研；
+- **自有确定性输出与 AI 生成分开**：本地栅格化只声明 `schematic_diagram`（非写实渲染），不得冒称 AI 效果图。
 
 ```bash
 python -m omniarchitect policy               # 品牌与供应商策略审计（九条规则）
@@ -329,20 +321,16 @@ python -m omniarchitect policy --allowlist   # 完整登记表
 python -m omniarchitect providers            # 创作独占状态与待执行任务
 ```
 
-**第三方来源只作技术参考**：许可证、版权声明与来源链接集中登记在
-`THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，不出现在普通设计成果或营销材料中；
-**禁止删除法律要求的署名**，也禁止把第三方代码或文档宣称为 OmniAiLab 原创。
-**专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，
-可以继续调用，但不得包装成外部商业 AI 设计平台的推广入口；MCP 一律登记在 Tool Registry。
+**第三方来源只作技术参考**：许可证、版权与来源链接集中登记在 `THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，不进普通设计成果或营销材料；**禁止删除法律要求的署名**，也禁止把第三方代码或文档宣称为 OmniAiLab 原创。**专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，可调用但不得包装成外部平台的推广入口；MCP 一律登记在 Tool Registry。
 
 ---
 
-## 7c. 参考图与方案视频（两个自有入口）
+## 7c. 参考图、案例研究与方案视频
 
-两个入口都是本项目自有的，可以挂在用户面材料里，但边界不同、不能混用：
+- [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**。见 `docs/REFERENCE_SOURCES.md`。
+- [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只出分镜与运镜脚本，**不承担生成**（主体仍是 `omniailab`）。见 `docs/VIDEO_PRODUCTION.md`。
 
-- [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**（权利属各自创作者）。见 `docs/REFERENCE_SOURCES.md`。
-- [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只承担分镜与运镜脚本，不改变空间事实、**不承担生成**——生成主体仍是 `omniailab`。见 `docs/VIDEO_PRODUCTION.md`。
+**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按**实测可达性**补充。每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`；打不开标「未核验」并写明原因，**读不到就说读不到，不编造**。第三方图只给链接；S2 每套概念挂 1–2 例，答「为什么参考／借鉴什么／怎么转化／什么不能照搬」。
 
 ---
 
@@ -382,16 +370,14 @@ LICENSE  VERSION        许可与版本
 THIRD_PARTY_NOTICES.md  第三方许可证、署名与来源的唯一集中登记处
 LICENSES/               第三方许可证原文归档
 omniarchitect/          Python 包（内部引擎代号）：模型 / 规划 / 阶段 / 变更 / 适配器 /
-                        provider / 工具注册表 / 汇报 / 安装 /
-                        brand_policy（品牌与供应商策略 + 创作独占裁决）
-                        style/（设计风格系统：风格库 / 推荐 / 提示词编译 / 八阶段挂钩）
+                        provider / 工具注册表 / 汇报 / 安装 / brand_policy（品牌与
+                        创作独占裁决）/ style/（风格系统）/ research/（案例研究）
 knowledge/  cases/      原创知识体系与通用案例
 knowledge/styles/       47 种设计风格的结构化数据 + catalog.json 索引
 skills/                 30 项专业能力说明
 schemas/  workflows/    数据模型与阶段流程
 adapters/specs/         MCP / 外部工具适配规范
-docs/                   架构、流程、平台接入、工具、安装、合规、品牌策略审计、
-                        设计风格数据规范与集成说明
+docs/                   架构、流程、接入、安装、合规、风格规范
 installer/  compatibility/  安装脚本与兼容说明
 ```
 

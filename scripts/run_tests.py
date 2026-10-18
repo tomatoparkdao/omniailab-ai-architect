@@ -16,6 +16,7 @@ from __future__ import annotations
 import importlib
 import inspect
 import io
+import os
 import sys
 import time
 import traceback
@@ -24,6 +25,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent          # project root
 sys.path.insert(0, str(ROOT))                          # makes the package importable
+
+# The suite must pass on a machine with no internet. Case research reaches out
+# to real sites on the live path, so it is switched off here rather than in each
+# test — one switch, and `scripts/research_three_cases.py` is the place where
+# network behaviour is exercised deliberately.
+os.environ.setdefault("OMNIAILAB_NO_NETWORK", "1")
 
 PACKAGE = "omniarchitect"
 TEST_DIR = ROOT / PACKAGE / "tests"

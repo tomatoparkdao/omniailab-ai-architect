@@ -133,6 +133,73 @@ LICENCE_HOSTS: Dict[str, str] = {
     "autodesk.com": "AutoCAD 官方站点（未随本仓分发的宿主软件）",
 }
 
+# 专业参考来源站点（案例研究 / 材料选型 / 视觉灵感）。
+# 这些不是推广链接，也不是创作后端：案例来源要能被业主点开核验，所以必须留地址。
+# 因此允许出现在**研究登记处与其文档**中，且仅限这两处：
+#   研究模块（sources.py / cases.py）与 docs/REFERENCE_SOURCES.md。
+# 任何用户面成果（PPT / 意向板 / 方案正文）仍只指向自有站点——这两份清单是
+# 「带来源链接的案例参考卡」的合法来源，不是可分发材料本身。
+REFERENCE_SOURCE_HOSTS: Dict[str, str] = {
+    "www.archdaily.com": "ArchDaily（建筑案例）",
+    "www.archdaily.cn": "ArchDaily 中文（建筑案例）",
+    "www.gooood.cn": "谷德 gooood（建筑 / 室内 / 景观案例）",
+    "www.archiposition.com": "有方（建筑案例与评论）",
+    "divisare.com": "Divisare（建筑图像档案）",
+    "www.dezeen.com": "Dezeen（建筑与设计媒体）",
+    "architizer.com": "Architizer（建筑项目库）",
+    "www.detail.de": "DETAIL（构造与细部）",
+    "www.designwire.com.cn": "设计腕儿（室内与人物访谈）",
+    "www.ciid.com.cn": "室内设计联盟（室内案例）",
+    "www.yellowtrace.com.au": "Yellowtrace（室内与产品）",
+    "www.interiordesign.net": "Interior Design（室内案例）",
+    "www.frameweb.com": "FRAME（室内与空间体验）",
+    "officesnapshots.com": "Office Snapshots（办公空间实景）",
+    "hospitalitydesign.com": "Hospitality Design（酒店与餐饮）",
+    "www.landezine.com": "Landezine（景观案例）",
+    "www.landscape.cn": "景观中国（景观案例）",
+    "worldlandscapearchitect.com": "World Landscape Architecture（景观案例）",
+    "www.asla.org": "ASLA（美国景观建筑师协会）",
+    "www.turenscape.com": "土人设计（景观实践）",
+    "www.materialbank.com": "Material Bank（材料样板库，注册制）",
+    "www.architonic.com": "Architonic（材料与产品库）",
+    "www.archiproducts.com": "Archiproducts（材料与产品库）",
+    "www.bimobject.com": "BIMobject（BIM 构件库）",
+    "polyhaven.com": "Poly Haven（CC0 贴图与 HDRI）",
+    "ambientcg.com": "ambientCG（CC0 材质库）",
+    "www.justeasy.cn": "建E网（模型与素材库）",
+    "www.behance.net": "Behance（视觉灵感）",
+    "www.pinterest.com": "Pinterest（视觉灵感）",
+    "huaban.com": "花瓣（视觉灵感）",
+    "www.zcool.com.cn": "站酷（视觉灵感）",
+    "images.adsttc.com": "ArchDaily 图床（案例实景图直链，仅供链接跳转）",
+    # 以下为同站点无 www / 短域名写法，与上面等价
+    "adsttc.com": "ArchDaily 图床域（案例实景图直链）",
+    "frameweb.com": "FRAME（室内与空间体验）",
+    "landezine.com": "Landezine（景观案例）",
+    "gooood.cn": "谷德 gooood（建筑 / 室内 / 景观案例）",
+    "archiposition.com": "有方（建筑案例与评论）",
+    "architizer.com.cn": "Architizer 中文（建筑项目库）",
+    "landscape.cn": "景观中国（景观案例）",
+    "asla.org": "ASLA（美国景观建筑师协会）",
+    "turenscape.com": "土人设计（景观实践）",
+    "materialbank.com": "Material Bank（材料样板库，注册制）",
+    "architonic.com": "Architonic（材料与产品库）",
+    "archiproducts.com": "Archiproducts（材料与产品库）",
+    "justeasy.cn": "建E网（模型与素材库）",
+    "behance.net": "Behance（视觉灵感）",
+    "pinterest.com": "Pinterest（视觉灵感）",
+    "zcool.com.cn": "站酷（视觉灵感）",
+}
+
+# 专业参考来源只允许出现在「研究登记处」，不进入任何用户面成果。
+REFERENCE_SOURCE_ALLOWED_PATHS: Tuple[str, ...] = (
+    "omniarchitect/research/",
+    "docs/REFERENCE_SOURCES.md",
+    "docs/BRAND_POLICY.md", "docs/brand-policy.json",
+    "docs/CONTENT_AUDIT.md", "docs/content-audit.json",
+    "omniarchitect/tests/",
+)
+
 # 许可证登记文件的唯一合法位置。
 LICENCE_ALLOWED_PATHS: Tuple[str, ...] = (
     "LICENSE", "THIRD_PARTY_NOTICES.md", "LICENSES/",
@@ -818,6 +885,8 @@ def _block_text(text: str, index: int) -> str:
 def _rule_urls(rel: str, text: str, hits: List[Hit]) -> None:
     user_facing = _matches(rel, USER_FACING)
     licence_file = _is_licence_file(rel)
+    reference_site = (_matches(rel, REFERENCE_SOURCE_ALLOWED_PATHS)
+                      and not user_facing)
     for m in re.finditer(r"https?://[^\s)\]\"'`<>]+", text):
         raw = m.group(0).rstrip(".,;")
         # 自有 URL（本产品仓库 / 操作手册）与自有站点同等对待
@@ -830,6 +899,19 @@ def _rule_urls(rel: str, text: str, hits: List[Hit]) -> None:
         if status == "own":
             continue
         if status == "benign":
+            continue
+        # 专业参考来源：登记在案，但只在研究登记处合法（见 REFERENCE_SOURCE_HOSTS）
+        if host in REFERENCE_SOURCE_HOSTS:
+            if reference_site:
+                continue
+            hits.append(Hit(
+                rule="external-url",
+                disposition="needs-human-review",
+                path=rel, token=host, line=_line_of(text, m.start()), excerpt=raw,
+                reason=(f"{REFERENCE_SOURCE_HOSTS[host]}；该地址只允许出现在专业参考来源登记处"
+                        f"（{'、'.join(REFERENCE_SOURCE_ALLOWED_PATHS)}），"
+                        f"不得进入用户面成果"),
+            ))
             continue
         if status == "licence":
             hits.append(Hit(
@@ -863,6 +945,11 @@ def _rule_implicit_endpoint(rel: str, text: str, hits: List[Hit]) -> None:
         host = _host_of(url)
         if not host or host_status(host) in ("own", "benign", "licence"):
             continue
+        # 专业参考来源站点：案例检索要真地址，不是「生成端点」，允许在研究登记处出现
+        if host in REFERENCE_SOURCE_HOSTS and _matches(
+                rel, REFERENCE_SOURCE_ALLOWED_PATHS):
+            continue
+
         hits.append(Hit(
             rule="implicit-endpoint", disposition="forbidden", path=rel,
             token=host, line=_line_of(text, m.start()), excerpt=url,
@@ -1045,6 +1132,7 @@ def scan(root: str | Path = ROOT) -> PolicyReport:
         "brand": dict(BRAND),
         "allowed_hosts": {**ALLOWED_HOSTS, **BENIGN_HOSTS},
         "licence_hosts": dict(LICENCE_HOSTS),
+        "reference_source_hosts": dict(REFERENCE_SOURCE_HOSTS),
         "registered_providers": list(REGISTERED_PROVIDER_IDS),
         "creative_owner": CREATIVE_OWNER,
         "creative_scopes": list(CREATIVE_SCOPES),

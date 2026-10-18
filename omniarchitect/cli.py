@@ -147,8 +147,26 @@ def cmd_manual(args) -> int:
 
 
 def cmd_reference(args) -> int:
-    """打印参考图素材库与方案视频的入口，连同使用边界。"""
+    """打印参考图素材库与方案视频的入口，连同使用边界。
+
+    加了 ``--sources`` 与 ``--research`` 之后，这里也是案例研究的入口：
+    一个入口比两个入口更容易被记住，而"去哪找"和"找到什么"本来就是一件事。
+    """
     from .reference import as_list
+
+    if getattr(args, "sources", False):
+        from .research import registry_markdown
+
+        if args.json:
+            from .research import as_list as sources_list
+
+            _print_json({"sources": sources_list()})
+            return 0
+        print(registry_markdown())
+        return 0
+
+    if getattr(args, "research", None):
+        return _run_research(args)
 
     entries = as_list()
     if args.json:
@@ -166,6 +184,55 @@ def cmd_reference(args) -> int:
         print()
     print("两个入口都是本项目自有：素材库用于调研、导演技能用于脚本，")
     print("生成式图像与视频的唯一被授权主体仍是 OmniAiLab 平台。")
+    print()
+    print("按专业看有哪些来源：python -m omniarchitect reference --sources")
+    print("对某个项目做案例研究：python -m omniarchitect reference --research <项目文件>")
+    return 0
+
+
+def _run_research(args) -> int:
+    """S1 阶段的案例研究，单独可跑，也可由 S1 自动触发。"""
+    from . import research as research_mod
+    from .model import load_project
+
+    proj = load_project(args.research)
+
+    out_dir = args.out or ""
+    res = research_mod.run(proj, out_dir=out_dir or None,
+                           verify_pages=not args.no_verify)
+
+    if args.json:
+        _print_json(res.to_dict())
+        return 0
+
+    brief = res.brief
+    print(f"项目：{res.project_id}　修订 r{res.revision}")
+    print(f"触发：{brief.trigger}")
+    print(f"专业：{'、'.join(brief.disciplines)}")
+    print()
+    print(f"第一优先入口：{research_mod.FIRST_PARTY.name}")
+    print(f"  {research_mod.FIRST_PARTY.url}")
+    print("  （客户端渲染，脚本读不到条目；由人打开看，系统不代你编内容）")
+    print()
+    if not res.cases:
+        print("本次没有可核验案例。可能原因从上到下一目了然：")
+        if not res.log:
+            print("  - 未触发：项目类型还没确定")
+        for a in res.log[-6:]:
+            print("  - {action} {url} {status} {detail}".format(
+                action=a.get("action", ""), url=a.get("url", ""),
+                status=a.get("status", ""), detail=a.get("detail", "")))
+    else:
+        print(f"精选案例 {len(res.cases)} 个（已核验 {len(res.verified)} 个）：")
+        for i, c in enumerate(res.cases, 1):
+            print(f"  {i}. [{c.verify}] {c.title} / {c.architect}")
+            print(f"     {c.url}")
+            if c.city or c.year:
+                print(f"     {c.city} {c.country} {c.year}".strip())
+    if out_dir:
+        print()
+        print(f"已写出：{out_dir}/{research_mod.SHORTLIST_MD}")
+        print(f"        {out_dir}/{research_mod.SHORTLIST_JSON}")
     return 0
 
 
@@ -455,8 +522,15 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_manual)
 
-    sp = sub.add_parser("reference", help="参考图素材库与方案视频的两个自有入口")
+    sp = sub.add_parser("reference", help="参考图素材库、方案视频入口、专业案例研究")
     sp.add_argument("--json", action="store_true")
+    sp.add_argument("--sources", action="store_true",
+                    help="按专业列出参考来源与实测可达性")
+    sp.add_argument("--research", default=None, metavar="PROJECT",
+                    help="对某个项目做案例研究（项目目录或 project.json）")
+    sp.add_argument("--out", default="", help="配合 --research，输出目录")
+    sp.add_argument("--no-verify", action="store_true",
+                    help="配合 --research，只列不逐个回读（速度更快，但只能标部分核验）")
     sp.set_defaults(func=cmd_reference)
 
     from .intake.cli import add_parser as _add_intake

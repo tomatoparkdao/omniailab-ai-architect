@@ -15,6 +15,7 @@ A stage that is blocked at a gate is not a failure — it is the system working.
 from __future__ import annotations
 
 import json
+import os
 import platform
 import sys
 import time
@@ -67,6 +68,18 @@ from .stages import (
 
 # drawing depth per stage — R2: CAD exists from preliminary design onward,
 # the difference is schematic vs construction, not presence or absence.
+
+
+def _network_allowed() -> bool:
+    """Whether this run may reach the internet for case research.
+
+    Off when ``OMNIAILAB_NO_NETWORK`` is set, which the test harness and the
+    installer smoke check do. Otherwise on: looking up built work is part of
+    briefing, and a designer who cannot reach ArchDaily should see that as a
+    warning, not as a silent absence of cases.
+    """
+    val = os.environ.get("OMNIAILAB_NO_NETWORK", "")
+    return val.strip().lower() not in ("1", "true", "yes", "on")
 DRAWING_DEPTH = {
     "S3": "schematic",
     "S4": "schematic",
@@ -853,7 +866,11 @@ class StageRunner:
         self.ensure_intake()
 
         # The estimate is produced inside the bundle so both entry points agree.
-        bundle = generate_bundle(self.project, d)
+        # Case research runs on the live stage but is switched off by the test
+        # harness (`OMNIAILAB_NO_NETWORK`), because a suite that depends on
+        # eight foreign websites fails for reasons that have nothing to do with
+        # this code.
+        bundle = generate_bundle(self.project, d, research=_network_allowed())
 
         assess = assess_gate(self.project)
         blocks = blocking_stages(self.project)

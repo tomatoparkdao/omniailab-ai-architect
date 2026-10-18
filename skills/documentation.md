@@ -3,7 +3,7 @@ name: omniailab-documentation
 description: 交付文档 —— 把全套设计成果组织成带索引、边界说明与署名的归档文本，供审查、交底与长期归档
 capability: documentation
 stages: [S8]
-version: 1.4.0
+version: 1.5.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

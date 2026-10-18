@@ -175,12 +175,23 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     })
 
     md_path = out / "concept-options.md"
+    # 参考案例：只挂已核验的、可点开的案例；没有就不挂，不拿不相关的凑数。
+    # 第三方图片永远是"带链接的参考卡"，不进版面（见 concept/references.py）。
+    from . import references as ref_mod
+    from .. import research as research_mod
+
+    refs = ref_mod.build(concept_set["concepts"], research_mod.load(project), ctx)
+    for c in concept_set["concepts"]:
+        c["references"] = refs.get(c["concept_id"], {})
+    refs_md = ref_mod.markdown(refs, concept_set["concepts"])
+
     md_path.write_text("".join([
         f"# 概念方案 · {ctx.name}\n\n",
         f"项目：{ctx.project_id}（{ctx.name}）　模型修订 r{ctx.revision}"
         f"　阶段 S2　生成时间 {concept_set.get('generated_at') or ''}\n\n",
         "\n".join(f"- {line}" for line in ctx.brief_lines()),
         "\n\n", options_md(concept_set, ctx), "\n",
+        refs_md, "\n",
     ]), encoding="utf-8")
 
     cmp_path = out / "concept-comparison.md"

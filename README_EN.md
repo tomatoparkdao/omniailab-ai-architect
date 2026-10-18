@@ -9,7 +9,7 @@ From design requirements and concept ideas, through space planning and layout op
 Working with the OmniAiLab AI creation platform and professional MCP tools, AI moves from design advice to real design execution.
 
 <p>
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -42,7 +42,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
 | Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.4.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
+| Version | v1.5.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |

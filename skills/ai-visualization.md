@@ -3,7 +3,7 @@ name: omniailab-ai-visualization
 description: AI 视觉表现 —— 以 OmniAiLab 平台生成辅助表现材料，输出一律标注为非权威
 capability: ai-visualization
 stages: [S5]
-version: 1.4.0
+version: 1.5.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

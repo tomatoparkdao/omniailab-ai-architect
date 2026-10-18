@@ -3,7 +3,7 @@ name: omniailab-concept-visualization
 description: 概念效果图 —— 在平面确认后由 OmniAiLab 画布按机位生成概念图，供业主对齐空间感受
 capability: concept-visualization
 stages: [S3, S4]
-version: 1.4.0
+version: 1.5.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

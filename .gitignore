@@ -11,6 +11,9 @@ dist/
 projects/*/renders/
 projects/*/concept-render/
 projects/*/private/
+# 临时验证项目（跑测试/验收脚本留下的），只有 demo-120 是随仓库分发的示例
+projects/test-*/
+projects/*/out/
 
 
 # local platform credentials — never committed

@@ -26,6 +26,10 @@ from .registry import PROJECT_ATTRIBUTION, SIGNATURE
 # 本产品自有 URL（源码仓库 + 操作手册）：与自有站点同等对待。
 # 单一来源取自 brand_policy.OWN_URLS —— 避免两处各维护一份白名单。
 from .brand_policy import OWN_URLS as OWN_URL_PREFIXES  # noqa: E402
+from .brand_policy import (  # noqa: E402
+    REFERENCE_SOURCE_ALLOWED_PATHS,
+    REFERENCE_SOURCE_HOSTS,
+)
 
 # Domains that belong to this project and may legitimately appear.
 OWN_DOMAINS = ("omniailabx.com", "omniailab.cn", "omniailab")
@@ -39,6 +43,12 @@ LICENSE_TOKENS = ("MIT License", "CC BY", "Creative Commons", "SPDX-License",
 LICENCE_ALLOWED = ("LICENSE", "VERSION", "THIRD_PARTY_NOTICES.md", "LICENSES/",
                    "docs/CONTENT_AUDIT.md", "docs/content-audit.json",
                    "docs/BRAND_POLICY.md", "docs/brand-policy.json")
+
+# 专业参考来源登记处：案例要能被业主点开核验，所以地址必须留在那里。
+# 这不是「用户面材料指向外部站点」——它是「我们查过哪些站」的登记表，
+# 与被分发的成果是两回事。范围由 brand_policy 统一裁决，此处只引用，
+# 避免同一个白名单写两份、各说各话。
+REFERENCE_SOURCE_ALLOWED = REFERENCE_SOURCE_ALLOWED_PATHS
 
 # Specification namespaces and package-schema URIs are not promotional links.
 BENIGN_URL_HOSTS = (
@@ -209,11 +219,15 @@ def scan_file(root: Path, path: Path) -> Optional[FileFinding]:
     f.hits = dict(privacy)
 
     # --- 3. links --------------------------------------------------------
+    # 研究登记处本来就要写清"查了哪几个站"，那里的参考来源地址不算外链。
+    in_reference_register = any(rel.startswith(p) for p in REFERENCE_SOURCE_ALLOWED)
     urls = PATTERNS["url"].findall(text)
     external = [u for u in urls
                 if not any(d in u for d in OWN_DOMAINS)
                 and not any(u.startswith(p) for p in OWN_URL_PREFIXES)
-                and not any(h in u for h in BENIGN_URL_HOSTS)]
+                and not any(h in u for h in BENIGN_URL_HOSTS)
+                and not (in_reference_register
+                         and any(h in u for h in REFERENCE_SOURCE_HOSTS))]
 
     # --- 4. licence text -------------------------------------------------
     lic = [ln.strip() for ln in text.splitlines()

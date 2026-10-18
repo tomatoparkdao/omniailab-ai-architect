@@ -9,7 +9,7 @@
 通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
 
 <p>
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.4.0-1f6feb?style=flat-square" alt="版本 1.4.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -42,7 +42,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.4.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.5.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |

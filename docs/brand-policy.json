@@ -2,8 +2,8 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-17 17:43:27",
-  "files_scanned": 258,
+  "scanned_at": "2026-10-18 22:04:27",
+  "files_scanned": 292,
   "by_disposition": {
     "authorized-dependency": 30
   },
@@ -35,7 +35,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Codex",
-      "line": 561,
+      "line": 974,
       "excerpt": "ilab-ai-director`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -44,7 +44,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Claude",
-      "line": 561,
+      "line": 974,
       "excerpt": "tor`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -53,7 +53,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "WorkBuddy",
-      "line": 561,
+      "line": 974,
       "excerpt": "*：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从哪来（三选一）→ 三、启动指令 →   四、启",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -62,7 +62,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Cursor",
-      "line": 759,
+      "line": 1172,
       "excerpt": "l，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域**（`image",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -143,7 +143,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Codex",
-      "line": 359,
+      "line": 347,
       "excerpt": "*：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -152,7 +152,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Claude",
-      "line": 359,
+      "line": 347,
       "excerpt": "ckup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、消防、无障碍、机电",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -161,7 +161,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Cursor",
-      "line": 359,
+      "line": 347,
       "excerpt": "先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -170,7 +170,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "WorkBuddy",
-      "line": 359,
+      "line": 347,
       "excerpt": "与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -216,7 +216,7 @@
       "path": "compatibility/codex.md",
       "token": "Codex",
       "line": 3,
-      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.4.0 author: OmniAiLab developer: Mochiball agen",
+      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.5.0 author: OmniAiLab developer: Mochiball agen",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -224,7 +224,7 @@
       "disposition": "authorized-dependency",
       "path": "docs/MANUAL.md",
       "token": "Codex",
-      "line": 69,
+      "line": 70,
       "excerpt": "|  调用名是**全小写连字符**写法，不是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-a",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -233,7 +233,7 @@
       "disposition": "authorized-dependency",
       "path": "docs/MANUAL.md",
       "token": "Claude",
-      "line": 69,
+      "line": 70,
       "excerpt": "**全小写连字符**写法，不是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -242,7 +242,7 @@
       "disposition": "authorized-dependency",
       "path": "docs/MANUAL.md",
       "token": "Cursor",
-      "line": 69,
+      "line": 70,
       "excerpt": "是显示名。支持 Skill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skil",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -251,7 +251,7 @@
       "disposition": "authorized-dependency",
       "path": "docs/MANUAL.md",
       "token": "WorkBuddy",
-      "line": 69,
+      "line": 70,
       "excerpt": "kill 的工具（Codex / Claude Code / Cursor / WorkBuddy）直接用调用名最稳；不支持原生 Skill 的工具，用自然语言描述设计任务也能触发。  > **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skill 名）， > 里",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -343,8 +343,8 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "midjourney",
-      "line": 319,
-      "excerpt": "atus = awaiting_platform`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平",
+      "line": 314,
+      "excerpt": "`status = awaiting_platform`），**绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
     {
@@ -352,8 +352,8 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "krea",
-      "line": 319,
-      "excerpt": "`），   **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canv",
+      "line": 314,
+      "excerpt": "orm`），**绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
     {
@@ -361,8 +361,8 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "higgsfield",
-      "line": 319,
-      "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：",
+      "line": 314,
+      "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：OmniP 与",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
     {
@@ -370,8 +370,8 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "runway",
-      "line": 319,
-      "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image",
+      "line": 314,
+      "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：OmniP 与 image2.5）——*",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
     {
@@ -379,8 +379,8 @@
       "disposition": "forbidden",
       "path": "SKILL.md",
       "token": "sora",
-      "line": 319,
-      "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora   等第三方平台，也不预置它们的密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：   OmniP 与 image2.5）——这是**平台服务**",
+      "line": 314,
+      "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台，也不预置其密钥、端点、账号或推广链接； - 平台内部依法授权并已配置的底层模型供应商由平台侧路由（已登记 `omniailab.canvas`：OmniP 与 image2.5）——**平台服务**与**模型提供方*",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
     {
@@ -433,7 +433,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "midjourney",
-      "line": 571,
+      "line": 629,
       "excerpt": "status = awaiting_platform`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -442,7 +442,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "krea",
-      "line": 571,
+      "line": 629,
       "excerpt": "rm`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -451,7 +451,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "higgsfield",
-      "line": 571,
+      "line": 629,
       "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是*",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -460,7 +460,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "runway",
-      "line": 571,
+      "line": 629,
       "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -469,7 +469,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "sora",
-      "line": 571,
+      "line": 629,
       "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提供方**的区别，**不宣称模型由",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -568,6 +568,56 @@
       "freecad.org": "FreeCAD 官方站点（依赖来源登记）",
       "ifcopenshell.org": "IfcOpenShell 官方站点（依赖来源登记）",
       "autodesk.com": "AutoCAD 官方站点（未随本仓分发的宿主软件）"
+    },
+    "reference_source_hosts": {
+      "www.archdaily.com": "ArchDaily（建筑案例）",
+      "www.archdaily.cn": "ArchDaily 中文（建筑案例）",
+      "www.gooood.cn": "谷德 gooood（建筑 / 室内 / 景观案例）",
+      "www.archiposition.com": "有方（建筑案例与评论）",
+      "divisare.com": "Divisare（建筑图像档案）",
+      "www.dezeen.com": "Dezeen（建筑与设计媒体）",
+      "architizer.com": "Architizer（建筑项目库）",
+      "www.detail.de": "DETAIL（构造与细部）",
+      "www.designwire.com.cn": "设计腕儿（室内与人物访谈）",
+      "www.ciid.com.cn": "室内设计联盟（室内案例）",
+      "www.yellowtrace.com.au": "Yellowtrace（室内与产品）",
+      "www.interiordesign.net": "Interior Design（室内案例）",
+      "www.frameweb.com": "FRAME（室内与空间体验）",
+      "officesnapshots.com": "Office Snapshots（办公空间实景）",
+      "hospitalitydesign.com": "Hospitality Design（酒店与餐饮）",
+      "www.landezine.com": "Landezine（景观案例）",
+      "www.landscape.cn": "景观中国（景观案例）",
+      "worldlandscapearchitect.com": "World Landscape Architecture（景观案例）",
+      "www.asla.org": "ASLA（美国景观建筑师协会）",
+      "www.turenscape.com": "土人设计（景观实践）",
+      "www.materialbank.com": "Material Bank（材料样板库，注册制）",
+      "www.architonic.com": "Architonic（材料与产品库）",
+      "www.archiproducts.com": "Archiproducts（材料与产品库）",
+      "www.bimobject.com": "BIMobject（BIM 构件库）",
+      "polyhaven.com": "Poly Haven（CC0 贴图与 HDRI）",
+      "ambientcg.com": "ambientCG（CC0 材质库）",
+      "www.justeasy.cn": "建E网（模型与素材库）",
+      "www.behance.net": "Behance（视觉灵感）",
+      "www.pinterest.com": "Pinterest（视觉灵感）",
+      "huaban.com": "花瓣（视觉灵感）",
+      "www.zcool.com.cn": "站酷（视觉灵感）",
+      "images.adsttc.com": "ArchDaily 图床（案例实景图直链，仅供链接跳转）",
+      "adsttc.com": "ArchDaily 图床域（案例实景图直链）",
+      "frameweb.com": "FRAME（室内与空间体验）",
+      "landezine.com": "Landezine（景观案例）",
+      "gooood.cn": "谷德 gooood（建筑 / 室内 / 景观案例）",
+      "archiposition.com": "有方（建筑案例与评论）",
+      "architizer.com.cn": "Architizer 中文（建筑项目库）",
+      "landscape.cn": "景观中国（景观案例）",
+      "asla.org": "ASLA（美国景观建筑师协会）",
+      "turenscape.com": "土人设计（景观实践）",
+      "materialbank.com": "Material Bank（材料样板库，注册制）",
+      "architonic.com": "Architonic（材料与产品库）",
+      "archiproducts.com": "Archiproducts（材料与产品库）",
+      "justeasy.cn": "建E网（模型与素材库）",
+      "behance.net": "Behance（视觉灵感）",
+      "pinterest.com": "Pinterest（视觉灵感）",
+      "zcool.com.cn": "站酷（视觉灵感）"
     },
     "registered_providers": [
       "omniailab",
