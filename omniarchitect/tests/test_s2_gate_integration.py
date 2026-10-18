@@ -286,6 +286,46 @@ def test_d2_old_entries_and_demo_mode_cannot_impersonate_a_signature():
 # --------------------------------------------------------------------------
 # E. 风格锁定失败 → 不得宣布成功
 # --------------------------------------------------------------------------
+def test_e3_rollback_also_undoes_files_written_by_the_transaction():
+    """内存回滚不够：锁定文件与交接文件写在磁盘上，必须一起复原。
+
+    否则会留下"阶段未确认、但磁盘上有一份已签的锁定文件"这种更难查的状态。
+    """
+    import omniarchitect.concept.handoff as handoff_mod
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p = _residential(tmp)
+        runner = _runner(p, tmp)
+        runner.run_stage("S2", confirm=False)
+        C.select(p, "C-B")
+        out_dir = runner.out / "02-concept"
+        lock = out_dir / f"style-lock-r{p.revision}.json"
+        handoff_file = out_dir / "concept-handoff.json"
+        # 事务前先放一份旧的交接文件，验证"恢复成旧内容"而不是简单删除
+        handoff_file.write_text("{\"stale\": true}\n", encoding="utf-8")
+        before = handoff_file.read_bytes()
+
+        def _boom(*a, **k):
+            raise OSError("磁盘写入失败（模拟交接文件写不进去）")
+
+        with _patched(handoff_mod, "refresh", _boom):
+            res = runner.approve("S2", by="业主")
+
+        assert res["status"] != CONFIRMED
+        assert res.get("rolled_back") is True
+        assert not lock.exists(), "锁定文件写出来了却没删掉：磁盘与状态不一致"
+        assert handoff_file.read_bytes() == before, "旧交接文件被覆盖且没恢复"
+        assert C.check_baseline(p)["has_baseline"] is False
+        assert not (p.meta.get("concept") or {}).get("style_lock")
+
+        # 恢复后重来必须成功，且文件都在
+        ok = runner.approve("S2", by="业主")
+        assert ok["status"] == CONFIRMED, ok.get("notes")
+        assert lock.is_file()
+        assert json.loads(handoff_file.read_text(encoding="utf-8"))["status"] == "locked"
+
+
 def test_e_style_lock_failure_rolls_back_and_is_recoverable():
     import omniarchitect.style.hooks as hooks
 

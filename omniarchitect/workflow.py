@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
-from . import changes, compliance, quantities
+from . import changes, compliance, finishes, quantities
 from .adapters import (
     BlenderAdapter,
     DxfAdapter,
@@ -591,6 +591,27 @@ class StageRunner:
             record_change(self.project, "gate",
                           f"{stage_name('S3')} 确认通过（owner：{assess['concept_id'] or '—'}）",
                           targets=["S3"])
+            # 平面签了，才有资格把图纸派生成视觉：任务包在这里生成，但不提交。
+            try:
+                from .concept.visual import build_plan_visuals
+
+                from .concept.handoff import plan_record
+
+                refs = [str(x) for x in (plan_record(self.project).get("dxf") or [])]
+                if not refs:                      # 旧项目没有记录时退回目录查找
+                    refs = [str(p) for p in sorted(self._dir("S3").glob("*.dxf"))]
+                vp = build_plan_visuals(self.project, self._dir("S3"),
+                                        stage="S3", references=refs)
+                jobs = vp.get("jobs") or []
+                if jobs:
+                    notes.append(
+                        f"图纸派生任务包已生成：{len(jobs)} 项"
+                        f"（{ '、'.join(j['target'] for j in jobs) }）——"
+                        "仅编译未提交，授权后才计费")
+                else:
+                    notes.append(f"图纸派生未生成：{vp.get('note', '未知原因')}")
+            except Exception as exc:
+                notes.append(f"图纸派生任务包生成失败：{type(exc).__name__}: {exc}")
         else:
             st = confirm_stage(self.project, "S3", by=by or "演示流程",
                                note=note or "G3 演示确认（不构成正式签发）")
@@ -949,6 +970,7 @@ class StageRunner:
             "revision": self.project.revision,
             "concept_id": handoff.get("concept_id") or "",
             "concept_digest": concept_digest(self.project),
+            "dxf": [a for a in arts if str(a).lower().endswith(".dxf")],
             "handoff_status": handoff.get("status", "none"),
             "conformance": (concept_check or {}).get("conformance", "not_applicable"),
             "auto_pass": bool((concept_check or {}).get("auto_pass")),
@@ -990,73 +1012,75 @@ class StageRunner:
     def stage_S4(self) -> StageOutcome:
         d = self._dir("S4")
         chosen = self._ensure_scheme_installed()
-        spaces = [s for s in self.project.spaces if s.properties.get("scheme")]
-        style = str((self.project.constraints or {}).get("style") or "现代意式极简")
+        style = finishes.style_label(self.project)
+        profile = finishes.profile_label(self.project)
 
         # --- 顶墙地 + 材料体系 ---
+        # 每张表都由"这个项目自己的空间 + 已确认概念的材料方向"推导，不再用
+        # 住宅默认值。办公项目里出现"主卧"是硬错误，测试守着这条。
         lines = [
             f"# 初步设计 — 方案{chosen}", "",
-            f"风格：{style}　　（S3 已确认方案{chosen}）", "",
+            f"风格：{style}　　项目类型：{profile}　　（S3 已确认方案{chosen}）", "",
             "## 顶面", "",
             "| 区域 | 做法 | 标高 | 灯槽 |", "|---|---|---|---|",
-            "| 客厅/餐厅 | 平顶 + 弧形叠级（主导线） | 2600 | 内嵌灯带 3000K |",
-            "| 走廊 | 平顶 + 线性灯带导向 | 2500 | 两侧洗墙 |",
-            "| 卧室 | 平顶 + 窗帘盒 | 2500 | 床头重点照明 |",
-            "| 卫生间 | 铝扣板/防水石膏板 | 2400 | 防雾筒灯 |",
-            "", "## 墙面", "",
-            "| 部位 | 做法 | 材料 |", "|---|---|---|",
-            "| 公共区主墙 | 微水泥 / 暖白乳胶漆 | NCS S1002-Y |",
-            "| 电视背景墙（待确认） | 弧形岩板 + 隐藏灯带 | 暖灰岩板 12mm |",
-            "| 走廊端景 | 乳白亚克力发光面 | 亚克力 + 背光 |",
-            "| 卧室 | 木饰面 + 硬包 | 橡木拉丝 |",
-            "", "## 地面", "",
-            "| 区域 | 材料 | 规格 |", "|---|---|---|",
-            "| 公共区 | 微水泥 / 大板岩板 | 哑光，缝宽 2mm |",
-            "| 卧室 | 木地板 | 实木复合 190×1200 |",
-            "| 卫生间 | 防滑砖 | 300×600 哑光 |",
-            "", "## 材料与色彩体系（暖材占比控制在 25–35%）", "",
-            "| 组 | 材料 | 色值 | 全场占比 |", "|---|---|---|---|",
-            "| 冷底 | 微水泥 / 超白玻 / 黑钛 | NCS S1500-N | 55% |",
-            "| 暖面 | 橡木饰面 / 亚麻 | NCS S2010-Y30R | 30% |",
-            "| 重音 | 黑钛收边 / 台面 | NCS S9000-N | 5% |",
-            "| 过渡 | 暖灰岩板 | NCS S2502-Y | 10% |",
-            "", "## 灯光方案（初步）", "",
-            "| 层 | 手法 | 参数 |", "|---|---|---|",
-            "| 基础 | 洗墙 + 筒灯 | 3000K / Ra≥90 / 100lx |",
-            "| 重点 | 背景墙灯带、床头 | 3000K / 300lx |",
-            "| 氛围 | 天花灯带旋律线 | 2700K / 可调光 |",
-            "| 自然光 | 保留南向落地窗，不补光打平 | — |",
+        ]
+        for r in finishes.ceiling_rows(self.project):
+            lines.append(f"| {r['zone']} | {r['method']} | {r['level']} | {r['light']} |")
+        lines += ["", "## 墙面", "", "| 区域 | 做法 | 材料 |", "|---|---|---|"]
+        for r in finishes.wall_rows(self.project):
+            lines.append(f"| {r['zone']} | {r['method']} | {r['material']} |")
+        lines += ["", "## 地面", "", "| 区域 | 材料 | 规格 |", "|---|---|---|"]
+        for r in finishes.floor_rows(self.project):
+            lines.append(f"| {r['zone']} | {r['material']} | {r['spec']} |")
+
+        ratio_note = "（色彩关系按概念方案的比例声明执行）"
+        lines += ["", f"## 材料与色彩体系{ratio_note}", "",
+                  "| 组 | 材料 | 色值 | 占比 |", "|---|---|---|---|"]
+        for r in finishes.palette_rows(self.project):
+            lines.append(f"| {r['group']} | {r['material']} | {r['hex']} | {r['pct']} |")
+
+        lines += ["", "## 灯光方案（初步）", "", "| 层 | 手法 | 参数 |", "|---|---|---|"]
+        for r in finishes.lighting_rows(self.project):
+            lines.append(f"| {r['layer']} | {r['method']} | {r['param']} |")
+
+        lines += [
             "", "## 机电与设备协调（初步）", "",
             "| 专业 | 空间影响 | 待办 |", "|---|---|---|",
-            "| 暖通 | 吊顶内风管占用 ≥250mm | 复核净高 2600 是否满足 |",
-            "| 电气 | 点位合计约 68 处 | 与家具布置核对 |",
-            "| 给排水 | 中脊竖向管井 | 确认与结构无冲突 |",
-            "| 消防 | 住宅户内无喷淋（按当地要求复核） | **须专业确认** |",
+            "| 暖通 | 吊顶内风管占用 ≥250mm | 复核净高是否满足 |",
+            "| 电气 | 点位数量按本项目功能表统计 | 与家具/工位布置核对 |",
+            "| 给排水 | 湿区竖向管井 | 确认与结构无冲突 |",
+            f"| 消防 | {profile}项目的消防要求按当地规范 | **须专业确认** |",
             "", "## 这一步的交付深度说明", "",
             "本阶段输出**方案深度**图纸：可用于与业主沟通做法与造价，**不得用于施工**。",
             "正式施工图在 S7 出，深度区别是 construction，而不是有没有图纸（R2）。",
             "", "---", "",
             "> 做法、材料与灯光的判断口径为本系统自有标准；"
             "机电口径为空间影响速查，具体设计须专业工程师完成。",
+            "> 材料名取自 G2 确认的概念方案；未确认的材料写「待确认」，"
+            "不套用任何项目类型的默认材料。",
         ]
         (d / "preliminary-design.md").write_text("\n".join(lines), encoding="utf-8")
 
         # --- material & lighting schedules as structured data ---
         sched = {
             "materials": [
-                {"group": "冷底", "name": "微水泥", "spec": "哑光 3mm", "color": "NCS S1500-N", "ratio": 0.55},
-                {"group": "暖面", "name": "橡木饰面", "spec": "拉丝 0.6mm", "color": "NCS S2010-Y30R", "ratio": 0.30},
-                {"group": "重音", "name": "黑钛", "spec": "拉丝 1.0mm", "color": "NCS S9000-N", "ratio": 0.05},
-                {"group": "过渡", "name": "暖灰岩板", "spec": "12mm", "color": "NCS S2502-Y", "ratio": 0.10},
+                {"group": r["group"], "name": r["material"],
+                 "spec": "", "color": r["hex"], "ratio": r["pct"]}
+                for r in finishes.palette_rows(self.project)
             ],
+            "surfaces": {
+                "ceiling": finishes.ceiling_rows(self.project),
+                "wall": finishes.wall_rows(self.project),
+                "floor": finishes.floor_rows(self.project),
+            },
             "lighting": [
-                {"layer": "基础", "fixture": "筒灯/洗墙", "cct_k": 3000, "cri": 90, "lux": 100},
-                {"layer": "重点", "fixture": "灯带/射灯", "cct_k": 3000, "cri": 90, "lux": 300},
-                {"layer": "氛围", "fixture": "天花灯带", "cct_k": 2700, "cri": 90, "lux": None},
+                {"layer": r["layer"], "fixture": r["method"], "param": r["param"]}
+                for r in finishes.lighting_rows(self.project)
             ],
-            "mep_points": {"electrical": 68, "water": 12, "drain": 6, "hvac_diffuser": 9},
             "depth": "schematic",
-            "note": "暖材占比须 ≤40%，超过即滑向酒店感，丢掉空间的清醒",
+            "profile": finishes.project_profile(self.project),
+            "note": ("材料与色彩来自 G2 确认的概念方案；未确认项标「待确认」，"
+                     "不按项目类型套默认材料。"),
         }
         (d / "material-lighting.json").write_text(
             json.dumps(sched, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -1139,12 +1163,11 @@ class StageRunner:
         walk = [
             "# 漫游与多视角表现计划", "",
             "| 序号 | 视图 | 用途 | 镜头 |", "|---|---|---|---|",
-            "| 01 | 全景 | 汇报封面 | 24mm，1.6m 眼高 |",
-            "| 02 | 客厅 | 主推 | 35mm，房间对角 |",
-            "| 03 | 餐厅 | 主推 | 35mm |",
-            "| 04 | 主卧 | 辅助 | 35mm |",
-            "| 05 | 轴测 | 空间关系 | 50mm 正交倾向 |",
-            "| 06 | 全景漫游 | 交付 | 沿主动线，60s |",
+        ]
+        # 机位名来自本项目真实空间：办公项目不该出现「主卧」。
+        for v in finishes.view_rows(self.project):
+            walk.append(f"| {v['no']} | {v['name']} | {v['use']} | {v['lens']} |")
+        walk += [
             "", "## 表现纪律", "",
             "1. 五张图必须是同一套几何、同一套材质、同一套光线；",
             "2. AI 表现类成果一律标注为非尺寸依据（authoritative = false）；",
@@ -1352,18 +1375,21 @@ class StageRunner:
 
         mats = [
             "# 材料与物料表", "",
-            "| 部位 | 材料 | 规格 | 品牌档位 | 用量 | 损耗 | 替代 |", "|---|---|---|---|---|---|---|",
-            f"| 公共区地面 | 微水泥 | 哑光 3mm | 中高档 | {t.quantities['floor_area_m2']:.1f} m² | 8% | 大板岩板 |",
-            f"| 卧室地面 | 实木复合地板 | 190×1200 | 中高档 | {t.quantities['floor_area_m2']*0.35:.1f} m² | 5% | 强化复合 |",
-            f"| 墙面 | 乳胶漆 NCS S1002-Y | 哑光 | 中档 | {t.quantities['wall_finish_area_m2']:.1f} m² | 10% | 微水泥 |",
-            f"| 天花 | 石膏板 + 乳胶漆 | 9.5mm | 中档 | {t.quantities['ceiling_area_m2']:.1f} m² | 8% | 矿棉板 |",
-            f"| 木饰面/柜体 | 橡木饰面 | 0.6mm 拉丝 | 中高档 | {t.quantities['joinery_area_m2']:.1f} m² | 10% | 科技木 |",
-            f"| 玻璃 | 超白钢化 | 12mm | 中高档 | {t.quantities['glazing_area_m2']:.1f} m² | 3% | 普通白玻 |",
-            f"| 门 | 实木复合门 | 900×2100 | 中高档 | {t.quantities['door_count']:.0f} 樘 | 0% | 免漆门 |",
+            "| 部位 | 材料 | 规格 | 品牌档位 | 用量 | 损耗 | 替代 | 来源 |",
+            "|---|---|---|---|---|---|---|---|",
+        ]
+        # 材料名与做法取自 G2 确认的概念方案；没有就写「待确认」，
+        # 不用住宅默认的微水泥/乳胶漆替客户拍板。
+        for r in finishes.material_rows(self.project, t):
+            mats.append(f"| {r['part']} | {r['material']} | {r['spec']} | {r['tier']} "
+                        f"| {r['qty']} | {r['waste']} | {r['alt']} | {r['source']} |")
+        mats += [
             "", "## 采购注意", "",
             "- 同一材料必须锁定同一批次色号；",
-            "- 岩板/大板需在图纸确认后实测下单；",
-            "- 灯具需按回路与色温分批到货。",
+            "- 大板/岩板类需在图纸确认后实测下单；",
+            "- 灯具需按回路与色温分批到货；",
+            f"- 本表按「{finishes.profile_label(self.project)}」项目口径编制；"
+            "未确认材料的行不得直接下单。",
         ]
         (d / "material-schedule.md").write_text("\n".join(mats), encoding="utf-8")
 

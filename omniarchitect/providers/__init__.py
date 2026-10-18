@@ -51,6 +51,7 @@ from .base import (  # noqa: F401
     ProviderCapability,
     ProviderError,
     ProviderJob,
+    SubmitStateUnknown,
 )
 from . import canvas  # noqa: F401  (OmniAiLab 画布工作流：平面确认后的概念效果图)
 from .local import LocalDeterministicProvider
@@ -292,7 +293,8 @@ __all__ = [
     "ProviderRegistry", "discover", "report", "PREFERENCE",
     "OmniAiLabProvider", "LocalDeterministicProvider", "canvas",
     "MediaProvider", "ProviderCapability", "ProviderJob", "AssetLink",
-    "ProviderError", "NotConfigured", "CAPABILITY_SCOPES", "PROVIDER_STATES",
+    "ProviderError", "NotConfigured", "SubmitStateUnknown",
+    "CAPABILITY_SCOPES", "PROVIDER_STATES",
     # policy surface
     "PolicyViolation", "CREATIVE_SCOPES", "BUILTIN_SCOPES", "CREATIVE_OWNER",
     "GENERATIVE_SCOPES", "ROUTE_ALLOWLIST", "creative_owner",

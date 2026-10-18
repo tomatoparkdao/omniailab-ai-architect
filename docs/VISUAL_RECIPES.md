@@ -68,7 +68,23 @@ agent_created: true
 
 顺带解决一个隐患：模型不会替我们编造尺寸数字。
 
-## 五、怎么用
+## 五、在流程里的位置
+
+配方不是"另外跑一个命令"，它们已经接进阶段产出：
+
+| 环节 | 自动带上的配方 | 产物 | 状态 |
+|---|---|---|---|
+| S2 概念（`generate`） | `concept-sheet` `material-moodboard` | `concept-visual-jobs.json` | 未配置平台即 `awaiting_platform` |
+| G3 通过后（`approve S3`） | `plan-color` `plan-axon` `presentation-board` | `drawing-visuals.json` / `.md` | `awaiting_authorization`，授权后才计费 |
+| S3/S4 手动补充 | `section-elevation` | `style prompt --target section-elevation` | 需给剖切位置与参考图 |
+
+S2 的四条任务（方向意象 / 材料氛围 / 概念设计板 / 实体材质情绪板）走同一套双开关与
+幂等台账；概念设计板的 `text_overlay` 会随任务包一起下发，排版层据此写标签。
+
+G3 之后的图纸派生只**编译不提交**：平面签了不等于授权花钱，任务停在
+`awaiting_authorization`，等显式授权再提交。
+
+## 六、怎么用
 
 ```bash
 # 图纸派生：必须带参考图，平面已过 G3 才能用于正式成果
@@ -88,7 +104,7 @@ python -m omniarchitect style submit --compile-out out/prompt.json \
 不打开 `--plan-confirmed` 时，`plan-color` / `plan-axon` / `section-elevation` /
 `presentation-board` 出来的是探索稿，`submit` 会拒绝并说明原因。
 
-## 六、边界
+## 七、边界
 
 * 这些图是**表现**，不是图纸：不得作为尺寸、面积、构造或报审依据；
 * 几何由模型重绘，必然有偏差，必须与已确认平面叠合核对后才可交付；

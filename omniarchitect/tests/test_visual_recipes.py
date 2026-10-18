@@ -184,3 +184,90 @@ def test_material_moodboard_does_not_require_a_reference_but_keeps_the_boundary(
     assert rec.requires_reference is False
     assert not any("猜几何" in w for w in p.warnings)
     assert any("不是" in c and "材料样板" in c for c in rec.checks)
+
+
+# --------------------------------------------------------------------------
+# 9. S2 环节：任务包里必须有这两条版面配方
+# --------------------------------------------------------------------------
+def test_s2_bundle_carries_the_board_recipes():
+    import json
+    import tempfile
+    from pathlib import Path
+
+    from omniarchitect import concept as C
+    from omniarchitect.demo import build_demo_project
+    from omniarchitect.intake.gate import decide_gate as decide_g1
+    from omniarchitect.intake.interview import answer_question, start_interview
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p = build_demo_project(tmp / "proj")
+        p.constraints = {**(p.constraints or {}), "style": "现代意式极简"}
+        p.save(tmp / "proj" / "project.json")
+        start_interview(p, "150㎡ 大平层，一家三口，现代意式极简")
+        answer_question(p, "base.needs", "客厅要能坐 8 个人；东西很多需要收纳")
+        decide_g1(p, "approved", by="业主")
+
+        C.generate_bundle(p, tmp / "out", with_deck=False)
+        payload = json.loads((tmp / "out" / "concept-visual-jobs.json")
+                             .read_text(encoding="utf-8"))
+        targets = {j["target"] for j in payload["jobs"]}
+        assert "concept-sheet" in targets, targets
+        assert "material-moodboard" in targets, targets
+        # 不仅有任务，还要带着"文字由排版层叠加"的清单
+        sheet = next(j for j in payload["jobs"] if j["target"] == "concept-sheet")
+        assert sheet["text_overlay"], "概念设计板没有文字叠加清单"
+        assert "概念标题" in sheet["text_overlay"]
+        assert payload["non_authoritative"] is True
+        assert payload["third_party_fallback"] == "forbidden"
+
+
+# --------------------------------------------------------------------------
+# 10. G3 之后：图纸派生任务包要自动生成，但绝不自动提交
+# --------------------------------------------------------------------------
+def test_g3_emits_drawing_recipes_without_spending():
+    import json
+    import tempfile
+    from pathlib import Path
+
+    from omniarchitect import concept as C
+    from omniarchitect.demo import build_demo_project
+    from omniarchitect.intake.gate import decide_gate as decide_g1
+    from omniarchitect.intake.interview import answer_question, start_interview
+    from omniarchitect.workflow import StageRunner
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p = build_demo_project(tmp / "proj")
+        p.constraints = {**(p.constraints or {}), "style": "现代意式极简"}
+        p.save(tmp / "proj" / "project.json")
+        start_interview(p, "150㎡ 大平层，一家三口，现代意式极简")
+        answer_question(p, "base.needs", "客厅要能坐 8 个人；东西很多需要收纳")
+        decide_g1(p, "approved", by="业主")
+
+        runner = StageRunner(p, tmp / "out", project_dir=tmp / "proj")
+        runner.run_stage("S2", confirm=False)
+        chosen = next(c for c in p.meta["concept"]["options"]["concepts"]
+                      if (c.get("spatial_prototype") or {}).get("plan_strategy"))
+        C.select(p, chosen["concept_id"])
+        assert runner.approve("S2", by="业主")["status"] == "confirmed"
+        runner.run_stage("S3", confirm=False)
+        res = runner.approve("S3", by="业主")
+        assert res["status"] == "confirmed", res.get("notes")
+
+        f = next((tmp / "out").rglob("drawing-visuals.json"), None)
+        assert f, "G3 通过后没有生成图纸派生任务包"
+        payload = json.loads(f.read_text(encoding="utf-8"))
+        targets = {j["target"] for j in payload["jobs"]}
+        assert {"plan-color", "plan-axon", "presentation-board"} <= targets, targets
+        assert payload["plan_confirmed"] is True
+        for j in payload["jobs"]:
+            assert j["status"] == "awaiting_authorization", j["status"]
+            assert j["references"], "图纸派生没有带参考图"
+        # 只有编译，没有生成：台账里不存在任何已提交/已生成记录
+        import omniarchitect.concept.visual as V
+
+        for ledger in (tmp / "out").rglob(V.LEDGER_NAME):
+            entries = (V.load_ledger(ledger).get("entries") or {}).values()
+            assert not [e for e in entries if e.get("status") in ("submitted", "generated")]
+        assert not list((tmp / "out").rglob("drawing-visuals/*.png"))

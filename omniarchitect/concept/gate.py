@@ -366,6 +366,46 @@ def _restore(project: Project, state: Dict[str, Any], snap: Dict[str, Any]) -> N
         store.pop("S2", None)
 
 
+def _file_snapshot(out_dir: Optional[Path], revision: int) -> List[Dict[str, Any]]:
+    """Remember the bytes of every file the transaction is about to touch.
+
+    只回滚内存状态是不够的：锁定文件写出来、交接文件重建了，而阶段状态又退回
+    未确认，磁盘上就会留下"已签"的痕迹。所以事务前先存内容，失败时按内容复原。
+    """
+    if out_dir is None:
+        return []
+    targets = [style_lock_path(out_dir, revision),
+               Path(out_dir) / "concept-handoff.json"]
+    snap: List[Dict[str, Any]] = []
+    for p in targets:
+        if p.exists():
+            try:
+                snap.append({"path": p, "existed": True, "bytes": p.read_bytes()})
+            except OSError:
+                snap.append({"path": p, "existed": False, "bytes": b""})
+        else:
+            snap.append({"path": p, "existed": False, "bytes": b""})
+    return snap
+
+
+def _file_restore(snap: Sequence[Dict[str, Any]]) -> List[str]:
+    """Undo file writes: restore old bytes, delete files that did not exist."""
+    restored: List[str] = []
+    for item in snap:
+        p = Path(item["path"])
+        try:
+            if item["existed"]:
+                if not p.exists() or p.read_bytes() != item["bytes"]:
+                    p.write_bytes(item["bytes"])
+                    restored.append(p.name)
+            elif p.exists():
+                p.unlink()
+                restored.append(f"{p.name}（已移除）")
+        except OSError:
+            continue
+    return restored
+
+
 def select(project: Project, concept_id: str) -> Dict[str, Any]:
     """Choose a concept — but do not lock it yet. Locking happens at G2."""
     state = _concept(project)
@@ -488,6 +528,7 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
         by_label = by or ("业主/主创" if source == "owner" else "演示流程")
         payload = _payload(project)
         snapshot = _snapshot(project, state)
+        files = _file_snapshot(out_dir, project.revision)
         try:
             # 1) 先写风格锁定：写不出来就什么都不签
             if source == "owner":
@@ -532,11 +573,14 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                     raise RuntimeError("基准登记的概念与当前选定不一致")
         except Exception as exc:
             _restore(project, state, snapshot)
+            restored = _file_restore(files)
             decision = "blocked"
             rolled_back = True
             st = get_state(project, "S2")
             notes.append(
                 f"关键步骤失败，已回滚，本次不形成概念基准：{type(exc).__name__}: {exc}")
+            if restored:
+                notes.append("已复原磁盘文件：" + "、".join(restored))
         else:
             formal = source == "owner"
             baseline = entry

@@ -249,7 +249,15 @@ def test_scope_cannot_be_faked_by_an_unusable_provider():
             raise AssertionError("不可用的 provider 不得执行任务")
 
 
-def test_failed_job_is_retried_then_reported():
+def test_a_failed_submit_is_reported_once_and_not_retried():
+    """提交失败不再自动重跑整个流程。
+
+    旧语义是 `submit 失败 → 重试（含重新提交）`，这在付费平台上就是一次出错
+    变成两次扣款。新语义：提交只发一次；平台层面的"结果未知"由
+    `SubmitStateUnknown` 表达（见 test_billing_safety.py），其余错误向上抛出，
+    由调用方决定是换路径还是请用户核实。
+    """
+
     class Flaky(MediaProvider):
         id = "local"
 
@@ -263,10 +271,7 @@ def test_failed_job_is_retried_then_reported():
 
         def submit(self, operation, params):
             self.calls += 1
-            if self.calls < 3:
-                raise RuntimeError("transient")
-            return ProviderJob(job_id="j1", provider="local", operation=operation,
-                               status="succeeded")
+            raise RuntimeError("transient")
 
         def poll(self, job):
             return job
@@ -275,24 +280,13 @@ def test_failed_job_is_retried_then_reported():
             return []
 
     f = Flaky()
-    job = f.run("schematic_diagram", {}, ".", poll_interval_s=0, max_attempts=3)
-    assert job.status == "succeeded" and f.calls == 3
-
-    class Always(Flaky):
-        def __init__(self) -> None:
-            super().__init__()
-
-        def submit(self, operation, params):
-            self.calls += 1
-            raise RuntimeError("permanent failure")
-
-    a = Always()
     try:
-        a.run("schematic_diagram", {}, ".", poll_interval_s=0, max_attempts=2)
-    except ProviderError as exc:
-        assert "permanent" in str(exc)
+        f.run("schematic_diagram", {}, ".", poll_interval_s=0, max_attempts=3)
+    except RuntimeError as exc:
+        assert "transient" in str(exc)
     else:  # pragma: no cover
-        raise AssertionError("永久失败必须抛错，不得返回成功")
+        raise AssertionError("提交异常必须向上抛出")
+    assert f.calls == 1, f"提交失败被自动重试了 {f.calls} 次——付费平台会重复扣款"
 
 
 def test_asset_version_linking():

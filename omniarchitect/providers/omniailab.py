@@ -41,6 +41,7 @@ from .base import (
     ProviderCapability,
     ProviderError,
     ProviderJob,
+    SubmitStateUnknown,
 )
 
 HOMEPAGE_CN = "https://www.omniailabx.com"
@@ -417,19 +418,36 @@ class OmniAiLabProvider(MediaProvider):
         cfg = self.load_config()
         key = str(cfg.get("api_key") or "")
         endpoint = str((contract.get("endpoints") or {}).get("submit") or "")
+        idem = str(params.get("idempotency_key") or "")
+        extra: Dict[str, str] = {"Idempotency-Key": idem} if idem else {}
         body = {
             "operation": operation,
             "model": params.get("model") or self.select_model(operation) or "",
-            "params": {k: v for k, v in params.items() if k != "model"},
+            "params": {k: v for k, v in params.items()
+                       if k not in ("model", "idempotency_key")},
         }
-        payload = self._post(endpoint, body, contract, key, cfg)
+        # 只有契约声明走 body 时才把幂等键写进请求体：未知字段可能被平台拒绝，
+        # 而 header 即使不被识别也不会改变请求语义。
+        if idem and str(contract.get("idempotency") or "") == "body":
+            body["idempotency_key"] = idem
+        try:
+            payload = self._post(endpoint, body, contract, key, cfg, extra_headers=extra)
+        except ProviderError as exc:
+            msg = str(exc)
+            # 4xx：平台明确拒收，没有建任务，可以安全放弃/换路径
+            if "HTTP 4" in msg:
+                raise
+            # 其余（超时、连接重置、5xx、响应不可解析）：可能已经受理
+            raise SubmitStateUnknown(self.id, msg) from exc
         job_id = str(payload.get("job_id") or payload.get("id") or "")
         if not job_id:
-            raise ProviderError("平台响应中缺少 job_id——不做猜测性重试")
+            raise SubmitStateUnknown(
+                self.id, "平台有响应但缺少 job_id，无法判断是否已建任务")
         return ProviderJob(
             job_id=job_id, provider=self.id, operation=operation,
             status=str(payload.get("status") or "queued"),
             raw=payload, cost_estimate=self.estimate_cost(operation, params),
+            idempotency_key=idem,
         )
 
     def poll(self, job: ProviderJob) -> ProviderJob:
@@ -475,7 +493,8 @@ class OmniAiLabProvider(MediaProvider):
 
     # ------------------------------------------------------------------
     def _post(self, endpoint: str, body: Dict[str, Any], contract: Dict[str, Any],
-              key: str, cfg: Dict[str, Any], method: str = "POST") -> Dict[str, Any]:
+              key: str, cfg: Dict[str, Any], method: str = "POST",
+              extra_headers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         base = str(contract.get("base_url") or "").rstrip("/")
         if not endpoint:
             raise ProviderError("契约未声明该端点——拒绝调用未知 URL")
@@ -485,6 +504,8 @@ class OmniAiLabProvider(MediaProvider):
             url = f"{url}{sep}token={key}"
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         headers.update(self._auth_headers(contract, key))
+        if extra_headers:
+            headers.update({k: v for k, v in extra_headers.items() if v})
         data = json.dumps(body).encode("utf-8")
         req = urllib.request.Request(url, data=data, headers=headers, method=method)
         try:

@@ -139,6 +139,44 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 未确认平面拒收、文字不让模型写、三处登记一致、指纹跨配方一致）；`verify_all.py` 九段通过；
 `check_tables` 93 文件 356 表 0 违规；`normalize --check` 0 不一致。
 
+### 后续补充七 — 付费安全、住宅默认值清理、配方接入 S2/G3
+
+三件事，都是"客户真的会遇到"的问题。
+
+**一、一次任务只扣一次钱。** `MediaProvider.run()` 原来是
+`submit → poll → 超时 → 重试`，而重试又从 submit 开始：一次轮询超时就会再建任务、
+再扣一次。现在拆成两段——提交只发一次，之后只轮询：
+
+| 情形 | 现在的行为 |
+|---|---|
+| 轮询超时 / 连续失败 | 标 `poll_exhausted`，任务算"已受理"，不重提 |
+| 提交发出后连接断开、5xx、响应缺 job_id | `SubmitStateUnknown` → `submitted_unknown` |
+| 4xx 明确被拒 | 报错，不重提（未产生任务） |
+| 已有 job_id | 只轮询，任何路径都不再调 `submit()` |
+
+配套：稳定幂等键（operation + 参数哈希，可选 header/body）、`job.accepted` 判定、
+用户可读的恢复说明。概念视觉台账把"未知"记成 `submitted` 而不是 `failed`——记成失败
+下一次就会重付。新增 `test_billing_safety.py` 8 项，含"服务端已受理、客户端断线"
+这一条；旧的重试测试改为断言"提交失败只发一次"。
+
+**二、住宅默认值清出 S4/S5/S8。** 原来 S4 写死"客厅/餐厅 + 微水泥 + 暖白乳胶漆"、
+S5 写死"客厅/餐厅/主卧"机位、S8 材料表写死乳胶漆与石膏板，`style` 缺省时还默认
+"现代意式极简"。新增 `omniarchitect/finishes.py`：项目类型取自 S1 profile，分区取自
+真实空间，材料取自 G2 确认的概念，缺什么写"待确认"，不再替客户拍板。渲染默认面层
+清空、机位改为从本项目空间生成。新增 `test_stage_data_integrity.py` 4 项守着
+"办公项目不得出现主卧""未声明风格不得变成意式极简"。
+
+**三、六条表现配方真正接进阶段。** S2 任务包新增 `concept-sheet` 与
+`material-moodboard`（带 `text_overlay`）；G3 正式签发后自动生成
+`drawing-visuals.json`（`plan-color` / `plan-axon` / `presentation-board`，
+状态 `awaiting_authorization`，只编译不提交）。视觉任务按各自能力域提交，
+平台未声明时回退并记录原因。
+
+**四、顺带补的回滚。** G2 事务现在同时快照磁盘文件：失败时把锁定文件与交接文件
+恢复原样（原来只回滚内存，会留下"未确认但有锁定文件"）。新增 1 项测试。
+
+验证：`run_tests.py` 448 项全绿（29 模块）；`verify_all.py` 九段通过。
+
 ---
 
 ## v1.4.0 — 单 Skill 架构纠正：设计风格系统并入主 Skill

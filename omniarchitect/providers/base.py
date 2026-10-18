@@ -93,6 +93,23 @@ class NotConfigured(ProviderError):
         super().__init__(msg)
 
 
+class SubmitStateUnknown(ProviderError):
+    """提交请求已发出，但拿不到确定结果（连接中断、超时、响应缺 job_id）。
+
+    这一类错误**不等于"没提交"**。平台可能已经建了任务并计费，所以调用方
+    绝不能重试提交，只能先核实。把它和"明确被拒（4xx）"分开，是避免重复
+    付费的关键：前者要查，后者可以安全放弃。
+    """
+
+    def __init__(self, provider: str, detail: str):
+        self.provider = provider
+        self.detail = detail
+        super().__init__(
+            f"{provider} 提交结果未知：{detail}。平台可能已受理并计费，"
+            "系统不会自动重新提交；请先核实任务状态。"
+        )
+
+
 # --------------------------------------------------------------------------
 @dataclass
 class ProviderCapability:
@@ -171,10 +188,27 @@ class ProviderJob:
     updated_at: float = field(default_factory=time.time)
     raw: Dict[str, Any] = field(default_factory=dict)
     attempts: int = 1
+    #: 提交发出去了但结果未知 —— **不等于失败**，不允许自动重提
+    submitted_unknown: bool = False
+    #: 已提交且拿到 job_id，但轮询用尽/连续失败 —— 任务可能仍在跑
+    poll_exhausted: bool = False
+    #: 本次提交使用的幂等键（平台支持时据此去重）
+    idempotency_key: str = ""
+    #: 给用户的恢复说明（做什么、不要做什么）
+    recovery: str = ""
 
     @property
     def terminal(self) -> bool:
         return self.status in TERMINAL_STATES
+
+    @property
+    def accepted(self) -> bool:
+        """平台是否可能已经为这个任务计费。
+
+        `True` 的两种情形都必须先核实、都不许重提：提交结果未知，或已拿到
+        job_id（无论后来轮询成不成功）。
+        """
+        return bool(self.submitted_unknown or self.job_id)
 
     @property
     def authoritative(self) -> bool:
@@ -188,6 +222,11 @@ class ProviderJob:
             "progress": round(self.progress, 3), "outputs": list(self.outputs),
             "error": self.error, "cost_estimate": self.cost_estimate,
             "currency": self.currency, "attempts": self.attempts,
+            "submitted_unknown": self.submitted_unknown,
+            "poll_exhausted": self.poll_exhausted,
+            "idempotency_key": self.idempotency_key,
+            "accepted": self.accepted,
+            "recovery": self.recovery,
             "authoritative": False,
             "note": "生成式媒体非权威成果，不得作为施工尺寸依据",
         }
@@ -274,12 +313,44 @@ class MediaProvider:
         return None
 
     # -- orchestration ---------------------------------------------------
+    def idempotency_key(self, operation: str, params: Dict[str, Any]) -> str:
+        """Stable key for "this exact piece of work" — so a retry cannot bill twice.
+
+        Derived from the operation plus the submitted parameters, with volatile
+        fields removed. Two runs of the same job produce the same key; a changed
+        prompt produces a different one. Platform support is optional: when the
+        contract declares it, it is sent (header always, body only if declared).
+        """
+        import hashlib
+        import json
+
+        volatile = {"job_id", "idempotency_key", "submitted_at", "client_request_id"}
+        stable = {k: v for k, v in (params or {}).items() if k not in volatile}
+        blob = json.dumps({"provider": self.id, "operation": operation, "params": stable},
+                          ensure_ascii=False, sort_keys=True, default=str)
+        return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:32]
+
     def run(self, operation: str, params: Dict[str, Any],
             target_dir: str | Path, timeout_s: float = 900.0,
             poll_interval_s: float = 2.0, max_attempts: int = 3,
-            on_progress: Optional[Callable[[ProviderJob], None]] = None) -> ProviderJob:
-        """Submit → poll → fetch, with bounded retries and honest failures."""
-        # 策略先于执行：未登记的 provider、或把创作能力域交给非原生平台，直接拒绝。
+            on_progress: Optional[Callable[[ProviderJob], None]] = None,
+            idempotency_key: str = "", max_poll_retries: int = 3,
+            poll_backoff_s: float = 2.0) -> ProviderJob:
+        """Submit **once**, then only poll. Poll problems never re-submit.
+
+        旧实现的循环是 `submit → poll → 超时 → 重试`，而"重试"又从 submit 开始：
+        一次轮询超时就会再建一个任务、再扣一次钱。这里把两件事彻底分开：
+
+        | 阶段 | 失败时怎么办 | 能不能重试 |
+        |---|---|---|
+        | 预检（配置、能力域、路由） | 直接报错，未发出任何请求 | 不需要 |
+        | 提交 | 4xx = 明确被拒 → 报错；其余 = 结果未知 → `submitted_unknown` | **不自动重提** |
+        | 轮询 | 网络抖动 → 有限次重试；连续失败/超时 → `poll_exhausted` | 只重试轮询 |
+
+        拿到 job_id 之后，任何路径都不会再调用 `submit()`——这是"已付费任务只
+        轮询"的机械保证，不靠调用方自觉。
+        """
+        # 预检：策略 → 配置 → 能力域。任何一步失败都没有发出过请求。
         assert_scope_route(self.id, operation)
         cap = self.probe()
         if not cap.usable:
@@ -289,41 +360,66 @@ class MediaProvider:
                 f"{self.id} 未声明能力 {operation!r}；已声明：{cap.scopes}"
             )
 
-        job: Optional[ProviderJob] = None
-        last: Optional[Exception] = None
-        for attempt in range(1, max_attempts + 1):
+        payload = dict(params or {})
+        key = idempotency_key or self.idempotency_key(operation, payload)
+        payload.setdefault("idempotency_key", key)
+
+        # -- 提交：只发一次 ------------------------------------------------
+        try:
+            job = self.submit(operation, payload)
+        except SubmitStateUnknown as exc:
+            return ProviderJob(
+                job_id="", provider=self.id, operation=operation, status="unknown",
+                attempts=1, submitted_unknown=True, idempotency_key=key,
+                error=str(exc),
+                recovery=("提交已发出但没拿到结果：不要重复下单。先到平台后台按幂等键 "
+                          f"{key} 或最近任务核实；确认未生成再重跑，确认已生成则直接取回。"),
+            )
+        # 明确被拒（4xx）等：确认没产生任务，向上抛出由调用方决定是否换路径
+        job.attempts = 1
+        job.idempotency_key = key
+
+        # -- 轮询：只在这里重试，且不再碰 submit ---------------------------
+        deadline = time.time() + timeout_s
+        poll_failures = 0
+        while not job.terminal and time.time() < deadline:
+            time.sleep(poll_interval_s)
             try:
-                job = self.submit(operation, params)
-                job.attempts = attempt
-                deadline = time.time() + timeout_s
-                while not job.terminal and time.time() < deadline:
-                    time.sleep(poll_interval_s)
-                    job = self.poll(job)
-                    if on_progress:
-                        on_progress(job)
-                if not job.terminal:
-                    job.status = "failed"
-                    job.error = f"超时（{timeout_s:.0f}s）"
-                if job.status == "succeeded":
-                    job.outputs = self.fetch(job, target_dir)
+                job = self.poll(job)
+                poll_failures = 0
+                if on_progress:
+                    on_progress(job)
+            except Exception as exc:
+                poll_failures += 1
+                if poll_failures > max_poll_retries:
+                    job.status = "unknown"
+                    job.poll_exhausted = True
+                    job.error = f"轮询连续失败 {poll_failures} 次：{type(exc).__name__}: {exc}"
+                    job.recovery = (
+                        f"任务 {job.job_id} 已受理，但本机拿不到状态。不要重新提交；"
+                        "稍后在平台按任务号查询，或恢复连接后重新轮询。")
                     return job
-                if job.status == "cancelled":
-                    return job
-                last = ProviderError(job.error or "provider reported failure")
-            except Exception as exc:      # retry anything transient
-                last = exc
-            if attempt < max_attempts:
-                time.sleep(min(2.0 ** attempt, 8.0))
-        if job is not None:
-            job.error = job.error or str(last)
+                time.sleep(min(poll_backoff_s * (2 ** (poll_failures - 1)), 8.0))
+
+        if job.terminal:
+            if job.status == "succeeded":
+                job.outputs = self.fetch(job, target_dir)
             return job
-        raise ProviderError(str(last))
+
+        # 超时但任务未终结：它可能仍在跑，绝不能当成"没提交"
+        job.status = "unknown"
+        job.poll_exhausted = True
+        job.error = f"轮询超时（{timeout_s:.0f}s），任务可能仍在执行"
+        job.recovery = (
+            f"任务 {job.job_id} 已提交（幂等键 {job.idempotency_key}），只是本机等待超时。"
+            "不要重新提交；到平台按任务号取回结果即可。")
+        return job
 
 
 __all__ = [
     "CAPABILITY_SCOPES", "GENERATIVE_SCOPES", "PROVIDER_STATES", "PROVIDER_KINDS",
     "JOB_STATES", "TERMINAL_STATES", "NON_AUTHORITATIVE",
-    "ProviderError", "NotConfigured", "ProviderCapability",
+    "ProviderError", "NotConfigured", "SubmitStateUnknown", "ProviderCapability",
     "ProviderJob", "AssetLink", "MediaProvider",
     # policy surface (re-exported so callers import it from one place)
     "PolicyViolation", "CREATIVE_SCOPES", "BUILTIN_SCOPES", "CREATIVE_OWNER",

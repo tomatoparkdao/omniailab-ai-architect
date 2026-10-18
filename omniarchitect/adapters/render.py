@@ -20,23 +20,48 @@ from ..model import Project, polygon_centroid
 from .base import Adapter, AdapterResult, Capability
 from .mesh import material_for
 
-DEFAULT_FINISHES: Dict[str, str] = {
-    "floor": "微水泥 浅灰 / matt, 哑光",
-    "wall": "乳胶漆 暖白 NCS S1002-Y",
-    "ceiling": "乳胶漆 超白 / 局部木饰面",
-    "glass": "超白玻 12mm",
-    "joinery": "橡木饰面 拉丝",
-    "metal": "黑钛 拉丝",
-    "stone": "暖灰色岩板",
-    "soft": "羊毛/亚麻混纺",
-}
+#: 面层默认值 —— 故意为空。
+#:
+#: 这里原来写死了"微水泥 + 暖白乳胶漆 + 橡木"，结果办公、酒店项目也被套上住宅材料。
+#: 面层只能来自两处：G2 确认的概念材料，或项目 constraints 里客户给的材料。
+#: 两处都没有时，提示词里就不出现材料句——宁可不写，也不替客户编。
+DEFAULT_FINISHES: Dict[str, str] = {}
 
+
+def camera_presets_for(project: Project, limit: int = 4) -> List[Dict[str, Any]]:
+    """机位：全景 + 本项目最大的几个真实空间 + 轴测。
+
+    不再固定"客厅/餐厅/主卧"。名取自 `project.spaces`（没有就用功能表），
+    所以办公项目出来的是"开放办公区/会议室"，不是"主卧"。
+    """
+    presets: List[Dict[str, Any]] = [
+        {"id": "01_overview", "label": "全景", "lens_mm": 24,
+         "eye_height_mm": 1600, "framing": "bbox_diagonal"},
+    ]
+    spaces = [s for s in project.spaces if s.use != "envelope"]
+    items = sorted(spaces, key=lambda s: -(s.area_m2 or 0))[:limit]
+    if not items:
+        items = [type("S", (), {"id": f"P{i}", "name": str(p.get("name") or f"空间{i}"),
+                                "use": str(p.get("recipe") or ""),
+                                "area_m2": float(p.get("area_m2") or 0)})()
+                 for i, p in enumerate((project.program or [])[:limit], start=1)]
+    for i, s in enumerate(items, start=2):
+        presets.append({
+            "id": f"{i:02d}_{getattr(s, 'use', 'space') or 'space'}",
+            "label": str(getattr(s, "name", "") or "空间"),
+            "lens_mm": 35,
+            "eye_height_mm": 1400 if "bed" in str(getattr(s, "use", "")) else 1500,
+            "framing": "room_corner",
+        })
+    presets.append({"id": "99_plan_axon", "label": "轴测", "lens_mm": 50,
+                    "eye_height_mm": 0, "framing": "axon"})
+    return presets
+
+
+#: 兼容旧调用方：只有通用机位，不含任何房间名。
 CAMERA_PRESETS: List[Dict[str, Any]] = [
     {"id": "01_overview", "label": "全景", "lens_mm": 24, "eye_height_mm": 1600, "framing": "bbox_diagonal"},
-    {"id": "02_living", "label": "客厅", "lens_mm": 35, "eye_height_mm": 1500, "framing": "room_corner"},
-    {"id": "03_dining", "label": "餐厅", "lens_mm": 35, "eye_height_mm": 1500, "framing": "room_corner"},
-    {"id": "04_bedroom", "label": "主卧", "lens_mm": 35, "eye_height_mm": 1400, "framing": "room_corner"},
-    {"id": "05_plan_axon", "label": "轴测", "lens_mm": 50, "eye_height_mm": 0, "framing": "axon"},
+    {"id": "99_plan_axon", "label": "轴测", "lens_mm": 50, "eye_height_mm": 0, "framing": "axon"},
 ]
 
 LIGHTING_PRESETS: Dict[str, Dict[str, Any]] = {
@@ -144,7 +169,10 @@ class RenderAdapter(Adapter):
         bbox = {"x": [min(xs), max(xs)], "y": [min(ys), max(ys)]}
         span_m = max(max(xs) - min(xs), max(ys) - min(ys)) / 1000.0
 
+        from ..finishes import finish_map
+
         fin = dict(DEFAULT_FINISHES)
+        fin.update(finish_map(project))
         fin.update(finishes or {})
 
         material_takeoff: Dict[str, float] = {}
@@ -160,7 +188,7 @@ class RenderAdapter(Adapter):
             material_takeoff["ceiling"] = material_takeoff.get("ceiling", 0.0) + s.area_m2
 
         jobs = []
-        for preset in CAMERA_PRESETS:
+        for preset in camera_presets_for(project):
             if viewpoints and preset["id"] not in viewpoints:
                 continue
             anchor = self._anchor_for(preset, spaces, bbox, span_m)
@@ -267,7 +295,7 @@ class RenderAdapter(Adapter):
         light = LIGHTING_PRESETS.get(lighting, {})
         parts = [
             f"室内摄影，{preset['label']}视角，{preset['lens_mm']}mm 镜头",
-            style or "现代意式极简，克制的暖灰基调",
+            style or "风格未指定，按已确认概念方案的风格执行",
             f"地面 {finishes.get('floor','')}；墙面 {finishes.get('wall','')}；天花 {finishes.get('ceiling','')}",
             f"光线：{light.get('key','自然光')}，色温 {light.get('cs','5500')}K",
             "写实渲染，真实材质反射，柔和阴影，杂志级构图，无人物",

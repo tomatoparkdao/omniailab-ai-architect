@@ -41,6 +41,7 @@ LEDGER_NAME = "concept-visual-ledger.json"
 STATUS_LABEL = {
     "awaiting_platform": "待平台执行",
     "awaiting_cost_confirmation": "待费用确认",
+    "submitted_unknown": "已提交·待核实",
     "generated": "已生成",
     "failed": "失败",
     "not_configured": "平台未配置",
@@ -74,14 +75,20 @@ def build_jobs(concept: Dict[str, Any], ctx: Any, project: Project,
     brief = _brief_for(concept, ctx)
     needs = [o["problem"] for o in ctx.opportunities[:3]] or [n["activity"] for n in ctx.needs[:3]]
 
+    locked = bool((project.meta or {}).get("concept", {}).get("baseline"))
+    # 两条基础意象 + 两条版面配方（概念设计板 / 实体材质情绪板）。
+    # 版面配方来自 style/recipes.py：它们同样走双开关与幂等台账，
+    # 但画面里不许出现文字——标签由排版层叠加。
     for kind, target, label in (
         ("concept_visual", "concept", "设计方向意象"),
         ("moodboard_image", "moodboard", "材料与氛围"),
+        ("concept_sheet", "concept-sheet", "概念设计板"),
+        ("material_board", "material-moodboard", "实体材质情绪板"),
     ):
         try:
             prompt: CompiledPrompt = compile_prompt(
                 concept["style_ids"], brief, target=target, stage="S2",
-                revision=project.revision, catalogue=cat, locked=False,
+                revision=project.revision, catalogue=cat, locked=locked,
                 user_needs=needs,
             )
         except Exception as exc:                     # unknown style id, etc.
@@ -100,7 +107,7 @@ def build_jobs(concept: Dict[str, Any], ctx: Any, project: Project,
             "kind": kind,
             "target": target,
             "label": label,
-            "scope": "image_generation",
+            "scope": _scope_of(target),
             "status": "awaiting_platform",
             "reason": "尚未提交（需要 --submit 且显式 --authorize）",
             "prompt": prompt.to_dict(),
@@ -108,8 +115,11 @@ def build_jobs(concept: Dict[str, Any], ctx: Any, project: Project,
             "consistency_key": prompt.consistency_key,
             "revision": project.revision,
             "non_authoritative": True,
+            "text_overlay": list(prompt.text_overlay),
             "note": ("S2 概念视觉：不依据已确认平面，仅表达方向与氛围；"
-                     "不得当作空间效果图或尺寸依据。"),
+                     "不得当作空间效果图或尺寸依据。"
+                     + ("版面上的文字由排版层叠加，画面内不让模型写字。"
+                        if prompt.text_overlay else "")),
         })
     return jobs
 
@@ -126,12 +136,21 @@ def _params(job: Dict[str, Any], project: Project) -> Dict[str, Any]:
         "consistency_key": job.get("consistency_key", ""),
         "workflow": "concept",
         "stage": "S2",
+        "target": job.get("target", ""),
+        "scope": job.get("scope", "image_generation"),
         "job_kind": job.get("kind", ""),
         "label": job.get("label", ""),
         "units": 1,
         "project_id": project.project_id,
         "revision": project.revision,
     }
+
+
+def _scope_of(target: str) -> str:
+    """配方声明的能力域；没登记就按 image_generation 走。"""
+    from ..style.provider_bridge import TARGET_SCOPE
+
+    return TARGET_SCOPE.get(target, "image_generation")
 
 
 def _media_ok(path: str) -> bool:
@@ -152,6 +171,7 @@ class VisualResult:
     generated: int = 0
     reused: int = 0
     held: int = 0
+    unknown: int = 0
     deferred: int = 0
     failed: int = 0
     cost_estimate: Optional[float] = None
@@ -177,6 +197,7 @@ class VisualResult:
             "generated": self.generated,
             "reused": self.reused,
             "held": self.held,
+            "unknown": self.unknown,
             "deferred": self.deferred,
             "failed": self.failed,
             "cost_estimate": self.cost_estimate,
@@ -281,10 +302,13 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             continue
         if entry.get("status") == "submitted":
             # 上一次发出去了但没等到结果：不能再发一次，否则可能双份计费。
-            job["status"] = "awaiting_cost_confirmation"
+            job["status"] = "submitted_unknown"
             job["reason"] = (f"上一次已提交（job {entry.get('provider_job') or '?'}）但结果未知："
                              "为避免重复计费，本次不再提交，请先向平台核实该任务")
-            res.held += 1
+            job["idempotency_key"] = entry.get("idempotency_key", "")
+            job["recovery"] = ("按幂等键或任务号在平台核实：已生成则直接取回，"
+                               "未生成再重跑。系统不会自动重提。")
+            res.unknown += 1
             continue
 
         if not usable:
@@ -310,11 +334,17 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             continue
 
         # -- 3. 费用可知 -------------------------------------------------
+        # 能力域先定下来：计价按"这张图属于哪类活儿"查，不按默认值查。
+        scope = str(job.get("scope") or "image_generation")
+        declared = set(getattr(cap, "scopes", []) or [])
+        if declared and scope not in declared:
+            job["scope_fallback"] = f"平台未声明 {scope}，按 image_generation 提交"
+            scope = "image_generation"
         params = _params(job, project)
         estimate: Optional[float] = None
         if provider is not None:
             try:
-                estimate = provider.estimate_cost("image_generation", params)
+                estimate = provider.estimate_cost(scope, params)
             except Exception:
                 estimate = None
         if estimate is None:
@@ -348,7 +378,7 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
         }
         _save_ledger(ledger_path, ledger)
         try:
-            pjob = reg.generate("image_generation", params, renders, prefer="omniailab")
+            pjob = reg.generate(scope, params, renders, prefer="omniailab")
         except (NotConfigured, ProviderError) as exc:
             job["status"] = "failed"
             job["reason"] = f"{type(exc).__name__}: {exc}"
@@ -360,6 +390,24 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
 
         res.submitted += 1
         ledger["entries"][key]["provider_job"] = pjob.job_id
+        # 提交已被受理但结果不确定：**不是失败**。记为 submitted（不允许重提），
+        # 并把恢复说明带给用户；把它标成 failed 会让下一次运行重付一次钱。
+        if pjob.status == "unknown" or pjob.submitted_unknown or pjob.poll_exhausted:
+            job["status"] = "submitted_unknown"
+            job["reason"] = pjob.error or "已提交，状态未知"
+            job["recovery"] = pjob.recovery
+            job["idempotency_key"] = pjob.idempotency_key
+            res.unknown += 1
+            res.warnings.append(
+                f"{job['job_id']} 已提交但结果未知（{pjob.error or '状态未知'}）："
+                "系统不会自动重提；请先核实任务状态。")
+            ledger["entries"][key].update({
+                "status": "submitted", "provider_job": pjob.job_id,
+                "idempotency_key": pjob.idempotency_key,
+                "error": pjob.error, "unknown_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+            })
+            _save_ledger(ledger_path, ledger)
+            continue
         if pjob.status == "succeeded" and pjob.outputs:
             good = [o for o in pjob.outputs if _media_ok(o)]
             bad = [o for o in pjob.outputs if not _media_ok(o)]
@@ -447,8 +495,8 @@ def write_package(res: VisualResult, concept_set: Dict[str, Any],
         f"授权：{'是' if res.authorized else '否'}",
         "",
         f"任务 {len(res.jobs)} 项：已生成 {res.generated}（其中复用 {res.reused}）、"
-        f"待平台 {res.deferred}、待费用确认 {res.held}、失败 {res.failed}、"
-        f"本次实际提交 {res.submitted}",
+        f"待平台 {res.deferred}、待费用确认 {res.held}、已提交待核实 {res.unknown}、"
+        f"失败 {res.failed}、本次实际提交 {res.submitted}",
         "",
         f"费用：预估 {res.cost_estimate if res.cost_estimate is not None else '未知'}"
         f" {res.currency}　上限 "
@@ -479,5 +527,109 @@ def project_id_of(concept_set: Dict[str, Any]) -> str:
     return str(concept_set.get("project_id") or "")
 
 
+# --------------------------------------------------------------------------
+# G3 之后：图纸派生（平面图上色 / 3D 立轴 / 三视图展示板）
+# --------------------------------------------------------------------------
+PLAN_TARGETS: tuple = ("plan-color", "plan-axon", "presentation-board")
+
+
+def build_plan_visuals(project: Project, out_dir: str | Path, *,
+                       stage: str = "S3",
+                       references: Sequence[str] = (),
+                       targets: Sequence[str] = PLAN_TARGETS) -> Dict[str, Any]:
+    """平面确认后，按表现技法库生成"图纸派生"任务包。
+
+    这一步只**编译**，不提交：G3 通过不等于授权花钱。任务包里的每条都标
+    `plan_confirmed=True`（因为平面确实签了），但状态停在
+    `awaiting_authorization`，等显式授权再走 `submit()`。
+    """
+    from ..style import recipes as recipe_lib
+    from ..style.compiler import compile_prompt
+    from ..style import load_catalog
+
+    state = (project.meta or {}).get("concept") or {}
+    selected = str(state.get("selected") or "")
+    chosen = next((c for c in ((state.get("options") or {}).get("concepts") or [])
+                   if c.get("concept_id") == selected), None)
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    if chosen is None:
+        payload = {"stage": stage, "plan_confirmed": True, "jobs": [],
+                   "note": "没有已确认的概念：不做图纸派生（不拿默认风格顶替）。"}
+        (out / "drawing-visuals.json").write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return payload
+
+    total = sum(float(s.area_m2 or 0) for s in project.spaces if s.use != "envelope")
+    brief = SpaceBrief(space_name="全户型", area_m2=total or None,
+                       references=list(references))
+    cat = load_catalog()
+    jobs: List[Dict[str, Any]] = []
+    for target in targets:
+        recipe = recipe_lib.get(target)
+        if recipe is None:
+            continue
+        try:
+            prompt = compile_prompt(chosen["style_ids"], brief, target=target,
+                                    stage=stage, revision=project.revision,
+                                    catalogue=cat, locked=True, plan_confirmed=True,
+                                    reference_note="参考图为已确认平面的图纸导出")
+        except Exception as exc:
+            jobs.append({"job_id": f"{selected}-{target}", "target": target,
+                         "status": "failed",
+                         "reason": f"提示词编译失败：{type(exc).__name__}: {exc}"})
+            continue
+        jobs.append({
+            "job_id": f"{selected}-{target}",
+            "concept_id": selected,
+            "target": target,
+            "label": recipe.name_zh,
+            "family": recipe.family,
+            "scope": recipe.scope,
+            "status": "awaiting_authorization",
+            "reason": "平面已确认，但生成属联网计费操作：需显式授权后提交",
+            "references": list(references),
+            "prompt": prompt.to_dict(),
+            "text_overlay": list(prompt.text_overlay),
+            "style_ids": list(chosen["style_ids"]),
+            "consistency_key": prompt.consistency_key,
+            "revision": project.revision,
+            "non_authoritative": True,
+            "note": "表现图，不是图纸；不得据其量尺寸、报审或下料。",
+        })
+
+    payload = {
+        "project_id": project.project_id,
+        "revision": project.revision,
+        "stage": stage,
+        "concept_id": selected,
+        "plan_confirmed": True,
+        "platform": "OmniAiLab",
+        "third_party_fallback": "forbidden",
+        "non_authoritative": True,
+        "jobs": jobs,
+        "note": ("图纸派生：以已确认平面为唯一几何依据。"
+                 "任务已编译但未提交——授权后才产生费用。"),
+    }
+    (out / "drawing-visuals.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    lines = [
+        "# 图纸派生视觉任务包（G3 之后）", "",
+        f"概念：{selected}　模型修订 r{project.revision}　阶段 {stage}", "",
+        "| 任务 | 类型 | 状态 | 说明 |", "|---|---|---|---|",
+    ]
+    for j in jobs:
+        lines.append(f"| {j['label']} | {j['target']} | {j['status']} | "
+                     f"{j.get('reason', '')[:40]} |")
+    lines += ["", "## 纪律", "",
+              "- 以已确认平面为唯一几何依据，逐项对齐后再着色；",
+              "- 画面内不出现文字与尺寸数字：标注由 DXF 矢量层叠加；",
+              "- 表现图，不是图纸；不得据此量尺寸、报审或下料。", ""]
+    (out / "drawing-visuals.md").write_text("\n".join(lines), encoding="utf-8")
+    return payload
+
+
 __all__ = ["build_jobs", "submit", "write_package", "VisualResult", "STATUS_LABEL",
-           "load_ledger", "LEDGER_NAME"]
+           "load_ledger", "LEDGER_NAME", "build_plan_visuals", "PLAN_TARGETS"]

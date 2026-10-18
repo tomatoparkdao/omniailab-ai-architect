@@ -407,14 +407,26 @@ def overview_camera(project: Project, level_id: str, lens: int = 24) -> Dict[str
 
 def _finishes_for(project: Project, spaces: Sequence[Any]) -> Dict[str, str]:
     from ..adapters.render import DEFAULT_FINISHES
+    from ..finishes import finish_map
 
     out = dict(DEFAULT_FINISHES)
+    out.update(finish_map(project))
     mats = (project.constraints or {}).get("materials") or {}
     if isinstance(mats, dict):
         for k, v in mats.items():
             if isinstance(v, str) and v.strip():
                 out[str(k)] = v.strip()
     return out
+
+
+def _surfaces(finishes: Dict[str, str]) -> str:
+    """只写项目真的声明过的面层；没声明就不出现在提示词里。"""
+    parts = []
+    for key, label in (("floor", "地面"), ("wall", "墙面"), ("ceiling", "天花")):
+        v = str(finishes.get(key) or "").strip()
+        if v:
+            parts.append(f"{label} {v}")
+    return "；".join(parts) if parts else "面层按已确认概念方案执行"
 
 
 def _prompt_for(project: Project, view_label: str, space: Any, camera: Dict[str, Any],
@@ -429,11 +441,10 @@ def _prompt_for(project: Project, view_label: str, space: Any, camera: Dict[str,
     parts = [
         f"室内空间概念效果图，{view_label}视角",
         f"{camera.get('lens_mm', 35)}mm 镜头，视点高 {camera.get('eye_height_mm', 1500):.0f}mm",
-        style or "现代意式极简，克制的暖灰基调",
+        style or "风格未指定，按已确认概念方案的风格执行",
         f"空间：{space.name or space.use}，使用面积约 {space.area_m2:.1f}㎡，"
         f"开间进深约 {extent[0]}m × {extent[1]}m（取自已确认平面）",
-        f"地面 {finishes.get('floor', '')}；墙面 {finishes.get('wall', '')}；"
-        f"天花 {finishes.get('ceiling', '')}",
+        _surfaces(finishes),
         f"光线：{LIGHTING['key']}，色温约 {LIGHTING['cs']}K，{LIGHTING['notes']}",
         "写实摄影感，真实材质反射与柔和阴影，构图克制，画面内不出现人物与文字",
     ]
@@ -454,10 +465,10 @@ def _overview_prompt(project: Project, total_area: float, extent: Sequence[float
     parts = [
         "整体空间概念效果图，轴测剖切视角，读得到全部房间关系",
         "24mm 等效镜头，视点抬高俯视，去掉屋顶",
-        style or "现代意式极简，克制的暖灰基调",
+        style or "风格未指定，按已确认概念方案的风格执行",
         f"空间：套内使用面积约 {total_area:.1f}㎡，共 {rooms} 个房间，"
         f"外轮廓约 {extent[0]}m × {extent[1]}m（取自已确认平面）",
-        f"地面 {finishes.get('floor', '')}；墙面 {finishes.get('wall', '')}",
+        _surfaces(finishes),
         f"光线：{LIGHTING['key']}，色温约 {LIGHTING['cs']}K",
         "建筑可视化风格，材质真实，构图克制，画面内不出现人物、标注与文字",
     ]
