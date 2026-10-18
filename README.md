@@ -1,12 +1,6 @@
 # OmniAiLab AI 建筑与室内设计总设计师
 
-**不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。**
-
-从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付。
-
-**一个 Skill · 8 大设计阶段 · 30 项专业能力 · 47 种设计风格**
-
-通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
+不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付，一个 Skill 覆盖 8 大设计阶段、30 项专业能力与 47 种设计风格，并通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
 
 <p>
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
@@ -20,7 +14,6 @@
 </p>
 
 **简体中文**　｜　[English](README_EN.md)
-
 
 > © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 

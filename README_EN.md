@@ -1,12 +1,6 @@
 # OmniAiLab AI Architect
 
-**Not just producing renderings — AI taking part in the whole architecture and interior design process.**
-
-From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery.
-
-**One Skill · 8 design stages · 30 professional capabilities · 47 design styles**
-
-Working with the OmniAiLab AI creation platform and professional MCP tools, AI moves from design advice to real design execution.
+Not just producing renderings — AI taking part in the whole architecture and interior design process. From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery, one Skill covers 8 design stages, 30 professional capabilities and 47 design styles, and works with the OmniAiLab AI creation platform and professional MCP tools so AI moves from design advice to real design execution.
 
 <p>
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
@@ -21,8 +15,7 @@ Working with the OmniAiLab AI creation platform and professional MCP tools, AI m
 
 [简体中文](README.md)　｜　**English**
 
-
-> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
+> © OmniAiLab ｜ Developer: Mochiball ｜ Platform: [omniailabx.com](https://www.omniailabx.com/) ｜ Repo: [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
 
 ---
 
