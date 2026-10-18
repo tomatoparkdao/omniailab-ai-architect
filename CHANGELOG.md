@@ -139,6 +139,50 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 未确认平面拒收、文字不让模型写、三处登记一致、指纹跨配方一致）；`verify_all.py` 九段通过；
 `check_tables` 93 文件 356 表 0 违规；`normalize --check` 0 不一致。
 
+### 后续补充十二 — 设计意图执行层闭环
+
+**一、两阶段变更（P0）**
+`changes.propose()` 只出提案不动数据；`authorize_change()` 只认真实业主
+（source=owner + 署名）；`apply_change()` 校验请求 ID / 项目修订 / 意图 ID /
+意图摘要四项指纹，任一变化即失效。`analyse(apply=True)` 触及已确认意图且无
+授权时**拒绝执行**，项目不改、修订号不动。`--force`、演示、脚本均无法授权。
+
+**二、预览零副作用（P0）**
+`StageRunner.apply_change(apply=False)` 不再 `invalidate_from()`/`_persist()`；
+报告落 `-proposal.json` 且 `applied=false`，并写明"未改动项目数据"。
+
+**三、统一硬门槛（P0）**
+新增 `hardgate.py`：五维度（area/capacity/safety/regulation/physics）× 四态
+（failed/unknown/passed/not_applicable）。S1 摘要、S2 排序、G2 确认共用一份判定。
+同维度多条按"最坏者胜"——修掉一条 info 把 major 盖掉的 bug。G2 独立复核，
+不再只信 S2 排名。
+
+**四、G2 事务字节级回滚（P0）**
+快照改深拷贝（含 options/concepts/baseline/design_intent/leadership）；
+文件快照扩到风格锁、交接、多专业基准、`design-intent-r<rev>.json`。
+原本存在按字节写回，原本不存在才删除——不会误删上一版已批准意图。
+
+**五、G3–G8 漂移检测（P1）**
+新增 `conformance.py`：四态 passed / changed_requires_approval /
+unknown_needs_review / not_applicable。确定性检查用真实模型数据（空间内墙柱
+多边形判定、功能表水景/种植、顶面成果外露风口与主灯、交通空间），
+无法自动证明的进人工审查。已证明改变 → 对应门禁拒绝确认。
+
+**六、验收 A–L**（`test_intent_enforcement.py` 17 项）
+apply=True 无授权不改项目、演示/脚本不能授权、授权绑定版本与意图、
+有效授权可执行并记录批准人、预览零改动、面积冲突进统一门槛、unknown 不算通过、
+全被拒不正式推荐、事务失败复原意图字节、只删本轮新文件、加柱被拦、
+吊顶破坏光影被拦、水景消失被识破、换颜色不重开门禁、安全不成立不能放行、
+无法证明进 unknown、旧项目无意图仍可跑。
+
+三个真实案例（`scripts/acceptance_round4.py`，`out/acceptance-round4/`）：
+建筑加柱、室内外露风口、景观水景消失均判 changed；反例换颜色判
+acceptable_adjustment。
+
+文档 `docs/INTENT_ENFORCEMENT.md`；SKILL.md 文档地图合并一行（仍 399 行）。
+验证：520 passed / 0 failed（37 模块）；verify_all 九段；normalize 256 文件 0；
+表格 101 文件 414 表 0 违规。
+
 ### 后续补充十一 — 设计主导权与设计意图保护
 
 **一、主导专业（`leadership.py`）**

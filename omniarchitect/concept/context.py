@@ -251,6 +251,10 @@ class ConceptContext:
     #: 不是四个维度平权：主导专业关心的维度先看，辅助专业不因"好施工"而胜出。
     lead: Dict[str, Any] = field(default_factory=dict)
 
+    #: 统一硬门槛判定（`hardgate.evaluate`）。S2 排序与 G2 判定读同一份，
+    #: 避免"S2 说可行、G2 说不行"这类互相打脸。
+    hard_gate: Dict[str, Any] = field(default_factory=dict)
+
     @property
     def lead_id(self) -> str:
         return str(self.lead.get("project_lead_discipline") or "")
@@ -320,6 +324,7 @@ class ConceptContext:
             "sources": self.sources,
             "signals": self.signals,
             "lead": dict(self.lead),
+            "hard_gate": dict(self.hard_gate),
             "warnings": list(self.warnings),
         }
 
@@ -393,6 +398,10 @@ def build_context(project: Project, *, require_gate: bool = True) -> ConceptCont
 
         _scope = _disc.ensure(project, profile_id=profile.id)
         ctx.lead = _lead.ensure(project, _scope, profile_id=profile.id).to_dict()
+        # 硬门槛：与 S1、G2 用同一份判定，不各自算一套
+        from .. import hardgate as _hg
+
+        ctx.hard_gate = _hg.evaluate(project, scope=_scope).to_dict()
     except Exception as exc:                       # noqa: BLE001
         ctx.warnings.append(f"主导专业判定失败，按室内主导处理：{type(exc).__name__}")
     cons = project.constraints or {}

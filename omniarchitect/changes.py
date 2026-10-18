@@ -20,6 +20,7 @@ geometry change must always invalidate everything downstream of it.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from .errors import ModelError, ValidationError
@@ -374,6 +375,10 @@ class ChangeImpactReport:
     notes: List[str] = field(default_factory=list)
     cross_discipline: List[Dict[str, Any]] = field(default_factory=list)
     intent: Dict[str, Any] = field(default_factory=dict)
+    authorization: Dict[str, Any] = field(default_factory=dict)
+    blocked: bool = False
+    blocked_reason: str = ""
+    changelog: str = ""
     applied: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
@@ -769,11 +774,258 @@ def _artifacts_in(stage_id: str) -> List[str]:
     return list(st.deliverables) if st else []
 
 
+@dataclass
+class ChangeRequest:
+    """阶段 A 的产物：一份**没有执行**的变更提案。
+
+    为什么要有这个东西
+    ------------------
+    "分析完就直接改"是本轮最危险的漏洞：识别出"触及核心设计意图"之后仍然继续
+    改项目、让成果失效、重开门禁。等于自己提醒自己，然后自己无视。
+
+    所以把"提出"和"执行"分成两件事：`propose()` 只出提案，改项目必须凭
+    `authorize()` 返回的授权，而授权绑定版本、概念、意图与批准人。
+    """
+
+    request_id: str
+    text: str
+    revision: int
+    concept_id: str = ""
+    design_intent_id: str = ""
+    intent_digest: str = ""
+    requires_authorization: bool = False
+    approval_scope: List[str] = field(default_factory=list)
+    report: Dict[str, Any] = field(default_factory=dict)
+    created_at: str = ""
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "request_id": self.request_id,
+            "text": self.text,
+            "project_revision": self.revision,
+            "concept_id": self.concept_id,
+            "design_intent_id": self.design_intent_id,
+            "intent_digest": self.intent_digest,
+            "requires_authorization": self.requires_authorization,
+            "approval_scope": list(self.approval_scope),
+            "created_at": self.created_at,
+            "applied": False,
+            "note": ("这是变更提案，不是执行记录。未经授权不得改动项目数据。"),
+            "impact": self.report,
+        }
+
+
+#: 需要业主明确批准的范围标签
+APPROVAL_INTENT = "design_intent"
+APPROVAL_SCOPE_CHANGE = "scope_change"
+APPROVAL_HARD_BLOCK = "hard_gate"
+
+
+def _intent_digest(project: Project) -> str:
+    from . import intent as _intent
+
+    data = _intent.load(project) or {}
+    if not data:
+        return ""
+    seed = "|".join([str(data.get("design_intent_id") or ""),
+                     str(data.get("revision") or ""),
+                     *[str(f.get("statement") or "")
+                       for f in (data.get("signature_features") or [])]])
+    import hashlib
+
+    return hashlib.sha1(seed.encode("utf-8")).hexdigest()[:12]
+
+
+def propose(project: Project, text: str,
+            author: str = "omniailab-ai-architect") -> ChangeRequest:
+    """阶段 A：只分析、只出报告，**不碰项目数据**。
+
+    返回的提案里写明：改了什么、牵动哪些专业、是否触及已确认的设计意图、
+    要谁批。调用方拿这份提案去找业主确认，再回到 `authorize_change()`。
+    """
+    rep = analyse(project, text, apply=False, author=author)
+    intent_id = ""
+    from . import intent as _intent
+
+    data = _intent.load(project) or {}
+    intent_id = str(data.get("design_intent_id") or "")
+    concept_id = str(((project.meta or {}).get("concept") or {}).get("selected") or "")
+
+    block = _hard_block_reason(project)
+    scope: List[str] = []
+    if rep.intent.get("requires_formal"):
+        scope.append(APPROVAL_INTENT)
+    if block:
+        scope.append(APPROVAL_HARD_BLOCK)
+    if rep.scope in ("level", "project"):
+        scope.append(APPROVAL_SCOPE_CHANGE)
+
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    req = ChangeRequest(
+        request_id=f"CR-{stamp}-{abs(hash(text)) % 1000:03d}",
+        text=text, revision=int(project.revision),
+        concept_id=concept_id, design_intent_id=intent_id,
+        intent_digest=_intent_digest(project),
+        requires_authorization=bool(scope),
+        approval_scope=scope, report=rep.to_dict(),
+        created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+    )
+    if block:
+        rep.risks.append(block)
+        req.report.setdefault("hard_gate", {})["reason"] = block
+    return req
+
+
+def authorize_change(req: ChangeRequest, *, by: str, note: str = "",
+                     scope: Sequence[str] = (), source: str = "owner") -> Dict[str, Any]:
+    """阶段 B 的第一半：业主批准。只认真实业主，不认演示与脚本。
+
+    `--force`、`apply=True`、脚本代理、演示批准都不在这条路径上——它们连
+    调用这个函数的机会都没有，因为执行需要这里返回的授权指纹。
+    """
+    if source != "owner":
+        raise PermissionError(
+            f"变更授权只接受真实业主确认（source=owner），收到 {source!r}。"
+            "演示模式、脚本代理与 --force 都不能批准设计意图变更。")
+    if not by or not str(by).strip():
+        raise PermissionError("变更授权必须记录批准人：没有名字的批准等于没有批准")
+    want = set(scope or req.approval_scope)
+    missing = set(req.approval_scope) - want
+    if missing:
+        raise PermissionError(
+            "以下范围未获批准，不能执行：" + "、".join(sorted(missing)) +
+            "（可以只批准部分范围，但未批准的部分不得改动）")
+    payload = {
+        "request_id": req.request_id,
+        "by": str(by).strip(),
+        "note": note,
+        "approved_scope": sorted(want),
+        "source": source,
+        "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "project_revision": req.revision,
+        "concept_id": req.concept_id,
+        "design_intent_id": req.design_intent_id,
+        "intent_digest": req.intent_digest,
+    }
+    payload["fingerprint"] = _fingerprint(payload)
+    return payload
+
+
+def _fingerprint(auth: Dict[str, Any]) -> str:
+    import hashlib
+
+    seed = "|".join(str(auth.get(k) or "") for k in
+                    ("request_id", "by", "at", "project_revision",
+                     "concept_id", "design_intent_id", "intent_digest")) + \
+        "|" + ",".join(auth.get("approved_scope") or [])
+    return hashlib.sha1(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def validate_authorization(project: Project, req: ChangeRequest,
+                           auth: Optional[Dict[str, Any]]) -> Tuple[bool, str]:
+    """授权是否仍然有效。版本、概念、意图任一变化即失效。"""
+    if not auth:
+        return False, "没有授权记录"
+    if req.requires_authorization and auth.get("source") != "owner":
+        return False, f"授权来源不是业主（{auth.get('source')!r}）"
+    if auth.get("fingerprint") != _fingerprint(auth):
+        return False, "授权记录被改动过（指纹不符）"
+    if auth.get("request_id") != req.request_id:
+        return False, "授权对应的不是这份变更请求"
+    if int(auth.get("project_revision") or -1) != int(project.revision):
+        return False, (f"项目已从 r{auth.get('project_revision')} 走到 "
+                       f"r{project.revision}：授权针对的是旧版本，需重新确认")
+    if str(auth.get("design_intent_id") or "") != _intent_id_now(project):
+        return False, "设计意图基准已变化：原授权不适用"
+    if str(auth.get("intent_digest") or "") != _intent_digest(project):
+        return False, "设计意图内容已变化：原授权不适用"
+    return True, ""
+
+
+def _intent_id_now(project: Project) -> str:
+    from . import intent as _intent
+
+    return str((_intent.load(project) or {}).get("design_intent_id") or "")
+
+
+def _hard_block_reason(project: Project) -> str:
+    """硬门槛已证明不成立时，变更也不能在没有书面接受的情况下执行。"""
+    try:
+        from . import hardgate
+
+        v = hardgate.evaluate(project)
+        if v.failed:
+            return ("硬门槛已判定不成立，变更不能绕过：" + "；".join(
+                r.statement for r in v.failed))
+    except Exception:                                   # noqa: BLE001
+        return ""
+    return ""
+
+
+def apply_change(project: Project, req: ChangeRequest, *,
+                 authorization: Optional[Dict[str, Any]] = None,
+                 author: str = "omniailab-ai-architect") -> ChangeImpactReport:
+    """阶段 B 的第二半：凭授权执行。没有有效授权就拒绝，什么都不改。"""
+    ok, why = validate_authorization(project, req, authorization)
+    if req.requires_authorization and not ok:
+        rep = _report_from(req)
+        rep.notes.append(f"未执行：{why}")
+        rep.notes.append("变更已作为提案保留；取得业主确认后重新提交执行。")
+        rep.blocked = True
+        rep.blocked_reason = why
+        return rep
+
+    # 重新分析一次（项目可能已变化），再执行
+    rep = analyse(project, req.text, apply=False, author=author)
+    rep.authorization = dict(authorization or {})
+    _execute(project, rep, req.text, author=author)
+    rep.changelog = f"changes/change-{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+    return rep
+
+
+def _report_from(req: ChangeRequest) -> ChangeImpactReport:
+    raw = req.report or {}
+    diag = diagnose(req.text)
+    rep = ChangeImpactReport(request=req.text, diagnosis=diag,
+                             scope=str(raw.get("scope") or "local"))
+    rep.targets = list(raw.get("targets") or [])
+    rep.affected_spaces = list((raw.get("affected") or {}).get("spaces") or [])
+    rep.affected_elements = list((raw.get("affected") or {}).get("elements") or [])
+    rep.affected_artifacts = list((raw.get("affected") or {}).get("artifacts") or [])
+    rep.cross_discipline = list(raw.get("cross_discipline") or [])
+    rep.intent = dict(raw.get("design_intent") or {})
+    rep.risks = list(raw.get("risks") or [])
+    return rep
+
+
+def _execute(project: Project, rep: ChangeImpactReport, text: str,
+             author: str = "omniailab-ai-architect") -> None:
+    seeds = list(dict.fromkeys([*rep.affected_spaces, *rep.affected_elements,
+                                *rep.targets]))
+    diag = rep.diagnosis
+    elements = rep.affected_elements
+    if diag.geometry_affecting and elements:
+        wall = next((e for e in elements if e.startswith(("W",))), None)
+        if wall:
+            try:
+                rep.invalidation = apply_geometry_change(
+                    project, wall, {}, author=author, detail=f"变更触发：{text}")
+            except ModelError:
+                rep.invalidation = _soft_invalidate(project, seeds, text, author)
+        else:
+            rep.invalidation = _soft_invalidate(project, seeds, text, author)
+    else:
+        rep.invalidation = _soft_invalidate(project, seeds, text, author)
+    _reopen_gates(project, rework_stages(project, diag, rep.scope))
+    rep.applied = True
+
+
 def analyse(
     project: Project,
     text: str,
     apply: bool = True,
     author: str = "omniailab-ai-architect",
+    authorization: Optional[Dict[str, Any]] = None,
 ) -> ChangeImpactReport:
     diag = diagnose(text)
     targets, spaces, elements, scope = locate(project, text, diag)
@@ -912,6 +1164,30 @@ def analyse(
 
     # ---- apply ----------------------------------------------------------
     if apply:
+        # 触及已确认设计意图的变更必须凭授权执行。
+        # 这一步是"自己提醒自己"和"真的改不了"之间的分界线：
+        # 识别出 requires_formal 之后仍然照改，等于保护机制不存在。
+        if rep.intent.get("requires_formal"):
+            ok, why = validate_authorization(
+                project,
+                ChangeRequest(request_id="adhoc", text=text,
+                              revision=int(project.revision),
+                              design_intent_id=_intent_id_now(project),
+                              intent_digest=_intent_digest(project),
+                              requires_authorization=True,
+                              approval_scope=[APPROVAL_INTENT]),
+                authorization)
+            if not ok:
+                rep.applied = False
+                rep.blocked = True
+                rep.blocked_reason = why
+                rep.notes.append(
+                    "未执行：本次改动触及已确认的设计意图，需业主书面确认后才能执行")
+                rep.notes.append(f"原因：{why}")
+                rep.notes.append(
+                    "正确路径：先 `changes.propose()` 出提案 → 业主确认 → "
+                    "`changes.authorize_change()` 出授权 → 再执行")
+                return rep
         if diag.geometry_affecting and elements:
             wall = next((e for e in elements if e.startswith(("W",))), None)
             if wall:
@@ -928,6 +1204,7 @@ def analyse(
             rep.invalidation = _soft_invalidate(project, seeds, text, author)
         _reopen_gates(project, plan)
         rep.applied = True
+        rep.authorization = dict(authorization or {})
 
     return rep
 

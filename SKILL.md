@@ -97,7 +97,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 专业设计判据与数值区间、项目类型案例 | `knowledge/`（13 个领域）· `cases/` | 先读 `knowledge/INDEX.md` 再按需读单篇；项目类型案例按类型查 `cases/` |
 | 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
 | **多专业怎么分工、能力真到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 要判断"结构/机电/景观能不能出"时读前者（能力矩阵）；要引证据时读后者（六案例实测） |
-| **谁主导设计、技术冲突怎么处理** | **`docs/DESIGN_LEADERSHIP.md`** | 判断主导专业（五模式）、设计意图保护、**技术冲突先优化再改设计**的六级顺序、三条不可突破 |
+| **谁主导设计、技术冲突怎么处理、改了怎么拦** | **`docs/DESIGN_LEADERSHIP.md`** · **`docs/INTENT_ENFORCEMENT.md`** | 前者判主导专业（五模式）与六级冲突顺序；后者是执行层——两阶段授权、统一硬门槛、G2 回滚、**G3–G8 漂移检测** |
 | 工具适配、权限分级与平台接入 | `adapters/specs/` · `docs/MCP_TOOLS.md` · `docs/OMNIAILAB_INTEGRATION.md` · `providers/README.md` | 需要调工具时看前两者；需要生成式图像 / 视频时看后两者 |
 | **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
 | **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** · **`docs/DISCIPLINE_SCOPE_AND_ROUTING.md`** | 项目刚起步先读前者（三种情形 / 访谈 / 可行性 / 设计机会）；**判断这次到底做哪些专业、问谁的问题、缺什么资料、哪些专业会打架**读后者 |

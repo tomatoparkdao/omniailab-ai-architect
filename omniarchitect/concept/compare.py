@@ -30,13 +30,12 @@ def _clamp(v: float) -> int:
     return int(max(0, min(100, round(v))))
 
 
-#: 第一层：不可逾越的硬门槛。美学高分不能抵消它们。
-#: 这里只列"可在概念阶段判定"的硬问题——结构计算、消防审查在后续阶段。
-GATE_BLOCKING = {
-    "capacity": "容量明显不足：这不是体验差，是装不下",
-    "safety": "已识别的安全条件不成立",
-    "regulation": "已识别的强制性规范不允许",
-}
+#: 第一层：不可逾越的硬门槛。清单与四态语义统一在 `hardgate` 里定义，
+#: 这里不再维护第二份——两套分类正是 S1/S2 结论对不上的根源。
+GATE_BLOCKING = {"area": "面积不成立", "capacity": "容量明显不足",
+                 "safety": "已识别的安全条件不成立",
+                 "regulation": "已识别的强制性规范不允许",
+                 "physics": "经核实的物理条件不可满足"}
 
 
 def _lead_weights(ctx: Any) -> Dict[str, float]:
@@ -52,18 +51,32 @@ def _w(ctx: Any, cid: str, base: float) -> float:
 
 
 def _hard_gate(ctx: Any, concept: Dict[str, Any]) -> Dict[str, Any]:
-    """第一层可行性门槛：不管设计多好，这些不成立就不能当推荐。
+    """第一层可行性门槛：不管设计多好，`failed` 就不能当推荐。
 
-    只判"已识别、可判定"的硬问题。没有证据的不算失败——那是"未评估"，
-    不是"不合格"。这条区分很重要，否则所有项目都会因缺资料被判不合格。
+    直接复用 `hardgate.evaluate()` 的口径，只保留 failed 与 unknown 的区分：
+    * `failed`  → 不参与推荐排序（美学分不能抵消）；
+    * `unknown` → 参与排序但标为待补资料，不冒充通过。
     """
     reasons: List[Dict[str, str]] = []
-    for c in getattr(ctx, "conflicts", []) or []:
-        cat = str(c.get("category") or "")
-        sev = str(c.get("severity") or "")
-        if cat in GATE_BLOCKING and sev == "blocker":
-            reasons.append({"id": str(c.get("id") or ""), "category": cat,
-                            "text": str(c.get("problem") or "")})
+    unknowns: List[Dict[str, str]] = []
+    verdict = getattr(ctx, "hard_gate", None)
+    if isinstance(verdict, dict):
+        for row in verdict.get("rows") or []:
+            item = {"id": row.get("dimension", ""),
+                    "category": row.get("dimension", ""),
+                    "text": row.get("statement", "")}
+            if row.get("status") == "failed":
+                reasons.append(item)
+            elif row.get("status") == "unknown":
+                item["needs"] = row.get("needs", "")
+                unknowns.append(item)
+    else:
+        # 没有统一判定时退回 ctx.conflicts，但仍按同一套维度词过滤
+        for c in getattr(ctx, "conflicts", []) or []:
+            cat = str(c.get("category") or "")
+            if cat in GATE_BLOCKING and str(c.get("severity") or "") == "blocker":
+                reasons.append({"id": str(c.get("id") or ""), "category": cat,
+                                "text": str(c.get("problem") or "")})
     # 概念层面的容量硬冲突（如办公人均面积不足）
     for r in (concept.get("discipline_conflicts") or []):
         if str(r.get("severity") or "") == "blocker":
@@ -72,8 +85,9 @@ def _hard_gate(ctx: Any, concept: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "failed": bool(reasons),
         "reasons": reasons,
+        "unknowns": unknowns,
         "rule": ("安全 / 消防与强制性规范 / 已核实的容量与物理限制不成立时，"
-                 "不能用美学高分抵消。"),
+                 "不能用美学高分抵消。unknown 不等于 passed。"),
     }
 
 

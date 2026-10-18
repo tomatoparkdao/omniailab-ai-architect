@@ -21,6 +21,7 @@ G1 签的是"要做什么"，G2 签的是"往哪个方向做"。所以 G2 必须
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from dataclasses import dataclass, field
@@ -214,6 +215,26 @@ def assess_gate(project: Project) -> GateAssessment:
             "G2-BRIEF-CHANGED",
             f"任务书基准已变更（{base.get('change_kind')}）：概念须按新任务书重做后再提交 G2",
         ))
+
+    # 硬门槛：G2 必须自己复核一遍，不能只信 S2 的排名结果。
+    # 排名会把"资料不足"标成待补，但门禁要能独立说"这些我还没确认"。
+    from .. import disciplines as _disc
+    from .. import hardgate as _hg
+
+    _verdict = _hg.evaluate(project, scope=_disc.ensure(project))
+    for row in _verdict.rows:
+        if row.status == _hg.FAILED:
+            a.blockers.append(_risk(
+                f"G2-HARD-{row.dimension}",
+                f"{_hg.HARD_DIMENSIONS[row.dimension]['label']}不成立：{row.statement}",
+            ))
+        elif row.status == _hg.UNKNOWN:
+            a.condition_items.append({
+                "id": f"G2-HARD-{row.dimension}",
+                "text": (f"{_hg.HARD_DIMENSIONS[row.dimension]['label']}尚未确定："
+                         f"{row.needs or row.statement}"),
+                "source": "硬门槛（未确定）",
+            })
 
     # 专业范围：在范围内的专业没有方向，G2 不能算"概念已确认"
     from .. import disciplines as _disc
@@ -497,22 +518,40 @@ def write_style_lock(project: Project, out_dir: str | Path, *,
 
 
 def _snapshot(project: Project, state: Dict[str, Any]) -> Dict[str, Any]:
+    """事务前的内存快照。必须是**深拷贝**。
+
+    浅拷贝只复制了顶层字典，`state["options"]["concepts"]` 仍与原对象共享——
+    事务里改了嵌套对象，回滚时 `update()` 拿回来的还是被改过的那份。
+    这类回滚会"看起来成功"，实际留着半改的数据，比不回滚更危险。
+    """
     store = project.meta.get("stage_state") or {}
-    return {"concept": dict(state), "stage": dict(store.get("S2") or {})}
+    return {
+        "concept": copy.deepcopy(dict(state)),
+        "stage": copy.deepcopy(dict(store.get("S2") or {})),
+        "design_intent": copy.deepcopy(project.meta.get("design_intent")),
+        "leadership": copy.deepcopy(project.meta.get("leadership")),
+    }
 
 
 def _restore(project: Project, state: Dict[str, Any], snap: Dict[str, Any]) -> None:
     """Put the project exactly back where it was before the attempt."""
     state.clear()
-    state.update(snap["concept"])
+    state.update(copy.deepcopy(snap["concept"]))
     store = project.meta.get("stage_state")
     if not isinstance(store, dict):
         store = {}
         project.meta["stage_state"] = store
     if snap.get("stage"):
-        store["S2"] = snap["stage"]
+        store["S2"] = copy.deepcopy(snap["stage"])
     else:
         store.pop("S2", None)
+    # 意图与主导权也在事务里被写：一并还原，避免"回滚了但意图是新的"
+    for key in ("design_intent", "leadership"):
+        prev = snap.get(key)
+        if prev is None:
+            project.meta.pop(key, None)
+        else:
+            project.meta[key] = copy.deepcopy(prev)
 
 
 def _file_snapshot(out_dir: Optional[Path], revision: int) -> List[Dict[str, Any]]:
@@ -523,8 +562,14 @@ def _file_snapshot(out_dir: Optional[Path], revision: int) -> List[Dict[str, Any
     """
     if out_dir is None:
         return []
-    targets = [style_lock_path(out_dir, revision),
-               Path(out_dir) / "concept-handoff.json"]
+    targets = [
+        style_lock_path(out_dir, revision),
+        Path(out_dir) / "concept-handoff.json",
+        # 多专业基准与设计意图基准同样在本事务内写：
+        # 不纳入快照就会出现"回滚了风格锁，却留下一份没被批准的意图"。
+        multi_baseline_path(out_dir, revision),
+        Path(out_dir) / f"design-intent-r{revision}.json",
+    ]
     snap: List[Dict[str, Any]] = []
     for p in targets:
         if p.exists():
@@ -757,16 +802,11 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                 if not intent_file.is_file():
                     raise RuntimeError(f"设计意图基准文件不存在：{intent_file or '（未写入）'}")
         except Exception as exc:
+            # 顺序很重要：先还原内存（含意图与主导权），再按字节还原磁盘。
+            # 快照里已经覆盖 design-intent-r<rev>.json，此前不存在的文件会被删掉，
+            # 此前已批准的那份会原样写回——不会误删上一版。
             _restore(project, state, snapshot)
             restored = _file_restore(files)
-            # 设计意图是本事务内新建的，快照里没有它，回滚要单独清掉，
-            # 否则会留下一份"没有门禁背书的意图基准"。
-            stray = (project.meta or {}).pop("design_intent", None)
-            try:
-                if isinstance(stray, dict) and stray.get("file"):
-                    Path(str(stray["file"])).unlink(missing_ok=True)
-            except OSError:
-                pass
             decision = "blocked"
             rolled_back = True
             st = get_state(project, "S2")

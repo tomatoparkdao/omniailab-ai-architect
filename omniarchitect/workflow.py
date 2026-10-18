@@ -494,13 +494,64 @@ class StageRunner:
                 "post_gate_actions": [],
             }
 
-        st = confirm_stage(self.project, stage_id, by=by or (
+        st = self._run_conformance(stage_id)
+        if st is not None and st.blocks_approval:
+            # 已可证明偏离已确认的设计意图：不能签，必须先走变更审批。
+            # 注意这里不是"提示"，是拒绝——否则保护机制只是装饰。
+            self._persist()
+            return {
+                **get_state(self.project, stage_id).to_dict(),
+                "status": "blocked",
+                "source": source,
+                "notes": [
+                    f"不能确认 {stage_name(stage_id)}：成果已偏离 G2 确认的设计意图",
+                    *[f"· {c.name}：{c.evidence}" for c in st.changed],
+                    "处置：按原意图调整，或对该设计变更走正式审批后重新提交",
+                ],
+                "conformance": st.to_dict(),
+                "post_gate_actions": [],
+            }
+
+        st_confirmed = confirm_stage(self.project, stage_id, by=by or (
             "业主" if source == "owner" else "演示流程"), note=note)
         record_change(self.project, "gate",
                       f"{stage_name(stage_id)} 确认通过（{source}）", targets=[stage_id])
         actions = self.run_post_gate(stage_id)
         self._persist()
-        return {**st.to_dict(), "source": source, "notes": [], "post_gate_actions": actions}
+        notes: List[str] = []
+        if st is not None:
+            from .conformance import summary_lines as _conf_lines
+
+            notes += _conf_lines(st)
+            if st.unknown:
+                notes.append("以上无法自动证明的特征须人工设计审查，未计入通过")
+        return {**st_confirmed.to_dict(), "source": source, "notes": notes,
+                "conformance": st.to_dict() if st else {},
+                "post_gate_actions": actions}
+
+    def _run_conformance(self, stage_id: str):
+        """在当前阶段跑一次设计意图一致性检查并落档。
+
+        G3–G8 都跑，但只看"已证明改变"。无法自动证明的（观感、比例）
+        进人工审查清单，不阻断——否则每个项目都卡在审不了的事上。
+        """
+        from . import conformance
+
+        intent = (self.project.meta or {}).get("design_intent")
+        if not intent:
+            return None
+        try:
+            rep = conformance.check(self.project, stage=stage_id, out_root=self.out)
+        except Exception as exc:                        # noqa: BLE001
+            rep = conformance.ConformanceReport(
+                stage=stage_id, status=conformance.UNKNOWN,
+                note=f"一致性检查执行失败：{type(exc).__name__}: {exc}")
+        store = (self.project.meta or {}).get("conformance")
+        if not isinstance(store, dict):
+            store = {}
+            self.project.meta["conformance"] = store
+        store[stage_id] = {**rep.to_dict(), "checked_at": _now()}
+        return rep
 
     def _approve_concept(self, by: str = "", note: str = "", source: str = "owner",
                          acknowledge: Sequence[str] = (), force: bool = False
@@ -618,6 +669,25 @@ class StageRunner:
                          + ("（当前没有有效 G2 概念基准）"
                             if assess["handoff_status"] != "locked" else "") )
 
+        # G3 也要过一遍意图一致性：平面本身不能违背已签的概念。
+        st_after = self._run_conformance("S3")
+        if st_after is not None and st_after.blocks_approval:
+            self._persist()
+            return {
+                **get_state(self.project, "S3").to_dict(),
+                "status": "blocked",
+                "source": source,
+                "notes": [
+                    "不能签发 G3：平面已偏离 G2 确认的设计意图",
+                    *[f"· {c.name}：{c.evidence}" for c in st_after.changed],
+                    "处置：按原意图调整平面，或对该变更走正式审批",
+                ],
+                "assessment": assess,
+                "conformance": st_after.to_dict(),
+                "formal": False,
+                "post_gate_actions": [],
+            }
+
         actions = self.run_post_gate("S3")
         for action in actions:
             label = action.get("capability", "")
@@ -625,11 +695,17 @@ class StageRunner:
                 f"门禁后置动作 {label}：{action.get('summary', '')}" if action.get("ran")
                 else f"门禁后置动作 {label} 未执行：{action.get('reason', '')}")
         self._record_plan_gate(st, assess, formal=formal, by=by, source=source)
+        if st_after is not None:
+            from .conformance import summary_lines as _conf_lines
+
+            notes += _conf_lines(st_after)
         self._persist()
         return {
             **st.to_dict(),
             "source": source, "notes": notes, "assessment": assess,
-            "formal": formal, "post_gate_actions": actions,
+            "formal": formal,
+            "conformance": st_after.to_dict() if st_after else {},
+            "post_gate_actions": actions,
         }
 
     def _record_plan_gate(self, st: Any, assess: Dict[str, Any], *,
@@ -694,19 +770,48 @@ class StageRunner:
         return st.to_dict()
 
     # ------------------------------------------------------------------
-    def apply_change(self, text: str, apply: bool = True) -> changes.ChangeImpactReport:
-        rep = changes.analyse(self.project, text, apply=apply)
-        touched = invalidate_from(self.project, rep.diagnosis.landing_stage)
-        rep.notes.append("受影响阶段状态已置为返工：" + "、".join(stage_name(s) for s in touched))
+    def apply_change(self, text: str, apply: bool = True,
+                     authorization: Optional[Dict[str, Any]] = None
+                     ) -> changes.ChangeImpactReport:
+        """变更入口。`apply=False` 是**纯预览**：不写盘、不动修订号、不动门禁。
+
+        旧实现在 `apply=False` 时仍然 `invalidate_from()` + `_persist()`，
+        于是"看一下会怎样"就把项目改成了返工状态。预览必须是只读的。
+        """
+        rep = changes.analyse(self.project, text, apply=apply,
+                              authorization=authorization)
+        if not rep.applied:
+            # 预览或未授权：报告要明确说明"这是提案，不是执行记录"，
+            # 而且要写在落盘之前——先写盘再补说明，文件里就没有这句话了。
+            reason = rep.blocked_reason or "预览模式"
+            rep.notes.append(f"未改动项目数据（{reason}）")
+
         d = self.out / "changes"
         d.mkdir(parents=True, exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        (d / f"change-{stamp}.json").write_text(
+        suffix = "proposal" if not rep.applied else "applied"
+        (d / f"change-{stamp}-{suffix}.json").write_text(
             json.dumps(rep.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8"
         )
-        (d / f"change-{stamp}.md").write_text(rep.markdown(), encoding="utf-8")
+        (d / f"change-{stamp}-{suffix}.md").write_text(rep.markdown(), encoding="utf-8")
+
+        if not rep.applied:
+            return rep
+
+        touched = invalidate_from(self.project, rep.diagnosis.landing_stage)
+        rep.notes.append("受影响阶段状态已置为返工："
+                         + "、".join(stage_name(s) for s in touched))
         self._persist()
         return rep
+
+    def propose_change(self, text: str) -> changes.ChangeRequest:
+        """阶段 A：出提案，不动项目。"""
+        req = changes.propose(self.project, text)
+        d = self.out / "changes"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / f"{req.request_id}.json").write_text(
+            json.dumps(req.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+        return req
 
     def _persist(self) -> None:
         self.project.meta = dict(self.project.meta or {})

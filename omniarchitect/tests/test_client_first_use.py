@@ -136,7 +136,8 @@ def test_office_gate_blocks_instead_of_faking_an_approval():
         assert "F-CAP-01" in [b["id"] for b in assess_g1(p).blocks_gate]
         assert decide_g1(p, "approved", by="业主").decision != "approved"
 
-        # 2) 业主书面接受后可以进 S2/S3，但平面自己还得站得住
+        # 2) 业主书面接受后可以进 S2，但 G2 必须独立复核硬门槛：
+        #    "接受一个装不下的方案"不等于"方案装得下"。
         assert decide_g1(p, "approved", by="业主",
                          acknowledge=["F-CAP-01"],
                          note="业主接受：先看紧凑方案").decision == "approved"
@@ -147,12 +148,25 @@ def test_office_gate_blocks_instead_of_faking_an_approval():
                      if (c.get("spatial_prototype") or {}).get("plan_strategy")]
         assert supported, "办公应已有可落地策略"
         C.select(p, supported[0]["concept_id"])
-        assert runner.approve("S2", by="业主")["status"] == CONFIRMED
-        runner.run_stage("S3", confirm=False)
 
-        # 3) 60 人放不进 131㎡：G3 必须继续拒绝，理由是人話+编号
+        g2_blocked = runner.approve("S2", by="业主")
+        assert g2_blocked["status"] != CONFIRMED, "60 人装不下却签了概念"
+        assert any("G2-HARD" in n for n in g2_blocked["notes"]), g2_blocked["notes"]
+
+        # 3) 客户做出真实取舍（减少常驻人数）。人数进了任务书，
+        #    任务书基准随之变化：必须重新确认 G1、重做概念。
+        answer_question(p, "off.headcount", "25 人")
+        regated = decide_g1(p, "approved", by="业主",
+                            note="按 25 人常驻重新确认任务书")
+        assert regated.decision == "approved", regated.notes
+        runner.run_stage("S2", confirm=False)
+        supported = [c for c in p.meta["concept"]["options"]["concepts"]
+                     if (c.get("spatial_prototype") or {}).get("plan_strategy")]
+        C.select(p, supported[0]["concept_id"])
+        g2 = runner.approve("S2", by="业主")
+        assert g2["status"] == CONFIRMED, g2.get("notes")
+
+        # 4) 平面自己还要站得住
+        runner.run_stage("S3", confirm=False)
         g3 = runner.approve("S3", by="业主")
-        assert g3["status"] != CONFIRMED, "装不下的平面被签发了"
-        joined = " ".join(g3["notes"])
-        assert "G3-CONCEPT-CONFLICT" in joined
-        assert "人均" in joined
+        assert g3["status"] == CONFIRMED, g3.get("notes")
