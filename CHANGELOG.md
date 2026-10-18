@@ -139,6 +139,45 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 未确认平面拒收、文字不让模型写、三处登记一致、指纹跨配方一致）；`verify_all.py` 九段通过；
 `check_tables` 93 文件 356 表 0 违规；`normalize --check` 0 不一致。
 
+### 后续补充十 — 多专业一体化：范围、概念、门禁、变更
+
+**一、专业范围层（`disciplines.py`）**
+六个专业（建筑/室内/结构/机电/景观/规划）× 五态（declared/required/inferred/
+unknown/out_of_scope）。`out_of_scope` 必须有证据，推断绝不把专业标成不做。
+十二组接口每组写"什么情况下算没解决"。S1 成果包追加六份
+（scope/interface/responsibility/information-request），范围为空时不生成。
+
+**二、S2 概念从"原型+风格"扩到多专业立场**
+每个专业方向从这套概念自己的话推导（spatial_logic / zoning / circulation /
+daylight / risks）。四张信号表判定"向谁提了要求"，命中即翻成必答问题：
+「拆」→ 承重墙与开洞限值；「挑空」→ 能否不落柱。测试守"两套概念的结构立场
+不能是同一段话"。比较新增四个专业维度，缺依据记 score=None；hard_flags
+把"概念依赖的专业缺资料"写进 verify_before_s3，不被美学分平均掉。
+
+**三、G2 多专业锁定**
+新增 multidisciplinary-concept-baseline-r<rev>.json，逐专业锁方向/状态/交付物/
+接口/谁签，范围外记 not_applicable。写入在 G2 事务内，失败整体回滚并复原磁盘。
+交接 concept-handoff.json 引用该基准并带各专业方向。
+
+**四、跨专业变更（`changes.py`）**
+新增 4 条领域规则（屋面/景观/用地/结构）与 6 条跨专业规则（屋顶花园/水体/
+建筑移位/加层/立面开洞/加固）。命中即展开逐专业影响项，落点取最早受影响阶段。
+反例同样守：换墙面颜色不触发跨专业返工。
+
+**五、修掉五个真实缺陷**
+`scope.entry()` 副作用导致查询即入范围；否定按单字匹配（「别墅」的「别」）；
+否定跨分句泄漏；专项委托被预设室内；概念方向退化成通用文案。
+
+**六、六组案例实测**（`scripts/acceptance_round3.py`，证据 `out/acceptance-round3/`）
+A 住宅 S1–S6 通、S7 因结构未证实阻断；B 别墅同；C 纯景观 S3 正确阻断；
+D 中庭 G3 因原型无策略拒绝；E 办公 S1–S8 全通（G1 容量矛盾经客户决策通过）；
+F 三类变更跨专业识别正确。
+
+文档：MULTIDISCIPLINARY_ARCHITECTURE / MULTIDISCIPLINARY_ACCEPTANCE /
+DISCIPLINE_SCOPE_AND_ROUTING / S2_MULTIDISCIPLINARY_CONCEPT。
+验证：494 passed / 0 failed（35 模块）；verify_all 九段；normalize 247 文件 0；
+表格 99 文件 395 表 0 违规。
+
 ### 后续补充九 — 第二轮验收：参考图真进请求、可行性前置、办公策略落地
 
 **一、参考图进入请求。** 旧 `_params()` 不带 `references`、`workflow` 固定 concept、

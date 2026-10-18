@@ -138,9 +138,174 @@ DOMAIN_RULES: List[DomainRule] = [
         "改动只落在表现：设计本身不变，重出图即可",
         "调整机位、材质贴图与光照重新渲染，不动设计数据",
     ),
+    DomainRule(
+        "roof_envelope", "屋面与外立面", "S4", False,
+        ("屋顶花园", "屋顶绿化", "屋面", "屋顶", "露台", "女儿墙", "泛水",
+         "屋面防水", "外立面", "幕墙", "roof", "facade", "parapet"),
+        "改动落在建筑围护：屋面或立面的构造、防水与开口变了，室内平面通常不变",
+        "先定围护构造与泛水，再核结构荷载与机电出口，最后才谈做法与观感",
+    ),
+    DomainRule(
+        "landscape_scope", "景观与场地", "S3", True,
+        ("庭院", "花园", "园林", "景观", "铺装", "种植", "植栽", "苗木",
+         "水景", "泳池", "水池", "园路", "绿化", "草坪", "室外",
+         "landscape", "garden", "paving", "planting"),
+        "改动落在室外：竖向、排水与种植是几何问题，不是铺个面就完",
+        "先定竖向与排水，再定铺装与种植；涉及水体时同步结构与防水",
+    ),
+    DomainRule(
+        "site_planning", "用地与总图", "S2", True,
+        ("用地", "退线", "容积率", "限高", "建筑位置", "总图", "场地",
+         "出入口", "红线", "绿地率", "setback", "floor area ratio"),
+        "改动落在地上：用地指标与总图关系变了，建筑体量与基础条件都要重算",
+        "先核规划指标与退线，再动总图与体量；禁止在指标未清时承诺可报",
+    ),
+    DomainRule(
+        "structure_scope", "结构改造", "S3", True,
+        ("加固", "承重", "加层", "加建", "夹层", "楼板", "荷载", "柱网",
+         "基础", "抗震", "碳纤维", "粘钢", "reinforce", "structural"),
+        "改动落在结构：受力路径变了，必须先是鉴定、再是方案",
+        "先出鉴定与可行性，再谈加固做法；无鉴定不强推方案",
+    ),
 ]
 
 DOMAIN_BY_ID = {r.id: r for r in DOMAIN_RULES}
+
+
+# --------------------------------------------------------------------------
+# 跨专业变更：一次改动同时落在多个专业上
+#
+# DOMAIN_RULES 决定"这件事主要落在哪个阶段"，但真实改动很少只落一处。
+# "屋顶改成花园"不是换材料——它同时动到建筑屋面、结构附加荷载、防水排水、
+# 景观分区和造价。只把它归类成"改材料"是这一层最容易犯、后果最贵的错。
+#
+# 这些规则不替代领域判定，只在其上补一份"还牵动了谁"。
+CROSS_DISCIPLINE_RULES: List[Dict[str, Any]] = [
+    {
+        "id": "XD-ROOF-GARDEN",
+        "triggers": ("屋顶花园", "屋顶绿化", "屋面改成花园", "露台改花园",
+                     "屋顶改", "roof garden", "green roof"),
+        "not_just": "改材料",
+        "why": "屋顶从不可上人变成可上人带种植：多了一层活荷载、一套防水与排水、"
+               "一套灌溉与照明，还要能上人到达。",
+        "affects": [
+            {"discipline": "architecture", "aspect": "屋面构造与泛水、上人通道与栏杆",
+             "needs": "屋面防水等级、泛水高度、女儿墙高度与可上人开口",
+             "blocks_stage": "S3"},
+            {"discipline": "structure", "aspect": "附加荷载（种植土、水体、人群）",
+             "needs": "屋面允许附加荷载与原结构复核结论",
+             "blocks_stage": "S3"},
+            {"discipline": "landscape", "aspect": "种植分区、园路、排水找坡",
+             "needs": "种植土厚度与植物选型、排水坡度与溢流口",
+             "blocks_stage": "S3"},
+            {"discipline": "mep", "aspect": "灌溉水源与水压、景观照明配电、检修口",
+             "needs": "灌溉方式、室外配电回路、给水接驳点",
+             "blocks_stage": "S4"},
+        ],
+        "extra_risks": ["覆土后净高与排水坡向冲突", "检修口被种植区覆盖导致无法维护"],
+    },
+    {
+        "id": "XD-POOL",
+        "triggers": ("泳池", "水池", "水景", "鱼池", "spa", "pool", "water feature"),
+        "not_just": "加一个装饰",
+        "why": "水体是结构荷载 + 防水 + 循环设备 + 电气安全的组合，且一旦渗漏"
+               "修复代价极高。",
+        "affects": [
+            {"discipline": "structure", "aspect": "水体与池壁荷载、下沉或架空做法",
+             "needs": "水深、池壁材料、基底是楼板还是地坪",
+             "blocks_stage": "S3"},
+            {"discipline": "architecture", "aspect": "防水构造、池边收口、溢流与补水",
+             "needs": "防水做法与蓄水试验要求",
+             "blocks_stage": "S3"},
+            {"discipline": "mep", "aspect": "循环过滤设备、补水与排水、水下照明电气安全",
+             "needs": "循环方式、设备位置与噪音、等电位做法",
+             "blocks_stage": "S3"},
+        ],
+        "extra_risks": ["水下灯具未做等电位与安全电压", "溢流无去处导致倒灌"],
+    },
+    {
+        "id": "XD-BUILDING-MOVE",
+        "triggers": ("建筑位置", "楼往", "整体移", "退线变", "挪动建筑", "后退",
+                     "往后退", "移位", "挪两米", "挪动",
+                     "building position", "setback", "move the building"),
+        "not_just": "微调",
+        "why": "建筑一动，用地指标、基础条件、室外管线与场地排水全部重算。",
+        "affects": [
+            {"discipline": "planning", "aspect": "退线、容积率、日照与绿地率",
+             "needs": "用地红线、退线要求、当地规划条件来源",
+             "blocks_stage": "S2"},
+            {"discipline": "architecture", "aspect": "总平面、出入口与场地关系",
+             "needs": "场地标高与周边道路",
+             "blocks_stage": "S3"},
+            {"discipline": "structure", "aspect": "基础形式与持力层条件",
+             "needs": "地勘报告或基础现状",
+             "blocks_stage": "S3"},
+            {"discipline": "landscape", "aspect": "场地竖向、排水去向与园路",
+             "needs": "场地排水出口与市政接驳",
+             "blocks_stage": "S3"},
+        ],
+        "extra_risks": ["退线变化可能导致方案不可报", "场地排水出口改变后需重做竖向"],
+    },
+    {
+        "id": "XD-ADD-FLOOR",
+        "triggers": ("加一层", "加建", "加盖", "增加层数", "加夹层", "跃层",
+                     "add a floor", "mezzanine"),
+        "not_just": "加房间",
+        "why": "新增楼层改变荷载路径、竖向交通、消防疏散与规划指标。",
+        "affects": [
+            {"discipline": "structure", "aspect": "新增荷载路径与基础承载",
+             "needs": "原基础形式、持力层、能否加桩",
+             "blocks_stage": "S3"},
+            {"discipline": "planning", "aspect": "容积率、限高、消防高度分类",
+             "needs": "限高与容积率指标",
+             "blocks_stage": "S2"},
+            {"discipline": "architecture", "aspect": "竖向交通与疏散距离",
+             "needs": "楼梯位置、疏散宽度与距离",
+             "blocks_stage": "S3"},
+            {"discipline": "mep", "aspect": "竖向管井延伸、消防系统容量",
+             "needs": "原有立管与消防容量余量",
+             "blocks_stage": "S4"},
+        ],
+        "extra_risks": ["加层后建筑高度分类变化，消防要求整体提高"],
+    },
+    {
+        "id": "XD-FACADE-OPENING",
+        "triggers": ("开窗", "加窗", "落地窗", "幕墙", "开洞", "扩窗",
+                     "facade", "curtain wall", "window opening"),
+        "not_just": "换个立面样式",
+        "why": "立面开口同时是结构开洞、防水节点、设备进排风与遮阳能耗问题。",
+        "affects": [
+            {"discipline": "structure", "aspect": "开洞对梁柱与墙体承载的影响",
+             "needs": "洞口尺寸位置与结构构件关系",
+             "blocks_stage": "S3"},
+            {"discipline": "architecture", "aspect": "防水节点、窗台泛水、遮阳",
+             "needs": "洞口周边构造做法",
+             "blocks_stage": "S4"},
+            {"discipline": "mep", "aspect": "设备进排风面积、外机位置",
+             "needs": "需通风的设备清单与风量",
+             "blocks_stage": "S4"},
+        ],
+        "extra_risks": ["大面积玻璃导致夏季过热与结露", "开洞切断原有防水层"],
+    },
+    {
+        "id": "XD-STRUCT-REINFORCE",
+        "triggers": ("加固", "碳纤维", "粘钢", "承重不够", "楼板开裂", "结构改造",
+                     "reinforce", "strengthen"),
+        "not_just": "做点修补",
+        "why": "结构加固必须先有鉴定结论，否则是在没有依据的前提下施工。",
+        "affects": [
+            {"discipline": "structure", "aspect": "鉴定结论、加固方案与施工可行性",
+             "needs": "结构检测鉴定报告",
+             "blocks_stage": "S3"},
+            {"discipline": "architecture", "aspect": "加固后的净高与空间可用性",
+             "needs": "加固厚度与占用空间",
+             "blocks_stage": "S4"},
+        ],
+        "extra_risks": ["无鉴定直接加固属于无依据施工", "加固占用净高影响使用"],
+    },
+]
+
+CROSS_BY_ID = {r["id"]: r for r in CROSS_DISCIPLINE_RULES}
 
 # artifact types that a finish-level change never invalidates
 GEOMETRY_ONLY_TYPES = {"drawing", "model", "schedule_dimension"}
@@ -207,6 +372,7 @@ class ChangeImpactReport:
     invalidation: Optional[InvalidationReport] = None
     risks: List[str] = field(default_factory=list)
     notes: List[str] = field(default_factory=list)
+    cross_discipline: List[Dict[str, Any]] = field(default_factory=list)
     applied: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
@@ -227,6 +393,7 @@ class ChangeImpactReport:
             "invalidation": self.invalidation.to_dict() if self.invalidation else None,
             "risks": self.risks,
             "notes": self.notes,
+            "cross_discipline": self.cross_discipline,
             "method": {
                 "change_ledger": "逐条核销的批注台账：每一轮变更都可追溯、可核销",
             },
@@ -252,6 +419,17 @@ class ChangeImpactReport:
                     f"- {c['label']}（{c['score']:.0f}%）→ 排除理由：{c['reason']}"
                 )
         lines += ["", "## 二、影响范围", "", f"- 范围：**{self.scope}**"]
+        if self.cross_discipline:
+            lines += ["", "### 跨专业影响（这不只是一处改动）", ""]
+            for x in self.cross_discipline:
+                lines.append(f"**{x['id']}** — 不是「{x['not_just']}」：{x['why']}")
+                lines.append("")
+                lines.append("| 专业 | 受影响的内容 | 需要什么才能定 | 影响阶段 |")
+                lines.append("|---|---|---|---|")
+                for a in x["affects"]:
+                    lines.append(f"| {_disc_label(a['discipline'])} | {a['aspect']} | "
+                                 f"{a['needs']} | {a['blocks_stage']} |")
+                lines.append("")
         if self.affected_spaces:
             lines.append(f"- 受影响空间：{', '.join(self.affected_spaces)}")
         if self.affected_elements:
@@ -332,6 +510,37 @@ def diagnose(text: str) -> Diagnosis:
         confidence=confidence, matched=top_hits, considered=considered,
         explanation=top_rule.diagnosis, typical_fix=top_rule.typical_fix,
     )
+
+
+def _disc_label(did: str) -> str:
+    from .disciplines import DISCIPLINES
+
+    d = DISCIPLINES.get(did)
+    return d.label if d else did
+
+
+def cross_discipline_impacts(text: str) -> List[Dict[str, Any]]:
+    """这次改动还牵动了哪些专业。
+
+    领域判定只回答"主要落在哪个阶段"，回答不了"还动了谁"。这里补上：
+    命中的规则会展开成逐专业的影响项，每项带"需要什么才能定"和影响阶段。
+    """
+    out: List[Dict[str, Any]] = []
+    low = text.lower()
+    for rule in CROSS_DISCIPLINE_RULES:
+        hits = [t for t in rule["triggers"] if t.lower() in low]
+        if not hits:
+            continue
+        out.append({
+            "id": rule["id"],
+            "triggered_by": hits,
+            "not_just": rule["not_just"],
+            "why": rule["why"],
+            "affects": [dict(a) for a in rule["affects"]],
+            "disciplines": sorted({a["discipline"] for a in rule["affects"]}),
+            "extra_risks": list(rule["extra_risks"]),
+        })
+    return out
 
 
 def _exclusion_reason(winner: DomainRule, other: DomainRule) -> str:
@@ -508,6 +717,53 @@ def analyse(
     rep = ChangeImpactReport(request=text, diagnosis=diag, scope=scope,
                              targets=targets, affected_spaces=spaces,
                              affected_elements=elements)
+
+    # ---- 跨专业：这次改动还牵动了谁 -------------------------------------
+    rep.cross_discipline = cross_discipline_impacts(text)
+    if rep.cross_discipline:
+        stages = [a["blocks_stage"] for x in rep.cross_discipline
+                  for a in x["affects"]]
+        earliest = min(stages) if stages else diag.landing_stage
+        if diag.primary == "visual_only" and not diag.matched:
+            # 关键词没命中领域、只落到兜底的"仅表现"时，跨专业规则知道的更多：
+            # 用它们给出的最早影响阶段纠正落点，而不是把屋面改造当成重出图。
+            labels = sorted({_disc_label(a["discipline"])
+                             for x in rep.cross_discipline for a in x["affects"]})
+            rep.diagnosis = Diagnosis(
+                primary="cross_discipline", label="跨专业改动",
+                landing_stage=earliest,
+                geometry_affecting=diag.geometry_affecting,
+                confidence=0.55, matched=[], considered=[],
+                explanation=("未命中单专业关键词，但识别出多处牵连（"
+                             + "、".join(labels) + "）："
+                             + "；".join(x["why"] for x in rep.cross_discipline)),
+                typical_fix="按跨专业影响逐项核对，不要当成单一专业的局部改动",
+            )
+            diag = rep.diagnosis
+        elif earliest < diag.landing_stage:
+            # 领域判定说落在 S4，但跨专业规则指出 S3 就要定条件：
+            # 取更早的那个——晚定等于返工。
+            rep.diagnosis = Diagnosis(
+                primary=diag.primary, label=diag.label,
+                landing_stage=earliest, geometry_affecting=diag.geometry_affecting,
+                confidence=diag.confidence, matched=diag.matched,
+                considered=diag.considered,
+                explanation=(diag.explanation +
+                             f"；但跨专业规则指出 {earliest} 就要定条件，"
+                             "按更早的阶段处理"),
+                typical_fix=diag.typical_fix,
+            )
+            diag = rep.diagnosis
+        # 跨专业改动不能按"局部"处理：它一定越过多个专业的边界。
+        # 但也不能一概升成 project —— 屋顶花园不动平面坐标。
+        if scope == "local":
+            rep.scope = "room"
+        for x in rep.cross_discipline:
+            labels = "、".join(sorted({_disc_label(a["discipline"])
+                                       for a in x["affects"]}))
+            rep.risks.append(
+                f"这不只是{x['not_just']}：牵动{labels}——{x['why']}")
+            rep.risks += x["extra_risks"]
 
     # ---- blast radius over registered artifacts -------------------------
     seeds = list(dict.fromkeys([*spaces, *elements, *targets]))

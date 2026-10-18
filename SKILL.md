@@ -97,8 +97,8 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 专业设计判据与数值区间 | `knowledge/`（13 个领域） | 先读 `knowledge/INDEX.md`，再按需读单篇或单节 |
 | 通用项目类型案例判据 | `cases/` | 按项目类型 |
 | 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
-| 工具适配与权限分级 | `adapters/specs/`、`docs/MCP_TOOLS.md` | 按工具 |
-| 平台接入方式 | `docs/OMNIAILAB_INTEGRATION.md`、`providers/README.md` | 需要生成式图像 / 视频时 |
+| **多专业怎么分工、能力真到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 要判断"结构/机电/景观能不能出"时读前者（能力矩阵）；要引证据时读后者（六案例实测） |
+| 工具适配、权限分级与平台接入 | `adapters/specs/` · `docs/MCP_TOOLS.md` · `docs/OMNIAILAB_INTEGRATION.md` · `providers/README.md` | 需要调工具时看前两者；需要生成式图像 / 视频时看后两者 |
 | **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
 | **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** · **`docs/DISCIPLINE_SCOPE_AND_ROUTING.md`** | 项目刚起步先读前者（三种情形 / 访谈 / 可行性 / 设计机会）；**判断这次到底做哪些专业、问谁的问题、缺什么资料、哪些专业会打架**读后者 |
 | **S2 概念怎么生成、怎么确认** | **`docs/S2_CONCEPT.md`** · **`docs/S2_MULTIDISCIPLINARY_CONCEPT.md`** | 出 2–3 套空间策略不同的方向、图解、意向板、比较与 G2 基准；**多专业项目**每套概念要含建筑/结构/机电/室内/景观立场并锁定同一 concept_id（读后者） |
