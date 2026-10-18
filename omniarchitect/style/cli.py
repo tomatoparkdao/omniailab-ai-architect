@@ -210,6 +210,7 @@ def cmd_compile(a: argparse.Namespace) -> int:
         revision=a.revision, locked=a.locked,
         user_needs=[s for s in (a.extra or "").split("|") if s],
         extra_negative=[s for s in (a.negative or "").split("|") if s],
+        plan_confirmed=bool(getattr(a, "plan_confirmed", False)),
     )
     if a.json:
         _dump(prompt.to_dict())
@@ -238,7 +239,8 @@ def cmd_multiview(a: argparse.Namespace) -> int:
             furniture_needs=[s for s in (a.needs or "").split("|") if s],
         ))
     rep = compile_view_set(_style_ids(a.style), briefs, target=a.target or "multi-view",
-                           revision=a.revision, locked=a.locked)
+                           revision=a.revision, locked=a.locked,
+                           plan_confirmed=bool(getattr(a, "plan_confirmed", False)))
     if a.json:
         _dump(rep)
         return 0
@@ -265,7 +267,11 @@ def cmd_submit(a: argparse.Namespace) -> int:
     prompts: List[CompiledPrompt] = []
     for item in items:
         prompts.append(_prompt_from_dict(item))
-    rep = submit(prompts, out_dir=a.out, project_dir=a.project, authorize=a.authorize)
+    try:
+        rep = submit(prompts, out_dir=a.out, project_dir=a.project, authorize=a.authorize)
+    except ValueError as exc:
+        # 平面未确认的配方不得排队：这属于"还不能花钱"，不是技术故障
+        raise SystemExit(f"未提交：{exc}")
     if a.json:
         _dump(rep)
         return 0
@@ -296,6 +302,9 @@ def _prompt_from_dict(d: Dict[str, Any]) -> CompiledPrompt:
         lock_note=d.get("style_lock", ""),
         mandate=list(d.get("verification_mandate") or []),
         warnings=list(d.get("warnings") or []),
+        recipe_id=d.get("recipe_id", ""),
+        gate=dict(d.get("gate") or {}),
+        text_overlay=list(d.get("text_overlay") or []),
     )
 
 
@@ -595,6 +604,8 @@ def register(sub: "argparse._SubParsersAction") -> None:
     sp.add_argument("--locked", action="store_true", help="风格已在门禁确认")
     sp.add_argument("--negative", default="", help="附加负向约束，用 | 分隔")
     sp.add_argument("--extra", default="", help="其它要求（非家具类），用 | 分隔")
+    sp.add_argument("--plan-confirmed", action="store_true",
+                    help="平面已通过 G3；平面图上色/立轴/剖面/展示板必须打开，否则只能出探索稿")
     add_brief(sp)
     sp.add_argument("--out", default="")
     sp.add_argument("--json", action="store_true")
@@ -606,6 +617,8 @@ def register(sub: "argparse._SubParsersAction") -> None:
     sp.add_argument("--target", default="multi-view", choices=list(PROMPT_TARGETS))
     sp.add_argument("--revision", type=int, default=1)
     sp.add_argument("--locked", action="store_true")
+    sp.add_argument("--plan-confirmed", action="store_true",
+                    help="平面已通过 G3（图纸派生配方需要）")
     add_brief(sp)
     sp.add_argument("--out", default="")
     sp.add_argument("--json", action="store_true")

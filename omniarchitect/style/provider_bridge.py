@@ -204,6 +204,13 @@ TARGET_SCOPE = {
     "partial-renovation": "image_editing",
     "multi-view": "multi_view_visualization",
     "walkthrough-video": "architectural_walkthrough",
+    # 表现技法库（recipes.py）：图纸派生走参考图生成，版面走图像生成/多视图
+    "plan-color": "reference_image_generation",
+    "plan-axon": "reference_image_generation",
+    "section-elevation": "reference_image_generation",
+    "presentation-board": "multi_view_visualization",
+    "concept-sheet": "image_generation",
+    "material-moodboard": "image_generation",
 }
 
 
@@ -225,7 +232,18 @@ def submit(
     Remote submission is a network operation and therefore requires `authorize`.
     Without it, and whenever the platform is unconfigured, every job is written
     to a package and marked `awaiting_platform`.
+
+    A prompt whose `gate.blocked` is set is **not** queued at all: it was
+    compiled against an unconfirmed plan, so there is no geometry to preserve and
+    nothing to authorise spending on. Refusing here is the point — a task package
+    that says "blocked" must not look submittable.
     """
+    blocked = [p for p in prompts if (p.gate or {}).get("blocked")]
+    if blocked:
+        names = "、".join(sorted({p.recipe_id or p.target for p in blocked}))
+        raise ValueError(
+            f"提交被拒：{names} 以已确认平面为唯一几何依据，而当前平面未通过 G3。"
+            "请先在 S3 确认平面，或以 plan_confirmed=True 重新编译。")
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     status = probe(project_dir)

@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from .catalog import Catalog, load_catalog
+from . import recipes as recipe_lib
 from .resources import PROMPT_TARGETS, TARGET_STAGES, stamped
 
 # --------------------------------------------------------------------------
@@ -92,6 +93,10 @@ TARGET_PROFILE: Dict[str, Dict[str, Any]] = {
         "may_invent": ("运动路径上的过渡元素",),
     },
 }
+
+# 表现技法库（`recipes.py`）的画像在这里并进来：一张图种的定义只有一处，
+# 编译器只消费画像，不再自己描述"平面图上色该是什么样"。
+TARGET_PROFILE.update(recipe_lib.target_profiles())
 
 # Applies to every target. These are the reasons a generated picture is not
 # yet a design result.
@@ -215,11 +220,18 @@ class CompiledPrompt:
     lock_note: str = ""
     mandate: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
+    #: 表现技法库的编号（老八种为空串）
+    recipe_id: str = ""
+    #: 平面门禁：requires_plan 且未确认时为 blocked，不得提交
+    gate: Dict[str, Any] = field(default_factory=dict)
+    #: 需要由排版层叠加的文字（版面型配方）
+    text_overlay: List[str] = field(default_factory=list)
 
     # -- export ---------------------------------------------------------
     def to_dict(self) -> Dict[str, Any]:
         return {
             "target": self.target,
+            "recipe_id": self.recipe_id,
             "stage": self.stage,
             "style_ids": list(self.style_ids),
             "style_labels": list(self.style_labels),
@@ -231,6 +243,8 @@ class CompiledPrompt:
             "geometry_preservation": list(self.geometry_rules),
             "style_lock": self.lock_note,
             "verification_mandate": list(self.mandate),
+            "gate": dict(self.gate),
+            "text_overlay": list(self.text_overlay),
             "warnings": list(self.warnings),
             "authoritative": False,
             "disclaimer": (
@@ -258,6 +272,18 @@ class CompiledPrompt:
             f"- 一致性指纹：`{self.consistency_key}`",
             f"- 模型修订：r{self.revision}",
         ]
+        if self.recipe_id:
+            r = recipe_lib.get(self.recipe_id)
+            if r is not None:
+                lines.append(f"- 表现技法：`{r.id}`（{recipe_lib.FAMILY_LABEL.get(r.family, r.family)}）")
+                if r.projection_zh:
+                    lines.append(f"- 投影约定：{r.projection_zh}")
+                if r.note:
+                    lines.append(f"- 用法：{r.note}")
+        if self.gate:
+            state = ("需要已确认平面：**未满足**（只能探索，不得提交）"
+                     if self.gate.get("blocked") else "平面门禁：满足")
+            lines.append(f"- {state}")
         if self.lock_note:
             lines.append(f"- {self.lock_note}")
         for w in self.warnings:
@@ -272,6 +298,9 @@ class CompiledPrompt:
         lines += [f"- {n}" for n in self.negative_en] or ["- （none）"]
         lines += ["", "## 几何保持（必须遵守）", ""]
         lines += [f"- {g}" for g in self.geometry_rules] or ["- （无）"]
+        if self.text_overlay:
+            lines += ["", "## 画面文字：不让模型写，由排版层叠加", ""]
+            lines += [f"- [ ] {t}" for t in self.text_overlay]
         lines += ["", "## 产出后必须做的校核（不能跳过）", ""]
         lines += [f"- [ ] {m}" for m in self.mandate]
         lines += [
@@ -322,12 +351,19 @@ def compile_prompt(
     user_needs: Sequence[str] = (),
     extra_negative: Sequence[str] = (),
     reference_note: str = "",
+    plan_confirmed: bool = False,
 ) -> CompiledPrompt:
     """Compile a bilingual, structured prompt for one target.
 
     `locked=True` asserts the style has been approved at a gate. Compiling is
     still permitted without a lock — for exploration — but the prompt then says
     so, and the output is marked as not-yet-approved.
+
+    `plan_confirmed=True` asserts the plan has passed G3. The recipes that read
+    geometry off a drawing (`plan-color` / `plan-axon` / `section-elevation` /
+    `presentation-board`) need it: without a confirmed plan there is nothing to
+    preserve, so the prompt compiles as an **exploration** and the package is
+    marked `gate.blocked` — the platform bridge refuses to queue it.
     """
     if target not in PROMPT_TARGETS:
         raise ValueError(f"未知目标类型 {target!r}；可用：{', '.join(PROMPT_TARGETS)}")
@@ -335,6 +371,8 @@ def compile_prompt(
     brief = brief or SpaceBrief()
     stage = stage or (TARGET_STAGES.get(target, ("S5",))[0])
     profile = TARGET_PROFILE[target]
+    recipe = recipe_lib.get(target)
+    gate = recipe_lib.gate_of(target, plan_confirmed)
 
     styles = [cat.load_style(s) for s in style_ids]
     entries = [cat.get(s) for s in style_ids]
@@ -359,12 +397,21 @@ def compile_prompt(
     geo_en = brief.geometry_lines_en()
 
     # -- assemble positive -----------------------------------------------
+    # 配方自带投影约定时，它必须压过风格库里的默认机位：一张"平面图上色"
+    # 若被风格库的"一点透视、低于人眼"接管，就不再是俯视图了。
+    cam_zh = (brief.camera
+              or (recipe.projection_zh if recipe and recipe.projection_zh else "")
+              or main_zh.get("camera", "") or profile["lens_zh"])
+    cam_en = (brief.camera
+              or (recipe.projection_en if recipe and recipe.projection_en else "")
+              or main_en.get("camera", "")
+              or profile.get("lens_en") or profile["lens_zh"])
     zh_parts: List[str] = [
         f"【风格】{labels[0]}。{main_zh.get('space', '')}",
         f"【材质】{main_zh.get('material', '')}",
         f"【光线】{main_zh.get('lighting', '')}",
         f"【家具】{main_zh.get('furniture', '')}",
-        f"【机位】{brief.camera or main_zh.get('camera', '') or profile['lens_zh']}",
+        f"【机位】{cam_zh}",
         f"【氛围】{main_zh.get('atmosphere', '')}",
     ]
     if blend_zh:
@@ -387,6 +434,12 @@ def compile_prompt(
         zh_parts.append("【只允许改动】" + "；".join(brief.to_change))
     if target == "partial-renovation" and brief.existing_elements:
         zh_parts.append("【必须原样保留】" + "；".join(brief.existing_elements))
+    if recipe is not None:
+        for g in recipe.guards_zh:
+            zh_parts.append(f"【几何保持】{g}")
+        if brief.references and recipe.requires_reference:
+            zh_parts.append("【参考图】以所附图纸为唯一几何依据，逐项对齐后再着色；"
+                            "参考图没画的东西不得补出")
     zh_parts.append(f"【画面目标】{profile['focus_zh']}")
 
     en_parts: List[str] = [
@@ -394,7 +447,7 @@ def compile_prompt(
         f"[materials] {main_en.get('material', '')}",
         f"[light] {main_en.get('lighting', '')}",
         f"[furniture] {main_en.get('furniture', '')}",
-        f"[camera] {brief.camera or main_en.get('camera', '') or profile['lens_zh']}",
+        f"[camera] {cam_en}",
         f"[atmosphere] {main_en.get('atmosphere', '')}",
     ]
     if blend_en:
@@ -417,6 +470,13 @@ def compile_prompt(
         en_parts.append("[change only] " + "; ".join(brief.to_change))
     if target == "partial-renovation" and brief.existing_elements:
         en_parts.append("[keep exactly as-is] " + "; ".join(brief.existing_elements))
+    if recipe is not None:
+        for g in recipe.guards_en:
+            en_parts.append(f"[geometry preserved] {g}")
+        if brief.references and recipe.requires_reference:
+            en_parts.append("[reference] the attached drawing is the only geometric source; "
+                            "match it item by item before colouring anything, and never add "
+                            "what the drawing does not show")
     en_parts.append(f"[shot purpose] {profile['focus_en']}")
 
     positive_zh = "\n".join(zh_parts)
@@ -431,6 +491,13 @@ def compile_prompt(
     for n in extra_negative:
         if n and n not in neg_zh:
             neg_zh.append(n)
+    if recipe is not None:
+        for n in recipe.negative_zh:
+            if n and n not in neg_zh:
+                neg_zh.append(n)
+        for n in recipe.negative_en:
+            if n and n not in neg_en:
+                neg_en.append(n)
 
     # -- geometry preservation -------------------------------------------
     geo_rules = list(GEOMETRY_RULES_COMMON)
@@ -443,6 +510,10 @@ def compile_prompt(
             "**局部改造强约束**：除指定改动部位外，所有墙体、门窗、梁柱、管井位置与尺寸保持原样。",
             *geo_rules,
         ]
+    if recipe is not None:
+        for g in recipe.guards_zh:
+            if g not in geo_rules:
+                geo_rules.append(g)
 
     # -- consistency key --------------------------------------------------
     # One key per (style set, revision) — shared by every room and viewpoint.
@@ -460,9 +531,29 @@ def compile_prompt(
         warnings.append("多机位/漫游任务建议以同一个一致性指纹批量提交，避免各机位材质漂移。")
     if target == "partial-renovation" and not brief.existing_elements:
         warnings.append("局部改造未声明「必须原样保留」的既有构件，容易改过头。")
+    if recipe is not None:
+        if gate.get("blocked"):
+            warnings.append(
+                f"{recipe.name_zh}以已确认平面为唯一几何依据：当前平面未通过 G3，"
+                "本提示词只能用于探索，产出不得作为方案依据，也不得提交生成。")
+        if recipe.requires_reference and not brief.references:
+            warnings.append(
+                f"{recipe.name_zh}必须附图纸作为参考图：没有参考图，模型只能凭文字猜几何。")
+        if recipe.text_policy == recipe_lib.TEXT_OVERLAY:
+            warnings.append(
+                "版面文字不让模型写：标注与标签由排版层叠加，否则中文字形必然出错。")
+
+    # 未确认平面时，正向提示词第一行就写明这是探索稿，避免截图流出去被当成果
+    if recipe is not None and gate.get("blocked"):
+        positive_zh = "【探索稿·平面未确认】\n" + positive_zh
+        positive_en = "[exploration only — plan not confirmed]\n" + positive_en
 
     lock_note = ("风格已锁定（门禁确认），提示词以锁定结果为准。" if locked
                  else "风格未锁定：仅供方向探索。")
+
+    mandate = list(UNIVERSAL_MANDATE)
+    if recipe is not None:
+        mandate += [c for c in recipe.checks if c not in mandate]
 
     return CompiledPrompt(
         target=target,
@@ -477,6 +568,9 @@ def compile_prompt(
         negative_en=neg_en,
         structured={
             "target": target,
+            "recipe": recipe.to_dict() if recipe is not None else {},
+            "gate": dict(gate),
+            "text_overlay": list(recipe.text_overlay) if recipe is not None else [],
             "stage": stage,
             "style": {
                 "primary": {"id": entries[0].style_id, "name_zh": entries[0].display_name_zh,
@@ -509,8 +603,11 @@ def compile_prompt(
         },
         geometry_rules=geo_rules,
         lock_note=lock_note,
-        mandate=list(UNIVERSAL_MANDATE),
+        mandate=mandate,
         warnings=warnings,
+        recipe_id=recipe.id if recipe is not None else "",
+        gate=dict(gate),
+        text_overlay=list(recipe.text_overlay) if recipe is not None else [],
     )
 
 
@@ -523,6 +620,7 @@ def compile_view_set(
     revision: int = 1,
     catalogue: Optional[Catalog] = None,
     locked: bool = False,
+    plan_confirmed: bool = False,
 ) -> Dict[str, Any]:
     """Compile one prompt per viewpoint, all sharing a single consistency key.
 
@@ -532,7 +630,7 @@ def compile_view_set(
     cat = catalogue or load_catalog()
     prompts = [
         compile_prompt(style_ids, v, target=target, stage=stage, revision=revision,
-                       catalogue=cat, locked=locked)
+                       catalogue=cat, locked=locked, plan_confirmed=plan_confirmed)
         for v in views
     ]
     keys = {p.consistency_key for p in prompts}

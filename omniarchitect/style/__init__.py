@@ -56,6 +56,8 @@ from .recommender import (                                                   # n
     RecommendRequest,
     recommend,
 )
+from . import recipes                                                       # noqa: E402
+from .recipes import OVERLAY_TARGETS, PLAN_GATED, RECIPES                   # noqa: E402
 from .resources import (                                                     # noqa: E402
     CATALOG_FILE,
     PROMPT_TARGETS,
@@ -73,6 +75,8 @@ __all__ = [
     # 提示词编译
     "compile_prompt", "compile_view_set", "CompiledPrompt", "SpaceBrief",
     "PROMPT_TARGETS", "TARGET_STAGES",
+    # 表现技法库（图纸派生 / 版面）
+    "recipes", "RECIPES", "PLAN_GATED", "OVERLAY_TARGETS",
     # 八阶段挂钩
     "hook", "all_hooks", "HOOKED_STAGES", "gate", "gate_label", "stage_name",
     "frame_source",

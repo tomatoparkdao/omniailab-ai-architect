@@ -45,9 +45,15 @@ HOOKED_STAGES = ("S2", "S3", "S4", "S5", "S7", "S8")
 
 # --------------------------------------------------------------------------
 # 提示词编译器可产出的目标类型
-PROMPT_TARGETS = (
+#
+# 前八种是"空间长什么样"；后六种来自 `recipes.py` 的**表现技法库**——
+# 把已确认的平面/立面转成业主看得懂的图与板。两族的边界写死在那里，
+# 这里**派生**而不是重抄，避免同一件事在两处各说一套。
+from .recipes import RECIPES as _RECIPES  # noqa: E402  (no cycle: recipes 不反向依赖)
+
+_LEGACY_TARGETS = (
     "concept",            # 概念图
-    "moodboard",          # 情绪板
+    "moodboard",          # 情绪板（拼贴版面）
     "interior-render",    # 室内效果图
     "exterior-render",    # 建筑外观图
     "material-closeup",   # 材料特写
@@ -55,6 +61,8 @@ PROMPT_TARGETS = (
     "multi-view",         # 多视角效果图
     "walkthrough-video",  # 漫游视频
 )
+
+PROMPT_TARGETS = _LEGACY_TARGETS + tuple(_RECIPES)
 
 # 每种目标通常用在哪些阶段。
 TARGET_STAGES = {
@@ -67,6 +75,7 @@ TARGET_STAGES = {
     "multi-view": ("S5",),
     "walkthrough-video": ("S5",),
 }
+TARGET_STAGES.update({rid: tuple(r.stages) for rid, r in _RECIPES.items()})
 
 
 def style_files(style_dir: Path | None = None) -> List[Path]:

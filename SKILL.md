@@ -102,7 +102,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | **找参考图 / 方案视频要更生动** | **`docs/REFERENCE_SOURCES.md`**、**`docs/VIDEO_PRODUCTION.md`** | 调研方向看前者（哪些能带走），做视频叙事看后者（移交边界） |
 | **S1 怎么启动、缺什么** | **`docs/S1_INTAKE.md`** | 项目刚起步、需求还没成形时先读它（三种情形 / 访谈 / 可行性 / 设计机会） |
 | **S2 概念怎么生成、怎么确认** | **`docs/S2_CONCEPT.md`** | 出 2–3 套空间策略不同的方向、图解、意向板、比较与 G2 基准；概念 ≠ 风格 |
-| 概念效果图（平面确认后） | `knowledge/ai-concept-visualization.md` | 出概念效果图前 |
+| **平面/立面怎么变成业主看得懂的图与板** | **`docs/VISUAL_RECIPES.md`** · `knowledge/ai-concept-visualization.md` | 平面图上色、3D 立轴、剖面、展示板、概念板、材质情绪板；图纸派生需 G3，文字不让模型写；概念效果图见后一文件 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 | `knowledge/design-presentation-methodology.md` | 出 PPTX 前 |
 | 署名规范与内容自检 | `LICENSE` · `docs/CONTENT_AUDIT.md` | 分发前必读 |
