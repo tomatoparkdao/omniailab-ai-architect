@@ -138,6 +138,53 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
                      "reason": "S3 现有算法不支持该原型，需要专用深化或调整；本轮不假装可自动落地",
                      "evaluated": True})
 
+    # 8. 专业维度 —— 只评"在范围内且有依据"的；没有依据就记不评，
+    #    绝不把"缺结构资料"折成一个中等分数混进总分。
+    DIRS = [("structure", "结构可行性", 0.0),
+            ("mep", "机电协调难度", 0.0),
+            ("landscape", "景观与生态", 0.0),
+            ("planning", "规划适应性", 0.0)]
+    dirs = concept.get("disciplines") or {}
+    for did, name, weight in DIRS:
+        d = dirs.get(did)
+        if not d:
+            continue                    # 不在范围：不加这一维，也不给 0 分
+        if d.get("status") != "proposed":
+            rows.append({
+                "id": f"disc-{did}", "name": name, "weight": weight,
+                "score": None, "evaluated": False,
+                "reason": (f"{d['label']}资料不足（{d.get('evidence') or '未提供'}）："
+                           "本项不评——缺依据时给分等于编"),
+            })
+            continue
+        # 有依据才评：要求越多，说明这套概念对专业的依赖越重
+        demand = len(d.get("demanded_by") or [])
+        if did == "structure":
+            score = 88 - 7 * demand
+            why = (f"概念向结构提出 {demand} 项要求，均可由常规做法满足" if demand
+                   else "概念不改变结构体系，落地风险低")
+        elif did == "mep":
+            score = 88 - 6 * demand
+            why = (f"需配套 {demand} 类机电条件" if demand
+                   else "不新增机电系统")
+        elif did == "landscape":
+            score = 84 if demand else 90
+            why = ("室外参与空间组织，需处理防水排水与灌溉" if demand
+                   else "室外不参与空间组织")
+        else:
+            score = 80
+            why = "需按当地规划条件核对，系统不出法定结论"
+        rows.append({"id": f"disc-{did}", "name": name, "weight": weight,
+                     "score": _clamp(score), "reason": why, "evaluated": True})
+
+    # 硬性前提：概念自己要求某专业回答，而该专业还是"待补资料"。
+    # 这不是扣几分的问题——它意味着这套概念此刻**不能被当作已成立的方案**推荐。
+    hard = [{"discipline": did, "label": (dirs.get(did) or {}).get("label", did),
+             "needs": (dirs.get(did) or {}).get("open_questions") or []}
+            for did, _n, _w in DIRS
+            if (dirs.get(did) or {}).get("status") == "requires_input"
+            and (dirs.get(did) or {}).get("demanded_by")]
+
     evaluated = [r for r in rows if r.get("evaluated")]
     wsum = sum(r["weight"] for r in evaluated)
     total = (sum(float(r["score"]) * r["weight"] for r in evaluated) / wsum) if wsum else 0.0
@@ -147,8 +194,9 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
         "weighted": round(total, 1),
         "coverage": round(wsum, 2),
         "unevaluated": [r["id"] for r in rows if not r.get("evaluated")],
+        "hard_flags": hard,
         "note": ("加权分只在已评估项上归一；覆盖不足 0.8 时该分数不足以拉开差距，"
-                 "须结合文字判断。"),
+                 "须结合文字判断。hard_flags 非空时，该方案不能作为无条件推荐。"),
     }
 
 
@@ -201,6 +249,14 @@ def recommend(concept_set: Dict[str, Any], evals: Sequence[Dict[str, Any]],
         })
 
     verify: List[str] = []
+    # 这套概念自己向某专业提了要求，而该专业还没有资料：必须先补，
+    # 不能靠其他维度的高分把它平均成"可以推进"。
+    for f in (top.get("hard_flags") or []):
+        needs = "、".join(str(x) for x in (f.get("needs") or [])[:2])
+        verify.append(
+            f"**{f['label']}是这套概念成立的前提**，目前资料不足"
+            + (f"（需先明确：{needs}）" if needs else "")
+            + "：补齐前该方案只能作为方向，不能当作已成立方案推进")
     if ctx.precision != "authoritative_capable":
         verify.append("尺寸与净宽：进 S3 前需图纸或实测核实，当前概念未按精确尺寸校核")
     for u in ctx.uncertainty[:3]:

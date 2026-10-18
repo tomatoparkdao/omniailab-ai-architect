@@ -317,6 +317,87 @@ def style_lock_path(out_dir: str | Path, revision: int) -> Path:
     return Path(out_dir) / f"style-lock-r{revision}.json"
 
 
+def multi_baseline_path(out_dir: str | Path, revision: int) -> Path:
+    return Path(out_dir) / f"multidisciplinary-concept-baseline-r{revision}.json"
+
+
+def write_multidisciplinary_baseline(project: Project, out_dir: str | Path, *,
+                                     chosen: Dict[str, Any], by: str = "",
+                                     acknowledged: Sequence[str] = ()) -> Dict[str, Any]:
+    """锁定"这次确认的到底是哪些专业、各自的什么方向"。
+
+    风格锁定文件只管观感，管不了"结构按什么原则、景观做到什么范围"。多专业项目
+    如果只有风格锁，就会出现"建筑方向已确认、景观概念却对应另一方案"这种状态。
+    所以这里单独落一份基准，逐专业写：方向、状态、还缺什么、谁签。
+
+    范围外的专业写 `not_applicable`，不伪造批准。
+    """
+    from .. import disciplines as _disc
+
+    scope = _disc.ensure(project)
+    dirs = chosen.get("disciplines") or {}
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    rows: List[Dict[str, Any]] = []
+    not_applicable: List[str] = []
+    pending: List[Dict[str, Any]] = []
+    for did in _disc.DISCIPLINE_ORDER:
+        d = _disc.DISCIPLINES[did]
+        if did not in scope.active():
+            not_applicable.append(did)
+            rows.append({
+                "discipline": did, "label": d.label, "state": "not_applicable",
+                "direction": "", "status": "",
+                "note": "不在本次委托范围：不视为已批准，也不代表没有接口",
+            })
+            continue
+        item = dirs.get(did)
+        if not item:
+            raise ValueError(f"{d.label}在范围内，但选定概念没有该专业方向：G2 不能只签一半")
+        rows.append({
+            "discipline": did, "label": d.label, "state": "locked",
+            "direction": item.get("strategy", ""),
+            "goal": item.get("goal", ""),
+            "status": item.get("status", ""),
+            "deliverables": list(item.get("deliverables") or []),
+            "open_questions": list(item.get("open_questions") or []),
+            "interfaces": list(item.get("interfaces") or []),
+            "needs_professional": bool(item.get("needs_professional")),
+            "signed_by": (f"{d.label}专业人员" if item.get("needs_professional")
+                          else by or "主创"),
+            "evidence": item.get("evidence", ""),
+        })
+        if item.get("status") != "proposed":
+            pending.append({"discipline": did, "label": d.label,
+                            "needs": list(item.get("open_questions") or [])})
+
+    iface = _disc.interfaces_for(scope)
+    payload = {
+        "project_id": project.project_id,
+        "revision": project.revision,
+        "concept_id": chosen.get("concept_id", ""),
+        "concept_name": chosen.get("concept_name", ""),
+        "concept_statement": chosen.get("concept_statement", ""),
+        "confirmed_by": by or "业主",
+        "confirmed_at": _now(),
+        "source": "owner",
+        "active": [r["discipline"] for r in rows if r["state"] == "locked"],
+        "not_applicable": not_applicable,
+        "disciplines": rows,
+        "interfaces": iface,
+        "pending_inputs": pending,
+        "acknowledged": list(acknowledged),
+        "note": ("每个专业方向都绑定同一个 concept_id：不是五份互不相关的方案。"
+                 "not_applicable 表示不在本次委托范围，不等于已核对无冲突。"),
+    }
+    path = multi_baseline_path(out, project.revision)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8")
+    payload["file"] = str(path)
+    return payload
+
+
 def write_style_lock(project: Project, out_dir: str | Path, *,
                      acknowledged: Sequence[str] = (), by: str = "") -> Dict[str, Any]:
     """Write the canonical lock for the selected concept, or raise.
@@ -539,6 +620,9 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
             f"不能写一段文字片段。可用编号：{list(ACKNOWLEDGEABLE)}")
 
     state = _concept(project)
+    _opts = state.get("options") or {}
+    chosen = next((c for c in (_opts.get("concepts") or [])
+                   if c.get("concept_id") == str(state.get("selected") or "")), None)
     assess = assess_gate(project)
     out_dir = Path(summary_path).parent if summary_path else None
     notes: List[str] = []
@@ -581,6 +665,13 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
             if source == "owner":
                 write_style_lock(project, out_dir or Path("."),
                                  acknowledged=ack, by=by_label)
+                # 1b) 多专业基准：逐专业锁定方向，范围外的记 not_applicable。
+                #     不能只锁风格——风格管不了结构与景观的边界。
+                multi = write_multidisciplinary_baseline(
+                    project, out_dir or Path("."), chosen=chosen or {},
+                    by=by_label, acknowledged=ack)
+            else:
+                multi = {}
             # 2) 再确认阶段
             st = confirm_stage(project, "S2", by=by_label,
                                note=note or ("G2 概念确认" if source == "owner"
@@ -599,6 +690,12 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                 "needs_human": list(assess.needs_human),
                 "human_ids": [h["id"] for h in assess.human_items],
                 "summary_path": summary_path,
+                "multidisciplinary": {
+                    "file": multi.get("file", ""),
+                    "active": list(multi.get("active") or []),
+                    "not_applicable": list(multi.get("not_applicable") or []),
+                    "pending_inputs": list(multi.get("pending_inputs") or []),
+                } if multi else {},
             }
             # 3) 登记基准 / 演示记录
             if source == "owner":
@@ -618,6 +715,10 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                 if str((state.get("baseline") or {}).get("concept_id")) != str(
                         state.get("selected") or ""):
                     raise RuntimeError("基准登记的概念与当前选定不一致")
+                multi_file = Path(str(((state.get("baseline") or {})
+                                       .get("multidisciplinary") or {}).get("file") or ""))
+                if multi_file and not multi_file.is_file():
+                    raise RuntimeError(f"多专业基准文件不存在：{multi_file}")
         except Exception as exc:
             _restore(project, state, snapshot)
             restored = _file_restore(files)

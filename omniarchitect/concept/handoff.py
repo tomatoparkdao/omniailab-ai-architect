@@ -60,6 +60,20 @@ def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
             "confirmed_at": base.get("confirmed_at", ""),
             "conditions": list(base.get("conditions") or []),
             "needs_human": list(base.get("needs_human") or []),
+            # 多专业基准：S3 起每个专业按这份对齐，而不是只看风格锁
+            "multidisciplinary": dict(base.get("multidisciplinary") or {}),
+        },
+        "disciplines": {
+            "directions": {
+                k: {"goal": v.get("goal", ""), "strategy": v.get("strategy", ""),
+                    "status": v.get("status", ""),
+                    "deliverables": list(v.get("deliverables") or []),
+                    "open_questions": list(v.get("open_questions") or []),
+                    "interfaces": list(v.get("interfaces") or [])}
+                for k, v in (chosen.get("disciplines") or {}).items()
+            },
+            "note": ("各专业方向都属于同一个 concept_id；"
+                     "status=requires_input 的专业只能作为方向，不是结论。"),
         },
         "spatial": {
             "prototype_id": p.get("prototype_id", ""),

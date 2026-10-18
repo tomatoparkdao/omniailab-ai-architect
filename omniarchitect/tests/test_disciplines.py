@@ -209,3 +209,167 @@ def test_single_discipline_bundle_does_not_invent_a_matrix():
             assert res["count"] == len(S1_BUNDLE_FILES)
             for name in DISCIPLINE_BUNDLE_FILES:
                 assert not (out / name).exists(), name
+
+
+# --------------------------------------------------------------------------
+# 7. 专业方向必须"跟着这套概念走"，不是一句通用话套所有方案
+# --------------------------------------------------------------------------
+def _bundle(tmp: Path, one_liner: str, needs: str):
+    from omniarchitect import concept as C
+    from omniarchitect.demo import build_demo_project
+
+    p = build_demo_project(tmp / "proj")
+    start_interview(p, one_liner)
+    answer_question(p, "base.needs", needs)
+    decide_g1(p, "approved", by="业主")
+    C.generate_bundle(p, tmp / "out", with_deck=False)
+    return p, p.meta["concept"]["options"]["concepts"]
+
+
+def test_two_concepts_get_different_structure_demands():
+    """两套概念对结构的要求不能是同一段话——否则这段是套话，不是推导。"""
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p, concepts = _bundle(tmp, "150㎡ 大平层，现代意式极简，拆一堵墙",
+                              "客厅能坐 8 人")
+        texts = {}
+        for c in concepts:
+            d = (c.get("disciplines") or {}).get("structure")
+            if d:
+                texts[c["concept_id"]] = d["strategy"]
+        assert len(texts) >= 2, texts
+        assert len(set(texts.values())) >= 2, texts
+        # 至少一套明确"要求结构回答"，并带出具体问题
+        demanding = [c for c in concepts
+                     if ((c.get("disciplines") or {}).get("structure") or {})
+                     .get("demanded_by")]
+        assert demanding, "没有任何概念向结构提出具体要求"
+
+
+def test_discipline_direction_is_bound_to_its_own_concept():
+    with tempfile.TemporaryDirectory() as td:
+        p, concepts = _bundle(Path(td), "150㎡ 大平层，现代意式极简，拆一堵墙",
+                              "客厅能坐 8 人")
+        for c in concepts:
+            for did, d in (c.get("disciplines") or {}).items():
+                assert d["concept_bound"] is True, (c["concept_id"], did)
+                assert did in disc.ensure(p).active(), did
+                assert d["strategy"], (c["concept_id"], did)
+
+
+# --------------------------------------------------------------------------
+# 8. 比较：缺依据的专业不评分；概念依赖的专业缺资料时不能无条件推荐
+# --------------------------------------------------------------------------
+def test_missing_discipline_data_is_not_scored():
+    with tempfile.TemporaryDirectory() as td:
+        p, _concepts = _bundle(Path(td), "150㎡ 大平层，现代意式极简，拆一堵墙",
+                               "客厅能坐 8 人")
+        cmp = p.meta["concept"]["comparison"]
+        for e in cmp["evaluations"]:
+            for r in e["rows"]:
+                if r["id"].startswith("disc-") and not r["evaluated"]:
+                    assert r["score"] is None, r
+                    assert "不评" in r["reason"] or "缺" in r["reason"], r
+
+
+def test_concept_depending_on_missing_structure_cannot_be_recommended_blindly():
+    with tempfile.TemporaryDirectory() as td:
+        p, _concepts = _bundle(Path(td), "150㎡ 大平层，现代意式极简，拆一堵墙",
+                               "客厅能坐 8 人")
+        rec = p.meta["concept"]["comparison"]["recommendation"]
+        evals = {e["concept_id"]: e for e in p.meta["concept"]["comparison"]["evaluations"]}
+        top = evals[rec["concept_id"]]
+        if top["hard_flags"]:
+            joined = " ".join(rec["verify_before_s3"])
+            assert "前提" in joined and "资料不足" in joined, rec["verify_before_s3"]
+            assert "不能当作已成立方案" in joined
+
+
+# --------------------------------------------------------------------------
+# 9. 否定判定：不能把"要做的事"判成不做
+# --------------------------------------------------------------------------
+def test_negation_does_not_leak_across_clauses():
+    """"室内不动，院子做景观" 里的景观必须是「要做」。"""
+    s = D.detect(["室内不动，院子做景观，铺装加种植"], profile_id="residential")
+    assert "landscape" in s.active(), s.to_dict()["entries"]
+    assert "interior" in s.out(), s.to_dict()["entries"]
+
+
+def test_villa_word_is_not_read_as_negation():
+    """「别墅」里有个「别」——按单字判否定会把它当成"不做"。"""
+    s = D.detect(
+        ["有块地，建三层别墅，带庭院水池，室内精装，结构机电一并考虑"],
+        profile_id="architecture")
+    assert {"architecture", "interior", "structure", "mep", "landscape"} <= set(
+        s.active()), s.labels()
+    assert not s.out(), s.labels(s.out())
+
+
+def test_garden_only_does_not_force_interior_questions():
+    """只做花园：不该被问卧室与收纳。"""
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p = _p(tmp, "我家的花园")
+        start_interview(p, "只想重新设计我家的花园，种点好打理的")
+        scope = D.load(p)
+        assert "landscape" in scope.active(), scope.labels()
+        assert "interior" not in scope.active(), scope.labels()
+        slots = {q.slot for q in next_questions(p, limit=12)}
+        assert "storage" not in slots, slots
+
+
+def test_explicit_no_means_no():
+    s = D.detect(["室内全改，不做景观，不碰结构"], profile_id="residential")
+    assert "landscape" in s.out(), s.labels(s.out())
+    assert "structure" in s.out(), s.labels(s.out())
+    assert "interior" in s.active(), s.labels()
+
+
+# --------------------------------------------------------------------------
+# 10. G2 多专业基准：逐专业锁定，范围外记 not_applicable，交接要引用它
+# --------------------------------------------------------------------------
+def test_g2_writes_a_multidisciplinary_baseline_bound_to_one_concept():
+    import json
+
+    from omniarchitect import concept as C
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        from omniarchitect.demo import build_demo_project
+
+        p = build_demo_project(tmp / "proj")
+        p.name = "150㎡ 住宅"
+        p.save(tmp / "proj" / "project.json")
+        start_interview(p, "150㎡ 大平层，现代意式极简，拆一堵墙，室内精装")
+        answer_question(p, "base.needs", "客厅能坐 8 人")
+        decide_g1(p, "approved", by="业主")
+
+        runner = StageRunner(p, tmp / "out", project_dir=tmp / "proj")
+        runner.run_stage("S2", confirm=False)
+        selected = p.meta["concept"]["options"]["concepts"][0]["concept_id"]
+        C.select(p, selected)
+        res = runner.approve("S2", by="业主张先生")
+        assert res["status"] == CONFIRMED, res.get("notes")
+
+        f = next((tmp / "out").rglob("multidisciplinary-concept-baseline-r*.json"), None)
+        assert f, "G2 确认后没有多专业基准文件"
+        d = json.loads(f.read_text(encoding="utf-8"))
+        assert d["concept_id"] == selected
+        # 每个在范围内的专业都锁定到同一个 concept_id 下
+        locked = {r["discipline"] for r in d["disciplines"] if r["state"] == "locked"}
+        assert locked == set(D.ensure(p).active()), (locked, D.ensure(p).active())
+        # 范围外的专业写 not_applicable，不伪造批准
+        for r in d["disciplines"]:
+            if r["discipline"] in d["not_applicable"]:
+                assert r["state"] == "not_applicable" and not r["direction"], r
+
+        # 交接必须能指回这份基准
+        h = json.loads(next((tmp / "out").rglob("concept-handoff.json"))
+                       .read_text(encoding="utf-8"))
+        assert h["gate"]["multidisciplinary"]["file"].endswith(f.name)
+        assert h["gate"]["multidisciplinary"]["active"] == list(d["active"])
+        # 交接里每个专业方向都带 open_questions，缺资料的专业不能看起来像结论
+        for did, v in h["disciplines"]["directions"].items():
+            assert v["strategy"], did
+            if v["status"] != "proposed":
+                assert v["open_questions"], (did, v)

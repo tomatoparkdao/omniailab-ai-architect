@@ -201,19 +201,48 @@ class DisciplineScope:
 
 
 # --------------------------------------------------------------------------
-NEGATORS = ("不", "无", "非", "别", "勿", "免")
+#: 否定必须按**短语**匹配，不能按单字。
+#: 用单字会立刻出事：「别墅」里的「别」、「无窗」里的「无」都会被当成否定，
+#: 于是"带庭院水池的三层别墅"被判成"明确不做景观"。
+NEGATION_PATTERNS: Tuple[str, ...] = (
+    "不做", "不要", "不用", "不需", "无需", "不考虑", "不涉及", "不含",
+    "不动", "不改", "不碰", "不加", "不换", "不在范围", "除外", "免做",
+    "别做", "勿动", "暂无", "不用做", "先不做", "这次不做", "本次不做",
+)
 
 
-def _negated(text: str, kw: str, span: int = 6) -> bool:
-    """关键词前后紧挨着否定词，就当成"明确不做"。
+#: 分句边界。否定只在**同一分句内**生效——否则"室内不动，院子做景观"会把
+#: 后半句的"景观"也否掉。
+CLAUSE_SEPS = "。，；！？、\n\r\t"
 
-    中文的否定会在两侧出现："不做室内" 与 "室内不动" 都是不做。
+
+def _clause_at(text: str, pos: int) -> Tuple[int, int]:
+    """返回包含 pos 的分句区间 [start, end)。"""
+    start = 0
+    for i in range(pos - 1, -1, -1):
+        if text[i] in CLAUSE_SEPS:
+            start = i + 1
+            break
+    end = len(text)
+    for i in range(pos, len(text)):
+        if text[i] in CLAUSE_SEPS:
+            end = i
+            break
+    return start, end
+
+
+def _negated(text: str, kw: str) -> bool:
+    """关键词所在分句里出现否定短语，才算"明确不做"。
+
+    三条都是踩过的坑：按单字判会把「别墅」「无窗」误判；不限分句会把
+    "室内不动，院子做景观" 里的景观也否掉；两种误判的后果都是把要做的事
+    判成不做，比漏判更危险。
     """
     start = text.find(kw)
     while start != -1:
-        before = text[max(0, start - span):start]
-        after = text[start + len(kw): start + len(kw) + span]
-        if any(n in before for n in NEGATORS) or any(n in after for n in NEGATORS):
+        a, b = _clause_at(text, start)
+        clause = text[a:b]
+        if any(p in clause for p in NEGATION_PATTERNS):
             return True
         start = text.find(kw, start + 1)
     return False
@@ -254,33 +283,45 @@ def detect(texts: Sequence[str], *, profile_id: str = "",
     # 新建信号：客户说"有块地/建三层/自建别墅"，本质是建筑委托，
     # 不能因为没出现"建筑"两个字就当成室内装修。
     # 只标 inferred（待确认），因为"别墅"也可能只是室内委托。
-    if scope.entry("architecture").state == UNKNOWN:
+    # 注意：必须用 get 判断"是否已有记录"，不能调 entry()——entry() 会顺手造一条
+    # UNKNOWN，而 UNKNOWN 属于在范围，等于凭空把建筑拉进范围。
+    if "architecture" not in scope.entries:
         build_hits = _hits(blob, NEW_BUILD_HINTS)
         if build_hits:
-            e = scope.entry("architecture")
-            e.state = INFERRED
-            e.evidence = f"新建迹象：{'、'.join(build_hits[:4])}（需确认是否含建筑设计）"
-            e.needs_professional = DISCIPLINES["architecture"].needs_professional
+            scope.entries["architecture"] = ScopeEntry(
+                discipline="architecture", state=INFERRED,
+                evidence=f"新建迹象：{'、'.join(build_hits[:4])}（需确认是否含建筑设计）",
+                needs_professional=DISCIPLINES["architecture"].needs_professional)
 
     # 项目类型本身隐含的专业：建筑/室内是"载体"，结构机电是"被牵动"
     building_profiles = ("residential", "office", "hospitality", "retail", "exhibition")
+    # 只有当客户没有把话说成"专项委托"时，才预设室内是主专业。
+    # 反例："只想重新设计我家的花园" —— 项目类型仍是住宅，但这次不做室内；
+    # 若照旧预设，客户会被问一堆卧室与收纳的问题。
+    specialty_hits = _hits(blob, (
+        DISCIPLINES["landscape"].keywords + DISCIPLINES["structure"].keywords
+        + DISCIPLINES["planning"].keywords))
     if profile_id in building_profiles:
-        e = scope.entry("interior")
-        if e.state == UNKNOWN:
-            e.state = REQUIRED
-            e.evidence = e.evidence or f"项目类型「{profile_id}」必然涉及室内设计"
+        if "interior" not in scope.entries and not specialty_hits:
+            scope.entries["interior"] = ScopeEntry(
+                discipline="interior", state=REQUIRED,
+                evidence=f"项目类型「{profile_id}」默认涉及室内设计")
         for did, trigger_words in (("structure", TRIGGERS["structure"]),
                                    ("mep", TRIGGERS["mep"])):
-            if _hits(blob, trigger_words):
-                t = scope.entry(did)
-                if t.state == UNKNOWN:
-                    t.state = REQUIRED
-                    t.evidence = f"项目内容涉及：{'、'.join(_hits(blob, trigger_words)[:3])}"
+            if _hits(blob, trigger_words) and did not in scope.entries:
+                scope.entries[did] = ScopeEntry(
+                    discipline=did, state=REQUIRED,
+                    evidence=f"项目内容涉及：{'、'.join(_hits(blob, trigger_words)[:3])}",
+                    needs_professional=DISCIPLINES[did].needs_professional)
     if profile_id == "architecture":
-        e = scope.entry("architecture")
-        if e.state == UNKNOWN:
-            e.state = REQUIRED
-            e.evidence = "项目类型为建筑，建筑专业为主专业"
+        # 项目类型判为建筑类，只说明"很可能是建筑主导"，不说明客户一定委托了
+        # 建筑本体——纯景观/纯结构加固的委托也可能落在这个类型里。
+        # 所以标 inferred 让 S1 问一句，而不是直接当成已委托。
+        if "architecture" not in scope.entries:
+            scope.entries["architecture"] = ScopeEntry(
+                discipline="architecture", state=INFERRED,
+                evidence="项目类型判为建筑类（需确认是否含建筑本体设计）",
+                needs_professional=DISCIPLINES["architecture"].needs_professional)
 
     for did in declared_in:
         e = scope.entry(did)
@@ -373,10 +414,10 @@ def route_question_slots(scope: DisciplineScope) -> Tuple[Tuple[str, ...], Tuple
     for did in DISCIPLINE_ORDER:
         d = DISCIPLINES[did]
         e = scope.entries.get(did)
-        target = excluded if (e and e.state == OUT_OF_SCOPE) else needed
-        if e is None and did in ("structure", "mep", "landscape", "planning"):
-            # 没提到的专项：不主动追问，但也不排除
+        if e is None:
+            # 没有记录 = 这次没有依据说它在范围内。不追问，也不判成不做。
             continue
+        target = excluded if e.state == OUT_OF_SCOPE else needed
         target.extend(d.question_slots)
     return tuple(dict.fromkeys(needed)), tuple(dict.fromkeys(excluded))
 
