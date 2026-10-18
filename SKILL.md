@@ -1,11 +1,11 @@
 ---
 name: omniailab-ai-architect
-description: AI 建筑与室内设计总设计师。八个业务阶段 + 30 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。
+description: AI 建筑与室内设计总设计师。八个业务阶段 + 31 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 提案。可独立运行，检测到平台配置时接入 OmniAiLab 原生创作能力。覆盖住宅/办公/商业/酒店/展厅的任务书、概念推敲、平面比选、初步设计、表现与交付。
 license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -95,7 +95,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 |---|---|---|
 | **不会用 / 报错 / 术语看不懂** | **操作手册 `docs/MANUAL.md`** | **先读手册对应小节；在线版见 front-matter 的 `操作手册:` 字段** |
 | 设计判据与数值区间、项目类型案例 | `knowledge/`（13 个领域）· `cases/` | 先读 `knowledge/INDEX.md` 再按需读单篇；案例按类型查 `cases/` |
-| 30 项专业能力的职责与门禁 | `skills/` | 按能力名 |
+| 31 项专业能力的职责与门禁 | `skills/` | 按能力名 |
 | **多专业怎么分工、能力到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 判"结构/机电/景观能不能出"读前者（能力矩阵）；引证据读后者（六案例实测） |
 | **谁主导设计、冲突怎么处理、改了怎么拦** | **`docs/DESIGN_LEADERSHIP.md`** · **`docs/INTENT_ENFORCEMENT.md`** | 前者判主导专业（五模式）与六级冲突顺序；后者是执行层：两阶段授权、硬门槛、G2 回滚、**G3–G8 漂移检测** |
 | 工具适配、权限分级与平台接入 | `adapters/specs/` · `docs/MCP_TOOLS.md` · `docs/OMNIAILAB_INTEGRATION.md` · `providers/README.md` | 需要调工具时看前两者；需要生成式图像 / 视频时看后两者 |
@@ -332,6 +332,10 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 
 **案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按**实测可达性**补充。每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`；打不开标「未核验」并写明原因，**读不到就说读不到，不编造**。第三方图只给链接；S2 每套概念挂 1–2 例，答「为什么参考／借鉴什么／怎么转化／什么不能照搬」。
 
+## 7d. 概念怎么推敲出来（S2 核心）
+
+S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数、业主原话推出 2–3 条组织逻辑互不相同的策略，每条答六问（机会／理由／体验／光视比例材料／三专业整合／技术协同）。`22 个空间原型`只作**兜底**，走原型时标 `source="prototype"`；判不了的前提标 `unverified_requires`，不算满足也不算不满足。判据见 `knowledge/` 下 `design-deliberation-methods` 与 `landscape-design-methodology`。
+
 ---
 
 ## 8. 独立安装（不强制注册平台）
@@ -374,7 +378,7 @@ omniarchitect/          Python 包（内部引擎代号）：模型 / 规划 / �
                         创作独占裁决）/ style/（风格系统）/ research/（案例研究）
 knowledge/  cases/      原创知识体系与通用案例
 knowledge/styles/       47 种设计风格的结构化数据 + catalog.json 索引
-skills/                 30 项专业能力说明
+skills/                 31 项专业能力说明
 schemas/  workflows/    数据模型与阶段流程
 adapters/specs/         MCP / 外部工具适配规范
 docs/                   架构、流程、接入、安装、合规、风格规范

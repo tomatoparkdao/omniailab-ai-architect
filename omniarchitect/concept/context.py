@@ -191,12 +191,21 @@ def _signals(project: Project, ctx: "ConceptContext") -> Dict[str, Dict[str, Any
         put("structure", 0.6, "新建建筑：结构与跨度决定空间可能")
         put("outdoor", 0.5, "新建建筑：场地与室外关系是概念的一部分")
 
-    # 业主明确说过的诉求（不需要机会条目的支撑）
+    # 业主明确说过的诉求（不需要机会条目的支撑）。
+    #
+    # 早先这里只有采光、收纳、体验、可变四项，于是「保证私密性」「室外带庭院和水景」
+    # 「进门要有仪式感」这些业主亲口说的话，在信号层完全不存在——建筑主导的项目
+    # 于是拿不到 privacy / outdoor / arrival，推敲时只能按采光一条线索选策略。
+    # 业主说过的话就是最强证据，不该因为没有对应的机会条目而被丢掉。
     for key, words in (
         ("daylight", ("采光", "通透", "阳光", "亮")),
+        ("privacy", ("私密", "隐私", "隐蔽", "不被看到", "安静")),
+        ("outdoor", ("庭院", "院子", "花园", "水景", "室外", "露台", "屋顶花园")),
+        ("arrival", ("仪式感", "入户", "玄关", "到达", "门厅")),
         ("storage", ("收纳", "储物")),
         ("experience", ("氛围", "感觉", "格调", "体验")),
         ("flexibility", ("以后", "将来", "变化", "二胎")),
+        ("maintenance", ("好维护", "少打理", "省心", "不想花时间")),
     ):
         if any(w in raw_needs for w in words):
             put(key, max(out.get(key, {}).get("strength", 0), 0.6),

@@ -2,8 +2,8 @@
   "policy": "brand-and-provider-policy",
   "version": "1.0.0",
   "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "scanned_at": "2026-10-18 22:04:27",
-  "files_scanned": 292,
+  "scanned_at": "2026-10-19 01:03:58",
+  "files_scanned": 297,
   "by_disposition": {
     "authorized-dependency": 30
   },
@@ -35,7 +35,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Codex",
-      "line": 974,
+      "line": 1082,
       "excerpt": "ilab-ai-director`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -44,7 +44,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Claude",
-      "line": 974,
+      "line": 1082,
       "excerpt": "tor`  - **安装表工具与排序完全对齐**：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -53,7 +53,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "WorkBuddy",
-      "line": 974,
+      "line": 1082,
       "excerpt": "*：**Codex（推荐主用）→ Claude / Claude Code → WorkBuddy →   OmniAiLab（omniailabx）→ 其他宿主**，其后接 **「克隆安装（推荐）」**。 - 快速开始重排为**五步小白引导**：一、装到哪 → 二、资料从哪来（三选一）→ 三、启动指令 →   四、启",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -62,7 +62,7 @@
       "disposition": "authorized-dependency",
       "path": "CHANGELOG.md",
       "token": "Cursor",
-      "line": 1172,
+      "line": 1280,
       "excerpt": "l，登记用途与数据流向）、   运行环境宿主（Codex / Claude / Cursor / WorkBuddy，仅在宿主语境中出现）、   经批准的依赖（含 SPDX 标识、版权持有方、官方来源、用途与降级路径）。 - **创作能力域独占（执行侧）**：   - 能力域一分为二：**生成式创作域**（`image",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -71,7 +71,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Codex",
-      "line": 19,
+      "line": 13,
       "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -80,7 +80,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Claude",
-      "line": 19,
+      "line": 13,
       "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -89,7 +89,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "Cursor",
-      "line": 19,
+      "line": 13,
       "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜　[English](",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -98,7 +98,7 @@
       "disposition": "authorized-dependency",
       "path": "README.md",
       "token": "WorkBuddy",
-      "line": 19,
+      "line": 13,
       "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  **简体中文**　｜　[English](README_EN.m",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -107,7 +107,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Codex",
-      "line": 19,
+      "line": 13,
       "excerpt": "img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -116,7 +116,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Claude",
-      "line": 19,
+      "line": 13,
       "excerpt": "s.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](REA",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -125,7 +125,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "Cursor",
-      "line": 19,
+      "line": 13,
       "excerpt": "%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](README.md)　｜　*",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -134,7 +134,7 @@
       "disposition": "authorized-dependency",
       "path": "README_EN.md",
       "token": "WorkBuddy",
-      "line": 19,
+      "line": 13,
       "excerpt": "5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square\" alt=\"兼容 Codex / Claude / Cursor / WorkBuddy\"> </p>  [简体中文](README.md)　｜　**English**",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -143,7 +143,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Codex",
-      "line": 347,
+      "line": 351,
       "excerpt": "*：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -152,7 +152,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Claude",
-      "line": 347,
+      "line": 351,
       "excerpt": "ckup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、消防、无障碍、机电",
       "reason": "Claude Code（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -161,7 +161,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "Cursor",
-      "line": 347,
+      "line": 351,
       "excerpt": "先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---  ## 9. 免责边界  - 结构安全、",
       "reason": "Cursor（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -170,7 +170,7 @@
       "disposition": "authorized-dependency",
       "path": "SKILL.md",
       "token": "WorkBuddy",
-      "line": 347,
+      "line": 351,
       "excerpt": "与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。 支持 WorkBuddy / Codex / Cursor / Claude Code / 通用 Agent Skills 目录， 运行环境由探测决定，不假设存在。详见 `compatibility/agent-skills.md`。  ---",
       "reason": "WorkBuddy（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
@@ -216,7 +216,7 @@
       "path": "compatibility/codex.md",
       "token": "Codex",
       "line": 3,
-      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.5.0 author: OmniAiLab developer: Mochiball agen",
+      "excerpt": "dex description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口， version: 1.6.0 author: OmniAiLab developer: Mochiball agen",
       "reason": "OpenAI Codex（本地 Agent Skills 宿主）：作为运行环境宿主登记，允许出现（宿主语境检查通过）"
     },
     {
@@ -433,7 +433,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "midjourney",
-      "line": 629,
+      "line": 630,
       "excerpt": "status = awaiting_platform`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -442,7 +442,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "krea",
-      "line": 629,
+      "line": 630,
       "excerpt": "rm`）， **绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**",
       "reason": "外部 AI 图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -451,7 +451,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "higgsfield",
-      "line": 629,
+      "line": 630,
       "excerpt": "*绝不**改道到 Midjourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是*",
       "reason": "外部 AI 视频/图片生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -460,7 +460,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "runway",
-      "line": 629,
+      "line": 630,
       "excerpt": "ourney / Leonardo / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },
@@ -469,7 +469,7 @@
       "disposition": "forbidden",
       "path": "docs/MANUAL.md",
       "token": "sora",
-      "line": 629,
+      "line": 630,
       "excerpt": "o / Krea / Higgsfield / Runway / Pika / Sora 等第三方平台。  底层模型供应商由平台侧依法授权并路由（已登记画布路由 `omniailab.canvas`：**OmniP** 与 **image2.5**）—— 这是**平台服务**与**模型提供方**的区别，**不宣称模型由",
       "reason": "外部 AI 视频生成平台：不得集成、默认推荐或隐藏调用（出现在禁止性表述中，已抑制，不计入待处理）"
     },

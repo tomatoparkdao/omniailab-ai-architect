@@ -141,7 +141,11 @@ def test_concept_materials_reach_s4_and_s8():
 
         runner = StageRunner(p, tmp / "out", project_dir=tmp / "proj")
         runner.run_stage("S2", confirm=False)
-        C.select(p, "C-B")
+        # 选一条能落到平面的方向：概念编号不再固定，且不可落地的方向会被 G3 正当拦下
+        supported = [c for c in p.meta["concept"]["options"]["concepts"]
+                     if (c.get("spatial_prototype") or {}).get("plan_strategy")]
+        assert supported, "没有可落到平面的方向"
+        C.select(p, supported[0]["concept_id"])
         assert runner.approve("S2", by="业主")["status"] == "confirmed"
 
         names = [m["name"] for m in F.concept_materials(p)]

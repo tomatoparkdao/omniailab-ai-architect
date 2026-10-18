@@ -1,9 +1,9 @@
 # OmniAiLab AI 建筑与室内设计总设计师
 
-不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付，一个 Skill 覆盖 8 大设计阶段、30 项专业能力与 47 种设计风格，并通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
+不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付，一个 Skill 覆盖 8 大设计阶段、31 项专业能力与 47 种设计风格，并通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
 
 <p>
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.6.0-1f6feb?style=flat-square" alt="版本 1.6.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -35,7 +35,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.5.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.6.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
@@ -57,7 +57,7 @@
 
 | 层面 | 具体有什么 |
 |---|---|
-| **① 阶段与能力分开** | 八个**业务阶段**决定推进节奏与门禁；30 项**岗位能力**（任务书、场地分析、概念、空间规划、人体工学、室内、材料、灯光、机电协同、CAD 制图、BIM、三维、渲染、漫游、施工深化、工程量、校核、汇报、交付……）决定专业方法。能力跨阶段复用，不会被钉死在某一步。 |
+| **① 阶段与能力分开** | 八个**业务阶段**决定推进节奏与门禁；31 项**岗位能力**（任务书、场地分析、概念、空间规划、人体工学、室内、材料、灯光、机电协同、CAD 制图、BIM、三维、渲染、漫游、施工深化、工程量、校核、汇报、交付……）决定专业方法。能力跨阶段复用，不会被钉死在某一步。 |
 | **② 唯一几何权威** | 统一空间模型（Canonical Spatial Model）是全部成果的唯一几何来源。墙外移 300mm，系统按依赖关系重算平面、立面、天花、灯位、家具间距、工程量与图纸——**已确认且不受影响的部分保持有效**，不做无差别重跑。 |
 | **③ 变更走影响分析，不走局部手改** | 任何修改先诊断（11 类变更域）→ 定位影响面（含受影响空间的边界构件）→ 给出回流阶段与门禁重开清单。改材质不会让模型失效，改尺寸会让下游全部失效，这件事由程序判断，不由人记得。 |
 | **④ 判断有出处** | 九组**设计判据**：美学控制基线、概念图解语言、意向板迭代闭环、机电空间影响、批注台账、提案版式、项目适配、量价分离、工具安全分级。每条都写成可判定的句子（"暖材 ≤40%""黑 3–8%""全场只留一条主导线"），不是形容词。 |
@@ -67,7 +67,7 @@
 | **⑧ 设计能力：空间体验** | 原型说房间怎么排，风格说看起来像什么——中间那段「**人走进去经历什么**」不再空着。**11 条空间体验手法**（压缩与释放、前景与庇护、门槛与过渡、套间序列、框景、借景、节奏与重复、光的层次、材料的真实与触感、比例与层高推导、到达序列），每条都写清机制、做法、**在图上怎么核验**、以及用错了会怎样。**22 套原型各有不同的空间家族**，天然擅长的不是同一套手法，所以三套方向不会说同一句话。业主说「要敞亮、进门别一眼看穿」，S1 直接记下、S2 逐条回应：能给（`met`）、勉强（`at_risk`）、还是没提（`not_stated`）——**业主没说就不替他决定**。 |
 | **⑨ 技术为实现让路** | 结构机电是**辅助专业，不是审批口**。概念提到「挑空」，它不判「不可行」，而是给 3 条实现路径：边梁抬 / 钢梁框架 / 局部悬挑——每条写清**换来什么、拿什么换、必须由谁签字核算**。8 个技术目标、24 条路径（结构：通高开洞 / 拆改承重墙 / 新增荷载 / 大跨度；机电：不吊顶的净高 / 湿区移位 / 无窗空间 / 开放厨房）。**物理上做不到的直接说做不到**（中间层开天窗、地下层要自然光），并给替代做法，不列假路径。 |
 
-### 能力清单（30 项，按服务阶段）
+### 能力清单（31 项，按服务阶段）
 
 | 能力 | 名称 | 服务阶段 | 说明 |
 |---|---|---|---|
@@ -75,6 +75,7 @@
 | `site-analysis` | 场地与建筑条件分析 | S1 | 把建筑条件、朝向采光、动线与限制读成可核对的约束清单 |
 | `existing-drawing-analysis` | 原始图纸解析 | S1 | 识别图层、墙体、尺寸与门窗，区分可置信的事实与推断，并逐条标注待现场核对项 |
 | `architectural-design` | 建筑设计 | S1 · S4 | 把功能、场地与朝向组织成自洽的体量、立面和楼层策略 |
+| `landscape-design` | 景观设计 | S1–S4 | 用竖向、分区、游线、水景与植物把室外空间组织成可使用的场所 |
 | `concept-design` | 概念方案设计 | S2 · S3 | 把任务书翻成一句可验证的设计主张、空间原型与风格语言 |
 | `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 | 用关键词锚定审美目标，按固定框架量化打分，并跨轮追踪整改闭环；参考图分调研级与交付级 |
 | `create-draw` | 概念图解与评图 | S2 · S4 · S7 | 用约定图形语义把设计判断画成一张可读的图，评图意见跨轮可核销 |
@@ -125,7 +126,7 @@ python -m omniarchitect criteria     # 设计判据体系（自有口径）
 | **OmniAiLab**（omniailabx） | [官网下载](https://www.omniailabx.com/)（版本以官网为准）；安装后把整个文件夹放进它的 **技能目录**（客户端内可查看技能目录位置） | 新开会话后它出现在技能列表里；直接说 **`$omniailab-ai-architect 开始`**。 |
 | **其他 Agent Skills 宿主** | 按宿主约定，例如 `<你的项目>/.agent/skills/omniailab-ai-architect/`；Cursor 用 `~/.cursor/skills-cursor/omniailab-ai-architect/` | 在对话里描述设计任务；详见 [compatibility/agent-skills.md](compatibility/agent-skills.md)。 |
 
-> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 30 项能力说明在 `skills/`、13 个知识域在 `knowledge/`、判据在 [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)、操作手册在 [docs/MANUAL.md](docs/MANUAL.md)、模板在 `schemas/` 与 `workflows/`、可执行代码在 `omniarchitect/`；少拷一个目录，运行时就会断链。
+> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 31 项能力说明在 `skills/`、15 个知识域在 `knowledge/`、判据在 [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)、操作手册在 [docs/MANUAL.md](docs/MANUAL.md)、模板在 `schemas/` 与 `workflows/`、可执行代码在 `omniarchitect/`；少拷一个目录，运行时就会断链。
 
 **克隆安装（推荐）**
 
@@ -241,7 +242,7 @@ python -m omniarchitect present --project projects/demo-120 --kind plan-comparis
 | S7 | CAD / BIM 施工图深化 | 正式深度施工图（平立剖 / 吊顶 / 铺装 / 节点大样）、BIM 模型或 IFC 投影、审查记录 | G7 施工图审查（持证专业负责人） |
 | S8 | 物料清单与设计交付 | 材料表与物料清单、工程量清单与成本、全套交付文件与技术交底 | G8 交付验收（业主 / 主创） |
 
-**八阶段是流程，30 项能力是岗位——不要混为一谈。** 一项能力可以服务多个阶段：灯光设计同时在
+**八阶段是流程，31 项能力是岗位——不要混为一谈。** 一项能力可以服务多个阶段：灯光设计同时在
 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；设计汇报横跨 S2–S8。
 
 ### 五条不可协商的专业逻辑
@@ -384,7 +385,7 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 │   └── tests/                   测试模块（全量回归）
 ├── knowledge/                   13 个原创设计知识域（渐进式加载）
 │   └── styles/                  47 种设计风格的结构化数据 + catalog.json 索引
-├── skills/                      30 项专业能力说明（文件名 = 能力名，可直接按名加载）
+├── skills/                      31 项专业能力说明（文件名 = 能力名，可直接按名加载）
 ├── cases/                       通用项目类型案例判据
 ├── schemas/                     空间模型 / 案例 / 工具能力 / 汇报 / 设计风格 Schema
 ├── workflows/                   阶段流程定义

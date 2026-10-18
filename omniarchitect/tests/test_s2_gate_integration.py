@@ -486,7 +486,12 @@ def test_g2_stale_baseline_blocks_formal_g3():
         p = _residential(tmp)
         runner = _runner(p, tmp)
         runner.run_stage("S2", confirm=False)
-        C.select(p, "C-B")
+        # 选一条带平面策略的方案：本版住宅概念由推敲层产出，编号不再固定，
+        # 硬编码 "C-B" 会在方案顺序变化时指向一个没有平面策略的方向。
+        supported = [c for c in p.meta["concept"]["options"]["concepts"]
+                     if (c.get("spatial_prototype") or {}).get("plan_strategy")]
+        assert supported, "没有可落到平面的方案"
+        C.select(p, supported[0]["concept_id"])
         assert runner.approve("S2", by="业主")["status"] == CONFIRMED
         runner.run_stage("S3", confirm=False)
 
@@ -513,14 +518,21 @@ def test_h_manual_review_is_never_counted_as_passed():
         p = _residential(tmp)
         runner = _runner(p, tmp)
         runner.run_stage("S2", confirm=False)
-        C.select(p, "C-B")
+        # 选一条带平面策略的方案：本版住宅概念由推敲层产出，编号不再固定，
+        # 硬编码 "C-B" 会在方案顺序变化时指向一个没有平面策略的方向。
+        supported = [c for c in p.meta["concept"]["options"]["concepts"]
+                     if (c.get("spatial_prototype") or {}).get("plan_strategy")]
+        assert supported, "没有可落到平面的方案"
+        C.select(p, supported[0]["concept_id"])
         assert runner.approve("S2", by="业主")["status"] == CONFIRMED
 
         handoff = handoff_mod.load_for(p)
         assert handoff.get("separation"), "本夹具应带有隔离类要求"
 
         class _Scheme:
-            strategy = "band_day_night"
+            # 假方案必须跟随交接里的实际策略：写死 band_day_night，
+            # 选中的却是别的策略时，测到的是"策略不符"而不是本测试要测的东西。
+            strategy = str(handoff["spatial"]["plan_strategy"])
             metrics = {"corridor_ratio": 0.11, "room_count": 8,
                        "daylight_rooms_served": "8/8"}
 

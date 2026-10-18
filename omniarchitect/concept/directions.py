@@ -32,6 +32,15 @@ ROLE_LABEL: Dict[str, str] = {
     "C": "平衡 · 复合与创新",
 }
 
+#: 推敲路径的角色名。原型路径的 A/B/C 是"功能/体验/平衡"三种取向；
+#: 推敲出的策略不是按取向分的，是按**证据强弱**排的，硬套旧标签会说谎
+#: （"院中取院"被标成"功能效率优先"，业主一看就知道不对）。
+ROLE_LABEL_DELIBERATED: Dict[str, str] = {
+    "A": "首推 · 证据最强",
+    "B": "对照 · 另一端的组织逻辑",
+    "C": "补充 · 第三种组织",
+}
+
 #: 体验类主题：角色 B 用它们打分
 EXPERIENCE_THEMES = ("experience", "daylight", "brand", "exhibit", "arrival", "outdoor")
 #: 功能类主题：角色 A 用它们打分
@@ -162,6 +171,11 @@ class Concept:
     experience_sequence: Dict[str, Any] = field(default_factory=dict)
     #: 业主诉求 vs 这套方向能不能给（`design/vocabulary.fit`）。
     feeling_fit: Dict[str, Any] = field(default_factory=dict)
+    #: 设计推敲记录（六问 + parti + 技术协同）。走原型路径时为空，
+    #: 此时方案的空间推理来自原型库而不是本项目——`source` 会如实写明。
+    deliberation: Dict[str, Any] = field(default_factory=dict)
+    #: "deliberated"（按本项目推敲）或 "prototype"（原型库兜底）。
+    source: str = "deliberated"
     revision: int = 1
     pre_gate: bool = False
 
@@ -169,7 +183,9 @@ class Concept:
         return {
             "concept_id": self.concept_id,
             "role": self.role,
-            "role_label": ROLE_LABEL.get(self.role, self.role),
+            "role_label": (ROLE_LABEL_DELIBERATED.get(self.role, self.role)
+                           if self.source == "deliberated"
+                           else ROLE_LABEL.get(self.role, self.role)),
             "concept_name": self.concept_name,
             "concept_statement": self.concept_statement,
             "design_problem": self.design_problem,
@@ -193,6 +209,8 @@ class Concept:
             "aesthetic_policy": self.aesthetic_policy,
             "experience_sequence": self.experience_sequence,
             "feeling_fit": self.feeling_fit,
+            "deliberation": self.deliberation,
+            "source": self.source,
             "scores": {k: round(v, 1) for k, v in self.scores.items()},
             "revision": self.revision,
             "pre_gate": self.pre_gate,
@@ -313,7 +331,7 @@ def _pick(ranked: List[Dict[str, Any]], ctx: ConceptContext) -> List[Tuple[str, 
 
 
 # --------------------------------------------------------------------------
-def _evidence_for(p: Prototype, ctx: ConceptContext) -> Tuple[str, List[str], List[str]]:
+def _evidence_for(themes: Sequence[str], ctx: ConceptContext) -> Tuple[str, List[str], List[str]]:
     """Problem statement + its evidence + which opportunity ids it answers."""
     refs: List[str] = []
     lines: List[str] = []
@@ -333,7 +351,7 @@ def _evidence_for(p: Prototype, ctx: ConceptContext) -> Tuple[str, List[str], Li
             if any(w in blob for w in words):
                 theme_of.setdefault(theme, o)
 
-    for theme in p.answers:
+    for theme in themes:
         o = theme_of.get(theme)
         if o:
             refs.append(o["opportunity_id"])
@@ -410,9 +428,154 @@ def _declared_palette(plan: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+#: 视觉语言：两条路径（推敲 / 原型）共用。风格是观感，不参与空间推理。
+def _visual(role: str, ctx: ConceptContext, catalog, recset, preferred_id: str):
+    if preferred_id:
+        style_ids = [preferred_id]
+        basis = (f"业主指定「{ctx.style_preference}」→ 锁定 {preferred_id}（不替换为评分更高者）")
+        if role == "C":
+            entry = catalog.get(preferred_id)
+            pair = next((c for c in entry.compatible_styles if c in catalog), "")
+            if pair:
+                style_ids.append(pair)
+                basis += f"；平衡方向叠加 {pair} 作为对照表达（主导仍为 {preferred_id}）"
+    else:
+        opt = recset.option({"A": "safe", "B": "distinctive", "C": "hybrid"}[role])
+        style_ids = [opt.style_id] if opt else [recset.options[0].style_id]
+        basis = (f"风格系统按项目类型/面积/预算/维护建议 {style_ids[0]}"
+                 f"（角色：{ {'A':'稳妥','B':'个性','C':'混搭'}[role] }）")
+
+    style_doc = catalog.load_style(style_ids[0])
+    policy = pal.aesthetic_policy(style_doc, ctx.profile_id)
+    declared = _declared_palette(policy["palette"])
+    check = pal.check_palette(policy, declared)
+    labels = [catalog.get(s).label for s in style_ids]
+    return style_ids, basis, style_doc, policy, declared, check, labels
+
+
+def _from_deliberation(ctx: ConceptContext, strategies: Sequence[Dict[str, Any]],
+                       *, pre_gate: bool = False) -> Dict[str, Any]:
+    """把推敲出的策略写成方案。空间推理来自本项目，风格只负责观感。"""
+    catalog = load_catalog()
+    request = _style_brief(ctx, ctx.style_preference)
+    recset = recommend(request, catalog=catalog)
+    preferred_id = resolve_style_id(ctx.style_preference, catalog) if ctx.style_preference else ""
+
+    concepts: List[Concept] = []
+    roles = ("A", "B", "C")
+    for i, st in enumerate(strategies[:3]):
+        # 角色按顺序给，避免两条策略都写着 B 时 concept_id 撞车。
+        role = roles[i]
+        style_ids, basis, style_doc, policy, declared, check, labels = _visual(
+            role, ctx, catalog, recset, preferred_id)
+
+        prot = st["prototype"]
+        problem, evidence, refs = _evidence_for(prot.get("answers") or [], ctx)
+        _fit = vocab.fit(ctx.feelings, prot)
+        d = st["deliberation"]
+
+        tradeoffs = list(st["tradeoffs"])
+        if check and any(c.get("evaluated") and not c["ok"] for c in check["checks"]):
+            bad = [c["detail"] for c in check["checks"] if c.get("evaluated") and not c["ok"]]
+            tradeoffs.append("配色校核未过：" + "；".join(bad))
+        if ctx.precision != "authoritative_capable":
+            tradeoffs.append("尺寸未核实：策略成立，但面积、净宽与层高须在 S3 复核")
+        if d.get("unmet_requires"):
+            tradeoffs.append("前提未满足：" + "、".join(d["unmet_requires"])
+                             + "；需先确认前提，否则该方向退回为备选")
+
+        risks = list(st["risks"])
+        for c in (style_doc.get("construction_considerations") or [])[:2]:
+            risks.append(str(c))
+        if ctx.precision == "diagnostic":
+            risks.append("无几何数据：本方向的面积与净宽结论暂不成立")
+
+        # 材料表只放真材料。界面分工写在 design_strategy 里，
+        # 塞一条"（随策略）"进材料表会让下游把占位符当材料往下传。
+        materials = _materials(style_doc)
+
+        concepts.append(Concept(
+            concept_id=f"C-{role}",
+            role=role,
+            concept_name=st["name"],
+            concept_statement=st["statement"],
+            design_problem=problem,
+            evidence=evidence,
+            design_strategy="\n\n".join(x for x in (
+                "parti：" + d["parti"],
+                "体量与分区：" + d["massing"],
+                "剖面与竖向：" + d["section"],
+                "界面与虚实：" + d["facade"],
+                "动线：" + str(prot.get("circulation") or ""),
+            ) if x.strip("：")),
+            prototype=prot,
+            user_experience="；".join(s["event"] for s in d.get("experience") or []),
+            aesthetic_direction=_aesthetic_line(labels, policy),
+            material_direction=materials,
+            lighting_direction=[f"空间侧：{prot.get('daylight') or ''}"]
+            + [f"风格侧：{x}" for x in
+               (style_doc.get("lighting_strategy") or {}).get("principles") or []][:3],
+            cost_impact=st["cost_note"] + (f"（预算档位：{ctx.budget_tier or '未定'}）"
+                                           if ctx.budget_tier else ""),
+            maintenance_impact=st["maintenance"],
+            technical_risks=risks,
+            advantages=list(st["advantages"]),
+            tradeoffs=tradeoffs,
+            s1_opportunity_refs=refs,
+            style_ids=style_ids,
+            style_labels=labels,
+            style_basis=basis,
+            palette={**declared, "checks": check["checks"],
+                     "source": policy["palette"]["source"]},
+            aesthetic_policy={k: policy[k] for k in
+                              ("applied", "skipped", "ratio_rule", "warm_cap_pct", "note")},
+            scores={"evidence": d.get("evidence_score", 0.0)},
+            experience_sequence=st["sequence"],
+            feeling_fit=_fit,
+            deliberation=d,
+            source="deliberated",
+            revision=ctx.revision,
+            pre_gate=pre_gate,
+        ))
+
+    return {
+        "project_id": ctx.project_id,
+        "revision": ctx.revision,
+        "profile_id": ctx.profile_id,
+        "lead_discipline": ctx.lead_id,
+        "lead_label": ctx.lead_label,
+        "source": "deliberated",
+        "generated_at": __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "concepts": [c.to_dict() for c in concepts],
+        "count": len(concepts),
+        "roles": {c.concept_id: ROLE_LABEL[c.role] for c in concepts},
+        "style_request": request.to_dict(),
+        "style_options": [o.to_dict() for o in recset.options],
+        "preferred_style": ctx.style_preference,
+        "preferred_style_resolved": preferred_id,
+        "pre_gate": pre_gate,
+        "note": ("每套策略的组织逻辑互不相同（parti 不同、空间家族不同）；"
+                 "若两套只差材料或措辞，说明推敲失效，应重做而不是沿用。"),
+        "_concepts": concepts,
+    }
+
+
 def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
-                      pre_gate: bool = False) -> Dict[str, Any]:
-    """Produce 2–3 materially different directions, each with evidence attached."""
+                      pre_gate: bool = False,
+                      research: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Produce 2–3 materially different directions, each with evidence attached.
+
+    主导专业有推敲策略时走 `deliberation`（空间推理针对本项目）；没有时回退到
+    22 个空间原型，并在结果里标明 `source="prototype"` —— 回退不是降级隐瞒，
+    是换了一套经验来源。
+    """
+    from . import deliberation as delib
+
+    if delib.applies(ctx):
+        strategies = delib.build_strategies(ctx, research, limit=limit)
+        if strategies:
+            return _from_deliberation(ctx, strategies, pre_gate=pre_gate)
+
     ranked = _rank(ctx)
     picks = _pick(ranked, ctx)[:max(2, min(3, limit))]
     if not picks:
@@ -427,29 +590,10 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
     concepts: List[Concept] = []
     for role, item in picks:
         p: Prototype = item["prototype"]
-        if preferred_id:
-            style_ids = [preferred_id]
-            basis = (f"业主指定「{ctx.style_preference}」→ 锁定 {preferred_id}（不替换为评分更高者）")
-            if role == "C":
-                entry = catalog.get(preferred_id)
-                pair = next((c for c in entry.compatible_styles if c in catalog), "")
-                if pair:
-                    style_ids.append(pair)
-                    basis += f"；平衡方向叠加 {pair} 作为对照表达（主导仍为 {preferred_id}）"
-        else:
-            opt = recset.option({"A": "safe", "B": "distinctive", "C": "hybrid"}[role])
-            style_ids = [opt.style_id] if opt else [recset.options[0].style_id]
-            basis = (f"风格系统按项目类型/面积/预算/维护建议 {style_ids[0]}"
-                     f"（角色：{ {'A':'稳妥','B':'个性','C':'混搭'}[role] }）")
+        style_ids, basis, style_doc, policy, declared, check, labels = _visual(
+            role, ctx, catalog, recset, preferred_id)
 
-        primary = style_ids[0]
-        style_doc = catalog.load_style(primary)
-        policy = pal.aesthetic_policy(style_doc, ctx.profile_id)
-        declared = _declared_palette(policy["palette"])
-        check = pal.check_palette(policy, declared)
-
-        problem, evidence, refs = _evidence_for(p, ctx)
-        labels = [catalog.get(s).label for s in style_ids]
+        problem, evidence, refs = _evidence_for(p.answers, ctx)
         _seq = vocab.sequence_for(p.to_dict())
         _fit = vocab.fit(ctx.feelings, p.to_dict())
 
@@ -511,6 +655,7 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
                     "feasibility": item["feasibility"], "total": item["total"]},
             experience_sequence=_seq,
             feeling_fit=_fit,
+            source="prototype",
             revision=ctx.revision,
             pre_gate=pre_gate,
         ))
@@ -519,6 +664,9 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
         "project_id": ctx.project_id,
         "revision": ctx.revision,
         "profile_id": ctx.profile_id,
+        "lead_discipline": ctx.lead_id,
+        "lead_label": ctx.lead_label,
+        "source": "prototype",
         "generated_at": __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M"),
         "concepts": [c.to_dict() for c in concepts],
         "count": len(concepts),
@@ -532,6 +680,66 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
                  "说明生成有误，应重跑而不是沿用。"),
         "_concepts": concepts,      # 内部用，不写盘
     }
+
+
+def _deliberation_md(c: Dict[str, Any]) -> List[str]:
+    """六问 + 专业分工 + 技术协同。没有推敲记录（原型兜底）时不伪造这一段。"""
+    d = c.get("deliberation") or {}
+    if c.get("source") != "deliberated" or not d:
+        return ["> 本方向来自 22 个空间原型的经验库，未做本项目专项推敲；"
+                "空间逻辑是通用经验，须在 S3 按实测条件复核。", ""]
+    out: List[str] = ["### 设计推敲", ""]
+    out += ["**parti（一句话的组织逻辑）**：{}".format(d.get("parti") or "—"), ""]
+    out += ["| 问题 | 本方案的答案 |", "|---|---|"]
+    out.append("| 最有价值的设计机会 | {} |".format(_cell(d.get("key_opportunity"))))
+    out.append("| 为什么采用这个策略 | {} |".format(_cell(d.get("why_this_strategy"))))
+    out.append("| 光、视线、比例、材料如何配合 | {} |".format(
+        _cell(d.get("light_view_proportion_material"))))
+    out.append("| 三个专业如何成整体 | {} |".format(_cell(d.get("integration"))))
+    out.append("")
+    if d.get("levels_program"):
+        out += ["**楼层分工（自下而上）**：", ""]
+        for i, line in enumerate(d["levels_program"]):
+            out.append("{}. {}".format(i + 1, line))
+        out.append("")
+    if d.get("zones"):
+        out += ["**分区与占比**：", "",
+                "| 分区 | 占比 |", "|---|---|"]
+        for z in d["zones"]:
+            out.append("| {} | {} |".format(z.get("name"), z.get("share")))
+        out.append("")
+    for key, label in (("water", "水景做法"), ("planting", "植物配置"),
+                       ("paving", "铺装")):
+        if d.get(key):
+            out.append("**{}**：{}".format(label, d[key]))
+            out.append("")
+    if d.get("technical_coordination"):
+        out += ["**需要结构与机电配合的地方**：", ""]
+        out += ["- {}".format(x) for x in d["technical_coordination"]]
+        out.append("")
+    if d.get("unmet_requires") or d.get("unverified_requires"):
+        bits = []
+        if d.get("unmet_requires"):
+            bits.append("不满足：" + "、".join(d["unmet_requires"]))
+        if d.get("unverified_requires"):
+            bits.append("未核验：" + "、".join(d["unverified_requires"]))
+        out += ["> 前提条件：{}。未核验不等于不成立，但必须先确认再深化。".format(
+            "；".join(bits)), ""]
+    if d.get("precedent_note"):
+        out += ["> {}".format(d["precedent_note"]), ""]
+    if d.get("same_family_note"):
+        out += ["> {}".format(d["same_family_note"]), ""]
+    return out
+
+
+def _cell(text: Any) -> str:
+    """Markdown 表格单元格：压掉换行与竖线，避免把表撑破。"""
+    return " ".join(str(text or "—").split()).replace("|", "／")
+
+
+def _clip(text: Any, n: int) -> str:
+    t = " ".join(str(text or "").split())
+    return t if len(t) <= n else t[: n - 1] + "…"
 
 
 def _sequence_md(c: Dict[str, Any]) -> List[str]:
@@ -551,8 +759,10 @@ def _sequence_md(c: Dict[str, Any]) -> List[str]:
             out.append(f"| {s['step']} | {s['event']} | {d.name if d else '—'} |")
         out.append("")
     if seq.get("devices"):
-        names = "、".join(vocab.VOCABULARY[d].name for d in seq["devices"] if d in vocab.VOCABULARY)
-        out += [f"这套空间家族天然擅长的手法：{names}", ""]
+        # 同一手法在序列里可能用两次；列两遍会让业主以为是两种手法。
+        seen = list(dict.fromkeys(d for d in seq["devices"] if d in vocab.VOCABULARY))
+        names = "、".join(vocab.VOCABULARY[d].name for d in seen)
+        out += [f"本方案实际用到的手法：{names}", ""]
     if seq.get("missing_steps"):
         out += [f"> 本原型没有可指认的「{'、'.join(seq['missing_steps'])}」段落——"
                 "如实标出，不用形容词补。", ""]
@@ -578,6 +788,25 @@ def _sequence_md(c: Dict[str, Any]) -> List[str]:
 
 def markdown(result: Dict[str, Any], ctx: ConceptContext) -> str:
     lines: List[str] = []
+
+    if result.get("source") == "deliberated":
+        lead = result.get("lead_label") or ctx.lead_label
+        lines += [
+            "## 先看这一张：三套方案到底差在哪",
+            "",
+            "主导专业：{}。三套方案的组织逻辑互不相同，差别不在材料与颜色。".format(lead),
+            "",
+            "| 方案 | 组织逻辑 | 抓的机会 | 主要代价 |",
+            "|---|---|---|---|",
+        ]
+        for c in result["concepts"]:
+            d = c.get("deliberation") or {}
+            lines.append("| {} {} | {} | {} | {} |".format(
+                c["concept_id"], c["concept_name"],
+                _cell(_clip(d.get("parti"), 46)),
+                _cell(_clip(d.get("key_opportunity"), 46)),
+                _cell(_clip((c.get("tradeoffs") or ["—"])[0], 46))))
+        lines.append("")
     for c in result["concepts"]:
         p = c["spatial_prototype"]
         lines += [
@@ -603,7 +832,7 @@ def markdown(result: Dict[str, Any], ctx: ConceptContext) -> str:
             "",
             c["user_experience"],
             "",
-            ] + _sequence_md(c) + [
+            ] + _sequence_md(c) + _deliberation_md(c) + [
             f"### 视觉语言：{' + '.join(c['style_labels'])}",
             "",
             f"- 风格依据：{c['style_basis']}",

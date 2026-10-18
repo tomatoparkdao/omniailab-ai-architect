@@ -1,9 +1,9 @@
 # OmniAiLab AI Architect
 
-Not just producing renderings — AI taking part in the whole architecture and interior design process. From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery, one Skill covers 8 design stages, 30 professional capabilities and 47 design styles, and works with the OmniAiLab AI creation platform and professional MCP tools so AI moves from design advice to real design execution.
+Not just producing renderings — AI taking part in the whole architecture and interior design process. From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery, one Skill covers 8 design stages, 31 professional capabilities and 47 design styles, and works with the OmniAiLab AI creation platform and professional MCP tools so AI moves from design advice to real design execution.
 
 <p>
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.5.0-1f6feb?style=flat-square" alt="版本 1.5.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.6.0-1f6feb?style=flat-square" alt="版本 1.6.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
@@ -35,7 +35,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
 | Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.5.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
+| Version | v1.6.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
 | Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
@@ -125,7 +125,7 @@ Put the **entire `omniailab-ai-architect` directory** (with `SKILL.md`, `omniarc
 | **OmniAiLab** (omniailabx) | [Download from the website](https://www.omniailabx.com/) (version per the website); after installing, put the whole folder into its **skills directory** (the client shows where it is) | It appears in the skill list after a new session; just say **`$omniailab-ai-architect 开始`**. |
 | **Other Agent Skills hosts** | Follow the host convention, e.g. `<your project>/.agent/skills/omniailab-ai-architect/`; for Cursor use `~/.cursor/skills-cursor/omniailab-ai-architect/` | Describe the design task in the chat; see [compatibility/agent-skills.md](compatibility/agent-skills.md). |
 
-> **The whole folder must be copied together — you cannot copy only SKILL.md.** The 30 capability briefs are in `skills/`, the 13 knowledge domains in `knowledge/`, the criteria in [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md), the operation manual in [docs/MANUAL.md](docs/MANUAL.md), the templates in `schemas/` and `workflows/`, and the executable code in `omniarchitect/`; miss one directory and the run breaks its links.
+> **The whole folder must be copied together — you cannot copy only SKILL.md.** The 31 capability briefs are in `skills/`, the 15 knowledge domains in `knowledge/`, the criteria in [docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md), the operation manual in [docs/MANUAL.md](docs/MANUAL.md), the templates in `schemas/` and `workflows/`, and the executable code in `omniarchitect/`; miss one directory and the run breaks its links.
 
 **Clone install (recommended)**
 
@@ -241,7 +241,7 @@ Change the master-bedroom wardrobe from 600 deep to 550 deep
 | S7 | CAD / BIM construction-drawing development | Construction drawings, BIM model, review record | G7 construction drawings reviewed |
 | S8 | Material schedule and design delivery | Material schedule, quantity list, delivery documents | G8 delivery acceptance |
 
-**The eight stages are the process; the 30 capabilities are the roles — do not conflate them.** One capability can serve several stages: lighting design appears in
+**The eight stages are the process; the 31 capabilities are the roles — do not conflate them.** One capability can serve several stages: lighting design appears in
 S2 (concept lighting direction), S4 (lighting scheme) and S7 (fixture positioning); design presentation spans S2–S8.
 
 ### Five non-negotiable professional rules
@@ -383,7 +383,7 @@ omniailab-ai-architect/          ← Skill root (this repository)
 │   └── tests/                   test modules (full regression)
 ├── knowledge/                   13 original design knowledge domains (progressive loading)
 │   └── styles/                  47 design styles, structured + catalog.json index
-├── skills/                      30 professional capability briefs (filename = capability name, loadable by name)
+├── skills/                      31 professional capability briefs (filename = capability name, loadable by name)
 ├── cases/                       Case criteria for generic project types
 ├── schemas/                     Spatial model / case / tool-capability / presentation schemas
 ├── workflows/                   Stage process definitions

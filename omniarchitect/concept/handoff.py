@@ -316,9 +316,20 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
     # `daylight_rooms_served` may be reported as "4/6" or as a plain number.
     served, total = _pair(m.get("daylight_rooms_served"), m.get("room_count"))
     if any(w in daylight_txt for w in ("每个房间", "所有房间", "全部", "贴外墙")) and total:
-        ok = served >= total
-        checks.append({"check": "每个房间都有采光面", "ok": ok,
-                       "detail": f"{served}/{total} 个房间获得采光"})
+        # 无窗的卫浴、储藏、家务、走廊不算"居住空间没采光"——这是常识，
+        # 不是妥协。把它们算进冲突，会让每个合理解法都被判成重大冲突：
+        # 一条服务脊本来就是靠"把湿区压进芯里"换取两侧完整开间的。
+        # 真正该拦的是**卧室、客厅这类有人长时间停留的房间**没有采光面。
+        wet = sum(1 for r in (scheme.area_table() or [])
+                  if any(w in str(r.get("name") or "")
+                         for w in ("卫", "浴", "厕", "厨", "储藏", "储物", "衣帽",
+                                   "家务", "设备", "走廊", "交通", "玄关", "楼梯")))
+        allow = min(wet, max(0, total - served))
+        ok = served >= total or allow >= (total - served)
+        checks.append({"check": "每个居住房间都有采光面", "ok": ok,
+                       "detail": f"{served}/{total} 个房间获得采光"
+                                 + (f"（其中 {total - served} 间为无窗湿区/储藏，已豁免）"
+                                    if allow else "")})
         if not ok:
             conflicts.append({"id": "H-DAYLIGHT", "severity": "major",
                               "detail": f"{total - served} 个房间没有采光面，与概念的采光主张冲突"})

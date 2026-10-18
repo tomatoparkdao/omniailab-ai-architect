@@ -1,7 +1,7 @@
 ---
 name: omniailab-index
 description: 知识库索引（INDEX） —— 本索引供程序做渐进式加载：先读本文件确定需要哪个领域，再按需加载对应知识文档，避免一次性加载全部内容。索引本身只做路由，不承载领域判据。
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -54,6 +54,8 @@ agent_created: true
 | 11 | design-review-checklists | 设计评审清单 | 以可判定的清单在提交与交付前把关质量 | 涉及方案自检、阶段评审、提交前检查或交付验收时 | S1,S4,S6,S8 | heavy |
 | 12 | design-presentation-methodology | 设计汇报方法论 | 把专业成果转译为可决策的叙事与图册结构 | 涉及方案表达、图册组织、汇报结构或向业主沟通时 | S2,S4,S6,S8 | light |
 | 13 | ai-concept-visualization | AI 概念表现方法论 | 平面确认后用 AI 出概念效果图：机位、提示词、参考图与迭代纪律 | 涉及概念效果图、出图提示词、机位安排或表现成果验收时 | S3,S4,S5 | medium |
+| 14 | design-deliberation-methods | 设计推敲方法 | 从场地与诉求推出组织逻辑：parti、体量、剖面、虚实与采光路径 | 涉及概念推敲、方案比较或判断是否只换了风格时 | S1,S2 | medium |
+| 15 | landscape-design-methodology | 景观设计方法论 | 庭院与室外专项：竖向、分区、游线、水景、植物、铺装与维护 | 委托涉及庭院、花园、屋顶花园或景观主导项目时 | S1,S2,S3,S4 | medium |
 
 ## 文件对应关系
 
@@ -72,6 +74,8 @@ agent_created: true
 | design-review-checklists | knowledge/design-review-checklists.md |
 | design-presentation-methodology | knowledge/design-presentation-methodology.md |
 | ai-concept-visualization | knowledge/ai-concept-visualization.md |
+| design-deliberation-methods | knowledge/design-deliberation-methods.md |
+| landscape-design-methodology | knowledge/landscape-design-methodology.md |
 
 ## 加载组合建议
 

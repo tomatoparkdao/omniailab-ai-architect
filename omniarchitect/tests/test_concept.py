@@ -418,16 +418,79 @@ def test_i_demo_approval_never_writes_a_baseline():
 # J. S3 承接：能读，也能报冲突
 # --------------------------------------------------------------------------
 def test_j_s3_reads_handoff_and_detects_conflicts():
+    """推敲方向交接：没有对应平面算法时必须标明，不能把近似平面当成概念落地。
+
+    这一版住宅概念走的是设计推敲层，`plan_strategy` 为空是**如实**而不是缺陷——
+    现有平面算法只支持中脊与动静横分两种，硬塞一个策略等于声称算法能落地一个
+    它做不到的组织逻辑。所以交接的判据从"必须带策略"改为"必须标明有没有"。
+    """
     with tempfile.TemporaryDirectory() as td:
         p = _residential(Path(td))
-        C.generate_bundle(p, Path(td) / "out", with_deck=False)
-        C.select(p, "C-B")           # 动静横分 → band_day_night
+        out_dir = Path(td) / "out"
+        C.generate_bundle(p, out_dir, with_deck=False)
+        opts = json.loads((out_dir / "concept-options.json").read_text(encoding="utf-8"))
+        target = next((c for c in opts["concepts"]
+                       if not (c.get("spatial_prototype") or {}).get("plan_strategy")), None)
+        assert target, "本夹具应至少有一套无法直接落到平面的方向"
+        cid = target["concept_id"]
+        C.select(p, cid)
         C.decide_gate(p, "approved", by="业主",
-                      summary_path=str(Path(td) / "out" / "g2-approval-summary.md"))
+                      summary_path=str(out_dir / "g2-approval-summary.md"))
         h = handoff_mod.load_for(p)
         assert h["status"] == "locked"
-        assert h["spatial"]["plan_strategy"] == "band_day_night"
+        assert h["spatial"]["plan_strategy"] == ""
+        assert h["spatial"]["plan_strategy_supported"] is False
         assert h["adjacency"] or h["separation"]
+
+        class _Scheme:
+            strategy = "spine_centre"
+            metrics = {"corridor_ratio": 0.42, "room_count": 8,
+                       "daylight_rooms_served": "3/8"}
+
+            def area_table(self):
+                return [{"name": "主卧"}, {"name": "客厅"}]
+
+        out = handoff_mod.verify_scheme(h, _Scheme(), p)
+        assert out["conformance"] == "fail"
+        ids = {c["id"] for c in out["conflicts"]}
+        assert "H-STRATEGY-UNSUPPORTED" in ids, ids
+        # 这条假方案只给了 8 间房 3 间有采光，采光冲突必须照样被报出来——
+        # 概念不可落地，不等于平面本身的硬伤可以不查。
+        assert "H-DAYLIGHT" in ids, ids
+
+
+def test_j2_prototype_concept_still_matches_its_plan_strategy():
+    """走原型兜底的方向，平面策略一致时仍判 pass——原来的契约没有被削弱。
+
+    住宅项目现在走推敲层，所以这里直接用 `handoff.build` 喂一套原型方向，
+    验证的是**交接与校核**本身，而不是某个项目恰好选中了哪套方案。
+    """
+    from omniarchitect.concept.context import build_context
+    from omniarchitect.concept.prototypes import get
+
+    with tempfile.TemporaryDirectory() as td:
+        p = _residential(Path(td))
+        ctx = build_context(p)
+        p.meta.setdefault("concept", {})["selected"] = "C-X"
+        concept = {"concept_id": "C-X", "concept_name": "动静横分",
+                   "concept_statement": "会客与休息不共享同一条路径",
+                   "spatial_prototype": get("RES-BAND").to_dict(),
+                   "style_ids": ["italian-minimal"], "material_direction": [],
+                   "experience_sequence": {}}
+        h = handoff_mod.build(p, ctx, {"concepts": [concept]}, {"concepts": []}, {})
+        assert h["spatial"]["plan_strategy"] == "band_day_night"
+        assert h["spatial"]["plan_strategy_supported"] is True
+
+        class _Good:
+            strategy = "band_day_night"
+            metrics = {"corridor_ratio": 0.11, "room_count": 8,
+                       "daylight_rooms_served": "8/8"}
+
+            def area_table(self):
+                return [{"name": n} for n in ("主卧", "客厅", "厨房", "玄关")]
+
+        good = handoff_mod.verify_scheme(h, _Good(), p)
+        assert good["conformance"] == "pass", good["conflicts"]
 
         class _Scheme:
             strategy = "spine_centre"          # 与概念要求不符

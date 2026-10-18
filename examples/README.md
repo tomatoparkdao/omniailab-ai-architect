@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-readme
 description: 示例库索引 —— 可整段照抄的成品层：起手话术、交付清单与需求样例。
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -17,7 +17,7 @@ agent_created: true
 | 文件 | 什么时候用 | 拿到什么 |
 |---|---|---|
 | [demo-brief.md](demo-brief.md) | 想看看"一条需求长什么样" | 一份可照抄的 120㎡ 住宅设计请求（中英对照） |
-| [cold-start-prompts.md](cold-start-prompts.md) | 第一次用、不知道怎么开口 | 4 种起手话术 + 30 项能力的一句话点名表 |
+| [cold-start-prompts.md](cold-start-prompts.md) | 第一次用、不知道怎么开口 | 4 种起手话术 + 31 项能力的一句话点名表 |
 | [deliverable-checklist.md](deliverable-checklist.md) | 收尾前自查"该拿的东西拿齐了吗" | 逐阶段产物清单 + 验收口径 |
 
 ## 怎么用

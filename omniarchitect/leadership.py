@@ -378,28 +378,50 @@ def load(project: Any) -> Optional[Dict[str, Any]]:
     return dict(raw) or None
 
 
-def ensure(project: Any, scope: Any, *, profile_id: str = "") -> Leadership:
-    """已判定就复用，未判定就判定并存档。
+def _from_raw(raw: Dict[str, Any]) -> Leadership:
+    return Leadership(
+        mode=raw["mode"], lead=raw.get("project_lead_discipline", "interior"),
+        joint_lead=raw.get("joint_lead_discipline", ""),
+        design_disciplines=list(raw.get("design_disciplines") or []),
+        support_disciplines=list(raw.get("supporting_disciplines") or []),
+        coordination=list(raw.get("coordination_disciplines") or []),
+        existing_building=bool(raw.get("existing_building_constraints")),
+        design_priority=list(raw.get("design_priority") or []),
+        technical_constraints=list(raw.get("technical_constraints") or []),
+        review_requirements=list(raw.get("professional_review_requirements") or []),
+        evidence=str(raw.get("evidence") or ""),
+        confidence=float(raw.get("confidence") or 0.6),
+    )
 
-    复用是刻意的：主导权不能在 S1/S2/S3 之间悄悄漂移。
+
+def _basis_digest(project: Any, scope: Any) -> str:
+    import hashlib
+
+    texts = [str(x) for x in (getattr(scope, "basis", ()) or ())]
+    texts += [f"{k}={v}" for k, v in sorted(_answers(project).items())]
+    return hashlib.sha1("\n".join(texts).encode("utf-8")).hexdigest()[:16]
+
+
+def ensure(project: Any, scope: Any, *, profile_id: str = "") -> Leadership:
+    """依据没变就复用，依据变了就重判。
+
+    复用是刻意的：主导权不能在 S1/S2/S3 之间悄悄漂移。但早期版本把"复用"
+    做成了"永不再算"，而 S1 是**多轮**问诊——第一轮只说了项目类型时判成
+    室内主导，之后客户补上"有块地、要建三层、室外带庭院"，主导专业仍是室内，
+    于是 S2 一直拿住宅房间算法去设计一栋新房子。
+
+    所以这里加一个依据指纹：问答或范围依据一变就重判。判定本身仍是确定性的，
+    同一份依据永远得到同一个结论，漂移不会发生。
     """
     raw = load(project)
-    if raw and raw.get("mode"):
-        return Leadership(
-            mode=raw["mode"], lead=raw.get("project_lead_discipline", "interior"),
-            joint_lead=raw.get("joint_lead_discipline", ""),
-            design_disciplines=list(raw.get("design_disciplines") or []),
-            support_disciplines=list(raw.get("supporting_disciplines") or []),
-            coordination=list(raw.get("coordination_disciplines") or []),
-            existing_building=bool(raw.get("existing_building_constraints")),
-            design_priority=list(raw.get("design_priority") or []),
-            technical_constraints=list(raw.get("technical_constraints") or []),
-            review_requirements=list(raw.get("professional_review_requirements") or []),
-            evidence=str(raw.get("evidence") or ""),
-            confidence=float(raw.get("confidence") or 0.6),
-        )
+    digest = _basis_digest(project, scope)
+    stored = str((getattr(project, "meta", {}) or {}).get("leadership_basis_digest") or "")
+    if raw and raw.get("mode") and stored == digest:
+        return _from_raw(raw)
     lead = detect(project, scope, profile_id=profile_id)
     store(project, lead)
+    project.meta = dict(getattr(project, "meta", {}) or {})
+    project.meta["leadership_basis_digest"] = digest
     return lead
 
 

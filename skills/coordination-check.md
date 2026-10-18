@@ -3,7 +3,7 @@ name: omniailab-coordination-check
 description: 专业协调校核 —— 检查结构、机电、吊顶净高、点位与做法之间的冲突，输出碰撞记录与待复核清单
 capability: coordination-check
 stages: [S6, S7]
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

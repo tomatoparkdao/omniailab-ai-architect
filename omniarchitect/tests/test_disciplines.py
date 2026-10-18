@@ -109,8 +109,22 @@ def test_concept_carries_one_direction_per_active_discipline():
             dirs = c.get("disciplines") or {}
             missing = set(scope.active()) - set(dirs)
             assert not missing, (c["concept_id"], sorted(missing))
-            # 缺资料的专业必须标 requires_input，不能假装有结论
-            assert any(d["status"] == "requires_input" for d in dirs.values()), dirs
+            # 缺资料的专业不能假装有结论。判据不再只看 status：
+            # 概念已经给出实现路径时，status 会是 proposed（这是对的，否则好方案
+            # 会被判成"不可推荐"）；此时缺口必须写在 open_questions，并且明确
+            # 标注需要持证专业人员签署。
+            #
+            # 只对**需要第三方签署**的专业适用：结构、机电、规划报建、建筑本体
+            # 这类结论系统给不了。室内是设计方自己的成果，材料与策略齐了就是齐了，
+            # 不该为了满足检查而编一条"待补"。
+            signed_off = {"structure", "mep", "planning", "architecture"}
+            for key, d in dirs.items():
+                if key not in signed_off:
+                    continue
+                assert (d["status"] == "requires_input" or d.get("open_questions")), (
+                    key, d["status"], d.get("open_questions"))
+            assert any(d["status"] == "requires_input" or d.get("open_questions")
+                       for d in dirs.values()), dirs
 
 
 # --------------------------------------------------------------------------

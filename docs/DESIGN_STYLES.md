@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-data-spec
 description: 风格数据规范 —— 二十个必需字段的写法与内容纪律，供新增或修改 knowledge/styles/ 下的风格记录时遵循。
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

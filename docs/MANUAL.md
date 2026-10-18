@@ -1,7 +1,7 @@
 ---
 name: omniailab-ai-architect-manual
 description: 建筑与室内设计 Skill 完整操作手册 —— 八阶段逐段操作、八道门禁怎么过、命令速查、工具与权限分级、平台接入与创作能力独占、避坑总表与常见问题。
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -105,7 +105,7 @@ python installer/verify_install.py --check-python     # 校验安装与解释器
 
 **指针安装 vs 复制安装**：`pointer`（默认）只在技能目录放 `SKILL.md` + 指向原仓库的指针，升级只需 `git pull`；`copy` 整包复制，适合搬移或离线分发。
 
-> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 30 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、13 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
+> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 31 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、15 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
 
 ### 2.3 怎么跟它对话
 
@@ -154,7 +154,7 @@ python -m omniarchitect doctor      # 体检：本机到底有哪几个工具可
 | S7 | CAD / BIM 施工图深化 | 施工图、BIM 模型、审查记录 | G7 施工图审查 |
 | S8 | 物料清单与交付 | 材料表、工程量清单、交付文件 | G8 交付验收 |
 
-**关键区分：八阶段是流程，30 项能力是岗位。** 一项能力可以服务多个阶段——灯光设计同时在
+**关键区分：八阶段是流程，31 项能力是岗位。** 一项能力可以服务多个阶段——灯光设计同时在
 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；设计汇报横跨 S2–S8。
 任何「一个能力只属于一个阶段」的理解都是错的。
 
@@ -510,7 +510,7 @@ python -c "from omniarchitect.design import enabling as e; r=e.structure_paths('
 
 ---
 
-## 8. 能力与技能调度速查（30 项）
+## 8. 能力与技能调度速查（31 项）
 
 能力不是流程步骤，是**岗位能力**，跨阶段复用。这是完整清单与所在阶段：
 
@@ -520,6 +520,7 @@ python -c "from omniarchitect.design import enabling as e; r=e.structure_paths('
 | `site-analysis` | 场地与建筑条件分析 | S1 |
 | `existing-drawing-analysis` | 原始图纸解析 | S1 |
 | `architectural-design` | 建筑设计 | S1 · S4 |
+| `landscape-design` | 景观设计 | S1–S4 |
 | `concept-design` | 概念方案设计 | S2 · S3 |
 | `moodboard-aesthetic-iteration` | 意向板与审美迭代 | S2 · S5 |
 | `create-draw` | 概念图解与评图 | S2 · S4 · S7 |

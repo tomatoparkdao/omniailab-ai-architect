@@ -102,7 +102,7 @@ def embed_allowed(image_rights: str) -> bool:
 
 
 def _score(c: Dict[str, Any], concept: Dict[str, Any],
-           ctx_name: str) -> int:
+           ctx_name: str, lead: str = "") -> int:
     """How well a case explains this concept.
 
     Deliberately based on stated text, not vibes: the concept's own style
@@ -135,8 +135,13 @@ def _score(c: Dict[str, Any], concept: Dict[str, Any],
             if len(term) >= 3 and term in hay:
                 score += 2
                 break
-    if c.get("discipline") and c["discipline"] in _discipline_keys(concept):
-        score += 1
+    disc = str(c.get("discipline") or "")
+    keys = _discipline_keys(concept)
+    if disc and disc in keys:
+        # 主导专业的案例优先：一个建筑主导的项目，"建筑"案例比"室内"案例
+        # 更能说明它怎么组织体量。室内案例仍可用（一处室内手法也可能借鉴），
+        # 但不该排在第一位。
+        score += 3 if (lead and disc == lead) else 1
     return score
 
 
@@ -300,14 +305,19 @@ def build(concepts: Sequence[Dict[str, Any]],
         def _tier(gap: int) -> int:
             return 0 if gap <= FAMILY_TIE_WINDOW else 1 + (gap - FAMILY_TIE_WINDOW - 1) // (FAMILY_TIE_WINDOW + 1)
 
-        raw = [(cs, _score(cs, c, "")) for cs in cases]
+        lead = str(getattr(ctx, "lead_id", "") or "")
+        raw = [(cs, _score(cs, c, "", lead)) for cs in cases]
         raw = [(cs, s) for cs, s in raw if s > 0]
         top = max((s for _, s in raw), default=0)
-        scored = [(_tier(top - s), -_family_bonus(cs, c), -s,
+        # 第一档是「是不是本主导专业的案例」：建筑主导的项目先看建筑案例，
+        # 再在同一专业内按风格与空间家族排序。否则一个室内项目的标题里
+        # 恰好有 `split-level`，就会把建筑方案的首选案例抢走。
+        scored = [(0 if (lead and cs.get("discipline") == lead) else 1,
+                   _tier(top - s), -_family_bonus(cs, c), -s,
                    str(cs.get("title") or ""), cs)
                   for cs, s in raw]
-        scored.sort(key=lambda t: t[:4])
-        chosen = [t[4] for t in scored[:2]]
+        scored.sort(key=lambda t: t[:5])
+        chosen = [t[5] for t in scored[:2]]
 
         if not chosen:
             result[cid] = {

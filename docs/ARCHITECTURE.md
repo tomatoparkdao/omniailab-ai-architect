@@ -1,7 +1,7 @@
 ---
 name: omniailab-architecture
 description: 系统架构 —— 阶段负责推进节奏，能力负责专业方法，适配器负责操作软件，模型负责记住一切
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -16,7 +16,7 @@ agent_created: true
             ────────────────────────────────────────────────────────────────
 阶段层      八阶段状态机（workflow.py + stage_state.py）  门禁 · 确认 · 返工 · 变更回流
             ────────────────────────────────────────────────────────────────
-能力层      30 项专业能力（stages.py + skills/）  判断与做法，不做工具调用
+能力层      31 项专业能力（stages.py + skills/）  判断与做法，不做工具调用
             ────────────────────────────────────────────────────────────────
 数据层      Canonical Spatial Model（model.py + schemas/）  唯一权威几何与编号
             ────────────────────────────────────────────────────────────────
@@ -134,7 +134,7 @@ class Adapter:
 | 子系统 | 模块 | 职责 |
 |---|---|---|
 | 内容合规 | `compliance_audit.py` | 逐文件检查署名 / 隐私 / 外链 / 许可；用户面材料只能指向自有站点；署名行由 `registry.py: SIGNATURE` 统一定义 |
-| 原创知识库 | `knowledge/` + `knowledge/loader.py` | 13 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
+| 原创知识库 | `knowledge/` + `knowledge/loader.py` | 15 个知识域，索引 → 领域 → 单节的渐进式加载，带加载成本上限 |
 | 平台 provider | `providers/` | OmniAiLab 发现式接入（SDK / 配置 / API 契约）+ 内置本地确定性 provider；未验证一律 `NOT_CONFIGURED` |
 | 概念效果图 | `providers/canvas.py` | **门禁 G3 后置动作**：以已确认平面为据，走 OmniAiLab 画布（推荐 OmniP / image2.5）出概念效果图；平台未连接时只交付任务包 |
 | 工具执行 | `tools/` | 统一工具注册表、L1–L4 权限分级、产物独立校验、能力真实性规则 |

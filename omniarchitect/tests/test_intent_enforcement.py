@@ -41,11 +41,20 @@ def _project(tmp: Path, one_liner: str, *, name: str = "住宅") -> Project:
     return p
 
 
-def _to_g2(tmp: Path, *, concept_id: str = "C-B"):
-    """跑到 G2 已确认，返回 (project, runner)。"""
+def _to_g2(tmp: Path, *, concept_id: str = ""):
+    """跑到 G2 已确认，返回 (project, runner)。
+
+    默认挑一条**能落到平面**的方向：本测试关心的是意图变化，不是概念能不能
+    落地。没有平面策略的方向会被 G3 正当拦下，那是另一条测试的事。
+    """
     p = _project(tmp, "买了一套 150㎡ 大平层，室内装修，现代意式极简，拆一堵墙")
     runner = StageRunner(p, tmp / "out", project_dir=tmp / "proj")
     runner.run_stage("S2", confirm=False)
+    if not concept_id:
+        supported = [c for c in p.meta["concept"]["options"]["concepts"]
+                     if (c.get("spatial_prototype") or {}).get("plan_strategy")]
+        assert supported, "没有可落到平面的方向，本测试无法继续"
+        concept_id = supported[0]["concept_id"]
     C.select(p, concept_id)
     res = runner.approve("S2", by="业主张先生")
     assert res["status"] == "confirmed", res.get("notes")

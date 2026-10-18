@@ -104,7 +104,14 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         ctx = assert_ready(project)      # raises with a precise reason
     state = _concept_meta(project)
 
-    concept_set = generate_concepts(ctx, limit=limit, pre_gate=pre_gate)
+    # 案例在读概念之前取：推敲层要用案例里真实出现的手法做佐证（案例反哺概念），
+    # 而不是等方案定完再挂一排链接。
+    from .. import research as research_mod
+
+    research_data = research_mod.load(project)
+
+    concept_set = generate_concepts(ctx, limit=limit, pre_gate=pre_gate,
+                                    research=research_data)
     if not concept_set["concepts"]:
         state["options"] = concept_set
         return {"count": 0, "files": [], "warnings": concept_set.get("note", ""),
@@ -116,12 +123,21 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     moodboards: Dict[str, Dict[str, Any]] = {}
     all_diagrams: Dict[str, List[Dict[str, str]]] = {}
 
-    # 参考案例先算：意向板与提案都要用同一份，不在两处各挑一次。
+    # 专业归属必须在挑案例之前挂上：`references._discipline_keys` 读的是
+    # 这套方案覆盖哪些专业，读不到就只剩风格分，专业对口的案例会被判成
+    # "不匹配"。之前这段在挑案例之后，于是建筑案例挂不到建筑方案上。
+    from .. import disciplines as _disc
+    from . import disciplines as _cdisc
+
+    _scope = _disc.ensure(project, profile_id=ctx.profile_id)
+    for c in concept_set["concepts"]:
+        c["disciplines"] = _cdisc.for_concept(project, _scope, c, ctx)
+
+    # 意向板与提案都要用同一份案例，不在两处各挑一次。
     # 第三方图片永远是"带链接的参考卡"，不进版面（见 concept/references.py）。
     from . import references as ref_mod
-    from .. import research as research_mod
 
-    refs = ref_mod.build(concept_set["concepts"], research_mod.load(project), ctx)
+    refs = ref_mod.build(concept_set["concepts"], research_data, ctx)
     for c in concept_set["concepts"]:
         c["references"] = refs.get(c["concept_id"], {})
 
@@ -142,12 +158,6 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
             "reference_cards": moodboards[c["concept_id"]]["reference_cards"],
         }
         c["diagrams"] = [{"kind": d["kind"], "path": d["path"]} for d in all_diagrams[c["concept_id"]]]
-        # 同一套概念下，各专业各自的"怎么做"——不是四套平行方案
-        from .. import disciplines as _disc
-        from . import disciplines as _cdisc
-
-        _scope = _disc.ensure(project, profile_id=ctx.profile_id)
-        c["disciplines"] = _cdisc.for_concept(project, _scope, c, ctx)
 
     comparison = cmp.compare(concept_set, ctx)
 

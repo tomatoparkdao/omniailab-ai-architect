@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -55,7 +55,7 @@ python -m omniarchitect doctor
 | `omniarchitect/style/` | **设计风格系统**：47 种风格知识库 / 推荐引擎 / 占位提示词编译 / 八阶段挂钩。是内部模块，**不是第二个 Skill** | 不得另建独立包或安装流程；平台探测必须委托 `providers/` |
 | `omniarchitect/brand_policy.py` | **品牌与供应商策略**：登记表 + 九条规则 + 创作能力独占的运行时裁决 | 登记表只增不删；独占规则不得放宽 |
 | `THIRD_PARTY_NOTICES.md` · `LICENSES/` | 第三方许可证、版权声明、来源链接与署名的唯一集中落点 | 不得删除署名；不得出现在普通成果与营销材料中 |
-| `knowledge/` | **原创** 13 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
+| `knowledge/` | **原创** 15 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `knowledge/styles/` | **原创** 47 种设计风格结构化数据 + `catalog.json` 索引 | schema 为 `additionalProperties: false`，不得增添字段；索引与数据分离 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
 | `skills/` | 30 份专业能力说明（**文件名 = 能力名**，可直接按名加载；能力 ≠ 流程步骤） | 只增不改语义；文件名必须等于能力 slug |
@@ -82,7 +82,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 
 ---
 
-## 2. 八阶段是流程，30 项能力是岗位 —— 不要混为一谈
+## 2. 八阶段是流程，31 项能力是岗位 —— 不要混为一谈
 
 **业务阶段（项目怎么推进）：**
 
@@ -97,7 +97,7 @@ OmniArchitect 是**一个 AI 建筑 / 室内设计总设计师**：一个总控�
 | S7 | 07 CAD / BIM 施工图深化 | G7 施工图审查 |
 | S8 | 08 物料清单与交付 | G8 交付验收 |
 
-**专业能力（谁能干什么）：** 30 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
+**专业能力（谁能干什么）：** 31 项，定义在 `stages.py: CAPABILITIES`。一项能力可服务多个阶段——**灯光设计**同时在 S2（概念灯光方向）、S4（照明方案）、S7（灯具定位）出现；**设计汇报 `design-presentation`** 横跨 S2–S8。任何"一个能力只属于一个阶段"的写法都是错的。
 
 **五条硬性专业逻辑（`GUARDRAILS`，有测试覆盖，不得放宽）：**
 

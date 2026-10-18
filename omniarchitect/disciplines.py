@@ -366,19 +366,64 @@ def store(project: Any, scope: DisciplineScope) -> Dict[str, Any]:
     return payload
 
 
-def ensure(project: Any, *, profile_id: str = "") -> DisciplineScope:
-    """读不到就从项目文本推断一次并落盘（幂等）。"""
-    scope = load(project)
-    if scope.entries:
-        return scope
+def _basis_texts(project: Any) -> List[str]:
     from .intake.interview import load_interview
 
     answers = (load_interview(project).answers or {})
     texts = [str(getattr(project, "name", "") or "")]
     texts += [str((v or {}).get("value") or "") for v in answers.values()]
-    detected = detect(texts, profile_id=profile_id or str(
-        (answers.get("profile_id") or "")))
+    return texts
+
+
+def _digest(texts: Sequence[str]) -> str:
+    import hashlib
+
+    return hashlib.sha1("\n".join(texts).encode("utf-8")).hexdigest()[:16]
+
+
+def _rank(state: str) -> int:
+    """状态的"确定性"次序。合并重算结果时，更确定的判断不被更弱的覆盖。"""
+    return {DECLARED: 4, REQUIRED: 3, UNKNOWN: 2, INFERRED: 1, OUT_OF_SCOPE: 0}.get(state, 0)
+
+
+def ensure(project: Any, *, profile_id: str = "") -> DisciplineScope:
+    """推断一次并落盘；**依据变了就重算**。
+
+    早先的版本只要存过就不再算（"幂等"），于是范围在问诊初期被定死：
+    客户先说了"三层别墅"，系统在只收到项目类型时算出「室内为主」，之后补上
+    "室外带庭院和水景"也不会重算——一个建筑综合委托被永久当成室内装修，
+    接着调的是住宅房间算法。这不是性能问题，是判断再也跟不上新的答案。
+
+    重算时**不丢已有判断**：客户声明的专业、以及被显式标为"必须有""资料不足"
+    的专业都保留，只刷新那些纯粹的推断。合并规则按状态的确定性来：更确定的
+    判断不被更弱的推断覆盖。
+    """
+    from .intake.interview import load_interview
+
+    answers = load_interview(project).answers or {}
+    texts = _basis_texts(project)
+    digest = _digest(texts)
+    scope = load(project)
+    stored = str((getattr(project, "meta", {}) or {}).get("scope_basis_digest") or "")
+
+    if scope.entries and stored == digest:
+        return scope
+
+    detected = detect(texts, profile_id=profile_id or str((answers.get("profile_id") or "")))
+    for did, old in (scope.entries or {}).items():
+        new = detected.entries.get(did)
+        if new is None:
+            # 重算看不见它，但之前有记录：可能是显式设置，也可能依据已被覆盖。
+            # 保留更确定的那个，不因为一次重算就丢掉一个专业。
+            detected.entries[did] = old
+        elif old.state == OUT_OF_SCOPE and (old.evidence or ""):
+            detected.entries[did] = old          # 明确不做，必须带着证据保留
+        elif _rank(old.state) > _rank(new.state):
+            detected.entries[did] = old
+    detected.basis = tuple(t for t in texts if t)
     store(project, detected)
+    project.meta = dict(getattr(project, "meta", {}) or {})
+    project.meta["scope_basis_digest"] = digest
     return detected
 
 

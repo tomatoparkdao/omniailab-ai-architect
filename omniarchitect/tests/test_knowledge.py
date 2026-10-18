@@ -12,10 +12,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from omniarchitect import knowledge  # noqa: E402
 
 
-def test_thirteen_domains_are_present_and_valid():
+def test_every_domain_is_present_and_valid():
+    """领域数量随能力扩展而增加；断言的是"都在且都合法"，不是某个固定数字。
+
+    写死 13 会把"新增一个知识域"变成一次失败——那是在保护数字，不是在保护内容。
+    """
     domains = knowledge.index()
-    assert len(domains) == 13, [d.slug for d in domains]
+    assert len(domains) >= 13, [d.slug for d in domains]
     assert knowledge.validate() == []
+    slugs = {d.slug for d in domains}
+    for required in ("design-deliberation-methods", "landscape-design-methodology"):
+        assert required in slugs, sorted(slugs)
 
 
 def test_domain_metadata_is_complete():
@@ -104,7 +111,7 @@ def test_knowledge_is_self_contained_and_carries_the_signature():
 
 def test_report_is_machine_readable():
     rep = knowledge.report()
-    assert rep["count"] == 13
+    assert rep["count"] == len(knowledge.index()) >= 13
     assert rep["total_lines"] > 1200
     assert rep["issues"] == []
     assert set(rep["by_stage"]) == {f"S{i}" for i in range(1, 9)}

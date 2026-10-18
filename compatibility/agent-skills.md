@@ -1,7 +1,7 @@
 ---
 name: omniailab-compatibility-agent-skills
 description: Agent Skills 兼容规范对照 —— OmniArchitect 遵循通用 Agent Skills 约定，不绑定任何单一厂商运行时。
-version: 1.5.0
+version: 1.6.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -22,7 +22,7 @@ omniailab-ai-architect/          ← 技能根（工作区根）
 ├── README.md
 ├── LICENSE / VERSION            ← 许可与版本
 ├── knowledge/                   ← 12 个原创知识域 + INDEX.md（渐进式加载）
-├── skills/                      ← 30 项专业能力说明（文件名 = 能力名，按需加载）
+├── skills/                      ← 31 项专业能力说明（文件名 = 能力名，按需加载）
 ├── schemas/                     ← 统一空间模型 / 案例 / 工具能力 / 汇报
 ├── workflows/                   ← 阶段工作流定义
 ├── adapters/specs/              ← MCP / 外部工具适配规范
