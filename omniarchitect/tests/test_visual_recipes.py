@@ -258,16 +258,29 @@ def test_g3_emits_drawing_recipes_without_spending():
         f = next((tmp / "out").rglob("drawing-visuals.json"), None)
         assert f, "G3 通过后没有生成图纸派生任务包"
         payload = json.loads(f.read_text(encoding="utf-8"))
-        targets = {j["target"] for j in payload["jobs"]}
-        assert {"plan-color", "plan-axon", "presentation-board"} <= targets, targets
-        assert payload["plan_confirmed"] is True
-        for j in payload["jobs"]:
-            assert j["status"] == "awaiting_authorization", j["status"]
-            assert j["references"], "图纸派生没有带参考图"
-        # 只有编译，没有生成：台账里不存在任何已提交/已生成记录
+
+        # 参考图必须是真实存在、可上传的矢量/位图，不是 DXF 路径
+        assert payload["references"], "没有参考图"
+        for r in payload["references"]:
+            assert Path(r).exists() and Path(r).stat().st_size > 512, r
+            assert Path(r).suffix.lower() in (".svg", ".png"), r
+            assert Path(r).suffix.lower() not in (".dxf", ".dwg"), "DXF 不能当 AI 输入"
+        ref = payload["reference"]
+        assert ref["has_plan_geometry"] and ref["has_openings"] and ref["has_dimensions"]
+        assert ref["counts"]["spaces"] > 5 and ref["counts"]["walls"] > 5
+
+        by_target = {j["target"]: j for j in payload["jobs"]}
+        assert by_target["plan-color"]["status"] == "awaiting_authorization"
+        assert by_target["plan-axon"]["status"] == "awaiting_authorization"
+        # 展示板要三视图；立面与透视没有，就标待补充，不许冒充
+        board = by_target["presentation-board"]
+        assert board["status"] == "blocked_missing"
+        assert "立面图" in "".join(board["missing_data"])
+        assert payload["summary"]["blocked_missing"] >= 1
+
+        # 只编译，没有提交
         import omniarchitect.concept.visual as V
 
         for ledger in (tmp / "out").rglob(V.LEDGER_NAME):
             entries = (V.load_ledger(ledger).get("entries") or {}).values()
             assert not [e for e in entries if e.get("status") in ("submitted", "generated")]
-        assert not list((tmp / "out").rglob("drawing-visuals/*.png"))

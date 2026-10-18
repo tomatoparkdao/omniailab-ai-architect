@@ -268,3 +268,170 @@ def test_visual_ledger_keeps_unknown_as_submitted_and_does_not_retry():
 
         ledger = vis.load_ledger(out / vis.LEDGER_NAME)
         assert all(e["status"] == "submitted" for e in ledger["entries"].values())
+
+
+# --------------------------------------------------------------------------
+# 8. 生命周期：submitted → succeeded → asset_validated → project_linked
+# --------------------------------------------------------------------------
+class _ChainProvider(_Stub):
+    """能按剧本走完/走残一条任务的生命周期。"""
+
+    def __init__(self, script: str = "ok") -> None:
+        super().__init__("ok")
+        self.script = script
+        self.polls = 0
+        self.fetches = 0
+        self.png = ""
+
+    def generate(self, scope, params, target_dir):
+        self.submits += 1
+        out = Path(target_dir) / "chain.png"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 2048)
+        self.png = str(out)
+        if self.script == "unknown":
+            return ProviderJob(job_id="srv-9", provider="omniailab",
+                               operation=scope, status="unknown",
+                               submitted_unknown=False, poll_exhausted=True,
+                               idempotency_key=params.get("idempotency_key", ""),
+                               recovery="任务已受理，稍后核实")
+        return ProviderJob(job_id="srv-9", provider="omniailab", operation=scope,
+                           status="succeeded", outputs=[self.png],
+                           idempotency_key=params.get("idempotency_key", ""))
+
+    def poll(self, job):
+        self.polls += 1
+        if self.script == "running_then_ok" and self.polls == 1:
+            job.status = "running"
+            return job
+        job.status = "succeeded"
+        job.outputs = [self.png]
+        return job
+
+    def fetch(self, job, target_dir):
+        self.fetches += 1
+        return [self.png]
+
+
+class _ChainRegistry:
+    def __init__(self, provider: _ChainProvider) -> None:
+        self.provider = provider
+        self.links: List[Any] = []
+
+    def capabilities(self):
+        return [self.provider.probe()]
+
+    def get(self, pid):
+        return self.provider
+
+    def generate(self, scope, params, target_dir, prefer=""):
+        return self.provider.generate(scope, params, target_dir)
+
+    def link_asset(self, job, assets, project_id, revision, stage, scope):
+        self.links.append((job.job_id, list(assets)))
+        return []
+
+    def defer_creative_task(self, *a, **k):
+        return {}
+
+
+def _fresh_project(tmp: Path):
+    from omniarchitect import concept as C
+    from omniarchitect.demo import build_demo_project
+
+    p = build_demo_project(tmp / "proj")
+    ctx = C.build_context(p, require_gate=False)
+    concept = C.generate_concepts(ctx, limit=2)["concepts"][0]
+    from omniarchitect.concept import visual as vis
+
+    return p, vis.build_jobs(concept, ctx, p)[:1]
+
+
+def test_lifecycle_reaches_project_linked():
+    from omniarchitect.concept import visual as vis
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p, jobs = _fresh_project(tmp)
+        out = tmp / "out"
+        prov = _ChainProvider("ok")
+        reg = _ChainRegistry(prov)
+        with _patched(providers_mod(), "discover", lambda *a, **k: reg):
+            res = vis.submit(jobs, p, out, submit=True, authorize=True, max_cost=10)
+        assert res.generated == 1
+        entry = list(vis.load_ledger(out / vis.LEDGER_NAME)["entries"].values())[0]
+        states = [h["state"] for h in entry["history"]]
+        assert states[0] == "submitted"
+        for s in ("succeeded", "asset_validated", "project_linked"):
+            assert s in states, states
+        assert entry["artifacts"], "没有登记成项目资产"
+        ids = {a.id for a in p.artifacts}
+        assert entry["artifacts"][0] in ids, "资产没写进项目"
+        assert reg.links, "没有 provider 资产关联"
+
+
+def test_resume_recovers_unknown_without_another_submit():
+    from omniarchitect.concept import visual as vis
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p, jobs = _fresh_project(tmp)
+        out = tmp / "out"
+        prov = _ChainProvider("unknown")
+        with _patched(providers_mod(), "discover", lambda *a, **k: _ChainRegistry(prov)):
+            first = vis.submit(jobs, p, out, submit=True, authorize=True, max_cost=10)
+        assert first.unknown == 1 and prov.submits == 1
+        entry = list(vis.load_ledger(out / vis.LEDGER_NAME)["entries"].values())[0]
+        assert entry["state"] == "submitted_unknown"
+
+        # 第一轮核实：平台上还在跑
+        prov.script = "running_then_ok"
+        prov.polls = 0
+        with _patched(providers_mod(), "discover", lambda *a, **k: _ChainRegistry(prov)):
+            r1 = vis.resume_pending(p, out)
+        assert r1["running"] == 1 and prov.submits == 1, "恢复路径不能重新提交"
+        entry = list(vis.load_ledger(out / vis.LEDGER_NAME)["entries"].values())[0]
+        assert entry["state"] == "running"
+
+        # 第二轮核实：完成 → 取回 → 校核 → 登记
+        prov.polls = 5
+        with _patched(providers_mod(), "discover", lambda *a, **k: _ChainRegistry(prov)):
+            r2 = vis.resume_pending(p, out)
+        assert r2["resumed"] == 1, r2
+        assert prov.submits == 1, "整个恢复过程只允许一次提交"
+        entry = list(vis.load_ledger(out / vis.LEDGER_NAME)["entries"].values())[0]
+        assert entry["state"] == "project_linked"
+        assert entry["artifacts"]
+
+
+def test_resume_without_platform_does_not_submit():
+    from omniarchitect.concept import visual as vis
+
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        p, jobs = _fresh_project(tmp)
+        out = tmp / "out"
+        prov = _ChainProvider("unknown")
+        with _patched(providers_mod(), "discover", lambda *a, **k: _ChainRegistry(prov)):
+            vis.submit(jobs, p, out, submit=True, authorize=True, max_cost=10)
+
+        class _Down(_ChainRegistry):
+            def capabilities(self):
+                from omniarchitect.providers.base import ProviderCapability
+
+                return [ProviderCapability(provider="omniailab",
+                                           state="not_configured",
+                                           provider_kind="native-platform",
+                                           missing=["api_key"])]
+
+        before = prov.submits
+        with _patched(providers_mod(), "discover", lambda *a, **k: _Down(prov)):
+            r = vis.resume_pending(p, out)
+        assert prov.submits == before, "平台不可用时恢复路径居然提交了"
+        assert r["resumed"] == 0 and "不可用" in r["note"]
+
+
+def providers_mod():
+    import omniarchitect.providers as providers
+
+    return providers

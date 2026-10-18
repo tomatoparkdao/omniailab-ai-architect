@@ -139,6 +139,27 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 未确认平面拒收、文字不让模型写、三处登记一致、指纹跨配方一致）；`verify_all.py` 九段通过；
 `check_tables` 93 文件 356 表 0 违规；`normalize --check` 0 不一致。
 
+### 后续补充八 — 执行闭环验收第一轮：参考图、生命周期、客户首用
+
+**参考图不再是 DXF 路径。** 新增 `omniarchitect/reference_plan.py`：用与 DXF 同一份
+`build_primitives()` 输出 SVG + PNG，尺寸与房间名是矢量文字，清单自述有什么/缺什么。
+`drawing-visuals.json` 的 `references` 只列真实存在的 SVG/PNG；DXF/DWG 明确归入
+`not_accepted`。三条配方按 `REQUIRED_DATA` 校验：`plan-color`/`plan-axon` 数据齐全，
+`presentation-board` 缺立面与透视 → `blocked_missing`，不冒充完成。
+
+**任务生命周期与恢复。** 台账加 6 态 `submitted → running → succeeded →
+asset_validated → project_linked`（含 `history`）；成功后登记项目资产（带修订号）。
+新增 `resume_pending()`：有 job_id 只核实、只取回，全程不调 `submit()`；
+平台不可用就停并说明。测试覆盖超时、断线、未知状态与恢复，提交次数恒为 1。
+
+**客户首用两项目实测。** `scripts/acceptance_round1.py`：住宅一句话 → 5 问 0 重复 →
+G1–G8 全签 → 20 项成果；关掉重载后从 S4 续跑；改方案出 5 项返工 + G4–G8 重开且不自动应用。
+办公项目一句话 → 6 问 0 重复 → S1–S3 可跑，**G3 因原型无平面策略拒绝签发**，S4 起不来。
+
+验证：`run_tests.py` 458 项全绿（新增 `test_reference_plan.py` 3 项、
+`test_client_first_use.py` 4 项、`test_billing_safety.py` +3 项）；`verify_all.py` 九段通过。
+验收报告 `docs/ACCEPTANCE_ROUND1.md`，证据 `out/acceptance-round1/`。
+
 ### 后续补充七 — 付费安全、住宅默认值清理、配方接入 S2/G3
 
 三件事，都是"客户真的会遇到"的问题。

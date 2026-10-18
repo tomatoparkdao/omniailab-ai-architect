@@ -591,23 +591,21 @@ class StageRunner:
             record_change(self.project, "gate",
                           f"{stage_name('S3')} 确认通过（owner：{assess['concept_id'] or '—'}）",
                           targets=["S3"])
-            # 平面签了，才有资格把图纸派生成视觉：任务包在这里生成，但不提交。
+            # 平面签了，才有资格把图纸派生成视觉：参考图在这里真做出来，任务只编译不提交。
             try:
                 from .concept.visual import build_plan_visuals
 
-                from .concept.handoff import plan_record
-
-                refs = [str(x) for x in (plan_record(self.project).get("dxf") or [])]
-                if not refs:                      # 旧项目没有记录时退回目录查找
-                    refs = [str(p) for p in sorted(self._dir("S3").glob("*.dxf"))]
-                vp = build_plan_visuals(self.project, self._dir("S3"),
-                                        stage="S3", references=refs)
-                jobs = vp.get("jobs") or []
-                if jobs:
+                variant = str((self.project.meta.get("scheme") or {}).get("variant")
+                              or self.scheme_variant)
+                ref_model = self._reference_model(variant)
+                vp = build_plan_visuals(ref_model, self._dir("S3"),
+                                        stage="S3", scheme=variant)
+                s = vp.get("summary") or {}
+                if s.get("total"):
                     notes.append(
-                        f"图纸派生任务包已生成：{len(jobs)} 项"
-                        f"（{ '、'.join(j['target'] for j in jobs) }）——"
-                        "仅编译未提交，授权后才计费")
+                        f"图纸派生：参考图 {len(vp.get('references') or [])} 份已生成，"
+                        f"任务 {s['total']} 项（可提交 {s.get('ready', 0)}、"
+                        f"待补充 {s.get('blocked_missing', 0)}）——仅编译，未提交")
                 else:
                     notes.append(f"图纸派生未生成：{vp.get('note', '未知原因')}")
             except Exception as exc:
@@ -1463,6 +1461,21 @@ class StageRunner:
         )
 
     # ------------------------------------------------------------------
+    def _reference_model(self, variant: str):
+        """装好方案{chosen}的模型副本，只用来出参考图，不改动 canonical 修订号。"""
+        from .planner import PlanGenerator
+
+        base = self.project.fork()
+        if any(s.properties.get("scheme") for s in base.spaces):
+            return base
+        scheme = self.schemes.get(variant)
+        if scheme is None:
+            scheme = PlanGenerator(self.project, self.level_id).generate(
+                _scheme_options(variant))
+        _install_scheme(base, scheme)
+        resolve_host_axes(base)
+        return base
+
     def _ensure_scheme_installed(self) -> str:
         """Make sure a scheme's spaces/elements are in the model before S4+ runs.
 

@@ -146,11 +146,44 @@ def _params(job: Dict[str, Any], project: Project) -> Dict[str, Any]:
     }
 
 
+#: 一笔付费任务的完整生命周期。缺哪一步就说明卡在哪一步，不许含糊。
+STATE_ORDER = ("awaiting_authorization", "submitted", "running",
+               "succeeded", "asset_validated", "project_linked")
+
+
+def _advance(entry: Dict[str, Any], state: str, **extra: Any) -> None:
+    entry["state"] = state
+    entry.setdefault("history", []).append({
+        "state": state,
+        "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        **{k: v for k, v in extra.items() if v not in (None, "")},
+    })
+
+
 def _scope_of(target: str) -> str:
     """配方声明的能力域；没登记就按 image_generation 走。"""
     from ..style.provider_bridge import TARGET_SCOPE
 
     return TARGET_SCOPE.get(target, "image_generation")
+
+
+def _register_assets(project: Project, job: Dict[str, Any],
+                     assets: Sequence[str], scope: str) -> List[str]:
+    """把生成结果登记成项目资产：带修订号、可追溯、可回滚。"""
+    from ..paths import relpath
+    from ..revisions import register_artifact
+
+    ids: List[str] = []
+    for i, a in enumerate(assets):
+        try:
+            art = register_artifact(
+                project, f"art-{job.get('job_key', job.get('job_id', 'job'))}-{i}",
+                "render", ["project:concept"], "concept-design",
+                relpath(a), "needs_review")
+            ids.append(str(art.id))
+        except Exception:
+            continue
+    return ids
 
 
 def _media_ok(path: str) -> bool:
@@ -370,6 +403,10 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
 
         # -- 4. 提交（先记账，避免中途崩溃导致重复付费）-------------------
         ledger["entries"][key] = {
+            "state": "submitted",
+            "job_key": key,
+            "history": [{"state": "submitted",
+                         "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")}],
             "job_id": job.get("job_id", ""), "concept_id": job.get("concept_id", ""),
             "kind": job.get("kind", ""), "revision": project.revision,
             "status": "submitted", "output": "", "outputs": [],
@@ -401,6 +438,8 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             res.warnings.append(
                 f"{job['job_id']} 已提交但结果未知（{pjob.error or '状态未知'}）："
                 "系统不会自动重提；请先核实任务状态。")
+            _advance(ledger["entries"][key], "submitted_unknown",
+                     job_id=pjob.job_id, error=pjob.error)
             ledger["entries"][key].update({
                 "status": "submitted", "provider_job": pjob.job_id,
                 "idempotency_key": pjob.idempotency_key,
@@ -420,10 +459,26 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
                 job["outputs"] = good
                 job["reason"] = f"job {pjob.job_id}"
                 res.generated += 1
-                reg.link_asset(pjob, good, project.project_id, project.revision,
-                               "S2", "image_generation")
-                ledger["entries"][key].update({"status": "generated",
-                                               "output": good[0], "outputs": good})
+                entry = ledger["entries"][key]
+                _advance(entry, "succeeded", job_id=pjob.job_id)
+                # 资产校核：格式与体积，逐张过
+                checks = [{"asset": o, "ok": _media_ok(o),
+                           "bytes": Path(o).stat().st_size} for o in good]
+                entry["status"] = "generated"
+                entry["output"] = good[0]
+                entry["outputs"] = good
+                entry["asset_check"] = checks
+                _advance(entry, "asset_validated",
+                         validated=sum(1 for c in checks if c["ok"]))
+                # 回写项目：资产登记（带修订号）+ provider 关联
+                links = reg.link_asset(pjob, good, project.project_id,
+                                       project.revision, "S2", scope)
+                art_ids = _register_assets(project, job, good, scope)
+                entry["links"] = [l.to_dict() for l in links]
+                entry["artifacts"] = art_ids
+                _advance(entry, "project_linked", artifacts=len(art_ids))
+                job["asset_ids"] = art_ids
+                job["state"] = "project_linked"
             else:
                 job["status"] = "failed"
                 job["reason"] = "平台返回的文件不是可用的图片"
@@ -528,21 +583,155 @@ def project_id_of(concept_set: Dict[str, Any]) -> str:
 
 
 # --------------------------------------------------------------------------
+# 恢复：已提交但状态未知的任务，只能核实，不能重提
+# --------------------------------------------------------------------------
+def resume_pending(project: Project, out_dir: str | Path, *,
+                   project_dir: str | Path | None = None) -> Dict[str, Any]:
+    """对台账里"已提交、未落地"的任务做一次核实。
+
+    有 job_id 就 `poll`；成功则取回、校核、登记成项目资产。**任何情况下都不调
+    `submit()`**——这是"已付费任务只轮询"在恢复路径上的同一条规矩。
+    """
+    from ..providers import NotConfigured, ProviderError, discover
+    from ..providers.base import ProviderJob
+
+    out = Path(out_dir)
+    ledger_path = out / LEDGER_NAME
+    ledger = load_ledger(ledger_path)
+    pending = {k: e for k, e in (ledger.get("entries") or {}).items()
+               if (e.get("state") or "") in ("submitted", "submitted_unknown", "running")}
+    report: Dict[str, Any] = {"pending": len(pending), "resumed": 0, "running": 0,
+                              "failed": 0, "needs_manual": 0, "items": [],
+                              "submitted_again": 0}
+    if not pending:
+        report["note"] = "没有待核实的任务。"
+        return report
+
+    reg = discover(project_dir)
+    cap = next((c for c in reg.capabilities() if c.provider == "omniailab"), None)
+    if not (cap and cap.usable):
+        report["note"] = ("平台当前不可用，无法核实；任务仍停在原状态，"
+                          "不会重新提交。恢复连接后再跑一次 resume。")
+        report["platform_state"] = cap.state if cap else "not_registered"
+        return report
+    provider = reg.get("omniailab")
+
+    renders = out / "concept-visuals"
+    for key, entry in pending.items():
+        job_id = str(entry.get("provider_job") or "")
+        if not job_id:
+            report["needs_manual"] += 1
+            report["items"].append({"job_key": key, "result": "no_job_id",
+                                    "note": "只有幂等键、没有任务号：到平台按幂等键查"})
+            continue
+        pjob = ProviderJob(job_id=job_id, provider="omniailab",
+                           operation="image_generation", status="running",
+                           idempotency_key=str(entry.get("idempotency_key") or ""))
+        try:
+            pjob = provider.poll(pjob)
+        except (NotConfigured, ProviderError) as exc:
+            report["needs_manual"] += 1
+            report["items"].append({"job_key": key, "result": "poll_failed",
+                                    "note": str(exc)})
+            continue
+
+        if not pjob.terminal:
+            _advance(entry, "running", job_id=job_id)
+            report["running"] += 1
+            report["items"].append({"job_key": key, "result": "running"})
+            continue
+        if pjob.status != "succeeded":
+            entry["status"] = "failed"
+            entry["error"] = pjob.error or pjob.status
+            _advance(entry, "failed", error=entry["error"])
+            report["failed"] += 1
+            report["items"].append({"job_key": key, "result": "failed",
+                                    "note": entry["error"]})
+            continue
+
+        try:
+            outputs = provider.fetch(pjob, renders)
+        except Exception as exc:                    # noqa: BLE001
+            report["needs_manual"] += 1
+            report["items"].append({"job_key": key, "result": "fetch_failed",
+                                    "note": f"{type(exc).__name__}: {exc}"})
+            continue
+        good = [o for o in outputs if _media_ok(o)]
+        if not good:
+            entry["status"] = "failed"
+            _advance(entry, "failed", error="返回文件不可用")
+            report["failed"] += 1
+            report["items"].append({"job_key": key, "result": "bad_payload"})
+            continue
+
+        _advance(entry, "succeeded", job_id=job_id)
+        entry["status"] = "generated"
+        entry["output"] = good[0]
+        entry["outputs"] = good
+        entry["asset_check"] = [{"asset": o, "ok": True,
+                                 "bytes": Path(o).stat().st_size} for o in good]
+        _advance(entry, "asset_validated", validated=len(good))
+        scope = str(entry.get("scope") or "image_generation")
+        reg.link_asset(pjob, good, project.project_id, project.revision, "S2", scope)
+        art_ids = _register_assets(
+            project, {"job_key": key, "job_id": job_id}, good, scope)
+        entry["artifacts"] = art_ids
+        _advance(entry, "project_linked", artifacts=len(art_ids))
+        report["resumed"] += 1
+        report["items"].append({"job_key": key, "result": "recovered",
+                                "assets": good, "artifacts": art_ids})
+
+    _save_ledger(ledger_path, ledger)
+    report["note"] = ("恢复只做核实与取回；没有发起任何新提交。"
+                      if not report["submitted_again"] else "异常：恢复路径出现了提交")
+    return report
+
+
+# --------------------------------------------------------------------------
 # G3 之后：图纸派生（平面图上色 / 3D 立轴 / 三视图展示板）
 # --------------------------------------------------------------------------
 PLAN_TARGETS: tuple = ("plan-color", "plan-axon", "presentation-board")
 
+#: 每条配方"要用这张图，必须已经有什么"。缺一项就标待补充，不许蒙混。
+REQUIRED_DATA: Dict[str, tuple] = {
+    "plan-color": ("plan_geometry", "openings", "dimensions"),
+    "plan-axon": ("plan_geometry", "openings", "level_height"),
+    "presentation-board": ("plan_geometry", "elevation", "perspective"),
+}
+
+DATA_LABEL = {
+    "plan_geometry": "平面几何（房间与墙体）",
+    "openings": "门窗洞口",
+    "dimensions": "可核对的尺寸标注",
+    "level_height": "层高",
+    "elevation": "立面图",
+    "perspective": "三维透视",
+}
+
+
+def _available_data(reference: Dict[str, Any]) -> Dict[str, bool]:
+    return {
+        "plan_geometry": bool(reference.get("has_plan_geometry")),
+        "openings": bool(reference.get("has_openings")),
+        "dimensions": bool(reference.get("has_dimensions")),
+        "level_height": bool(reference.get("has_level_height")),
+        "elevation": bool(reference.get("has_elevation")),
+        "perspective": bool(reference.get("has_perspective")),
+    }
+
 
 def build_plan_visuals(project: Project, out_dir: str | Path, *,
-                       stage: str = "S3",
-                       references: Sequence[str] = (),
+                       stage: str = "S3", scheme: str = "",
                        targets: Sequence[str] = PLAN_TARGETS) -> Dict[str, Any]:
-    """平面确认后，按表现技法库生成"图纸派生"任务包。
+    """平面确认后，输出可上传的参考图 + 按表现技法库编译的图纸派生任务。
 
-    这一步只**编译**，不提交：G3 通过不等于授权花钱。任务包里的每条都标
-    `plan_confirmed=True`（因为平面确实签了），但状态停在
-    `awaiting_authorization`，等显式授权再走 `submit()`。
+    三件事必须同时成立才算"可用"：
+
+    1. 参考图**真实存在**（SVG/PNG，由矢量图元输出），不是一条 DXF 路径；
+    2. 每条配方所需的数据都在（缺立面就写缺立面）；
+    3. 只编译不提交——G3 通过不等于授权花钱。
     """
+    from .. import reference_plan as ref_mod
     from ..style import recipes as recipe_lib
     from ..style.compiler import compile_prompt
     from ..style import load_catalog
@@ -555,31 +744,63 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
     out.mkdir(parents=True, exist_ok=True)
 
     if chosen is None:
-        payload = {"stage": stage, "plan_confirmed": True, "jobs": [],
+        payload = {"stage": stage, "plan_confirmed": True, "jobs": [], "references": [],
                    "note": "没有已确认的概念：不做图纸派生（不拿默认风格顶替）。"}
         (out / "drawing-visuals.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         return payload
 
+    # -- 1. 参考图：由本项目矢量图元输出，DPI 无关，尺寸可核对 -----------
+    try:
+        reference = ref_mod.build_reference(project, out / "reference", scheme=scheme)
+        check = ref_mod.verify_files(reference)
+        ref_mod.write_manifest(reference, out / "reference")
+    except Exception as exc:                       # 没有几何就不能假装有
+        reference = {"files": [], "error": f"{type(exc).__name__}: {exc}"}
+        check = {"files": [], "all_ok": False}
+
+    references = [r["path"] for r in check["files"] if r["ok"]]
+    available = _available_data(reference)
+
     total = sum(float(s.area_m2 or 0) for s in project.spaces if s.use != "envelope")
     brief = SpaceBrief(space_name="全户型", area_m2=total or None,
-                       references=list(references))
+                       references=references)
     cat = load_catalog()
     jobs: List[Dict[str, Any]] = []
     for target in targets:
         recipe = recipe_lib.get(target)
         if recipe is None:
             continue
+        need = REQUIRED_DATA.get(target, ("plan_geometry",))
+        missing = [DATA_LABEL.get(k, k) for k in need if not available.get(k)]
+        data_check = {"required": list(need), "available": available,
+                      "missing": missing, "complete": not missing}
+
+        if missing:
+            jobs.append({
+                "job_id": f"{selected}-{target}", "concept_id": selected,
+                "target": target, "label": recipe.name_zh, "family": recipe.family,
+                "scope": recipe.scope, "status": "blocked_missing",
+                "reason": "数据不足，待补充：" + "、".join(missing),
+                "missing_data": missing, "data_check": data_check,
+                "references": references, "prompt": {}, "text_overlay": [],
+                "non_authoritative": True,
+                "note": "资料不足的视角不冒充已完成；补齐后再编译提交。",
+            })
+            continue
+
         try:
             prompt = compile_prompt(chosen["style_ids"], brief, target=target,
                                     stage=stage, revision=project.revision,
                                     catalogue=cat, locked=True, plan_confirmed=True,
-                                    reference_note="参考图为已确认平面的图纸导出")
+                                    reference_note="参考图为已确认平面的 SVG/PNG 输出")
         except Exception as exc:
             jobs.append({"job_id": f"{selected}-{target}", "target": target,
                          "status": "failed",
-                         "reason": f"提示词编译失败：{type(exc).__name__}: {exc}"})
+                         "reason": f"提示词编译失败：{type(exc).__name__}: {exc}",
+                         "data_check": data_check})
             continue
+
         jobs.append({
             "job_id": f"{selected}-{target}",
             "concept_id": selected,
@@ -588,17 +809,22 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
             "family": recipe.family,
             "scope": recipe.scope,
             "status": "awaiting_authorization",
-            "reason": "平面已确认，但生成属联网计费操作：需显式授权后提交",
-            "references": list(references),
+            "reason": "平面已确认、数据齐全；提交属联网计费操作，需显式授权",
+            "data_check": data_check,
+            "references": references,
+            "reference_manifest": str(out / "reference" / "reference-manifest.json"),
             "prompt": prompt.to_dict(),
             "text_overlay": list(prompt.text_overlay),
             "style_ids": list(chosen["style_ids"]),
             "consistency_key": prompt.consistency_key,
             "revision": project.revision,
             "non_authoritative": True,
-            "note": "表现图，不是图纸；不得据其量尺寸、报审或下料。",
+            "note": ("表现图，不是图纸；不得据其量尺寸、报审或下料。"
+                     "几何以参考图为准，图像模型不得改写墙、门窗与房间位置。"),
         })
 
+    ready = [j for j in jobs if j["status"] == "awaiting_authorization"]
+    blocked = [j for j in jobs if j["status"] == "blocked_missing"]
     payload = {
         "project_id": project.project_id,
         "revision": project.revision,
@@ -608,9 +834,14 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
         "platform": "OmniAiLab",
         "third_party_fallback": "forbidden",
         "non_authoritative": True,
+        "reference": reference,
+        "reference_check": check,
+        "references": references,
+        "ai_input": reference.get("ai_input", {}),
         "jobs": jobs,
-        "note": ("图纸派生：以已确认平面为唯一几何依据。"
-                 "任务已编译但未提交——授权后才产生费用。"),
+        "summary": {"total": len(jobs), "ready": len(ready), "blocked_missing": len(blocked)},
+        "note": ("图纸派生：以已确认平面为唯一几何依据。参考图为 SVG/PNG 矢量输出，"
+                 "DXF 不作为图像模型输入。任务已编译但未提交——授权后才产生费用。"),
     }
     (out / "drawing-visuals.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -618,18 +849,28 @@ def build_plan_visuals(project: Project, out_dir: str | Path, *,
     lines = [
         "# 图纸派生视觉任务包（G3 之后）", "",
         f"概念：{selected}　模型修订 r{project.revision}　阶段 {stage}", "",
-        "| 任务 | 类型 | 状态 | 说明 |", "|---|---|---|---|",
+        f"参考图：{'；'.join(Path(r).name for r in references) or '无'}　"
+        f"（{'全部存在' if check.get('all_ok') else '缺失/生成失败'}）", "",
+        "| 任务 | 类型 | 状态 | 数据 | 说明 |", "|---|---|---|---|---|",
     ]
     for j in jobs:
+        dc = j.get("data_check") or {}
         lines.append(f"| {j['label']} | {j['target']} | {j['status']} | "
-                     f"{j.get('reason', '')[:40]} |")
+                     f"{'齐全' if dc.get('complete') else '缺：' + '、'.join(dc.get('missing') or [])} | "
+                     f"{j.get('reason', '')} |")
+    if blocked:
+        lines += ["", "## 待补充（不得冒充已完成）", ""]
+        for j in blocked:
+            lines.append(f"- **{j['label']}**：缺 {'、'.join(j['missing_data'])}")
     lines += ["", "## 纪律", "",
-              "- 以已确认平面为唯一几何依据，逐项对齐后再着色；",
-              "- 画面内不出现文字与尺寸数字：标注由 DXF 矢量层叠加；",
-              "- 表现图，不是图纸；不得据此量尺寸、报审或下料。", ""]
+              "- 参考图由本项目矢量图元输出（SVG/PNG），与 DXF 同一份几何；",
+              "- 尺寸与房间标注是矢量文字，可核对；图像模型不得改写墙、门窗、房间位置；",
+              "- 表现图，不是图纸；不得据此量尺寸、报审或下料；",
+              "- 只编译不提交：授权后才会产生费用。", ""]
     (out / "drawing-visuals.md").write_text("\n".join(lines), encoding="utf-8")
     return payload
 
 
 __all__ = ["build_jobs", "submit", "write_package", "VisualResult", "STATUS_LABEL",
-           "load_ledger", "LEDGER_NAME", "build_plan_visuals", "PLAN_TARGETS"]
+           "load_ledger", "LEDGER_NAME", "build_plan_visuals", "PLAN_TARGETS",
+           "resume_pending", "STATE_ORDER", "REQUIRED_DATA"]
