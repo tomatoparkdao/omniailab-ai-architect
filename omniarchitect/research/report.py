@@ -114,8 +114,15 @@ def _case_block(n: int, c: case_mod.Case) -> List[str]:
         lines.append("  （权利属原作者与摄影师；只给链接，不嵌入本方案）")
     else:
         lines.append("- **实景图**：该页未取到可直接打开的图片链接，请在案例页内查看")
-    lines.append("- **核验状态**：{}（{}）".format(
-        case_mod.VERIFY_LABEL.get(c.verify, c.verify), c.verify_note or "—"))
+    label = case_mod.VERIFY_LABEL.get(c.verify, c.verify)
+    note = (c.verify_note or "").strip()
+    # VERIFY_LABEL 已经说清了「页面可打开、标题一致」，再把它括在后面就成了
+    # 「已回读核验：页面可打开，标题一致（页面可打开，标题一致）」。只有核验
+    # 说明真的多说了什么（比如降级原因）才补括号。
+    if note and note != label and note not in label:
+        lines.append("- **核验状态**：{}（{}）".format(label, note))
+    else:
+        lines.append("- **核验状态**：{}".format(label))
     if c.summary:
         lines.append("- **这是什么**：{}".format(c.summary))
     if c.fits:

@@ -116,6 +116,15 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     moodboards: Dict[str, Dict[str, Any]] = {}
     all_diagrams: Dict[str, List[Dict[str, str]]] = {}
 
+    # 参考案例先算：意向板与提案都要用同一份，不在两处各挑一次。
+    # 第三方图片永远是"带链接的参考卡"，不进版面（见 concept/references.py）。
+    from . import references as ref_mod
+    from .. import research as research_mod
+
+    refs = ref_mod.build(concept_set["concepts"], research_mod.load(project), ctx)
+    for c in concept_set["concepts"]:
+        c["references"] = refs.get(c["concept_id"], {})
+
     for c in concept_set["concepts"]:
         primary = c["style_ids"][0]
         if primary not in style_docs:
@@ -125,11 +134,12 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
             c, ctx, ctx.program, ctx.needs, out / "concept-diagrams")
         moodboards[c["concept_id"]] = mb_mod.build(
             c, style_docs[primary], policies[c["concept_id"]], ctx,
-            out / "moodboards")
+            out / "moodboards", references=c["references"])
         c["moodboard"] = {
             "board_svg": moodboards[c["concept_id"]]["board_svg"],
             "board_md": moodboards[c["concept_id"]]["board_md"],
             "image_slots": moodboards[c["concept_id"]]["image_slots"],
+            "reference_cards": moodboards[c["concept_id"]]["reference_cards"],
         }
         c["diagrams"] = [{"kind": d["kind"], "path": d["path"]} for d in all_diagrams[c["concept_id"]]]
         # 同一套概念下，各专业各自的"怎么做"——不是四套平行方案
@@ -175,14 +185,7 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     })
 
     md_path = out / "concept-options.md"
-    # 参考案例：只挂已核验的、可点开的案例；没有就不挂，不拿不相关的凑数。
-    # 第三方图片永远是"带链接的参考卡"，不进版面（见 concept/references.py）。
-    from . import references as ref_mod
-    from .. import research as research_mod
-
-    refs = ref_mod.build(concept_set["concepts"], research_mod.load(project), ctx)
-    for c in concept_set["concepts"]:
-        c["references"] = refs.get(c["concept_id"], {})
+    # 案例已在上面算好（意向板要用同一份），这里只负责排版。
     refs_md = ref_mod.markdown(refs, concept_set["concepts"])
 
     md_path.write_text("".join([

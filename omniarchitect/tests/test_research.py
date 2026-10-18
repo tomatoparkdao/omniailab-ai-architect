@@ -163,6 +163,36 @@ def test_missing_fields_stay_empty_instead_of_guessed():
     assert info.get("year") in (None, "")
 
 
+def test_description_boilerplate_is_dropped_before_the_summary_is_cut():
+    """每条 JSON-LD 描述都以「Completed in 2026 in Milano, Italy. Images by
+    …」开头。留着它，420 字的摘要有三成预算花在日期、城市和摄影署名上，
+    真正描述设计的那句反而被切半——后面匹配与借鉴说明只能读这半句。
+    """
+    raw = ("Completed in 2026 in Milano, Italy. Images by Tiziano Ercoli, "
+           "Riccardo Giancola. The project transforms two small apartments "
+           "organized around a shared threshold.")
+    out = case_mod.strip_boilerplate(raw)
+    assert out.startswith("The project transforms"), out
+    assert "Milano" not in out
+    assert "Ercoli" not in out
+
+
+def test_boilerplate_strip_only_touches_the_front():
+    raw = "A house on a slope. Images by X. Later text stays."
+    assert case_mod.strip_boilerplate(raw) == raw
+
+
+def test_boilerplate_strip_is_safe_on_empty_and_plain_text():
+    assert case_mod.strip_boilerplate("") == ""
+    assert case_mod.strip_boilerplate("A courtyard house.") == "A courtyard house."
+
+
+def test_year_is_still_read_after_the_summary_is_cleaned():
+    """剥前缀只作用于交给客户的摘要，不能连带把规格里的年份抹掉。"""
+    info = case_mod.parse_detail(DETAIL_HTML)
+    assert info["year"] == "2026"
+
+
 # --------------------------------------------------------------------------
 # relevance: noise must not be shown to a client
 # --------------------------------------------------------------------------

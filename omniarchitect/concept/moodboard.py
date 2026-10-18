@@ -28,6 +28,12 @@ SLOTS: Tuple[Tuple[str, str, str], ...] = (
     ("light", "⑥ 照明与光线方向", "光从哪来、落在哪、什么色温"),
 )
 
+#: 参考案例是**第七格**，但它不是「图」：第三方作品只以卡片形式出现。
+#: 单列出来是为了不说谎——意向板上的六格全是本系统确定性绘制的，
+#: 案例卡上面没有图，只有标题、来源链接和一句"借什么"。
+CASE_SLOT = ("reference", "⑦ 参考案例", "只给链接与说明，不嵌入第三方图片")
+
+
 
 def _prompts(style_doc: Dict[str, Any], lang: str = "zh") -> Dict[str, str]:
     comp = (style_doc.get("positive_prompt_components") or {}).get(lang) or {}
@@ -92,6 +98,31 @@ def build_slots(concept: Dict[str, Any], style_doc: Dict[str, Any],
             "detail": "；".join(lights[1:]) if len(lights) > 1 else "",
             "source": "概念原型 daylight + 风格库 lighting_strategy",
         },
+    }
+
+
+def case_slot(references: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    """The seventh cell: what we looked at, as a citation rather than a picture.
+
+    Empty when there is no case — a board with nothing to cite says so by
+    omitting the cell, instead of filling it with a vague sentence.
+    """
+    refs = (references or {}).get("cases") or []
+    if not refs:
+        return {}
+    names = [str(r.get("title") or "") for r in refs if r.get("title")]
+    borrow: List[str] = []
+    for r in refs:
+        for b in (r.get("borrow") or [])[:1]:
+            if b:
+                borrow.append(str(b))
+    return {
+        "title": CASE_SLOT[1],
+        "lead": "　／　".join(names[:3]) or "—",
+        "detail": "；".join(borrow[:2]),
+        "links": [str(r.get("url")) for r in refs if r.get("url")],
+        "source": "S1 案例研究（reference-shortlist）；图为第三方作品，只给链接",
+        "embeddable": False,
     }
 
 
@@ -170,7 +201,8 @@ def render_svg(concept: Dict[str, Any], style_doc: Dict[str, Any],
 
 
 def markdown(concept: Dict[str, Any], style_doc: Dict[str, Any],
-             slots: Dict[str, Any], policy: Dict[str, Any]) -> str:
+             slots: Dict[str, Any], policy: Dict[str, Any],
+             references: Optional[Dict[str, Any]] = None) -> str:
     lines = [
         f"# 意向板 · {concept['concept_id']} {concept['concept_name']}",
         "",
@@ -210,6 +242,19 @@ def markdown(concept: Dict[str, Any], style_doc: Dict[str, Any],
 
     lines += ["", "> 图像位（主空间意象 / 材料场景 / 光的性格）由 OmniAiLab 平台生成；"
                   "未生成时状态为 awaiting_platform，不以占位图替代。"]
+
+    refs = (references or {}).get("cases") or []
+    if refs:
+        lines += ["", "## ⑦ 参考案例（只给链接，不嵌图）", "",
+                  "| 案例 | 事务所 | 为什么看它 | 链接 |", "|---|---|---|---|"]
+        for r in refs:
+            lines.append("| {} | {} | {} | {} |".format(
+                _fit(str(r.get("title") or ""), 28),
+                _fit(str(r.get("architect") or "—"), 18),
+                _fit(str(r.get("why") or ""), 34),
+                r.get("url") or ""))
+        lines += ["", "> 以上图为第三方作品，权利属原作者与摄影师；"
+                      "本意向板不放它们的图片，只提供链接供你打开核对。"]
     return "\n".join(lines)
 
 
@@ -229,15 +274,25 @@ def image_slots(concept: Dict[str, Any]) -> List[Dict[str, str]]:
 
 
 def build(concept: Dict[str, Any], style_doc: Dict[str, Any],
-          policy: Dict[str, Any], ctx: Any, out_dir: str | Path) -> Dict[str, Any]:
+          policy: Dict[str, Any], ctx: Any, out_dir: str | Path,
+          references: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Render the board. ``references`` is the concept's case attachment.
+
+    The attachment is *printed*, never drawn: a board that puts a third-party
+    photograph next to our own colour bands would imply the photo is ours.
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     slots = build_slots(concept, style_doc, policy)
+    slot_ref = case_slot(references)
+    if slot_ref:
+        slots[CASE_SLOT[0]] = slot_ref
     svg = render_svg(concept, style_doc, slots, ctx)
     svg_path = out / f"mb-{concept['concept_id'].lower()}.svg"
     svg_path.write_text(svg, encoding="utf-8")
     md_path = out / f"mb-{concept['concept_id'].lower()}.md"
-    md_path.write_text(markdown(concept, style_doc, slots, policy), encoding="utf-8")
+    md_path.write_text(markdown(concept, style_doc, slots, policy, references),
+                       encoding="utf-8")
     return {
         "concept_id": concept["concept_id"],
         "style_ids": concept.get("style_ids") or [],
@@ -245,9 +300,12 @@ def build(concept: Dict[str, Any], style_doc: Dict[str, Any],
         "board_svg": str(svg_path),
         "board_md": str(md_path),
         "image_slots": image_slots(concept),
+        "reference_cards": len((references or {}).get("cases") or []),
         "status": "colour_and_material_ready",
-        "note": "色板与材料板为本系统确定性绘制；氛围摄影图需平台生成，状态另行登记。",
+        "note": "色板与材料板为本系统确定性绘制；氛围摄影图需平台生成，状态另行登记。"
+                "参考案例只以链接卡片出现，第三方图片不进版面。",
     }
 
 
-__all__ = ["SLOTS", "build", "build_slots", "render_svg", "markdown", "image_slots"]
+__all__ = ["SLOTS", "CASE_SLOT", "build", "build_slots", "case_slot",
+           "render_svg", "markdown", "image_slots"]

@@ -143,6 +143,30 @@ def parse_listing(body: str) -> List[Dict[str, str]]:
     return out
 
 
+def strip_boilerplate(description: str) -> str:
+    """Drop the two templated sentences ArchDaily puts in front of every blurb.
+
+    A JSON-LD description opens with "Completed in 2026 in Milano, Italy.
+    Images by Tiziano Ercoli, ..." — roughly 120 characters that say nothing
+    about the design. Keeping them meant a 420-character summary spent a third
+    of its budget on a date, a city and a photo credit, and cut the actual
+    design sentence in half, which is what the reading and matching code then
+    has to work with.
+
+    Only these two shapes are removed, and only from the front: the rest of the
+    sentence is left exactly as the source wrote it.
+    """
+    text = re.sub(r"\s+", " ", str(description or "")).strip()
+    for _ in range(3):
+        before = text
+        text = re.sub(r"^Completed(?:\s+in)?\s+\d{4}[^.]*?\.\s*", "", text)
+        text = re.sub(r"^Images?\s+by\s+[^.]*?\.\s*", "", text)
+        text = re.sub(r"^(?:Photographs?|Photos?)\s+by\s+[^.]*?\.\s*", "", text)
+        if text == before:
+            break
+    return text.strip()
+
+
 def parse_detail(body: str) -> Dict[str, Any]:
     """Everything the detail page states about itself, read not guessed."""
     info: Dict[str, Any] = {}
@@ -394,7 +418,7 @@ def search(discipline: str, terms: Sequence[str], limit: int = 6,
                 headline = str(info.get("headline") or "")
                 if headline and item["title"].lower() not in headline.lower():
                     case.verify = "partial"
-                    case.verify_note = "回读标题与列表不一致，按部分核验处理"
+                    case.verify_note = "回读标题与列表不一致，链接需人工确认"
                 else:
                     case.verify = "verified"
                     case.verify_note = "页面可打开，标题一致"
@@ -402,7 +426,7 @@ def search(discipline: str, terms: Sequence[str], limit: int = 6,
                 case.country = str(info.get("country") or "")
                 case.year = str(info.get("year") or "")
                 case.area = str(info.get("area") or "")
-                case.summary = str(info.get("description") or "")[:220]
+                case.summary = strip_boilerplate(info.get("description") or "")[:420]
                 case.image_url = best_image(info.get("images") or ())
             else:
                 case.verify = "unverified"

@@ -24,6 +24,48 @@ def _short(text: str, limit: int = 96) -> str:
     return t if len(t) <= limit else t[:limit - 1] + "…"
 
 
+def _reference_slide(concept: Dict[str, Any]) -> Optional[Slide]:
+    """One page of real cases for this concept — links only, no photographs.
+
+    The four questions are printed in full because that is the part the client
+    is actually deciding on: what we borrowed, how it becomes *their* scheme,
+    and what must not be copied. If there is no case, there is no page; an
+    empty page with the word "reference" on it would read as if we had one.
+    """
+    refs = (concept.get("references") or {}).get("cases") or []
+    if not refs:
+        return None
+
+    rows: List[List[str]] = []
+    for r in refs[:2]:
+        rows.append([_short(str(r.get("title") or ""), 30),
+                     _short(str(r.get("architect") or "—"), 20),
+                     _short(str(r.get("url") or ""), 46)])
+
+    bullets: List[str] = []
+    first = refs[0]
+    for label, key in (("为什么参考", "why"), ("借什么", "borrow"),
+                       ("怎么变成你的方案", "transform"), ("不能照搬", "limits")):
+        vals = first.get(key)
+        if isinstance(vals, str):
+            vals = [vals]
+        for v in (vals or [])[:1]:
+            if v:
+                bullets.append(f"{label}：{_short(str(v), 88)}")
+
+    return Slide(
+        kind="analysis",
+        kicker=f"{concept['concept_id']} · 参考案例",
+        title=f"{concept['concept_name']} · 参考哪些真实案例",
+        subtitle="点开链接可看原项目的实景照片",
+        table_header=["案例", "事务所", "链接"],
+        table=rows,
+        bullets=bullets,
+        notes=("图为第三方作品，权利属原作者与摄影师；本页只给链接，不嵌入图片。"
+               "参考案例用于讨论方向，不代表本项目效果图。"),
+    )
+
+
 def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
           comparison: Dict[str, Any], moodboards: Dict[str, Dict[str, Any]],
           diagrams: Dict[str, List[Dict[str, str]]],
@@ -128,6 +170,11 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
                        f"取舍：{_short('；'.join(c.get('tradeoffs') or []), 100)}"],
             notes="本页为方向说明，不含 AI 生成图；概念意象图状态见视觉任务页。",
         ))
+        # 参考案例页：每套方向都要能指着一个真实案例说清"借什么、怎么变、什么不照搬"。
+        # 页面上只有链接，没有第三方图片——图的权利不在我们手里。
+        ref_slide = _reference_slide(c)
+        if ref_slide is not None:
+            deck.slides.append(ref_slide)
 
     # 比较
     rows: List[List[str]] = []
