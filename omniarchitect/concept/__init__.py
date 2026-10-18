@@ -40,16 +40,20 @@ from . import visual as vis
 from .context import ConceptContext, assert_ready, build_context
 from .directions import ROLE_LABEL, generate_concepts, markdown as options_md, resolve_style_id
 from .gate import (
+    ACKNOWLEDGEABLE,
     DECISIONS,
     SOURCES,
     GateAssessment,
     Outcome,
+    StyleLockConflict,
     approval_summary,
     assess_gate,
     check_baseline,
     concept_digest,
     decide_gate,
     select,
+    style_lock_path,
+    write_style_lock,
 )
 from .prototypes import PROTOTYPES, Prototype, THEME_LABEL, for_profile
 from .prototypes import count as prototype_count
@@ -135,8 +139,8 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     jobs: List[Dict[str, Any]] = []
     for c in concept_set["concepts"]:
         jobs.extend(vis.build_jobs(c, ctx, project, catalog=catalog))
-    visual_res = vis.submit(jobs, project, out, authorize=authorize,
-                           max_cost=max_cost, project_dir=project_dir)
+    visual_res = vis.submit(jobs, project, out, submit=submit, authorize=authorize,
+                            max_cost=max_cost, project_dir=project_dir)
     visual_files = vis.write_package(visual_res, concept_set, ctx, out)
 
     # 落盘：结构化数据 + 人读材料
@@ -212,6 +216,17 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     warnings: List[str] = list(ctx.warnings)
     if base.get("has_baseline") and base.get("changed"):
         warnings.append("重新生成的概念与已确认基准不一致：须重新提交 G2")
+    if visual_res.held:
+        warnings.append(
+            f"{visual_res.held} 个概念视觉任务被拦下（费用未知或上次结果未回）："
+            "未发出任何请求，也不声称费用受控")
+    if (submit or authorize) and not visual_res.submitted:
+        if not (submit and authorize):
+            warnings.append("提交未发生：--submit 与 --authorize 必须同时具备")
+        elif visual_res.platform_state != "connected":
+            warnings.append(
+                f"提交未发生：平台状态 {visual_res.platform_state}——未配置就不提交，"
+                "任务包已就绪，不生成替代图片")
 
     handoff = handoff_mod.build(project, ctx, concept_set, comparison,
                                 style_docs.get(concept_set["concepts"][0]["style_ids"][0], {}))
@@ -229,7 +244,9 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         "files": state["files"],
         "deck": deck_info.get("pptx", {}),
         "visual": {k: visual_res.to_dict()[k] for k in
-                   ("platform_state", "generated", "deferred", "failed", "job_count")},
+                   ("platform_state", "submit_requested", "authorized", "submitted",
+                    "generated", "reused", "held", "deferred", "failed", "job_count",
+                    "cost_estimate", "cost_known", "cost_cap", "cost_controlled")},
         "comparison": {"ranking": comparison["ranking"],
                        "recommendation": comparison["recommendation"]},
         "handoff": handoff_path,
@@ -260,47 +277,24 @@ def status(project: Project) -> Dict[str, Any]:
     }
 
 
-def lock_style_for(project: Project, out_dir: str | Path) -> Dict[str, Any]:
+def lock_style_for(project: Project, out_dir: str | Path,
+                   *, acknowledged: Sequence[str] = (),
+                   by: str = "") -> Dict[str, Any]:
     """Write the canonical style lock for the selected concept.
 
-    Uses `style.hooks.lock_style` so there is exactly one lock format in the
-    project, then records the same ids in `meta.concept.style_lock` so G2 can
-    detect a conflict instead of discovering it two stages later.
+    Delegates to `gate.write_style_lock`, which is the same function G2 uses —
+    there is exactly one lock format and one place that writes it, so a caller
+    cannot produce a lock that the gate would then call a conflict.
     """
-    from ..style.hooks import lock_style
-    from ..style.recommender import RecommendRequest
+    from .gate import write_style_lock
 
-    state = _concept_meta(project)
-    options = state.get("options") or {}
-    selected = state.get("selected") or ""
-    chosen = next((c for c in (options.get("concepts") or [])
-                   if c["concept_id"] == selected), None)
-    if chosen is None:
-        raise ValueError("尚未选定概念，不能锁定风格")
-
-    request = RecommendRequest(
-        space_type=str(options.get("style_request", {}).get("space_type") or ""),
-        preferences=list(chosen.get("style_ids") or []),
-        stage="S2",
-    )
-    payload = lock_style(chosen["style_ids"][0], request, out_dir=out_dir,
-                         revision=project.revision,
-                         by=str((state.get("baseline") or {}).get("confirmed_by") or "业主"))
-    state["style_lock"] = {
-        "style_ids": list(chosen["style_ids"]),
-        "primary": chosen["style_ids"][0],
-        "labels": list(chosen.get("style_labels") or []),
-        "revision": project.revision,
-        "file": str(Path(out_dir) / f"style-lock-r{project.revision}.json"),
-        "concept_id": selected,
-        "alternatives": payload.get("options_considered") or [],
-    }
-    return state["style_lock"]
+    return write_style_lock(project, out_dir, acknowledged=acknowledged, by=by)
 
 
 __all__ = [
     "concept_bundle", "generate_bundle", "status", "lock_style_for",
     "select", "decide_gate", "assess_gate", "check_baseline", "approval_summary",
+    "write_style_lock", "style_lock_path", "StyleLockConflict", "ACKNOWLEDGEABLE",
     "build_context", "assert_ready", "ConceptContext",
     "for_profile", "prototype_count", "PROTOTYPES", "Prototype", "THEME_LABEL",
     "ROLE_LABEL", "resolve_style_id", "BUNDLE_FILES", "deck_mod", "handoff_mod",

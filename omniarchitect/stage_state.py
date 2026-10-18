@@ -132,6 +132,30 @@ def can_start(project: Project, stage_id: str) -> Tuple[bool, str]:
     return True, ""
 
 
+def can_confirm(project: Project, stage_id: str) -> Tuple[bool, List[Dict[str, str]]]:
+    """Gate-level preconditions for a **formal** confirmation.
+
+    Deliberately separate from `can_start`: a stage may run and produce
+    exploratory output that is worth looking at, and still not be signable.
+    S3 is the case that matters — a plan built on an unconfirmed concept is a
+    study, not a gate.
+
+    Returns (ok, blockers) where each blocker is `{"id", "text"}`.
+    """
+    if stage_id == "S2":
+        from .concept.gate import assess_gate
+
+        a = assess_gate(project)
+        ok = bool(a.has_options and a.selected and not a.blockers)
+        return ok, [dict(b) for b in a.blockers]
+    if stage_id == "S3":
+        from .concept.handoff import assess_plan_gate
+
+        g = assess_plan_gate(project)
+        return bool(g["formal_ready"]), [dict(b) for b in g["blockers"]]
+    return True, []
+
+
 def start_stage(project: Project, stage_id: str) -> StageState:
     st = get_state(project, stage_id)
     st.status = IN_PROGRESS

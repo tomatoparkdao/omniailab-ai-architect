@@ -46,6 +46,7 @@ from .stage_state import (
     IN_PROGRESS,
     REWORK,
     all_states,
+    can_confirm,
     can_start,
     confirm_stage,
     get_state,
@@ -461,6 +462,9 @@ class StageRunner:
         if stage_id == "S2":
             return self._approve_concept(by=by, note=note, source=source,
                                          acknowledge=acknowledge, force=force)
+        if stage_id == "S3":
+            return self._approve_plan(by=by, note=note, source=source,
+                                      acknowledge=acknowledge, force=force)
 
         if stage_id == "S1":
             outcome = decide_gate(self.project, "approved", by=by, note=note,
@@ -500,21 +504,19 @@ class StageRunner:
     def _approve_concept(self, by: str = "", note: str = "", source: str = "owner",
                          acknowledge: Sequence[str] = (), force: bool = False
                          ) -> Dict[str, Any]:
-        """G2: confirm the concept *and* write the style lock that S3 will read.
+        """G2: confirm the concept and write the style lock — as one action.
 
-        The lock is written here rather than by the caller so that a confirmed
-        concept can never exist without its matching style lock — the failure
-        mode this prevents is "concept says italian-minimal, styles locked as
-        something else two stages later".
+        The lock is written by `concept.gate.decide_gate` *before* the stage is
+        confirmed, so a confirmed concept can never exist without its matching
+        style lock. This method no longer writes it, because a second writer is
+        exactly how the two can disagree.
         """
         from .concept import decide_gate as decide_g2
-        from .concept import lock_style_for
 
-        summary_dir = None
-        try:
-            summary_dir = self.out / "02-concept-design"
-        except Exception:
-            summary_dir = self.out
+        # Same directory the S2 stage body writes into: the concept options,
+        # the style lock, the summary and the handoff must live together, or
+        # "confirmed" and "the file exists" stop being the same statement.
+        summary_dir = self._dir("S2")
 
         outcome = decide_g2(self.project, "approved", by=by, note=note,
                             source=source, acknowledge=acknowledge, force=force,
@@ -522,13 +524,6 @@ class StageRunner:
         notes = list(outcome.notes)
         actions: List[Dict[str, Any]] = []
         if outcome.decision == "approved":
-            if source == "owner":
-                try:
-                    lock = lock_style_for(self.project, summary_dir)
-                    notes.append(f"风格已锁定：{' + '.join(lock.get('labels') or [])}"
-                                 f"（r{lock.get('revision')}）")
-                except Exception as exc:
-                    notes.append(f"风格锁定写入失败：{type(exc).__name__}: {exc}（须人工处理）")
             record_change(self.project, "gate",
                           f"{stage_name('S2')} 概念确认"
                           f"（{outcome.source}："
@@ -547,8 +542,103 @@ class StageRunner:
             "source": outcome.source,
             "notes": notes,
             "assessment": outcome.assessment,
+            "formal": outcome.formal,
+            "rolled_back": outcome.rolled_back,
             "post_gate_actions": actions,
         }
+
+    def _approve_plan(self, by: str = "", note: str = "", source: str = "owner",
+                      acknowledge: Sequence[str] = (), force: bool = False
+                      ) -> Dict[str, Any]:
+        """G3: only a plan that implements a *signed* concept can be issued.
+
+        Exploration stays allowed — S3 produces its方案 no matter what. What
+        changes here is the signature: `source="owner"` needs a live G2 baseline,
+        a plan record bound to that baseline's digest, no major conformance
+        conflict, and no unsupported-prototype substitution. `force` does not
+        move any of those.
+        """
+        from .concept.handoff import assess_plan_gate
+
+        assess = assess_plan_gate(self.project)
+        notes: List[str] = []
+        formal = False
+        actions: List[Dict[str, Any]] = []
+
+        if source == "owner":
+            ok, blockers = can_confirm(self.project, "S3")
+            if not ok:
+                notes.append("不能签发正式 G3：")
+                notes += [f"  [{b['id']}] {b['text']}" for b in assess["blockers"]]
+                notes.append("平面可作为探索稿继续深化；正式 G3 须先解决以上条件。"
+                             "--force 不能绕过。")
+                if assess.get("manual_review"):
+                    notes.append(f"另有 {len(assess['manual_review'])} 项待人工复核，未计入通过")
+                self._persist()
+                return {
+                    **get_state(self.project, "S3").to_dict(),
+                    "source": source, "notes": notes, "assessment": assess,
+                    "formal": False, "post_gate_actions": [],
+                }
+            st = confirm_stage(self.project, "S3", by=by or "业主",
+                               note=note or "G3 平面方案确认")
+            formal = True
+            notes.append(f"G3 已正式签发：概念 {assess['concept_id']} 的平面成立"
+                         f"（一致性 {assess['conformance']}）")
+            if not assess.get("fully_verified"):
+                notes.append(f"待人工复核 {len(assess.get('manual_review') or [])} 项："
+                             "这些空间约束系统无法自动确认，未计入通过，须人看图核对")
+            record_change(self.project, "gate",
+                          f"{stage_name('S3')} 确认通过（owner：{assess['concept_id'] or '—'}）",
+                          targets=["S3"])
+        else:
+            st = confirm_stage(self.project, "S3", by=by or "演示流程",
+                               note=note or "G3 演示确认（不构成正式签发）")
+            notes.append("演示确认：流程可继续，但这不是正式 G3 签发"
+                         + ("（当前没有有效 G2 概念基准）"
+                            if assess["handoff_status"] != "locked" else "") )
+
+        actions = self.run_post_gate("S3")
+        for action in actions:
+            label = action.get("capability", "")
+            notes.append(
+                f"门禁后置动作 {label}：{action.get('summary', '')}" if action.get("ran")
+                else f"门禁后置动作 {label} 未执行：{action.get('reason', '')}")
+        self._record_plan_gate(st, assess, formal=formal, by=by, source=source)
+        self._persist()
+        return {
+            **st.to_dict(),
+            "source": source, "notes": notes, "assessment": assess,
+            "formal": formal, "post_gate_actions": actions,
+        }
+
+    def _record_plan_gate(self, st: Any, assess: Dict[str, Any], *,
+                          formal: bool, by: str, source: str) -> None:
+        meta = self.project.meta if isinstance(self.project.meta, dict) else {}
+        self.project.meta = meta
+        concept = meta.get("concept")
+        if not isinstance(concept, dict):
+            concept = {}
+            meta["concept"] = concept
+        plan = concept.get("plan")
+        if not isinstance(plan, dict):
+            plan = {}
+        record = {
+            "decision": "approved" if formal else "demo_approved",
+            "formal": formal,
+            "source": source,
+            "by": by or ("业主" if formal else "演示流程"),
+            "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+            "revision": self.project.revision,
+            "concept_id": assess.get("concept_id", ""),
+            "conformance": assess.get("conformance", ""),
+            "fully_verified": bool(assess.get("fully_verified")),
+            "manual_review": list(assess.get("manual_review") or []),
+            "blockers": [b.get("id") for b in (assess.get("blockers") or [])],
+            "stage_status": st.status,
+        }
+        plan["gate"] = record
+        concept["plan"] = plan
 
     def confirm(self, stage_id: str, by: str = "业主", note: str = "",
                 source: str = "owner") -> Dict[str, Any]:
@@ -696,7 +786,9 @@ class StageRunner:
             notes.append(f"总设计师建议：{bundle['suggested']}（G2 需业主明确选定 concept_id）")
         visual = bundle.get("visual") or {}
         notes.append(f"概念视觉：平台 {visual.get('platform_state', '?')}，"
-                     f"已生成 {visual.get('generated', 0)}／待平台 {visual.get('deferred', 0)}")
+                     f"已生成 {visual.get('generated', 0)}（复用 {visual.get('reused', 0)}）／"
+                     f"待平台 {visual.get('deferred', 0)}／待费用确认 {visual.get('held', 0)}，"
+                     f"本次提交 {visual.get('submitted', 0)}")
         if bundle.get("deck"):
             notes.append(f"可编辑提案：{bundle['deck'].get('slides')} 页（{bundle['deck'].get('backend')}）")
         for w in (bundle.get("warnings") or [])[:3]:
@@ -736,15 +828,17 @@ class StageRunner:
     # ==================================================================
     def stage_S3(self) -> StageOutcome:
         d = self._dir("S3")
-        from .concept.handoff import load_for, verify_scheme
+        from .concept.gate import concept_digest
+        from .concept.handoff import load_for, store_plan_record, verify_scheme
 
         handoff = load_for(self.project)
         gen = PlanGenerator(self.project, self.level_id)
+        supported = ("band_day_night", "spine_centre")
         wanted = str((handoff.get("spatial") or {}).get("plan_strategy") or "")
         # The confirmed concept decides which strategy leads; the second variant
         # stays as a comparison. If the concept needs a strategy this generator
         # does not have, say so instead of quietly producing something else.
-        lead = wanted if wanted in ("band_day_night", "spine_centre") else "band_day_night"
+        lead = wanted if wanted in supported else "band_day_night"
         other = "spine_centre" if lead == "band_day_night" else "band_day_night"
         options = [
             SchemeOptions(variant="A",
@@ -845,19 +939,49 @@ class StageRunner:
         register_artifact(self.project, "art-schemes", "document",
                           ["project:program", "shell"], "space-planning",
                           relpath(d / "scheme-comparison.md"), "draft")
+
+        # 记录本轮平面到底做了什么、对着哪一版概念 —— G3 靠这份记录判断
+        # "能不能签"，而不是靠现场重新回忆。
+        strategy_supported = bool((handoff.get("spatial") or {}).get("plan_strategy_supported"))
+        implements = bool(concept_check and concept_check["conformance"] != "fail"
+                          and strategy_supported)
+        store_plan_record(self.project, {
+            "revision": self.project.revision,
+            "concept_id": handoff.get("concept_id") or "",
+            "concept_digest": concept_digest(self.project),
+            "handoff_status": handoff.get("status", "none"),
+            "conformance": (concept_check or {}).get("conformance", "not_applicable"),
+            "auto_pass": bool((concept_check or {}).get("auto_pass")),
+            "fully_verified": bool((concept_check or {}).get("fully_verified")),
+            "conflicts": list((concept_check or {}).get("conflicts") or []),
+            "manual_review": list((concept_check or {}).get("manual_review") or []),
+            "plan_strategy": lead,
+            "requested_strategy": wanted,
+            "strategy_supported": strategy_supported,
+            "implements_concept": implements,
+            "gate": {},
+            "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        })
+
         notes = [f"生成 {len(self.schemes)} 套平面方案 + 对比分析 + 造价影响", note_dxf,
                  "等待业主选定方案（门禁 G3）"]
         if concept_check is not None:
             notes.insert(0, f"概念承接：{handoff.get('concept_id')} "
                             f"{handoff.get('concept_name')}（{handoff.get('status')}）")
-            notes.append(f"概念一致性：{concept_check['conformance']}")
+            notes.append(f"概念一致性：{concept_check['conformance']}"
+                         f"（自动检查{'通过' if concept_check.get('auto_pass') else '未通过'}；"
+                         f"完全核实：{'是' if concept_check.get('fully_verified') else '否'}）")
             for c in concept_check["conflicts"][:2]:
                 notes.append(f"概念冲突 {c['id']}：{c['detail']}")
-            if not (handoff.get("spatial") or {}).get("plan_strategy_supported", True):
-                notes.append("该概念要求 S3 现有算法不支持的平面策略，已用最近策略出图，"
-                             "结果不能视为概念的直接落地")
+            if concept_check.get("manual_review"):
+                notes.append(f"待人工复核 {len(concept_check['manual_review'])} 项："
+                             "系统无法自动确认，未计入通过")
+            if not strategy_supported:
+                notes.append(
+                    f"该概念的空间原型没有对应的平面策略：本轮用 {lead} 近似生成，"
+                    "**不能视为概念的落地**，G3 不得正式签发（需换支持的方向或另行深化）")
         else:
-            notes.append("无已确认概念：平面仅供探索，不得签发 G3")
+            notes.append("无已确认概念：平面仅供探索，不得签发正式 G3")
         return StageOutcome("S3", artifacts=arts, adapter="dxf", notes=notes)
 
     # ==================================================================

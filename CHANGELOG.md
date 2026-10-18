@@ -71,6 +71,39 @@ S2 概念视觉依据概念主张与风格库，不含真实几何；G3 后依�
 `run_tests.py` 全绿；`verify_all.py` 九段全通过；`audit`/`policy` 0；表格 0 违规；
 新增 `test_concept.py` 18 项（对应验收 A–L）。
 
+### 后续补充五 — S2/G2/S3 最终验收修复
+
+上一轮把 S2 做出来了，但门口还有几处能被绕过去。本轮只修集成缺陷，不重建引擎。
+
+**视觉授权补第三道锁。** 原来只要有 `--authorize` 就提交，`--submit` 实际上没作用。
+现在 `submit` 与 `authorize` 必须同时成立；平台契约没有计价声明时一律停在
+`awaiting_cost_confirmation`——给了 `--max-cost` 也不提交，并明说"无法证明该上限成立"。
+新增 `concept-visual-ledger.json` 幂等台账（key = 提示词 + 一致性指纹 + 修订号），
+重跑 `generate` 复用已有结果，不再重复计费；发出但没等到结果的任务会被拦下，
+不会第二次付款。
+
+**G2 不再能被 force 或一段文字绕过。** 阻断项拆成硬/软两类并给编号：
+`G2-NO-CONCEPT`、`G2-NO-SELECTION`、`G2-UNKNOWN-CONCEPT`、`G2-PRE-GATE`、
+`G2-BRIEF-CHANGED` 是硬的，`--force` 无效；只有 `G2-STYLE-LOCK-CONFLICT` 这类
+软项可 `--acknowledge <编号>`，写文字片段会直接报错并列出可用编号。
+
+**确认改成事务。** 顺序为「写风格锁定 → 确认阶段 → 登记基准 → 重建交接 → 自检」，
+任一步失败整体回滚（阶段状态、基准、锁定、交接一并复原）。因此不会再出现
+"confirmed 但没有锁定文件"。锁定写入从 `workflow` 移进 `concept.gate`，全仓只剩一个写入口；
+同一修订重复确认不产生第二个锁定版本。
+
+**G3 才有"签发"的含义。** 新增 `assess_plan_gate()`：无 G2 基准、基准 stale
+（概念或任务书）、平面记录不是当前修订、一致性 `fail`、原型无对应平面策略，
+任一成立都不能签发正式 G3；演示模式仍可推进但记 `formal=False`。
+校核结论补 `auto_pass` / `fully_verified`，隔离类要求不再被算进"通过"。
+
+**顺手修掉的两个真实缺陷。** `assess_plan_gate` 原本读 `base["digest"]`（该键不存在）
+导致**永远**判定为过期；G2 摘要与锁定文件写在 `02-concept-design`，而阶段成果在
+`02-concept`，两处不一致。
+
+验证：`run_tests.py` 421 项全绿（新增 `test_s2_gate_integration.py` 13 项，A–J 全覆盖）；
+`verify_all.py` 九段全通过；`normalize --check` 0 不一致；`audit`/`policy` 0。
+
 ---
 
 ## v1.4.0 — 单 Skill 架构纠正：设计风格系统并入主 Skill

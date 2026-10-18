@@ -15,12 +15,17 @@
 提交链路完全复用 `providers` 注册表：探测 → 选择 → 授权 → 提交 → 轮询 → 取回 →
 格式检查 → 资产登记。没有第二套 HTTP 客户端，也不猜平台路径与模型名。
 
+三道锁：平台可用、`submit` 与 `authorize` 同时成立、费用可知且不超上限。任何一道
+没开都不提交——未提交不等于没成本，所以结论里写"受控：否"，而不是"大概没事"。
+
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -30,8 +35,12 @@ from ..style import load_catalog
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
 
+#: 幂等台账的文件名（落在 S2 成果目录里，重跑时据此避免重复计费）
+LEDGER_NAME = "concept-visual-ledger.json"
+
 STATUS_LABEL = {
     "awaiting_platform": "待平台执行",
+    "awaiting_cost_confirmation": "待费用确认",
     "generated": "已生成",
     "failed": "失败",
     "not_configured": "平台未配置",
@@ -137,48 +146,111 @@ class VisualResult:
     jobs: List[Dict[str, Any]] = field(default_factory=list)
     platform_state: str = "not_configured"
     platform_missing: List[str] = field(default_factory=list)
+    submit_requested: bool = False
     authorized: bool = False
     submitted: int = 0
     generated: int = 0
+    reused: int = 0
+    held: int = 0
     deferred: int = 0
     failed: int = 0
     cost_estimate: Optional[float] = None
+    cost_known: bool = True
+    cost_cap: Optional[float] = None
     currency: str = "CNY"
     warnings: List[str] = field(default_factory=list)
     files: Dict[str, str] = field(default_factory=dict)
+
+    @property
+    def cost_controlled(self) -> bool:
+        """费用是否真的受控：必须每一项都有可靠估价，且设定了上限。"""
+        return bool(self.cost_known and self.cost_cap is not None and self.submitted)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "platform_state": self.platform_state,
             "platform_missing": list(self.platform_missing),
+            "submit_requested": self.submit_requested,
             "authorized": self.authorized,
             "job_count": len(self.jobs),
             "submitted": self.submitted,
             "generated": self.generated,
+            "reused": self.reused,
+            "held": self.held,
             "deferred": self.deferred,
             "failed": self.failed,
             "cost_estimate": self.cost_estimate,
+            "cost_known": self.cost_known,
+            "cost_cap": self.cost_cap,
+            "cost_controlled": self.cost_controlled,
             "currency": self.currency,
             "warnings": list(self.warnings),
             "jobs": [dict(j) for j in self.jobs],
         }
 
 
+def _job_key(job: Dict[str, Any], project: Project) -> str:
+    """Stable identity of one *paid* unit of work.
+
+    Everything that would change the picture is in the key: the compiled prompt,
+    the consistency key, the revision and the job id. Same key → same task, so a
+    second run must reuse the first result instead of paying twice.
+    """
+    blob = json.dumps({
+        "job_id": job.get("job_id", ""),
+        "revision": int(project.revision),
+        "target": job.get("target", ""),
+        "consistency_key": job.get("consistency_key", ""),
+        "prompt": job.get("prompt") or {},
+    }, ensure_ascii=False, sort_keys=True, default=str)
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def load_ledger(path: str | Path) -> Dict[str, Any]:
+    p = Path(path)
+    if p.exists():
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and isinstance(data.get("entries"), dict):
+                return data
+        except Exception:
+            pass
+    return {"entries": {}}
+
+
+def _save_ledger(path: Path, ledger: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8")
+
+
 def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path,
-           *, authorize: bool = False, max_cost: Optional[float] = None,
+           *, submit: bool = False, authorize: bool = False,
+           max_cost: Optional[float] = None,
            project_dir: str | Path | None = None) -> VisualResult:
     """Submit through the provider registry, or mark every job as deferred.
 
-    Nothing here invents an endpoint, a model name or a price. When the platform
-    is not configured the jobs stay `awaiting_platform` and the concept package
-    is still complete — that is a valid outcome, not a failure to hide.
+    Three independent locks, all of which must open:
+
+    1. **平台可用** —— 未配置就停在 `awaiting_platform`，不伪造图片；
+    2. **双开关** —— `submit=True` 与 `authorize=True` 必须同时具备，
+       只给其中一个不构成提交请求；
+    3. **费用可知且受限** —— 平台没有声明计价时，任何一次提交都可能超支，
+       一律停在 `awaiting_cost_confirmation`，不猜、不假设"大概不贵"。
+
+    提交前查幂等台账：同一个 job_key 已生成过就直接复用，绝不再付一次。
     """
     from ..providers import ProviderError, NotConfigured, discover
 
     out = Path(out_dir)
     renders = out / "concept-visuals"
     renders.mkdir(parents=True, exist_ok=True)
-    res = VisualResult(jobs=[dict(j) for j in jobs], authorized=authorize)
+    ledger_path = out / LEDGER_NAME
+    ledger = load_ledger(ledger_path)
+    ledger["project_id"] = project.project_id
+
+    res = VisualResult(jobs=[dict(j) for j in jobs], submit_requested=submit,
+                       authorized=authorize, cost_cap=max_cost)
 
     reg = discover(project_dir)
     cap = next((c for c in reg.capabilities() if c.provider == "omniailab"), None)
@@ -186,11 +258,35 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
     res.platform_missing = list(cap.missing) if cap else ["provider 未注册"]
 
     usable = bool(cap and cap.usable and cap.can("image_generation"))
+    provider = reg.get("omniailab")
 
     for job in res.jobs:
+        key = _job_key(job, project)
+        job["job_key"] = key
+        entry = ledger["entries"].get(key) or {}
+
         if job.get("status") == "failed":
             res.failed += 1
             continue
+
+        # -- 1. 已经付过费的同一件事 -------------------------------------
+        if entry.get("status") == "generated" and _media_ok(str(entry.get("output") or "")):
+            job["status"] = "generated"
+            job["output"] = entry["output"]
+            job["outputs"] = list(entry.get("outputs") or [entry["output"]])
+            job["reused"] = True
+            job["reason"] = "复用本修订已有的生成结果（未重复提交、未重复计费）"
+            res.generated += 1
+            res.reused += 1
+            continue
+        if entry.get("status") == "submitted":
+            # 上一次发出去了但没等到结果：不能再发一次，否则可能双份计费。
+            job["status"] = "awaiting_cost_confirmation"
+            job["reason"] = (f"上一次已提交（job {entry.get('provider_job') or '?'}）但结果未知："
+                             "为避免重复计费，本次不再提交，请先向平台核实该任务")
+            res.held += 1
+            continue
+
         if not usable:
             job["status"] = "awaiting_platform"
             job["reason"] = (
@@ -199,30 +295,58 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             )
             res.deferred += 1
             continue
-        if not authorize:
+
+        # -- 2. 双开关 ---------------------------------------------------
+        if not (submit and authorize):
+            missing = []
+            if not submit:
+                missing.append("--submit")
+            if not authorize:
+                missing.append("--authorize")
             job["status"] = "awaiting_platform"
-            job["reason"] = "未授权提交（联网与计费操作需要显式 --authorize）"
+            job["reason"] = (f"未提交：缺少 {' 与 '.join(missing)}"
+                             "（联网且计费的操作需要两个开关同时打开）")
             res.deferred += 1
             continue
 
+        # -- 3. 费用可知 -------------------------------------------------
         params = _params(job, project)
-        estimate = None
-        provider = reg.get("omniailab")
+        estimate: Optional[float] = None
         if provider is not None:
             try:
                 estimate = provider.estimate_cost("image_generation", params)
             except Exception:
                 estimate = None
-        if estimate is not None:
-            res.cost_estimate = (res.cost_estimate or 0.0) + float(estimate)
-        if max_cost is not None and res.cost_estimate is not None \
-                and res.cost_estimate > max_cost:
+        if estimate is None:
+            res.cost_known = False
+            job["status"] = "awaiting_cost_confirmation"
+            job["reason"] = ("平台契约未声明计价，无法保证费用不超过上限："
+                             "已停止提交，请补充计价声明或先在平台侧确认价格")
+            res.held += 1
+            if max_cost is not None:
+                res.warnings.append(
+                    f"{job['job_id']}：已指定上限 {max_cost:.2f}，但没有计价声明，"
+                    "无法证明该上限成立，故未提交（不声称费用已受控）")
+            continue
+
+        running = (res.cost_estimate or 0.0) + float(estimate)
+        res.cost_estimate = round(running, 4)
+        if max_cost is not None and running > max_cost:
             job["status"] = "failed"
-            job["reason"] = (f"预估费用 {res.cost_estimate:.2f} 超过上限 {max_cost:.2f}，"
+            job["reason"] = (f"预估费用 {running:.2f} 超过上限 {max_cost:.2f}，"
                              "已按授权额度停止提交")
             res.failed += 1
             continue
 
+        # -- 4. 提交（先记账，避免中途崩溃导致重复付费）-------------------
+        ledger["entries"][key] = {
+            "job_id": job.get("job_id", ""), "concept_id": job.get("concept_id", ""),
+            "kind": job.get("kind", ""), "revision": project.revision,
+            "status": "submitted", "output": "", "outputs": [],
+            "estimated_cost": float(estimate),
+            "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        }
+        _save_ledger(ledger_path, ledger)
         try:
             pjob = reg.generate("image_generation", params, renders, prefer="omniailab")
         except (NotConfigured, ProviderError) as exc:
@@ -230,9 +354,12 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             job["reason"] = f"{type(exc).__name__}: {exc}"
             res.failed += 1
             res.warnings.append(f"{job['job_id']} 提交失败：{job['reason']}")
+            ledger["entries"][key].update({"status": "failed", "error": str(exc)})
+            _save_ledger(ledger_path, ledger)
             continue
 
         res.submitted += 1
+        ledger["entries"][key]["provider_job"] = pjob.job_id
         if pjob.status == "succeeded" and pjob.outputs:
             good = [o for o in pjob.outputs if _media_ok(o)]
             bad = [o for o in pjob.outputs if not _media_ok(o)]
@@ -247,14 +374,23 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
                 res.generated += 1
                 reg.link_asset(pjob, good, project.project_id, project.revision,
                                "S2", "image_generation")
+                ledger["entries"][key].update({"status": "generated",
+                                               "output": good[0], "outputs": good})
             else:
                 job["status"] = "failed"
                 job["reason"] = "平台返回的文件不是可用的图片"
                 res.failed += 1
+                ledger["entries"][key].update({"status": "failed",
+                                               "error": "non-image payload"})
         else:
             job["status"] = "failed"
             job["reason"] = f"job {pjob.job_id}: {pjob.error or pjob.status}"
             res.failed += 1
+            ledger["entries"][key].update({"status": "failed",
+                                           "error": str(pjob.error or pjob.status)})
+        _save_ledger(ledger_path, ledger)
+
+    _save_ledger(ledger_path, ledger)
 
     if not usable:
         # Queue the intent at registry level too, so it is visible in provider reports.
@@ -268,7 +404,14 @@ def submit(jobs: Sequence[Dict[str, Any]], project: Project, out_dir: str | Path
             "平台不可用：已生成完整任务包并登记为待执行，"
             "不生成任何替代图片（品牌策略禁止第三方回退）。"
         )
+    if res.reused:
+        res.warnings.append(
+            f"{res.reused} 个任务复用了本修订已有的生成结果：重跑不会重复计费。")
+    if res.held and res.cost_known:
+        res.warnings.append(
+            f"{res.held} 个任务因费用/状态不确定被拦下：未发出任何请求。")
     return res
+
 
 
 def write_package(res: VisualResult, concept_set: Dict[str, Any],
@@ -287,7 +430,7 @@ def write_package(res: VisualResult, concept_set: Dict[str, Any],
         "distinct_from": "G3 后置动作（providers.canvas 的概念效果图，依据已确认平面）",
         **res.to_dict(),
         "next_step": ("把本任务包交给 OmniAiLab 平台执行；产出后逐张核对风格与材料声明是否与本方案一致。"
-                      if res.deferred else
+                      if (res.deferred or res.held) else
                       "已提交，等待平台返回结果。"),
     }
     jf = out / "concept-visual-jobs.json"
@@ -299,10 +442,18 @@ def write_package(res: VisualResult, concept_set: Dict[str, Any],
         f"项目：{project_id_of(concept_set)}　模型修订 r{concept_set.get('revision', '')}"
         f"　阶段 S2",
         "",
-        f"平台状态：**{res.platform_state}**　授权：{'是' if res.authorized else '否'}",
+        f"平台状态：**{res.platform_state}**　"
+        f"提交请求：{'是' if res.submit_requested else '否'}　"
+        f"授权：{'是' if res.authorized else '否'}",
         "",
-        f"任务 {len(res.jobs)} 项：已生成 {res.generated}、待平台 {res.deferred}、"
-        f"失败 {res.failed}、已提交 {res.submitted}",
+        f"任务 {len(res.jobs)} 项：已生成 {res.generated}（其中复用 {res.reused}）、"
+        f"待平台 {res.deferred}、待费用确认 {res.held}、失败 {res.failed}、"
+        f"本次实际提交 {res.submitted}",
+        "",
+        f"费用：预估 {res.cost_estimate if res.cost_estimate is not None else '未知'}"
+        f" {res.currency}　上限 "
+        f"{('%.2f' % res.cost_cap) if res.cost_cap is not None else '未设定'}"
+        f"　受控：{'是' if res.cost_controlled else '否（不代表不花钱，只代表未提交）'}",
         "",
         "| 任务 | 所属概念 | 类型 | 状态 | 说明 |",
         "|---|---|---|---|---|",
@@ -328,4 +479,5 @@ def project_id_of(concept_set: Dict[str, Any]) -> str:
     return str(concept_set.get("project_id") or "")
 
 
-__all__ = ["build_jobs", "submit", "write_package", "VisualResult", "STATUS_LABEL"]
+__all__ = ["build_jobs", "submit", "write_package", "VisualResult", "STATUS_LABEL",
+           "load_ledger", "LEDGER_NAME"]

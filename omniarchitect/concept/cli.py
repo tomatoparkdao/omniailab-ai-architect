@@ -18,7 +18,6 @@ from . import (
     check_baseline,
     decide_gate,
     generate_bundle,
-    lock_style_for,
     select,
     status,
 )
@@ -60,7 +59,13 @@ def _print(payload: Dict[str, Any], action: str) -> None:
         visual = payload.get("visual") or {}
         if visual:
             print(f"  概念视觉：平台 {visual.get('platform_state')}　"
-                  f"已生成 {visual.get('generated')}　待平台 {visual.get('deferred')}")
+                  f"已生成 {visual.get('generated')}（复用 {visual.get('reused')}）　"
+                  f"待平台 {visual.get('deferred')}　待费用确认 {visual.get('held')}　"
+                  f"本次提交 {visual.get('submitted', 0)}")
+            if visual.get("submit_requested") or visual.get("authorized"):
+                print(f"    提交开关：submit={visual.get('submit_requested')} "
+                      f"authorize={visual.get('authorized')}"
+                      f"　费用受控：{'是' if visual.get('cost_controlled') else '否'}")
         for w in (payload.get("warnings") or [])[:4]:
             print(f"  ⚠ {w}")
 
@@ -90,7 +95,8 @@ def _print(payload: Dict[str, Any], action: str) -> None:
 
     elif action == "gate":
         o = payload.get("outcome") or {}
-        print(f"G2 决策：{o.get('decision_label')}　来源：{o.get('source_label')}")
+        print(f"G2 决策：{o.get('decision_label')}　来源：{o.get('source_label')}"
+              f"　正式基准：{'是' if o.get('formal') else '否'}")
         print(f"阶段状态：{o.get('stage_status')}")
         for n in o.get("notes") or []:
             print(f"  · {n}")
@@ -162,16 +168,15 @@ def run(args: Any) -> int:
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         summary_path.write_text(approval_summary(project, getattr(args, "note", "") or "") + "\n",
                                 encoding="utf-8")
-        outcome = decide_gate(project, decision, by=getattr(args, "by", "") or "",
-                             note=getattr(args, "note", "") or "",
-                             source=getattr(args, "source", "owner") or "owner",
-                             acknowledge=ack, force=bool(getattr(args, "force", False)),
-                             summary_path=str(summary_path))
-        if outcome.decision == "approved" and outcome.source == "owner":
-            try:
-                lock_style_for(project, out)
-            except Exception as exc:  # never hide a lock failure
-                outcome.notes.append(f"风格锁定写入失败：{type(exc).__name__}: {exc}")
+        try:
+            outcome = decide_gate(project, decision, by=getattr(args, "by", "") or "",
+                                  note=getattr(args, "note", "") or "",
+                                  source=getattr(args, "source", "owner") or "owner",
+                                  acknowledge=ack, force=bool(getattr(args, "force", False)),
+                                  summary_path=str(summary_path))
+        except ValueError as exc:
+            # 编号写错不等于"已接受风险"，必须当场停住
+            raise SystemExit(f"G2 未执行：{exc}")
         project.save(Path(args.project) / "project.json")
         _print({"outcome": outcome.to_dict(), "summary_path": str(summary_path)}, action)
         return 0 if outcome.decision == "approved" else 1
@@ -218,18 +223,23 @@ def register(sub) -> None:
     sp.add_argument("--explore", action="store_true",
                     help="G1 未确认时生成本轮探索稿（不可锁定、不可作为正式依据）")
     sp.add_argument("--no-deck", action="store_true", help="跳过 PPTX")
-    sp.add_argument("--submit", action="store_true", help="向 OmniAiLab 提交概念视觉任务")
+    sp.add_argument("--submit", action="store_true",
+                    help="请求向 OmniAiLab 提交概念视觉任务（必须与 --authorize 同时使用）")
     sp.add_argument("--authorize", action="store_true",
-                    help="确认授权联网与计费（必须与 --submit 同时使用）")
-    sp.add_argument("--max-cost", type=float, default=None, help="本次提交的费用上限")
+                    help="确认授权联网与计费（必须与 --submit 同时使用；单独使用不提交）")
+    sp.add_argument("--max-cost", type=float, default=None,
+                    help="本次提交的费用上限；平台未声明计价时不会提交")
     sp.add_argument("--concept", default="", help="select：概念编号，如 C-B")
     sp.add_argument("--decision", default="approved",
                     choices=("approved", "revision_requested", "blocked"))
     sp.add_argument("--source", default="owner", choices=("owner", "demo"))
     sp.add_argument("--by", default="", help="确认人")
     sp.add_argument("--note", default="")
-    sp.add_argument("--acknowledge", default="")
-    sp.add_argument("--force", action="store_true")
+    sp.add_argument("--acknowledge", default="",
+                    help="逐项书面接受的风险编号，逗号分隔（如 G2-STYLE-LOCK-CONFLICT）；"
+                         "硬性条件没有编号，不能接受")
+    sp.add_argument("--force", action="store_true",
+                    help="保留参数：G2/G3 不提供强制通过，硬性条件不受其影响")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=run)
 

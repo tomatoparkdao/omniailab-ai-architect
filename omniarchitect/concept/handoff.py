@@ -19,10 +19,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from ..model import Project
-from .gate import _concept, check_baseline
+from .gate import _concept, check_baseline, concept_digest
 
 
 def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
@@ -229,7 +229,8 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
 
     if handoff.get("status") not in ("locked", "selected_not_confirmed"):
         return {"conformance": "not_applicable", "checks": [], "conflicts": [],
-                "manual_review": [],
+                "manual_review": [], "auto_pass": False, "fully_verified": False,
+                "manual_review_required": 0,
                 "note": "无概念交接文件，不做一致性判断（也不假装通过）"}
 
     m = dict(getattr(scheme, "metrics", {}) or {})
@@ -245,6 +246,16 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
         if not ok:
             conflicts.append({"id": "H-STRATEGY", "severity": "major",
                               "detail": f"平面使用 {strategy}，概念要求 {want}：需说明偏离原因"})
+    else:
+        # 概念要的原型，现有生成器根本没有对应策略：这不是"跳过检查"，
+        # 而是"这个平面不可能实现该概念"，必须判失败，不能默认通过。
+        checks.append({"check": "概念所需平面策略已实现", "ok": False,
+                       "detail": "该原型需专用深化，现有生成器只能出近似策略"})
+        conflicts.append({
+            "id": "H-STRATEGY-UNSUPPORTED", "severity": "major",
+            "detail": f"「{handoff.get('concept_name')}」的空间原型没有对应的平面策略，"
+                      "本次平面是用通用策略生成的近似结果，不能视为该概念的落地",
+        })
 
     # 2. 走廊占比：环形/大厅式原型不应生成大量走廊
     ratio = float(m.get("corridor_ratio") or 0)
@@ -299,14 +310,145 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
 
     major = [c for c in conflicts if c["severity"] == "major"]
     conformance = "fail" if major else ("partial" if conflicts else "pass")
+    auto_pass = conformance == "pass"
     return {
         "conformance": conformance,
+        "auto_pass": auto_pass,
+        # 只有"自动检查全过、且没有待人工判断项"才算完全核实。
+        # 隔离类要求永远无法靠指标断言，所以它们使 fully_verified 为 False，
+        # 而不是被悄悄算成"通过"。
+        "fully_verified": bool(auto_pass and not manual_review),
+        "manual_review_required": len(manual_review),
         "checks": checks,
         "conflicts": conflicts,
         "manual_review": manual_review,
-        "note": ("pass = 全部可判定检查通过；partial = 只有次要冲突；fail = 存在重大冲突，"
-                 "该平面不能作为概念的落地成果。注意：通过不等于概念优秀，只等于不矛盾；"
-                 "隔离类要求属于待人工复核，不计入通过。"),
+        "note": ("pass = 可自动判定的检查全部通过；partial = 只有次要冲突；"
+                 "fail = 存在重大冲突，该平面不能作为概念的落地成果。"
+                 "注意：pass 不等于概念优秀，也不等于全部核实——"
+                 "隔离类要求属于待人工复核，不计入通过；"
+                 "fully_verified 才是「没有任何待人工判断项」。"),
+    }
+
+
+# --------------------------------------------------------------------------
+# G3：平面方案门禁
+# --------------------------------------------------------------------------
+def plan_record(project: Project) -> Dict[str, Any]:
+    """The S3 run's own record of what it produced and how it compared."""
+    state = _concept(project)
+    rec = state.get("plan")
+    return dict(rec) if isinstance(rec, dict) else {}
+
+
+def store_plan_record(project: Project, record: Dict[str, Any]) -> Dict[str, Any]:
+    state = _concept(project)
+    state["plan"] = dict(record)
+    return state["plan"]
+
+
+def assess_plan_gate(project: Project) -> Dict[str, Any]:
+    """Can G3 be *formally* issued? (Exploration is always allowed.)
+
+    The distinction matters: S3 may run without a confirmed concept — that is a
+    legitimate exploratory study. What it may not do is turn that study into a
+    signed gate. Formal issuance needs four things at once:
+
+    1. a G2 concept baseline that still matches the live concept;
+    2. an S3 record produced against *that* baseline, on the current revision;
+    3. no major conformance conflict;
+    4. a plan strategy that actually implements the selected prototype.
+    """
+    state = _concept(project)
+    base = check_baseline(project)
+    handoff = load_for(project)
+    rec = plan_record(project)
+
+    blockers: List[Dict[str, str]] = []
+    conditions: List[Dict[str, str]] = []
+    manual_review: List[str] = []
+
+    # 任务书基准变了，概念与平面都失去依据 —— G3 不能只盯概念那一个 digest
+    from ..intake.gate import check_baseline as check_brief
+
+    brief = check_brief(project)
+    brief_stale = bool(brief.get("requires_change_analysis"))
+
+    if handoff.get("status") != "locked":
+        blockers.append({
+            "id": "G3-NO-CONCEPT-BASELINE",
+            "text": "没有已确认的 G2 概念基准：本轮平面只是探索性验证，不能签发正式 G3",
+        })
+    elif handoff.get("stale") or base.get("changed") or brief_stale:
+        blockers.append({
+            "id": "G3-STALE-BASELINE",
+            "text": "概念基准在平面生成之后发生了变更：S3 成果已失效，须重做平面后重新提交 G3"
+                    if not brief_stale else
+                    f"任务书基准已变更（{brief.get('change_kind') or '需求修改'}）："
+                    "概念与平面都须重做，本平面不能签发",
+        })
+
+    if not rec:
+        blockers.append({
+            "id": "G3-NO-PLAN-RECORD",
+            "text": "未找到本轮的平面方案记录：先运行 S3 生成平面方案",
+        })
+    else:
+        if int(rec.get("revision") or -1) != int(project.revision):
+            blockers.append({
+                "id": "G3-PLAN-STALE",
+                "text": f"平面记录是 r{rec.get('revision')} 的，当前模型是 "
+                        f"r{project.revision}：须在当前修订下重出平面",
+            })
+        if base.get("has_baseline") and rec.get("concept_digest") \
+                and rec.get("concept_digest") != base.get("baseline_digest"):
+            blockers.append({
+                "id": "G3-STALE-BASELINE",
+                "text": "平面所依据的概念基准与当前基准不一致：该平面对应的不是已签的概念",
+            })
+        if rec.get("conformance") == "fail":
+            detail = "；".join(
+                f"{c.get('id')} {c.get('detail', '')}"[:90]
+                for c in (rec.get("conflicts") or [])) or "存在重大概念冲突"
+            blockers.append({
+                "id": "G3-CONCEPT-CONFLICT",
+                "text": f"平面与所选概念存在重大冲突，不能直接批准 G3：{detail}",
+            })
+        # 只有"确实有一个已确认概念"时，"平面没实现它"才是独立问题；
+        # 完全没有概念的情况已经由 G3-NO-CONCEPT-BASELINE 报过，不重复指责。
+        if rec.get("implements_concept") is False and rec.get("concept_id"):
+            blockers.append({
+                "id": "G3-PROTOTYPE-UNSUPPORTED",
+                "text": "所选概念的空间原型没有对应的平面策略：本轮平面是通用策略的近似结果，"
+                        "不能声称为该概念的实现；需换支持的方向，或由主创另行深化",
+            })
+        manual_review = list(rec.get("manual_review") or [])
+        for c in (rec.get("conditions") or []):
+            conditions.append({"id": str(c.get("id") or "G3-COND"), "text": str(c.get("text"))})
+
+    if manual_review:
+        conditions.append({
+            "id": "G3-HUMAN-REVIEW",
+            "text": f"{len(manual_review)} 项空间约束无法自动校核，须人工看图确认"
+                    "（未计入通过）",
+        })
+
+    return {
+        "formal_ready": not blockers,
+        "blockers": blockers,
+        "blocked_reasons": [b["text"] for b in blockers],
+        "conditions": conditions,
+        "manual_review": manual_review,
+        "conformance": rec.get("conformance", "not_applicable"),
+        "fully_verified": bool(rec.get("fully_verified")),
+        "concept_id": handoff.get("concept_id", "") or str(base.get("concept_id") or ""),
+        "concept_name": handoff.get("concept_name", ""),
+        "handoff_status": handoff.get("status", "none"),
+        "stale": bool(handoff.get("stale") or base.get("changed") or brief_stale),
+        "brief_stale": brief_stale,
+        "revision": project.revision,
+        "planned_revision": rec.get("revision"),
+        "baseline_digest": base.get("baseline_digest"),
+        "plan_digest": rec.get("concept_digest"),
     }
 
 
@@ -347,15 +489,18 @@ def markdown(handoff: Dict[str, Any], verification: Optional[Dict[str, Any]] = N
 
     if verification:
         lines += ["", "## 平面一致性校核", "",
-                  f"结论：**{verification.get('conformance')}**", "",
+                  f"结论：**{verification.get('conformance')}**"
+                  f"（自动检查{'通过' if verification.get('auto_pass') else '未通过'}；"
+                  f"完全核实：{'是' if verification.get('fully_verified') else '否'}）", "",
                   "| 检查 | 结果 | 说明 |", "|---|---|---|"]
         for c in verification.get("checks") or []:
             lines.append(f"| {c['check']} | {'通过' if c['ok'] else '不通过'} | {c['detail']} |")
         for m in verification.get("manual_review") or []:
-            lines.append(f"\n- 待人工复核：{m}")
+            lines.append(f"\n- 待人工复核（**未计入通过**）：{m}")
         for c in verification.get("conflicts") or []:
             lines.append(f"\n- ⚠ {c['id']}（{c['severity']}）：{c['detail']}")
     return "\n".join(lines) + "\n"
 
 
-__all__ = ["build", "write", "refresh", "load_for", "verify_scheme", "markdown"]
+__all__ = ["build", "write", "refresh", "load_for", "verify_scheme", "markdown",
+           "assess_plan_gate", "plan_record", "store_plan_record"]

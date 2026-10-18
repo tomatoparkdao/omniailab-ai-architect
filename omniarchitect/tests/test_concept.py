@@ -325,10 +325,13 @@ def test_h_platform_submission_round_trip():
         ctx = _patched_discover(reg)
         ctx.__enter__()
         try:
-            res = vis.submit(jobs, p, Path(td) / "out", authorize=False)
+            res = vis.submit(jobs, p, Path(td) / "out", submit=False, authorize=False)
             assert res.generated == 0 and res.deferred == len(jobs), "未授权不得提交"
+            # 只打开 authorize 也不构成提交请求：两个开关必须同时成立
+            res = vis.submit(jobs, p, Path(td) / "out", submit=False, authorize=True)
+            assert res.submitted == 0 and stub.calls == 0, "只给 authorize 就提交了"
 
-            res = vis.submit(jobs, p, Path(td) / "out", authorize=True)
+            res = vis.submit(jobs, p, Path(td) / "out", submit=True, authorize=True)
             assert res.submitted == len(jobs)
             assert res.generated == len(jobs), [j.get("reason") for j in res.jobs]
             for job in res.jobs:
@@ -346,7 +349,8 @@ def test_h_cost_cap_stops_submission():
         p = _residential(Path(td))
         jobs = vis.build_jobs(_one_concept(p), C.build_context(p), p)
         with _patched_discover(_StubRegistry(_StubProvider())):
-            res = vis.submit(jobs, p, Path(td) / "out", authorize=True, max_cost=0.4)
+            res = vis.submit(jobs, p, Path(td) / "out", submit=True, authorize=True,
+                             max_cost=0.4)
         assert res.generated == 0
         assert all("超过上限" in (j.get("reason") or "") for j in res.jobs)
 
@@ -367,7 +371,7 @@ def test_h_non_image_payload_is_rejected():
         p = _residential(Path(td))
         jobs = vis.build_jobs(_one_concept(p), C.build_context(p), p)
         with _patched_discover(_StubRegistry(_BadStub())):
-            res = vis.submit(jobs, p, Path(td) / "out", authorize=True)
+            res = vis.submit(jobs, p, Path(td) / "out", submit=True, authorize=True)
         assert res.generated == 0
         assert res.failed == len(jobs)
 

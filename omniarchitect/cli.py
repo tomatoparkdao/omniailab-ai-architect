@@ -345,8 +345,13 @@ def cmd_confirm(args) -> int:
     runner = StageRunner(project, out, level_id=args.level, scheme_variant=args.scheme,
                          project_dir=Path(args.project))
     ack = [a.strip() for a in (getattr(args, "acknowledge", "") or "").split(",") if a.strip()]
-    st = runner.approve(args.stage, by=args.by or "业主", note=args.note or "",
-                        source="owner", acknowledge=ack, force=bool(getattr(args, "force", False)))
+    try:
+        st = runner.approve(args.stage, by=args.by or "业主", note=args.note or "",
+                            source="owner", acknowledge=ack,
+                            force=bool(getattr(args, "force", False)))
+    except ValueError as exc:
+        # 编号写错不等于"已接受风险"
+        raise SystemExit(f"{args.stage} 未确认：{exc}")
     print(f"{args.stage} → {st['status']}（{st.get('confirmed_by') or '—'}）")
     for n in st.get("notes") or []:
         print(f"  · {n}")
@@ -358,6 +363,12 @@ def cmd_confirm(args) -> int:
                 print(f"  [{b['id']}] {b['problem']}")
                 print(f"       依据：{b['evidence']}")
                 print(f"       需要：{b['needs']}")
+        elif assess.get("blockers"):
+            print("\n不能签发（硬性条件，--force 无效）：")
+            for b in assess["blockers"]:
+                print(f"  [{b['id']}] {b['text']}")
+            if assess.get("acknowledgeable_ids"):
+                print("  可逐项书面接受：" + "、".join(assess["acknowledgeable_ids"]))
         return 1
     return 0
 
