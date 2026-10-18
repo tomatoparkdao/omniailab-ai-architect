@@ -321,6 +321,24 @@ def multi_baseline_path(out_dir: str | Path, revision: int) -> Path:
     return Path(out_dir) / f"multidisciplinary-concept-baseline-r{revision}.json"
 
 
+def _write_design_intent(project: Project, out_dir: str | Path,
+                         chosen: Dict[str, Any]) -> Dict[str, Any]:
+    """G2 时把设计意图落盘。没有概念就没有意图，直接抛错由事务回滚。"""
+    from .. import disciplines as _disc
+    from .. import intent as _intent
+    from .. import leadership as _lead
+
+    scope = _disc.ensure(project)
+    lead = _lead.ensure(project, scope)
+    built = _intent.build(project, chosen, lead)
+    if not built.get("signature_features"):
+        raise ValueError(
+            "选定概念没有可识别的核心设计特征（spatial_logic / zoning / "
+            "circulation / daylight 都为空）：G2 不能签一份没有设计意图的基准")
+    _intent.write(project, out_dir, built)
+    return built
+
+
 def write_multidisciplinary_baseline(project: Project, out_dir: str | Path, *,
                                      chosen: Dict[str, Any], by: str = "",
                                      acknowledged: Sequence[str] = ()) -> Dict[str, Any]:
@@ -333,8 +351,10 @@ def write_multidisciplinary_baseline(project: Project, out_dir: str | Path, *,
     范围外的专业写 `not_applicable`，不伪造批准。
     """
     from .. import disciplines as _disc
+    from .. import leadership as _lead
 
     scope = _disc.ensure(project)
+    lead = _lead.ensure(project, scope)
     dirs = chosen.get("disciplines") or {}
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -384,6 +404,7 @@ def write_multidisciplinary_baseline(project: Project, out_dir: str | Path, *,
         "source": "owner",
         "active": [r["discipline"] for r in rows if r["state"] == "locked"],
         "not_applicable": not_applicable,
+        "leadership": lead.to_dict(),
         "disciplines": rows,
         "interfaces": iface,
         "pending_inputs": pending,
@@ -670,8 +691,13 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                 multi = write_multidisciplinary_baseline(
                     project, out_dir or Path("."), chosen=chosen or {},
                     by=by_label, acknowledged=ack)
+                # 1c) 设计意图：把"最不能动的几样"落成可核对清单。
+                #     没有这份清单，技术协调就只能靠"记得别改"，那等于没保护。
+                intent = _write_design_intent(project, out_dir or Path("."),
+                                              chosen or {})
             else:
                 multi = {}
+                intent = {}
             # 2) 再确认阶段
             st = confirm_stage(project, "S2", by=by_label,
                                note=note or ("G2 概念确认" if source == "owner"
@@ -696,6 +722,13 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                     "not_applicable": list(multi.get("not_applicable") or []),
                     "pending_inputs": list(multi.get("pending_inputs") or []),
                 } if multi else {},
+                # 主导专业与协作原则：决定后续 S3–S8 谁对齐谁
+                "leadership": (multi.get("leadership") or {}),
+                "design_intent": {
+                    "design_intent_id": intent.get("design_intent_id", ""),
+                    "lead_discipline": intent.get("lead_discipline", ""),
+                    "features": [f["id"] for f in (intent.get("signature_features") or [])],
+                } if intent else {},
             }
             # 3) 登记基准 / 演示记录
             if source == "owner":
@@ -719,9 +752,21 @@ def decide_gate(project: Project, decision: str, by: str = "", note: str = "",
                                        .get("multidisciplinary") or {}).get("file") or ""))
                 if multi_file and not multi_file.is_file():
                     raise RuntimeError(f"多专业基准文件不存在：{multi_file}")
+                intent_file = Path(str((((project.meta or {}).get("design_intent")
+                                        or {}).get("file")) or ""))
+                if not intent_file.is_file():
+                    raise RuntimeError(f"设计意图基准文件不存在：{intent_file or '（未写入）'}")
         except Exception as exc:
             _restore(project, state, snapshot)
             restored = _file_restore(files)
+            # 设计意图是本事务内新建的，快照里没有它，回滚要单独清掉，
+            # 否则会留下一份"没有门禁背书的意图基准"。
+            stray = (project.meta or {}).pop("design_intent", None)
+            try:
+                if isinstance(stray, dict) and stray.get("file"):
+                    Path(str(stray["file"])).unlink(missing_ok=True)
+            except OSError:
+                pass
             decision = "blocked"
             rolled_back = True
             st = get_state(project, "S2")

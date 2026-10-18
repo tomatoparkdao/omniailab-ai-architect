@@ -30,6 +30,53 @@ def _clamp(v: float) -> int:
     return int(max(0, min(100, round(v))))
 
 
+#: 第一层：不可逾越的硬门槛。美学高分不能抵消它们。
+#: 这里只列"可在概念阶段判定"的硬问题——结构计算、消防审查在后续阶段。
+GATE_BLOCKING = {
+    "capacity": "容量明显不足：这不是体验差，是装不下",
+    "safety": "已识别的安全条件不成立",
+    "regulation": "已识别的强制性规范不允许",
+}
+
+
+def _lead_weights(ctx: Any) -> Dict[str, float]:
+    """主导专业决定的维度权重。没有主导信息时退回中性权重。"""
+    try:
+        return dict(getattr(ctx, "lead_weights", {}) or {})
+    except Exception:                                  # noqa: BLE001
+        return {}
+
+
+def _w(ctx: Any, cid: str, base: float) -> float:
+    return round(base * _lead_weights(ctx).get(cid, 1.0), 4)
+
+
+def _hard_gate(ctx: Any, concept: Dict[str, Any]) -> Dict[str, Any]:
+    """第一层可行性门槛：不管设计多好，这些不成立就不能当推荐。
+
+    只判"已识别、可判定"的硬问题。没有证据的不算失败——那是"未评估"，
+    不是"不合格"。这条区分很重要，否则所有项目都会因缺资料被判不合格。
+    """
+    reasons: List[Dict[str, str]] = []
+    for c in getattr(ctx, "conflicts", []) or []:
+        cat = str(c.get("category") or "")
+        sev = str(c.get("severity") or "")
+        if cat in GATE_BLOCKING and sev == "blocker":
+            reasons.append({"id": str(c.get("id") or ""), "category": cat,
+                            "text": str(c.get("problem") or "")})
+    # 概念层面的容量硬冲突（如办公人均面积不足）
+    for r in (concept.get("discipline_conflicts") or []):
+        if str(r.get("severity") or "") == "blocker":
+            reasons.append({"id": str(r.get("id") or ""), "category": "capacity",
+                            "text": str(r.get("detail") or "")})
+    return {
+        "failed": bool(reasons),
+        "reasons": reasons,
+        "rule": ("安全 / 消防与强制性规范 / 已核实的容量与物理限制不成立时，"
+                 "不能用美学高分抵消。"),
+    }
+
+
 def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dict[str, Any]:
     """Score one concept. Every number carries the reason it was given."""
     rows: List[Dict[str, Any]] = []
@@ -37,7 +84,7 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
     # 1. 需求响应 —— 用原型与信号的匹配度，而不是自评
     func = float((concept.get("scores") or {}).get("functional") or 0)
     rows.append({
-        "id": "needs", "name": "S1 需求响应", "weight": 0.24,
+        "id": "needs", "name": "S1 需求响应", "weight": _w(ctx, "needs", 0.24),
         "score": _clamp(min(100, func * 2.2)) if func else None,
         "reason": (f"原型回应的信号强度合计 {func:.1f}（来自需求矩阵与机会条目）"
                    if func else "无信号可对照"),
@@ -48,13 +95,13 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
     refs = concept.get("s1_opportunity_refs") or []
     if total_opportunities:
         rows.append({
-            "id": "opportunity", "name": "设计机会解决", "weight": 0.20,
+            "id": "opportunity", "name": "设计机会解决", "weight": _w(ctx, "opportunity", 0.20),
             "score": _clamp(100 * len(refs) / total_opportunities),
             "reason": f"覆盖 {len(refs)}/{total_opportunities} 项机会（{'、'.join(refs) or '无'}）",
             "evaluated": True,
         })
     else:
-        rows.append({"id": "opportunity", "name": "设计机会解决", "weight": 0.20,
+        rows.append({"id": "opportunity", "name": "设计机会解决", "weight": _w(ctx, "opportunity", 0.20),
                      "score": None, "reason": "S1 未识别到机会条目，本项不评",
                      "evaluated": False})
 
@@ -72,7 +119,7 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
         why.append("动线关系明确")
     if p.get("family"):
         why.append(f"空间家族：{p.get('family_zh')}")
-    rows.append({"id": "spatial", "name": "空间组织合理性", "weight": 0.16,
+    rows.append({"id": "spatial", "name": "空间组织合理性", "weight": _w(ctx, "spatial", 0.16),
                  "score": _clamp(base), "reason": "；".join(why) or "组织描述不足",
                  "evaluated": True})
 
@@ -101,7 +148,7 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
     elif not evaluated_checks:
         score -= 5
         why += "；配色缺少数值声明，未能校核"
-    rows.append({"id": "aesthetic", "name": "美学与业主偏好", "weight": 0.12,
+    rows.append({"id": "aesthetic", "name": "美学与业主偏好", "weight": _w(ctx, "aesthetic", 0.12),
                  "score": _clamp(score), "reason": why, "evaluated": True})
 
     # 5. 预算适配
@@ -111,29 +158,30 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
         cost = str(concept.get("cost_impact") or "")
         if "增量" in cost:
             penalty += 6
-        rows.append({"id": "budget", "name": "预算适配", "weight": 0.10,
+        rows.append({"id": "budget", "name": "预算适配", "weight": _w(ctx, "budget", 0.10),
                      "score": _clamp(100 - penalty * 2),
                      "reason": f"预算档位 {tier}；{cost[:40]}", "evaluated": True})
     else:
-        rows.append({"id": "budget", "name": "预算适配", "weight": 0.10, "score": None,
+        rows.append({"id": "budget", "name": "预算适配", "weight": _w(ctx, "budget", 0.10), "score": None,
                      "reason": "预算未定，本项不评（不猜测档位）", "evaluated": False})
 
     # 6. 施工与维护
     risks = concept.get("technical_risks") or []
     score = 92 - 9 * len(risks)
-    rows.append({"id": "buildability", "name": "施工与维护", "weight": 0.10,
+    rows.append({"id": "buildability", "name": "施工与维护",
+                 "weight": _w(ctx, "buildability", 0.10),
                  "score": _clamp(score),
                  "reason": f"{len(risks)} 项技术风险；{str(concept.get('maintenance_impact') or '')[:40]}",
                  "evaluated": True})
 
     # 7. 后续深化
     if p.get("plan_strategy"):
-        rows.append({"id": "downstream", "name": "后续深化可行性", "weight": 0.08,
+        rows.append({"id": "downstream", "name": "后续深化可行性", "weight": _w(ctx, "downstream", 0.08),
                      "score": 90,
                      "reason": f"S3 现有平面算法支持策略 `{p['plan_strategy']}`",
                      "evaluated": True})
     else:
-        rows.append({"id": "downstream", "name": "后续深化可行性", "weight": 0.08,
+        rows.append({"id": "downstream", "name": "后续深化可行性", "weight": _w(ctx, "downstream", 0.08),
                      "score": 55,
                      "reason": "S3 现有算法不支持该原型，需要专用深化或调整；本轮不假装可自动落地",
                      "evaluated": True})
@@ -185,6 +233,9 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
             if (dirs.get(did) or {}).get("status") == "requires_input"
             and (dirs.get(did) or {}).get("demanded_by")]
 
+    # ---- 第一层：硬门槛。美学分不能抵消 --------------------------------
+    gate = _hard_gate(ctx, concept)
+
     evaluated = [r for r in rows if r.get("evaluated")]
     wsum = sum(r["weight"] for r in evaluated)
     total = (sum(float(r["score"]) * r["weight"] for r in evaluated) / wsum) if wsum else 0.0
@@ -195,23 +246,36 @@ def evaluate(concept: Dict[str, Any], ctx: Any, total_opportunities: int) -> Dic
         "coverage": round(wsum, 2),
         "unevaluated": [r["id"] for r in rows if not r.get("evaluated")],
         "hard_flags": hard,
+        "hard_gate": gate,
+        "rankable": not gate["failed"],
         "note": ("加权分只在已评估项上归一；覆盖不足 0.8 时该分数不足以拉开差距，"
-                 "须结合文字判断。hard_flags 非空时，该方案不能作为无条件推荐。"),
+                 "须结合文字判断。hard_flags 非空时，该方案不能作为无条件推荐。"
+                 "hard_gate.failed 为真时，无论加权分多高都不得排在可行方案之前。"),
     }
 
 
 def compare(concept_set: Dict[str, Any], ctx: Any) -> Dict[str, Any]:
     total_ops = len(ctx.opportunities)
     evals = [evaluate(c, ctx, total_ops) for c in concept_set["concepts"]]
-    order = sorted(evals, key=lambda e: -e["weighted"])
+    # 排序先按"是否过硬门槛"，再按加权分：
+    # 一个装不下的方案，不应因为造型好就排在能装下的方案之前。
+    order = sorted(evals, key=lambda e: (0 if e.get("rankable", True) else 1,
+                                         -e["weighted"]))
     return {
         "project_id": ctx.project_id,
         "revision": ctx.revision,
         "evaluations": evals,
         "ranking": [e["concept_id"] for e in order],
         "criteria": [dict(c) for c in CRITERIA],
+        "lead": {
+            "mode": str(getattr(ctx, "lead", {}).get("mode", "")),
+            "discipline": str(getattr(ctx, "lead", {}).get("project_lead_discipline", "")),
+            "label": str(getattr(ctx, "lead", {}).get("lead_label", "")),
+            "weights": _lead_weights(ctx),
+        },
         "recommendation": recommend(concept_set, evals, ctx),
-        "note": "评分用于呈现取舍，不用于替代业主决策；未评估项不按中间分计入。",
+        "note": "评分用于呈现取舍，不用于替代业主决策；未评估项不按中间分计入。"
+                "排序先过硬门槛，再比加权分。",
     }
 
 
@@ -221,9 +285,12 @@ def recommend(concept_set: Dict[str, Any], evals: Sequence[Dict[str, Any]],
     if not evals:
         return {"concept_id": "", "rationale": "无可比较方案", "why_not": [], "verify": []}
     by_id = {c["concept_id"]: c for c in concept_set["concepts"]}
-    top = max(evals, key=lambda e: (e["weighted"], e["coverage"]))
+    # 先排除过不了硬门槛的方案；全都过不了才退回按分数选，并明确说明原因
+    pool = [e for e in evals if e.get("rankable", True)] or list(evals)
+    top = max(pool, key=lambda e: (e["weighted"], e["coverage"]))
     chosen = by_id[top["concept_id"]]
     others = [e for e in evals if e["concept_id"] != top["concept_id"]]
+    blocked_by_gate = [e["concept_id"] for e in evals if not e.get("rankable", True)]
 
     why: List[str] = []
     strong = [r for r in top["rows"] if r.get("evaluated") and r["score"] >= 80]
@@ -249,6 +316,14 @@ def recommend(concept_set: Dict[str, Any], evals: Sequence[Dict[str, Any]],
         })
 
     verify: List[str] = []
+    if blocked_by_gate:
+        verify.append(
+            "以下方案未通过硬门槛，不参与推荐排序：" + "、".join(blocked_by_gate) +
+            "（安全 / 规范 / 已核实的容量或物理限制不成立，美学分不能抵消）")
+    if not top.get("rankable", True):
+        verify.append(
+            "**本轮所有方案都没有通过硬门槛**：请先解决上面列出的硬问题，"
+            "否则这不是选哪个方案的问题，是这个项目现在不成立")
     # 这套概念自己向某专业提了要求，而该专业还没有资料：必须先补，
     # 不能靠其他维度的高分把它平均成"可以推进"。
     for f in (top.get("hard_flags") or []):

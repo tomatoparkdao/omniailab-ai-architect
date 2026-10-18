@@ -93,8 +93,8 @@ DISCIPLINES: Dict[str, Discipline] = {
     ),
     "landscape": Discipline(
         id="landscape", label="景观",
-        keywords=("景观", "庭院", "花园", "园林", "屋顶花园", "露台", "绿化",
-                  "铺装", "水景", "植物", "室外"),
+        keywords=("景观", "庭院", "院子", "花园", "园林", "屋顶花园", "露台", "绿化",
+                  "铺装", "水景", "植物", "室外", "院落", "天井绿化"),
         deliverable="景观方案（竖向、铺装、种植、水景、照明）",
         question_slots=("site_area", "outdoor_program", "planting", "drainage"),
     ),

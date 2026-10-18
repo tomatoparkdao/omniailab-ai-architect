@@ -373,6 +373,7 @@ class ChangeImpactReport:
     risks: List[str] = field(default_factory=list)
     notes: List[str] = field(default_factory=list)
     cross_discipline: List[Dict[str, Any]] = field(default_factory=list)
+    intent: Dict[str, Any] = field(default_factory=dict)
     applied: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
@@ -394,6 +395,7 @@ class ChangeImpactReport:
             "risks": self.risks,
             "notes": self.notes,
             "cross_discipline": self.cross_discipline,
+            "design_intent": self.intent,
             "method": {
                 "change_ledger": "逐条核销的批注台账：每一轮变更都可追溯、可核销",
             },
@@ -456,6 +458,25 @@ class ChangeImpactReport:
             lines += [f"- {g['label']}（{g['stage_name']}）" for g in self.gates_to_reopen]
         else:
             lines.append("- 无需重新确认（变更未越过任何门禁）")
+        if self.intent and self.intent.get("has_intent"):
+            lines += ["", "## 设计意图影响", "",
+                      f"- 设计意图基准：`{self.intent.get('design_intent_id', '')}`"
+                      f"（主导：{self.intent.get('lead_label', '')}）"]
+            if self.intent.get("requires_formal"):
+                lines.append(f"- **{self.intent['headline']}**")
+                for f in self.intent.get("touched") or []:
+                    lines.append(f"  - {f['name']}（{f['basis']}）")
+                levels = self.intent.get("levels") or []
+                if levels:
+                    lines += ["", "| 级 | 处理步骤 | 说明 |", "|---|---|---|"]
+                    for lv in levels:
+                        note = lv.get("rule") or lv.get("action") or ""
+                        if lv.get("options"):
+                            note = "可选路径：" + "；".join(
+                                o["path"] for o in lv["options"][:3])
+                        lines.append(f"| {lv['level']} | {lv['name']} | {note} |")
+            else:
+                lines.append("- 未触及核心设计特征，可按常规变更处理。")
         if self.risks:
             lines += ["", "## 六、风险提示", ""] + [f"- {r}" for r in self.risks]
         if self.notes:
@@ -517,6 +538,48 @@ def _disc_label(did: str) -> str:
 
     d = DISCIPLINES.get(did)
     return d.label if d else did
+
+
+def _intent_impact(project: Project, text: str) -> Dict[str, Any]:
+    """改动是否动了已确认的设计意图。
+
+    G2 之前没有意图基准——那时谈不上"保护"，只能做一般影响分析。
+    G2 之后动了受保护特征，就必须走正式说明：先找保留意图的技术路径，
+    再谈改设计。
+    """
+    from . import intent as _intent
+
+    check = _intent.protect_check(project, text)
+    if not check.get("has_intent"):
+        return {"has_intent": False, "requires_formal": False,
+                "note": check.get("note", ""), "touched": []}
+
+    resolved = _intent.resolve(project, text)
+    touched = check.get("touched") or []
+    names = "、".join(t["name"] for t in touched)
+    # 是否走正式流程以 resolve 的结论为准：面层级调整属于"可接受调整"，
+    # protect_check 只看"有没有碰到"，判不了"碰到之后要不要走完整流程"。
+    requires_formal = bool(resolved.get("requires_formal", check.get("requires_formal")))
+    verdict = str(resolved.get("verdict") or "")
+    headline = (
+        f"这条改动触及已确认的设计意图（{names}）：不能按普通变更处理——"
+        "先由结构 / 机电给出保留原意图的技术路径，确不可行才提最小必要修改"
+    ) if (touched and requires_formal) else (
+        f"触及设计特征（{names}），但属于可接受调整范围："
+        "只改面层做法，不改变空间关系与视觉特征"
+    ) if touched else "未触及设计意图"
+    return {
+        "has_intent": True,
+        "design_intent_id": check.get("design_intent_id", ""),
+        "lead_label": check.get("lead_label", ""),
+        "requires_formal": requires_formal,
+        "touched": touched,
+        "levels": resolved.get("levels") or [],
+        "verdict": verdict,
+        "headline": headline,
+        "note": ("设计意图保护不否决技术判断：安全与规范不可突破；"
+                 "在此前提下最大限度保留原设计。"),
+    }
 
 
 def cross_discipline_impacts(text: str) -> List[Dict[str, Any]]:
@@ -720,6 +783,11 @@ def analyse(
 
     # ---- 跨专业：这次改动还牵动了谁 -------------------------------------
     rep.cross_discipline = cross_discipline_impacts(text)
+
+    # ---- 设计意图：动了受保护特征就不能按普通变更走 ---------------------
+    rep.intent = _intent_impact(project, text)
+    if rep.intent.get("requires_formal"):
+        rep.risks.append(rep.intent["headline"])
     if rep.cross_discipline:
         stages = [a["blocks_stage"] for x in rep.cross_discipline
                   for a in x["affects"]]

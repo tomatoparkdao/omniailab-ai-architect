@@ -71,6 +71,7 @@ DISCIPLINE_BUNDLE_FILES = (
     "discipline-interface-matrix.md",
     "discipline-responsibility-matrix.md",
     "information-request-list.md",
+    "design-leadership.json",
 )
 
 PRECISION_LABEL = {
@@ -399,10 +400,27 @@ def generate_bundle(project: Project, out_dir: str | Path,
         (d / "information-request-list.md").write_text(
             disc.render_information_requests_markdown(
                 project.name or project.project_id, asks), encoding="utf-8")
+
+        # --- 设计主导：谁定美学、谁研究怎么实现 --------------------------
+        from .. import leadership as lead_mod
+
+        lead = lead_mod.ensure(project, scope)
+        _write_json(d / "design-leadership.json", {
+            "project_id": project.project_id,
+            "revision": project.revision,
+            "generated_at": _now(),
+            "design_scope": list(scope.active()),
+            "design_scope_labels": scope.labels(),
+            "technical_support_scope": list(lead.support_disciplines),
+            "coordination_scope": list(lead.coordination),
+            **lead.to_dict(),
+            "note": ("项目主导专业在 G1 确认，S2 起据此决定概念组织与评价权重；"
+                     "辅助专业研究如何实现，不主导形态。"),
+        })
         for name in ("discipline-scope.json", "discipline-interface-matrix.json",
                      "discipline-scope.md", "discipline-interface-matrix.md",
                      "discipline-responsibility-matrix.md",
-                     "information-request-list.md"):
+                     "information-request-list.md", "design-leadership.json"):
             written.append(name)
 
     for name in written:

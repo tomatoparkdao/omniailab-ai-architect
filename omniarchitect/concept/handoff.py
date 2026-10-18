@@ -44,6 +44,17 @@ def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
     p = chosen.get("spatial_prototype") or {}
     base = state.get("baseline") or {}
     rec = comparison.get("recommendation") or {}
+    # 设计意图与主导专业：G2 落盘后，S3 起一律读这一份
+    try:
+        from .. import intent as _intent
+        from .. import leadership as _lead
+
+        intent = _intent.load(project) or {}
+        lead_raw = (project.meta or {}).get("leadership") or {}
+        if lead_raw:
+            intent["_leadership"] = dict(lead_raw)
+    except Exception:                                  # noqa: BLE001
+        intent = {}
 
     adjacency, separation = _relations(project, ctx, chosen)
     return {
@@ -62,6 +73,17 @@ def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
             "needs_human": list(base.get("needs_human") or []),
             # 多专业基准：S3 起每个专业按这份对齐，而不是只看风格锁
             "multidisciplinary": dict(base.get("multidisciplinary") or {}),
+            # 主导专业与设计意图：S3–S8 必须优先保留这份基准，
+            # 调整可以，但要出具影响说明并走变更审批。
+            "leadership": dict(intent.get("_leadership") or {}),
+            "design_intent": {
+                "design_intent_id": intent.get("design_intent_id", ""),
+                "lead_discipline": intent.get("lead_discipline", ""),
+                "lead_label": intent.get("lead_label", ""),
+                "features": list(intent.get("signature_features") or []),
+                "acceptable_adjustments": list(intent.get("acceptable_adjustments") or []),
+                "technical_dependencies": list(intent.get("technical_dependencies") or []),
+            } if intent else {},
         },
         "disciplines": {
             "directions": {

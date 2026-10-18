@@ -358,6 +358,16 @@ def approval_summary_text(project: Project, extra: str = "") -> str:
     lines += ["", "## 本次设计范围", ""]
     lines += [f"- {ln}" for ln in _disc.summary_lines(_scope)]
 
+    # --- 设计主导：谁定美学，谁研究怎么实现 ------------------------------
+    from .. import leadership as _lead
+
+    _scope2 = _disc.ensure(project)
+    _leadership = _lead.ensure(project, _scope2)
+    lines += ["", "## 设计主导与协作原则", ""]
+    lines += _lead.summary_lines(_leadership)
+    lines += ["", "> 主导专业有设计统筹权，没有安全豁免权。"
+                  "结构安全、消防与强制性规范、经核实的物理限制三条不可突破。"]
+
     lines += ["", "## 8. S2 概念设计的研究重点", ""]
     if opps["items"]:
         lines += [f"- {o['problem']}（下一步：{o['next_stage_recommendation']}）"

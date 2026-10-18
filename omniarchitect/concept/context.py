@@ -247,6 +247,24 @@ class ConceptContext:
     opportunity_ids: set = field(default_factory=set)
     warnings: List[str] = field(default_factory=list)
 
+    #: 主导专业与设计优先序。由 `leadership.ensure()` 决定，S2 据此加权——
+    #: 不是四个维度平权：主导专业关心的维度先看，辅助专业不因"好施工"而胜出。
+    lead: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def lead_id(self) -> str:
+        return str(self.lead.get("project_lead_discipline") or "")
+
+    @property
+    def lead_label(self) -> str:
+        return str(self.lead.get("lead_label") or "")
+
+    @property
+    def lead_weights(self) -> Dict[str, float]:
+        from ..leadership import PRIORITY_WEIGHTS
+
+        return dict(PRIORITY_WEIGHTS.get(self.lead_id) or {})
+
     @property
     def can_claim_dimensions(self) -> bool:
         """May this round claim "verified against real dimensions"?"""
@@ -301,6 +319,7 @@ class ConceptContext:
             "uncertainty": list(self.uncertainty),
             "sources": self.sources,
             "signals": self.signals,
+            "lead": dict(self.lead),
             "warnings": list(self.warnings),
         }
 
@@ -367,6 +386,15 @@ def build_context(project: Project, *, require_gate: bool = True) -> ConceptCont
 
     ctx.answers = {str(k): str((v or {}).get("value") or "")
                    for k, v in (interview.answers or {}).items()}
+    # 主导专业：S2 的权重与讨论顺序由它决定，不是所有项目套同一套权重
+    try:
+        from .. import disciplines as _disc
+        from .. import leadership as _lead
+
+        _scope = _disc.ensure(project, profile_id=profile.id)
+        ctx.lead = _lead.ensure(project, _scope, profile_id=profile.id).to_dict()
+    except Exception as exc:                       # noqa: BLE001
+        ctx.warnings.append(f"主导专业判定失败，按室内主导处理：{type(exc).__name__}")
     cons = project.constraints or {}
     ctx.style_preference = str(cons.get("style") or "").strip()
     ctx.location = _answer(project, "base.location")
