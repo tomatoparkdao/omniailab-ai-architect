@@ -22,6 +22,7 @@ from pathlib import Path
 
 from omniarchitect.demo import build_demo_project
 from omniarchitect.intake import (
+    DISCIPLINE_BUNDLE_FILES,
     S1_BUNDLE_FILES,
     answer_question,
     assess_gate,
@@ -68,9 +69,12 @@ def test_a_one_sentence_runs_the_whole_s1_engine():
 
         out = runner.run_stage("S1")
         assert out.status == "ok", out.error
-        # 8 份成果，且没有因为缺 envelope 而崩
+        # 八份核心成果必须在；多专业六份随范围追加，也必须在。
         produced = {Path(a).name for a in out.artifacts}
-        assert produced == set(S1_BUNDLE_FILES), produced
+        assert set(S1_BUNDLE_FILES) <= produced, set(S1_BUNDLE_FILES) - produced
+        assert set(DISCIPLINE_BUNDLE_FILES) <= produced, (
+            set(DISCIPLINE_BUNDLE_FILES) - produced)
+        assert produced == set(S1_BUNDLE_FILES) | set(DISCIPLINE_BUNDLE_FILES), produced
 
         # 无几何时精度为诊断级，并写进产出
         assert p.meta["intake"]["precision"] == "diagnostic"

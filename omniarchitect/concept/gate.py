@@ -215,9 +215,23 @@ def assess_gate(project: Project) -> GateAssessment:
             f"任务书基准已变更（{base.get('change_kind')}）：概念须按新任务书重做后再提交 G2",
         ))
 
+    # 专业范围：在范围内的专业没有方向，G2 不能算"概念已确认"
+    from .. import disciplines as _disc
+
+    chosen = next((c for c in (options.get("concepts") or [])
+                   if c.get("concept_id") == a.selected), None)
+    _scope = _disc.ensure(project)
+    chosen_dirs = set(((chosen or {}).get("disciplines") or {}).keys())
+    for did in _scope.active():
+        if did not in chosen_dirs:
+            a.blockers.append(_risk(
+                f"G2-DISCIPLINE-{did}",
+                f"{_disc.DISCIPLINES[did].label}在本次范围内，但选定的概念没有该专业方向："
+                "多专业项目不能只确认其中一半",
+            ))
+
     # 风格锁定冲突：同一修订下不得存在两个不同的锁定结果
     lock = state.get("style_lock") or {}
-    chosen = next((c for c in options["concepts"] if c["concept_id"] == a.selected), None)
     if lock and chosen:
         locked = set(lock.get("style_ids") or [])
         want = set(chosen.get("style_ids") or [])

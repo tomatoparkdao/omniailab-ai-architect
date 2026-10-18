@@ -848,6 +848,32 @@ class StageRunner:
     # ==================================================================
     def stage_S3(self) -> StageOutcome:
         d = self._dir("S3")
+        # 先看范围：专项委托不能被房间算法顶替。
+        # 专业范围路由：平面生成器只覆盖建筑/室内的空间组织。
+        # 景观、结构、机电专项不能拿住宅/办公的房间算法冒充成品。
+        from . import disciplines as _disc
+
+        _scope = _disc.ensure(self.project)
+        _active = set(_scope.active())
+        # 只有"真的有房间要做"才轮到空间规划算法；
+        # 纯景观/结构委托即使挂着建筑专业，也不该被房间组合顶替。
+        _room_like = [x for x in (self.project.program or [])
+                      if str(x.get("recipe") or "") not in
+                      ("", "planting", "paving", "water", "outdoor")]
+        needs_space_plan = ("interior" in _active) or \
+            ("architecture" in _active and len(_room_like) >= 3)
+        if _active and not needs_space_plan:
+            return StageOutcome(
+                "S3", "03 平面方案设计", skills_for_stage("S3"), adapter="dxf",
+                status="blocked",
+                error=("本次范围是" + "、".join(_scope.labels()) +
+                       "：当前平面生成器只做建筑/室内的空间组织，"
+                       "不能拿房间组合算法冒充专项方案。"),
+                next_action=("景观/结构/机电专项需各自的深化能力；"
+                             "本轮可先确认概念与条件，专项成果待相应能力接入"),
+                notes=[f"范围：{'、'.join(_scope.labels())}"],
+            )
+
         # 没有几何就出不了平面：这是"缺资料"，不是"程序坏了"。
         # 用 blocked + 人话 + 下一步，而不是把技术异常抛给客户。
         if not [s for s in self.project.spaces if s.use == "envelope"] \

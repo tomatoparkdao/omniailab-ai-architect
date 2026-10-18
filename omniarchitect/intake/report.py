@@ -60,6 +60,19 @@ S1_BUNDLE_FILES = (
     "s1-approval-summary.md",
 )
 
+#: 多专业项目额外产出的六份。
+#:
+#: 单专业（纯室内）项目不生成——空表比没有更危险：一份"全部 not_applicable"
+#: 的接口矩阵会被误读成"已核对无冲突"。
+DISCIPLINE_BUNDLE_FILES = (
+    "discipline-scope.json",
+    "discipline-scope.md",
+    "discipline-interface-matrix.json",
+    "discipline-interface-matrix.md",
+    "discipline-responsibility-matrix.md",
+    "information-request-list.md",
+)
+
 PRECISION_LABEL = {
     "diagnostic": "诊断级：只能做需求诊断与概念方向，不出任何技术成果",
     "schematic": "示意级：可出方案图与示意，尺寸须现场核验，不出施工图",
@@ -344,6 +357,53 @@ def generate_bundle(project: Project, out_dir: str | Path,
     (d / "s1-approval-summary.md").write_text(
         approval_summary_text(project, summary_text), encoding="utf-8")
     written.append("s1-approval-summary.md")
+
+    # --- 多专业范围：谁在范围、谁缺资料、谁和谁会打架 --------------------
+    # 这四份不是"补充材料"：G1 确认的就是它们。没有它们，多专业项目在
+    # S1 结束时根本无法说清"到底委托了什么"。
+    from .. import disciplines as disc
+
+    scope = disc.ensure(project)
+    if scope.active():
+        iface = disc.interfaces_for(scope)
+        _write_json(d / "discipline-scope.json", {
+            "project_id": project.project_id,
+            "revision": project.revision,
+            "generated_at": _now(),
+            **scope.to_dict(),
+            "interfaces": iface,
+            "note": ("out_of_scope 必须有证据；needs_data 表示在范围内但资料不足，"
+                     "不等于不做。"),
+        })
+        _write_json(d / "discipline-interface-matrix.json", {
+            "project_id": project.project_id,
+            "revision": project.revision,
+            "generated_at": _now(),
+            "interfaces": iface,
+            "counts": {
+                "active": sum(1 for r in iface if r["state"] == "active"),
+                "one_side_out": sum(1 for r in iface if r["state"] == "one_side_out"),
+            },
+        })
+        (d / "discipline-scope.md").write_text(
+            disc.render_scope_markdown(project.name or project.project_id,
+                                       project.revision, scope), encoding="utf-8")
+        (d / "discipline-interface-matrix.md").write_text(
+            disc.render_interface_markdown(project.name or project.project_id,
+                                           project.revision, iface), encoding="utf-8")
+        (d / "discipline-responsibility-matrix.md").write_text(
+            disc.render_responsibility_markdown(project.name or project.project_id,
+                                                project.revision, scope),
+            encoding="utf-8")
+        asks = disc.information_requests(scope)
+        (d / "information-request-list.md").write_text(
+            disc.render_information_requests_markdown(
+                project.name or project.project_id, asks), encoding="utf-8")
+        for name in ("discipline-scope.json", "discipline-interface-matrix.json",
+                     "discipline-scope.md", "discipline-interface-matrix.md",
+                     "discipline-responsibility-matrix.md",
+                     "information-request-list.md"):
+            written.append(name)
 
     for name in written:
         aid = f"art-s1-{name.replace('.', '-')}"

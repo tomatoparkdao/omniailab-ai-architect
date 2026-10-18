@@ -359,6 +359,11 @@ def start_interview(project: Project, text: str = "",
         state["start_mode"] = detect_start_mode(project, text)
         _intake(project)["interview"] = state
         seed_from_text(project, text)
+        # 范围要在第一次接触时就落档：后面问什么、能出什么，都以它为准
+        from .. import disciplines as _disc
+
+        _disc.store(project, _disc.detect(
+            [text, project.name or ""], profile_id=profile.id))
         _assume_project_type(project, profile)
         state = _store(project)
     state["updated_at"] = _now()
@@ -454,10 +459,41 @@ def next_questions(project: Project, limit: int = MAX_QUESTIONS_PER_ROUND,
         if not _dependency_ok(project, q):
             continue
         out.append(q)
+    # 专业范围路由：不在范围的专业，其专属问题不再追问
+    from .. import disciplines as _disc
+    from .profiles import SCOPE_QUESTIONS
+
+    scope = _disc.ensure(project, profile_id=profile.id)
+    _needed, excluded = _disc.route_question_slots(scope)
+    excluded_slots = {str(x) for x in excluded}
+    active = set(scope.active())
+
+    out = [q for q in out if q.slot not in excluded_slots]
+    for q in SCOPE_QUESTIONS:
+        did = _SCOPE_QUESTION_DISCIPLINE.get(q.id, "")
+        if did and did not in active:
+            continue
+        if q.slot in excluded_slots or q.slot in covered or q.id in asked:
+            continue
+        if not _dependency_ok(project, q):
+            continue
+        out.append(q)
+
+    order = {q.id: i for i, q in enumerate(profile.questions)}
+    base_len = len(profile.questions)
     out.sort(key=lambda q: (PRIORITY_ORDER.get(q.priority, 9),
                             -_stage_index(q.affects),
-                            profile.questions.index(q)))
+                            order.get(q.id, base_len)))
     return out[:max(0, limit)]
+
+
+#: 专业专属问题归属哪个专业（用于按范围路由）
+_SCOPE_QUESTION_DISCIPLINE = {
+    "scope.structure_type": "structure",
+    "scope.mep_depth": "mep",
+    "scope.landscape_program": "landscape",
+    "scope.planning_approval": "planning",
+}
 
 
 def _stage_index(stage_id: str) -> int:

@@ -151,6 +151,20 @@ def assess_gate(project: Project) -> GateAssessment:
             # 预算、面积口径这类问题不阻断，但必须写进确认摘要与后续门禁
             res.conditions.append(f"{c['problem']}（{c['evidence']}）")
 
+    # --- 1b. 范围缺口：在范围内但没资料，要写成条件，不能默认没问题 ---
+    from .. import disciplines as _disc
+
+    _scope = _disc.ensure(project)
+    if _scope.entries:
+        for did in _scope.needs_data():
+            e = _scope.entries[did]
+            res.conditions.append(
+                f"{_disc.DISCIPLINES[did].label}在范围内但资料不足"
+                f"（{e.evidence or '未提供'}）：该专业只能给条件与方案，"
+                f"不能作为落实依据")
+        if "structure" in _scope.active() and "structure" not in _scope.needs_data():
+            res.needs_human = sorted({*res.needs_human, "结构工程师"})
+
     # --- 2. is there a brief at all? --------------------------------------
     if not project.program and not answered_needs:
         res.blocks_gate.append({
@@ -336,6 +350,13 @@ def approval_summary_text(project: Project, extra: str = "") -> str:
             lines.append(f"- 使用人数：{hc} 人")
         for c in cap:
             lines.append(f"- {c['problem']}。可选：{'；'.join(c['alternatives'][:3])}")
+
+    # --- 设计范围：先讲清楚这次到底做什么专业 ---
+    from .. import disciplines as _disc
+
+    _scope = _disc.ensure(project)
+    lines += ["", "## 本次设计范围", ""]
+    lines += [f"- {ln}" for ln in _disc.summary_lines(_scope)]
 
     lines += ["", "## 8. S2 概念设计的研究重点", ""]
     if opps["items"]:

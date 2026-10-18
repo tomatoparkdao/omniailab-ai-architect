@@ -630,10 +630,45 @@ PROFILES: Dict[str, Profile] = {
 }
 
 # Question lookup across every profile (ids are globally unique by prefix).
+#: 专业专属问题：只有该专业在范围内时才问。
+#: 内容刻意只问"影响下一步能做什么"的事，不追求把专业问全。
+SCOPE_QUESTIONS: Tuple[Question, ...] = (
+    Question(
+        id="scope.structure_type", slot="structure_detail",
+        text="结构这块：是只做局部加固、要拆改承重构件，还是新建结构？现有结构图纸有吗？",
+        priority="critical", affects="S3",
+        why="决定结构专业是咨询、复核还是必须出计算书",
+        examples=("只加固梁", "要拆一面承重墙", "加夹层钢结构"),
+    ),
+    Question(
+        id="scope.mep_depth", slot="mep_depth",
+        text="机电要做到什么深度：只要点位与容量核对，还是要出系统图与管综？",
+        priority="important", affects="S7",
+        why="决定机电是配合提资还是独立出图",
+        examples=("只要点位", "要出管综", "消防单独分包"),
+    ),
+    Question(
+        id="scope.landscape_program", slot="outdoor_program",
+        text="室外这块主要要什么：铺装与动线、种植、水景，还是屋顶花园？",
+        priority="important", affects="S3",
+        why="景观方案的分区与工程量都从这里来",
+        examples=("铺装+种植", "要水景", "屋顶花园"),
+    ),
+    Question(
+        id="scope.planning_approval", slot="approval",
+        text="这个项目需要报建或报批吗？有没有已知的容积率、退线、限高要求？",
+        priority="critical", affects="S3",
+        why="涉及法定指标，缺了就不能承诺方案可报",
+        examples=("需要报建", "已有规划条件", "不用报"),
+    ),
+)
+
 QUESTION_INDEX: Dict[str, Question] = {}
 for _p in PROFILES.values():
     for _q in _p.questions:
         QUESTION_INDEX.setdefault(_q.id, _q)
+for _q in SCOPE_QUESTIONS:
+    QUESTION_INDEX.setdefault(_q.id, _q)
 
 # Slot -> question ids, used to decide "already answered elsewhere".
 SLOT_QUESTIONS: Dict[str, List[str]] = {}

@@ -23,6 +23,7 @@ import pytest
 
 from omniarchitect.demo import build_demo_project
 from omniarchitect.intake import (
+    DISCIPLINE_BUNDLE_FILES,
     PROFILES,
     QUESTION_INDEX,
     S1_BUNDLE_FILES,
@@ -118,8 +119,13 @@ def test_b_bundle_is_written_and_registered():
 
         out = tmp / "S1"
         result = generate_bundle(p, out)
-        assert result["count"] == len(S1_BUNDLE_FILES)
-        for name in S1_BUNDLE_FILES:
+        # 八份核心成果永远要有；多专业六份在范围非空时才追加。
+        expected = set(S1_BUNDLE_FILES)
+        if result["count"] > len(S1_BUNDLE_FILES):
+            expected |= set(DISCIPLINE_BUNDLE_FILES)
+        assert result["count"] == len(expected), sorted(
+            {x.name for x in out.iterdir()} ^ expected)
+        for name in expected:
             assert (out / name).exists(), name
 
         # 每份都绑定项目与修订，并登记为 artifact

@@ -132,6 +132,12 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
             "image_slots": moodboards[c["concept_id"]]["image_slots"],
         }
         c["diagrams"] = [{"kind": d["kind"], "path": d["path"]} for d in all_diagrams[c["concept_id"]]]
+        # 同一套概念下，各专业各自的"怎么做"——不是四套平行方案
+        from .. import disciplines as _disc
+        from . import disciplines as _cdisc
+
+        _scope = _disc.ensure(project, profile_id=ctx.profile_id)
+        c["disciplines"] = _cdisc.for_concept(project, _scope, c, ctx)
 
     comparison = cmp.compare(concept_set, ctx)
 
