@@ -156,8 +156,10 @@ def test_case_card_has_a_clickable_source_link():
 def test_proposal_renders_cards_figures_and_links():
     with tempfile.TemporaryDirectory() as td:
         out = Path(td)
+        # 单测不联网：素材库取图是运行时行为，不该让测试依赖它。
         page = html_mod.proposal(PAYLOAD, out, project_name="测试别墅",
-                                 research={"cases": [CASE]}, project_dir=out)
+                                 research={"cases": [CASE]}, project_dir=out,
+                                 with_images=False)
         text = page.read_text(encoding="utf-8")
         assert CASE["url"] in text
         assert "查看原案例" in text

@@ -3,7 +3,7 @@ name: omniailab-quantity-takeoff
 description: 工程量计算 —— 逐阶段从统一空间模型滚动计量，S8 才形成与图纸一致的正式工程量清单
 capability: quantity-takeoff
 stages: [S1, S2, S3, S4, S5, S6, S7, S8]
-version: 1.7.0
+version: 1.8.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

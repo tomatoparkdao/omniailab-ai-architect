@@ -1,17 +1,18 @@
-"""客户可读的 HTML 提案：一页看完三套方案，案例带图、链接可点。
+"""客户可读的 HTML 提案：作品是主角，版面是配角。
 
-这个模块替换的是上一轮那个在脚本里拼字符串的单页阅读版。区别不在"更好看"，
-而在三件事：
+上一版被批评得对：卡片、侧栏、大留白、小图被塞进大白框——那是管理后台的
+版式，不是设计事务所的版式。这一版按作品的逻辑重排：
 
-1. **案例不再是纯文本。** 每个案例一张图：有登记的授权照片就放照片并署名，
-   没有就放本系统按案例文字画的手法示意图，旁边一个"查看原案例"按钮。客户
-   既看得到东西，也不会误以为那张图是原项目照片。
-2. **图有身份。** 真实案例、手法示意、原创意向、正式效果图四种东西在版面上
-   用不同的标记区分，页首有图例。混着放最省事，也最容易在交付后说不清。
-3. **方案按"设计怎么来的"排，不按字段排。** 机会 → 为什么这样组织 → 人会
-   经历什么 → 光视比例材料怎么配合 → 三个专业怎么成整体 → 要谁配合 → 代价。
+1. **视觉分级**。封面与每套方案各有一张满幅图（素材库真实图片），分析图按
+   重要度分满宽 / 双联 / 三联三档。图不再被平均对待。
+2. **图有身份**。真实素材、手法示意、原创意向、正式效果图四种东西用不同的
+   标记与图注区分，页首有图例。混着放最省事，也最容易在交付后说不清。
+3. **文字退到图后面**。每套方案先给一句主张、一张图，再给分析；不再用一列
+   栏面板把结论挤在边上。代价与前提放成并列的三栏注，读完图再看。
+4. **没有素材就老实承认**。素材库取不到图时整块不出现，不缩放一张示意图
+   去占它的位置——那正是上一版最大的问题。
 
-只读 S2 已经产出的 JSON，不重新计算设计结论；没有的东西不画。
+只读 S2 已经产出的 JSON 与素材库目录，不重新计算设计结论；没有的东西不画。
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
@@ -23,6 +24,7 @@ import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
+from ..research import library as lib
 from ..research import preview as pv
 
 #: 空间家族的中文说法。原型与推敲策略共用这几个。
@@ -35,187 +37,227 @@ FAMILY_CN: Dict[str, str] = {
 #: 图种的中文名。
 KIND_CN: Dict[str, str] = {
     "functional": "功能关系图", "zoning": "分区图", "circulation": "动线概念图",
-    "daylight": "采光策略图", "sequence": "空间序列图", "massing": "体量概念图",
-    "section": "剖面与楼层图", "landscape": "景观结构图",
-    "moodboard": "材料与色彩板",
+    "daylight": "采光策略图", "sequence": "空间序列图", "massing": "体量演变图",
+    "section": "剖面与楼层图", "landscape": "景观总平面",
+    "axon": "室内剖切轴测", "moodboard": "材料与色彩板",
 }
 
 #: 每个主导专业先看哪几张图。图种顺序本身就是阅读顺序。
 FIGURE_ORDER: Dict[str, Tuple[str, ...]] = {
-    "architecture": ("massing", "section", "sequence", "daylight"),
-    "interior": ("zoning", "circulation", "daylight", "sequence"),
-    "landscape": ("landscape", "sequence", "zoning", "daylight"),
+    "architecture": ("massing", "section", "axon", "sequence", "daylight",
+                     "zoning", "circulation", "functional", "landscape"),
+    "interior": ("axon", "zoning", "circulation", "daylight", "sequence",
+                 "massing", "section", "functional", "landscape"),
+    "landscape": ("landscape", "sequence", "daylight", "zoning", "circulation",
+                  "axon", "massing", "section", "functional"),
+}
+
+#: 每个专业取图时的检索词（素材库标签里真的有的词）
+LEAD_WORDS: Dict[str, Tuple[str, ...]] = {
+    "architecture": ("别墅", "现代建筑", "庭院", "住宅", "泳池"),
+    "interior": ("客厅", "公寓", "卧室", "餐厅", "室内设计"),
+    "landscape": ("花园", "庭院", "景观草坪", "户外花园", "树木"),
 }
 
 CSS = """
 :root{
-  --ink:#1A1F1C; --muted:#6B7280; --line:#E3E1D9; --paper:#F6F5F1;
-  --card:#FFFFFF; --accent:#2F5D45; --accent-soft:#EDF2EC;
-  --amber:#A9701F; --amber-soft:#FAF2E3; --dark:#121714; --dark-2:#1B231E;
-  --radius:14px;
+  --paper:#FAF8F3; --paper-2:#F2EFE6; --ink:#1A1D1A; --body:#2E332E;
+  --muted:#6E736A; --line:#DED9CB; --line-soft:#E9E5D8;
+  --brand:#2F5D45; --brand-soft:#E8EEE7; --warm:#A97A43; --warm-soft:#F6EDDD;
+  --serif:'Songti SC','Noto Serif SC','Source Han Serif SC',Georgia,serif;
+  --sans:'Noto Sans SC','PingFang SC','Microsoft YaHei',-apple-system,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',-apple-system,sans-serif;
-  line-height:1.75;-webkit-font-smoothing:antialiased}
-a{color:var(--accent);text-decoration:none}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--sans);font-size:16px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--brand);text-decoration:none}
 a:hover{text-decoration:underline}
-main{max-width:1180px;margin:0 auto;padding:0 24px 96px}
-.serif{font-family:'Songti SC','Noto Serif SC',Georgia,serif}
+.wrap{max-width:1440px;margin:0 auto;padding:0 44px}
+.serif{font-family:var(--serif)}
 
 /* ---------- 封面 ---------- */
-.cover{background:var(--dark);color:#F2F4F1;padding:64px 0 52px;position:relative;
-  overflow:hidden;margin:0 calc(50% - 50vw)}
-.cover-in{max-width:1132px;margin:0 auto;padding:0 24px}
-.cover:after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;
-  border:1px solid rgba(255,255,255,.10);border-radius:50%}
-.cover-top{font-size:12px;letter-spacing:.22em;color:#8FA697;text-transform:uppercase}
-.cover h1{font-size:44px;line-height:1.18;margin:18px 0 10px;font-weight:600}
-.cover .lede{color:#BEC7C0;font-size:15px;margin:0 0 30px;max-width:760px}
-.stats{display:flex;gap:44px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.12);
+.cover{position:relative;min-height:86vh;display:flex;align-items:flex-end;
+  color:#F4F2EC;overflow:hidden;background:#20241F}
+.cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.92}
+.cover:after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(16,20,16,.18) 0%,rgba(16,20,16,.30) 48%,
+  rgba(16,20,16,.86) 100%)}
+.cover-in{position:relative;z-index:2;width:100%;max-width:1440px;margin:0 auto;
+  padding:0 44px 68px}
+.cover-top{font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+  color:#B9C7BA;margin-bottom:22px}
+.cover h1{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;
+  font-size:clamp(40px,5.2vw,74px);line-height:1.06;margin:0 0 18px;max-width:16em}
+.cover .sub{font-size:17px;color:#D6D9D0;max-width:44em;margin:0 0 40px;line-height:1.8}
+.cover-meta{display:flex;gap:56px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.22);
   padding-top:22px}
-.stats div{font-size:12px;color:#9DA9A1;letter-spacing:.06em}
-.stats b{display:block;font-size:26px;color:#F2F4F1;font-weight:600;letter-spacing:0}
+.cover-meta div{font-size:12px;letter-spacing:.1em;color:#A9B6AC}
+.cover-meta b{display:block;font-family:var(--serif);font-size:30px;color:#F4F2EC;
+  font-weight:600;letter-spacing:0;margin-bottom:2px}
 
 /* ---------- 图例 ---------- */
-.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0 0}
-.legend div{background:var(--card);border:1px solid var(--line);border-radius:10px;
-  padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.6}
-.legend b{display:block;color:var(--ink);font-size:13px;margin-bottom:2px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border-bottom:1px solid var(--line);margin:0 0 8px}
+.legend div{padding:20px 22px 20px 0;font-size:12.5px;color:var(--muted);line-height:1.65}
+.legend b{display:block;color:var(--ink);font-size:13px;font-weight:600;margin-bottom:3px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;
   vertical-align:1px}
-.dot.case{background:#9AA3AE}.dot.plate{background:var(--accent)}
-.dot.own{background:var(--amber)}.dot.final{background:var(--dark)}
+.dot.case{background:#9AA3AE}.dot.plate{background:var(--brand)}
+.dot.own{background:var(--warm)}.dot.final{background:#191C19}
+
+/* ---------- 段落系统 ---------- */
+.sec{padding:52px 0 10px}
+.sec-label{font-size:11px;letter-spacing:.24em;color:var(--brand);
+  text-transform:uppercase;margin:0 0 10px}
+.sec-title{font-family:var(--serif);font-size:clamp(24px,2.4vw,32px);font-weight:600;
+  margin:0 0 26px;letter-spacing:-.01em;line-height:1.3}
 
 /* ---------- 总览 ---------- */
-.sec-label{font-size:12px;letter-spacing:.2em;color:var(--accent);
-  text-transform:uppercase;margin:60px 0 8px}
-.sec-title{font-size:26px;margin:0 0 18px;font-weight:600}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.jump{display:block;background:var(--card);border:1px solid var(--line);
-  border-radius:var(--radius);padding:22px 22px 18px;transition:.18s;
-  color:inherit}
-.jump:hover{border-color:#B9C8BE;transform:translateY(-2px);text-decoration:none;
-  box-shadow:0 10px 28px rgba(20,30,24,.07)}
-.jump .no{font-size:11px;letter-spacing:.14em;color:var(--muted)}
-.jump h3{font-size:20px;margin:8px 0 6px;font-weight:600}
-.jump p{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.7}
-.jump .tags{display:flex;gap:6px;flex-wrap:wrap}
-.tag{font-size:11px;padding:3px 9px;border-radius:999px;background:var(--accent-soft);
-  color:var(--accent);border:1px solid #D7E2D8}
+.jumps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.jump{display:block;color:inherit;border-top:2px solid var(--ink);padding-top:14px}
+.jump:hover{text-decoration:none}
+.jump:hover h3{color:var(--brand)}
+.jump .thumb{overflow:hidden;background:var(--paper-2);margin-bottom:14px}
+.jump .thumb img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;
+  transition:transform .5s ease}
+.jump:hover .thumb img{transform:scale(1.03)}
+.jump .no{font-size:11px;letter-spacing:.2em;color:var(--muted)}
+.jump h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:6px 0 6px;
+  transition:color .2s}
+.jump p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.7}
 
 /* ---------- 方案 ---------- */
-.concept{margin-top:64px;padding-top:34px;border-top:1px solid var(--line)}
-.c-head{max-width:820px}
-.c-eyebrow{font-size:12px;letter-spacing:.16em;color:var(--muted)}
-.c-head h2{font-size:34px;margin:8px 0 12px;font-weight:600;letter-spacing:-.01em}
-.statement{font-size:16.5px;line-height:1.9;color:#333A35;margin:0}
-.c-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:38px;margin-top:26px}
-.side h4{font-size:11px;letter-spacing:.16em;color:var(--muted);margin:0 0 8px;
-  text-transform:uppercase}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:16px 18px;margin-bottom:14px}
-.panel p,.panel li{font-size:12.8px;line-height:1.75;color:#3C443E;margin:0}
-.panel ul{margin:0;padding-left:16px}
-.panel li+li{margin-top:5px}
-.panel.warn{background:var(--amber-soft);border-color:#EBDCBE}
-.panel.warn h4{color:var(--amber)}
-.panel.dark{background:var(--dark-2);border-color:var(--dark-2);color:#DDE4DE}
-.panel.dark p{color:#C6D0C8}
-.panel.dark h4{color:#8FA697}
+.concept{padding:88px 0 40px;border-top:1px solid var(--line);margin-top:64px}
+.c-head{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;
+  align-items:start;margin-bottom:30px}
+.c-no{font-size:12px;letter-spacing:.22em;color:var(--brand);margin-bottom:14px}
+.c-no span{color:var(--muted);letter-spacing:.08em}
+.c-title{font-family:var(--serif);font-size:clamp(32px,4vw,56px);font-weight:600;
+  line-height:1.1;margin:0;letter-spacing:-.015em}
+.c-facts{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+.c-facts dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
+.c-facts dt{font-size:11px;letter-spacing:.12em;color:var(--muted)}
+.c-facts dd{margin:0;font-size:13px;color:var(--body);line-height:1.6}
 
-.callout{background:var(--accent-soft);border-left:3px solid var(--accent);
-  border-radius:0 12px 12px 0;padding:18px 20px;margin:0 0 16px}
-.callout h4{margin:0 0 6px;font-size:12px;letter-spacing:.14em;color:var(--accent)}
-.callout p{margin:0;font-size:15px;line-height:1.85}
-.why{margin:0 0 22px;font-size:14px;color:#414A43}
-.why b{color:var(--ink)}
-.block-h{font-size:13px;letter-spacing:.12em;color:var(--muted);margin:34px 0 12px;
-  padding-bottom:6px;border-bottom:1px solid var(--line)}
+.statement{font-size:18px;line-height:1.95;color:var(--body);max-width:50em;
+  margin:0 0 34px}
 
 /* ---------- 图 ---------- */
-.figs{display:grid;grid-template-columns:1fr;gap:16px}
-.figs.two{grid-template-columns:1fr 1fr}
-.figs.two .fig:only-child{grid-column:span 1}
-.fig{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:10px 10px 6px;overflow:hidden}
-.fig svg{display:block;width:100%;height:auto;border-radius:6px}
-.cap{font-size:11.5px;color:var(--muted);padding:8px 4px 4px;letter-spacing:.02em}
-.cap b{color:var(--ink);font-weight:600;margin-right:6px}
+.hero{margin:0 0 10px}
+.hero img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;
+  background:var(--paper-2)}
+.hero.tall img{aspect-ratio:4/3}
+.cap{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  border-top:1px solid var(--line);margin-top:10px;padding-top:9px;
+  font-size:12px;color:var(--muted);line-height:1.6}
+.cap .fno{font-family:var(--serif);font-size:11px;letter-spacing:.14em;
+  color:var(--ink);white-space:nowrap}
+.cap .who{text-align:right;white-space:nowrap;color:#8A8F86}
 
-/* ---------- 序列 ---------- */
-.seq{list-style:none;margin:0;padding:0;display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.seq li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-.seq .k{font-size:11px;letter-spacing:.1em;color:var(--accent)}
-.seq .e{font-size:12.5px;color:#3C443E;line-height:1.65;margin-top:4px}
+.figs{display:grid;grid-template-columns:1fr;gap:26px;margin:0}
+.figs.pair{grid-template-columns:1fr 1fr}
+.figs.pair .fig:first-child{grid-column:span 2}
+.fig{background:transparent}
+.fig svg{display:block;width:100%;height:auto}
+.fig .frame{border:1px solid var(--line);background:#fff;padding:0}
 
-/* ---------- 四问 ---------- */
-.quad{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.quad div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.quad h5{margin:0 0 6px;font-size:11px;letter-spacing:.12em;color:var(--muted)}
-.quad p{margin:0;font-size:12.8px;line-height:1.7;color:#3C443E}
+/* ---------- 三栏注（替代侧栏面板） ---------- */
+.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border-top:1px solid var(--line);margin:44px 0 0}
+.notes > div{padding:22px 30px 6px 0;border-right:1px solid var(--line-soft)}
+.notes > div:last-child{border-right:0;padding-right:0}
+.notes h5{font-size:11px;letter-spacing:.18em;color:var(--muted);margin:0 0 10px;
+  font-weight:600;text-transform:uppercase}
+.notes p,.notes li{font-size:14px;line-height:1.8;color:var(--body);margin:0}
+.notes ul{margin:0;padding-left:16px}
+.notes li{margin:0 0 4px}
+.notes .warn h5{color:var(--warm)}
+.notes .warn li{color:#5B4B34}
+.notes b{color:var(--ink)}
 
-/* ---------- 材料 ---------- */
-.mats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mat{border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:var(--card)}
-.mat .n{font-size:12.5px;font-weight:600}
-.mat .a{font-size:11px;color:var(--muted);line-height:1.5}
-.sws{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.sw{width:30px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.06)}
+/* ---------- 材料带 ---------- */
+.mats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:18px;margin:0 0 8px}
+.mat{border-top:1px solid var(--line);padding-top:10px}
+.mat .ph{aspect-ratio:4/3;overflow:hidden;background:var(--paper-2);margin-bottom:10px}
+.mat .ph img{display:block;width:100%;height:100%;object-fit:cover}
+.mat .n{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.4}
+.mat .a{font-size:12px;color:var(--muted);line-height:1.6;margin-top:2px}
+.sws{display:flex;gap:0;margin-top:10px;border:1px solid var(--line)}
+.sw{flex:1;height:16px}
 
-/* ---------- 案例卡 ---------- */
-.cases{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.case{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  overflow:hidden;display:flex;flex-direction:column}
-.thumb{position:relative;background:#F1F2EE;border-bottom:1px solid var(--line)}
-.thumb svg{display:block;width:100%;height:auto}
-.thumb img{display:block;width:100%;height:auto}
-.thumb .badge{position:absolute;left:10px;top:10px;font-size:10.5px;padding:3px 8px;
-  border-radius:999px;background:rgba(255,255,255,.92);color:var(--ink);
-  border:1px solid var(--line);letter-spacing:.04em}
-.case-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.case-kicker{font-size:10.5px;letter-spacing:.12em;color:var(--muted)}
-.case h4{margin:0;font-size:15.5px;line-height:1.45;font-weight:600}
+/* ---------- 案例 ---------- */
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.case{border-top:2px solid var(--ink);padding-top:14px;display:flex;
+  flex-direction:column}
+.case .thumb{overflow:hidden;background:var(--paper-2);margin-bottom:12px}
+.case .thumb svg,.case .thumb img{display:block;width:100%;height:auto}
+.case .thumb .badge{display:inline-block;font-size:10px;letter-spacing:.14em;
+  padding:2px 8px;border:1px solid var(--line);color:var(--muted);
+  background:var(--paper);margin-bottom:8px}
+.case-kicker{font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:6px}
+.case h4{font-family:var(--serif);font-size:19px;line-height:1.4;font-weight:600;
+  margin:0 0 4px}
 .case h4 a{color:var(--ink)}
-.case h4 a:hover{color:var(--accent);text-decoration:none}
-.by{font-size:11.5px;color:var(--muted);margin:0}
-.why2{font-size:12.5px;color:#3C443E;margin:4px 0 0;line-height:1.7}
-.tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
-.tech span{font-size:11px;padding:2px 8px;border-radius:6px;background:#F2F4F1;
-  border:1px solid var(--line);color:#3C443E}
-.points{margin:4px 0 0;padding-left:15px}
-.points li{font-size:12px;color:var(--muted);line-height:1.65}
-.case-foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;
-  justify-content:space-between;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
-  padding:8px 14px;border-radius:9px;background:var(--accent);color:#fff}
-.btn:hover{background:#254A37;text-decoration:none}
-.rights{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.4}
-.src{margin:6px 0 0;font-size:11px;color:var(--muted);word-break:break-all}
-.src a{color:#4B6B58}
+.case h4 a:hover{color:var(--brand);text-decoration:none}
+.by{font-size:12px;color:var(--muted);margin:0 0 8px}
+.why2{font-size:13.5px;color:var(--body);margin:0 0 10px;line-height:1.75}
+.tech{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.tech span{font-size:11px;padding:2px 8px;border:1px solid var(--line);
+  color:#5B6157}
+.points{margin:0 0 10px;padding-left:16px}
+.points li{font-size:12.5px;color:var(--muted);line-height:1.7}
+.case-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;padding-top:10px}
+.btn{font-size:12.5px;font-weight:600;padding:8px 0;color:var(--brand);
+  border-bottom:1px solid var(--brand)}
+.btn:hover{text-decoration:none;opacity:.75}
+.rights{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.45}
 
-/* ---------- 表格与其他 ---------- */
-table{border-collapse:collapse;width:100%;margin:14px 0 18px;font-size:12.5px;
-  background:var(--card)}
-th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
-th{background:#F1F3EF;font-weight:600}
-blockquote{margin:14px 0;padding:12px 16px;border-left:3px solid var(--accent);
-  background:var(--card);color:#3C443E;font-size:13px}
+/* ---------- 表格 / 结语 ---------- */
+table{border-collapse:collapse;width:100%;margin:16px 0 20px;font-size:13px}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;
+  vertical-align:top}
+th{font-weight:600;color:var(--ink);border-bottom:1px solid var(--ink)}
+blockquote{margin:18px 0;padding:20px 24px;border-left:2px solid var(--brand);
+  background:#fff;font-size:14px;line-height:1.85;color:var(--body)}
 ul.plain{padding-left:18px}
-ul.plain li{font-size:13.5px;margin:4px 0}
-footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);
-  font-size:11.5px;color:var(--muted);line-height:1.8}
+ul.plain li{font-size:14.5px;margin:5px 0}
+footer{margin:80px 0 0;padding:26px 0 40px;border-top:1px solid var(--ink);
+  font-size:12px;color:var(--muted);line-height:1.9}
 footer b{color:var(--ink)}
-@media (max-width:960px){
-  .c-grid{grid-template-columns:1fr}
-  .cards,.cases,.quad,.mats,.figs.two,.legend{grid-template-columns:1fr 1fr}
-  .cover h1{font-size:32px}
+.sig{font-family:var(--serif);color:var(--ink)}
+
+@media (max-width:1100px){
+  .wrap{padding:0 28px}
+  .c-head{grid-template-columns:1fr;gap:22px}
+  .c-facts{max-width:420px}
+  .legend{grid-template-columns:1fr 1fr}
+  .notes{grid-template-columns:1fr}
+  .notes > div{border-right:0;border-bottom:1px solid var(--line-soft);
+    padding:18px 0}
+  .jumps{grid-template-columns:1fr}
+  .cases{grid-template-columns:1fr}
+  .figs.pair{grid-template-columns:1fr}
+  .figs.pair .fig:first-child{grid-column:span 1}
+}
+@media (max-width:720px){
+  body{font-size:15px}
+  .cover{min-height:70vh}
+  .cover-meta{gap:26px}
+  .cover-meta b{font-size:24px}
+  .legend{grid-template-columns:1fr}
+  .concept{padding:56px 0 24px}
+  .mats{grid-template-columns:1fr 1fr}
 }
 @media print{
-  body{background:#fff} .jump:hover{transform:none;box-shadow:none}
-  .concept{break-inside:avoid} .case{break-inside:avoid}
+  body{background:#fff}
+  .cover{min-height:auto;page-break-after:always}
+  .concept{page-break-before:always}
+  a{color:#000}
 }
 """
 
@@ -246,8 +288,7 @@ def _client_why(text: Any) -> str:
 
     `why_this_strategy` 是打分的副产物，原样印出来是这样的：
 
-        回应私密：业主原话提到「私密」；回应采光：业主原话提到「采光」；回应采光：
-        业主原话提到「采光」；业主原话提到「私密」「采光」「通透」…
+        回应私密：业主原话提到「私密」；回应采光：业主原话提到「采光」…
 
     同一个词被重复列了三四遍，客户读到的是"系统在给自己找证据"，而不是
     "为什么这样设计"。这里做三件事：合并同类"回应"、去掉纯证据句、去重。
@@ -288,12 +329,18 @@ def _client_why(text: Any) -> str:
     return _clip(out, 200)
 
 
-def _figure(path: str | Path, kind: str, note: str = "") -> str:
+def _cap(fno: str, label: str, note: str = "", who: str = "") -> str:
+    """统一图注：编号 + 图名 + 一句说明 + 右端归属。"""
+    right = who or "本系统确定性绘制 · 关系示意 · 非按比例"
+    return (f'<div class="cap"><span><span class="fno">{_h(fno)}</span>'
+            f'　{_h(label)}{("　" + _h(note)) if note else ""}</span>'
+            f'<span class="who">{_h(right)}</span></div>')
+
+
+def _figure(path: str | Path, kind: str, *, fno: str = "", note: str = "") -> str:
     label = KIND_CN.get(kind, kind)
     return ('<figure class="fig">' + _svg_inline(path) +
-            f'<figcaption class="cap"><b>{_h(label)}</b>'
-            f'{_h(note or "本系统确定性绘制 · 关系示意、非按比例")}</figcaption>'
-            "</figure>")
+            _cap(fno or "FIG", label, note) + "</figure>")
 
 
 def _diagram_files(concept: Dict[str, Any]) -> List[Tuple[str, str]]:
@@ -366,8 +413,6 @@ def case_card(ref: Dict[str, Any], full: Optional[Dict[str, Any]] = None, *,
         merged.get("year") or "",
     ) if x])
 
-    # "怎么用到这个方案"是概念级的建议：同一方案的两张卡都印一遍，
-    # 客户会以为复制粘贴了。只在第一张上说。
     points = [str(x) for x in (ref.get("borrow") or [])][:2] if show_points else []
     verify = str(ref.get("verify_label") or merged.get("verify_label") or "")
     # 「已回读核验：页面可打开，标题一致」在卡片上太长，卡上只要结论，
@@ -378,18 +423,16 @@ def case_card(ref: Dict[str, Any], full: Optional[Dict[str, Any]] = None, *,
 
     return f"""
 <article class="case">
-  <div class="thumb">{thumb}<span class="badge">{_h(badge)}</span></div>
-  <div class="case-body">
-    <div class="case-kicker">REF {index:02d}　{_h(disc)}{_h("　·　" + verify if verify else "")}</div>
-    <h4><a href="{_h(url)}" target="_blank" rel="noopener noreferrer">{_h(merged.get("title"))}</a></h4>
-    <p class="by">{_h(byline)}</p>
-    <p class="why2">{_h(_clip(why, 120))}</p>
-    {f'<div class="tech">{chips}</div>' if chips else ''}
-    {('<ul class="points">' + ''.join(f'<li>{_h(_clip(p, 70))}</li>' for p in points) + '</ul>') if points else ''}
-    <div class="case-foot">
-      <a class="btn" href="{_h(url)}" target="_blank" rel="noopener noreferrer">查看原案例 ↗</a>
-      <span class="rights">{_h(visual.get("rights_label"))}<br>{_h(_clip(visual.get("note"), 34))}</span>
-    </div>
+  <div class="thumb">{thumb}<div><span class="badge">{_h(badge)}</span></div></div>
+  <div class="case-kicker">REF {index:02d}　{_h(disc)}{_h("　·　" + verify if verify else "")}</div>
+  <h4><a href="{_h(url)}" target="_blank" rel="noopener noreferrer">{_h(merged.get("title"))}</a></h4>
+  <p class="by">{_h(byline)}</p>
+  <p class="why2">{_h(_clip(why, 120))}</p>
+  {f'<div class="tech">{chips}</div>' if chips else ''}
+  {('<ul class="points">' + ''.join(f'<li>{_h(_clip(p, 70))}</li>' for p in points) + '</ul>') if points else ''}
+  <div class="case-foot">
+    <a class="btn" href="{_h(url)}" target="_blank" rel="noopener noreferrer">查看原案例 ↗</a>
+    <span class="rights">{_h(visual.get("rights_label"))}<br>{_h(_clip(visual.get("note"), 34))}</span>
   </div>
 </article>"""
 
@@ -403,16 +446,25 @@ def _seq_steps(concept: Dict[str, Any]) -> List[Dict[str, Any]]:
     return [s for s in (steps or []) if isinstance(s, dict)]
 
 
-def _materials(concept: Dict[str, Any]) -> str:
+def _materials(concept: Dict[str, Any],
+               photos: Sequence[Dict[str, Any]] = ()) -> str:
+    """材料带：有素材照片就放照片，没有就只给名称与做法（不拿色块冒充材质）。"""
     mats = [m for m in (concept.get("material_direction") or [])
             if isinstance(m, dict) and m.get("name")]
     if not mats:
-        return '<p style="font-size:12.5px;color:#6B7280">本方案未指定材料方向。</p>'
+        return '<p style="font-size:14px;color:var(--muted)">本方案未指定材料方向。</p>'
     cells = []
-    for m in mats[:6]:
+    for i, m in enumerate(mats[:6]):
+        ph = ""
+        if i < len(photos) and photos[i].get("path"):
+            ph = (f'<div class="ph"><img src="{_h(photos[i]["file"])}" '
+                  f'alt="{_h(photos[i]["title"])}"></div>')
         cells.append(
-            f'<div class="mat"><div class="n">{_h(m.get("name"))}</div>'
-            f'<div class="a">{_h(_clip(m.get("application") or "", 26))}</div></div>')
+            f'<div class="mat">{ph}'
+            f'<div class="n">{_h(m.get("name"))}</div>'
+            f'<div class="a">{_h(_clip(m.get("application") or "", 26))}'
+            f'{("　·　" + _h(_clip(m.get("finish") or "", 16))) if m.get("finish") else ""}'
+            f'</div></div>')
     return '<div class="mats">' + "".join(cells) + "</div>"
 
 
@@ -427,7 +479,8 @@ def _swatches(concept: Dict[str, Any]) -> str:
         f'<span class="sw" title="{_h(c.get("name"))} {_h(c.get("hex"))}" '
         f'style="background:{_h(c.get("hex"))}"></span>' for c in items[:9])
     names = "、".join(_h(c.get("name")) for c in items[:4] if c.get("name"))
-    return f'<div class="sws">{sw}</div><div class="a" style="margin-top:6px">{names}</div>'
+    return (f'<div class="sws">{sw}</div>'
+            f'<div style="font-size:12px;color:var(--muted);margin-top:6px">{names}</div>')
 
 
 def _drop_shared_lead(first: Any, second: Any, probe: int = 14) -> str:
@@ -464,6 +517,10 @@ def _why_line(concept: Dict[str, Any]) -> str:
     """
     d = concept.get("deliberation") or {}
     cleaned = _client_why(d.get("why_this_strategy"))
+    # 推敲层给的原文里夹着字段名（parti / massing / zones…）。客户不该看到
+    # "parti；" 这种词——它是我们的中间产物，不是设计语言。
+    cleaned = re.sub(r"\b(parti|massing|section|facade|zoning|zones|levels_program|"
+                     r"logic_key|strong_water)\b\s*[；;：:，,]?\s*", "", cleaned).strip()
     if len(cleaned) >= 30:
         return cleaned
     strategy = _clip(concept.get("design_strategy") or "", 150)
@@ -472,9 +529,20 @@ def _why_line(concept: Dict[str, Any]) -> str:
     return (cleaned + "；" + strategy) if cleaned else strategy
 
 
+def _hero_block(img: Optional[Dict[str, Any]], fno: str, label: str,
+                note: str = "") -> str:
+    if not img:
+        return ""
+    who = f'{img.get("source", "")} · {img.get("title", "")}'
+    return (f'<div class="hero"><img src="{_h(img["file"])}" '
+            f'alt="{_h(img.get("title"))}"></div>' + _cap(fno, label, note, who))
+
+
 def concept_section(concept: Dict[str, Any], idx: int, *, lead: str,
                     research_index: Dict[str, Dict[str, Any]],
-                    project_dir: Optional[Path], out_dir: Path) -> str:
+                    project_dir: Optional[Path], out_dir: Path,
+                    photos: Sequence[Dict[str, Any]] = (),
+                    fno_start: int = 1) -> Tuple[str, int]:
     d = concept.get("deliberation") or {}
     cid = str(concept.get("concept_id") or f"C{idx}")
     proto = concept.get("spatial_prototype") or {}
@@ -482,31 +550,45 @@ def concept_section(concept: Dict[str, Any], idx: int, *, lead: str,
     role = str(concept.get("role_label") or "")
 
     figs = _ordered_figures(concept, lead)
-    main_figs = "".join(_figure(p, k) for k, p in figs[:2])
+    seq = _seq_steps(concept)
+    # 序列图与步骤条是同一件事：步骤条已经把"人怎么走"讲清楚了，
+    # 再放一张同内容的矢量图是重复。只保留前三张大图里的序列图。
+    figs = [(k, p) for k, p in figs if not (k == "sequence" and seq)]
 
-    steps = _seq_steps(concept)
-    # 序列图与上面的步骤条是同一件事：步骤条已经把"人怎么走"讲清楚了，
-    # 再放一张 1200×760 的矢量序列图，内容只占中间四成，缩到半栏后基本看不清。
-    # 只保留在前两张大图里的序列图；它作为第三张时略过。
-    rest = [(k, p) for k, p in figs[2:6] if not (k == "sequence" and steps)]
-    rest_figs = "".join(_figure(p, k) for k, p in rest)
+    fno = fno_start
+    fig_html: List[str] = []
+    for i, (kind, path) in enumerate(figs[:4]):
+        fno += 1
+        cls = "figs" if i == 0 else "figs pair"
+        block = _figure(path, kind, fno=f"FIG.{fno:02d}")
+        if i == 0:
+            fig_html.append(f'<div class="figs">{block}</div>')
+        elif i == 1:
+            fig_html.append(f'<div class="figs pair">{block}')
+        elif i == 2:
+            fig_html.append(block + "</div>")
+        else:
+            fig_html.append(f'<div class="figs">{block}</div>')
+    if len(fig_html) == 2 and not fig_html[1].rstrip().endswith("</div>"):
+        fig_html[1] = fig_html[1] + "</div>"
+    figs_block = "".join(fig_html)
 
-    # 意向板（色板 + 材料 + 案例卡）本来就是为方案画的，直接放进提案：
-    # 没有房间数据时它比一张空分区图有用得多。它内容多，占整栏，不挤半栏。
+    # 意向板：色板 + 材料 + 案例格。它内容多，满宽放，不缩进半栏。
     board = str((concept.get("moodboard") or {}).get("board_svg") or "")
     board_html = ""
     if board and Path(board).exists():
-        board_html = ('<div class="block-h">材料与色彩板</div><div class="figs">'
-                      + _figure(board, "moodboard",
-                                "色板与材料取自风格库与本方案材料方向；图为确定性绘制")
+        fno += 1
+        board_html = (f'<div class="figs" style="margin-top:34px">'
+                      + _figure(board, "moodboard", fno=f"FIG.{fno:02d}",
+                                note="色板与材料取自风格库与本方案材料方向")
                       + "</div>")
 
     seq_html = ""
-    if steps:
-        seq_html = '<ol class="seq">' + "".join(
-            f'<li><div class="k">{_h(s.get("step"))}</div>'
-            f'<div class="e">{_h(_clip(s.get("event"), 58))}</div></li>'
-            for s in steps[:6]) + "</ol>"
+    if seq:
+        seq_html = '<ol class="plain" style="columns:2;column-gap:44px">' + "".join(
+            f'<li style="break-inside:avoid;margin-bottom:12px">'
+            f'<b>{_h(s.get("step"))}</b>　{_h(_clip(s.get("event"), 58))}</li>'
+            for s in seq[:6]) + "</ol>"
 
     light = (concept.get("lighting_direction") or [""])[0]
     quad_items = [
@@ -526,67 +608,86 @@ def concept_section(concept: Dict[str, Any], idx: int, *, lead: str,
                   show_points=(i == 0))
         for i, r in enumerate(refs))
     case_block = ('<div class="cases">' + cards + "</div>" if cards else
-                  f'<p style="color:#6B7280;font-size:13px">'
+                  f'<p style="color:var(--muted);font-size:14px">'
                   f'{_h((concept.get("references") or {}).get("note") or "本次无可用案例")}</p>')
 
-    adv = "".join(f"<li>{_h(_clip(x, 60))}</li>" for x in (concept.get("advantages") or [])[:3])
-    trade = "".join(f"<li>{_h(_clip(x, 60))}</li>" for x in (concept.get("tradeoffs") or [])[:4])
-    risks = "".join(f"<li>{_h(_clip(x, 56))}</li>"
-                    for x in (concept.get("technical_risks") or [])[:3])
+    trade = "".join(f"<li>{_h(_clip(x, 64))}</li>" for x in (concept.get("tradeoffs") or [])[:3])
+    risks = "".join(f"<li>{_h(_clip(x, 60))}</li>" for x in (concept.get("technical_risks") or [])[:2])
+    adv = "".join(f"<li>{_h(_clip(x, 64))}</li>" for x in (concept.get("advantages") or [])[:3])
     unverified = d.get("unverified_requires") or []
-    unv = "".join(f"<li>{_h(x)}</li>" for x in unverified[:3])
+
+    hero = _hero_block(photos[0] if photos else None, f"FIG.{fno_start:02d}",
+                       f"{family} · 空间意象", "素材库参考图，非本项目效果图")
+
+    facts = [
+        ("主导专业", {"architecture": "建筑", "interior": "室内",
+                      "landscape": "景观"}.get(lead, lead)),
+        ("空间家族", family or "—"),
+        ("专业配合", _clip(d.get("integration") or "按主导专业推进", 22)),
+    ]
+    facts_html = "".join(
+        f"<dt>{_h(k)}</dt><dd>{_h(v)}</dd>" for k, v in facts if v)
 
     return f"""
 <section class="concept" id="{_h(cid.lower())}">
   <div class="c-head">
-    <div class="c-eyebrow">方案 {idx:02d}　·　{_h(role)}　·　{_h(family)}</div>
-    <h2>{_h(concept.get("concept_name"))}</h2>
-    <p class="statement">{_h(concept.get("concept_statement"))}</p>
-  </div>
-  <div class="c-grid">
-    <div class="c-main">
-      <div class="callout">
-        <h4>最有价值的设计机会</h4>
-        <p>{_h(d.get("key_opportunity") or concept.get("design_problem"))}</p>
-      </div>
-      <p class="why"><b>为什么这样组织：</b>{_h(_why_line(concept))}</p>
-      <div class="figs">{main_figs}</div>
-      {f'<div class="block-h">人进到这里，会经历什么</div>{seq_html}' if seq_html else ''}
-      {f'<div class="block-h">光线、视线、比例与材料怎么配合</div><div class="quad">{quad}</div>' if quad else ''}
-      {board_html}
-      {f'<div class="block-h">更多图解</div><div class="figs two">{rest_figs}</div>' if rest_figs else ''}
-      <div class="block-h">案例参考 · 借的是手法，不是外观</div>
-      {case_block}
+    <div>
+      <div class="c-no">方案 {idx:02d}　<span>{_h(role)}</span></div>
+      <h2 class="c-title">{_h(concept.get("concept_name"))}</h2>
     </div>
-    <aside class="side">
-      <div class="panel">
-        <h4>材料方向</h4>
-        {_materials(concept)}
-        {_swatches(concept)}
-      </div>
-      <div class="panel dark">
-        <h4>三个专业怎么成整体</h4>
-        <p>{_h(_clip(d.get("integration") or "本方案按主导专业推进，其余专业做界面协调。", 220))}</p>
-      </div>
-      <div class="panel">
-        <h4>要结构与机电配合的地方</h4>
-        <p>{_h(_clip(d.get("technical_coordination") or "—", 200))}</p>
-        {f'<ul style="margin-top:8px">{risks}</ul>' if risks else ''}
-      </div>
-      <div class="panel warn">
-        <h4>代价与前提</h4>
-        <ul>{trade or '<li>—</li>'}</ul>
-        {f'<p style="margin-top:8px"><b>尚待核实：</b>{"、".join(_h(x) for x in unverified[:3])}</p>' if unverified else ''}
-      </div>
-      {f'<div class="panel"><h4>适合这个方案的理由</h4><ul>{adv}</ul></div>' if adv else ''}
-      <div class="panel">
-        <h4>造价与维护</h4>
-        <p>{_h(_clip(concept.get("cost_impact") or "—", 110))}</p>
-        <p style="margin-top:6px">{_h(_clip(concept.get("maintenance_impact") or "", 110))}</p>
-      </div>
-    </aside>
+    <div class="c-facts"><dl>{facts_html}</dl></div>
   </div>
-</section>"""
+  <p class="statement">{_h(concept.get("concept_statement"))}</p>
+  {hero}
+  <div style="margin-top:44px"></div>
+  <div class="notes" style="margin-top:0">
+    <div>
+      <h5>最有价值的设计机会</h5>
+      <p>{_h(_clip(d.get("key_opportunity") or concept.get("design_problem"), 210))}</p>
+    </div>
+    <div>
+      <h5>为什么这样组织</h5>
+      <p>{_h(_clip(_why_line(concept), 240))}</p>
+    </div>
+    <div>
+      <h5>适合这个方案的理由</h5>
+      <ul>{adv or '<li>—</li>'}</ul>
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-top:56px">Drawings</div>
+  <h3 class="sec-title">方案怎么成立：{_h(KIND_CN.get(figs[0][0], "") if figs else "图解")}</h3>
+  {figs_block}
+  {board_html}
+
+  {f'<div class="sec-label" style="margin-top:56px">Sequence</div><h3 class="sec-title">人进到这里，会经历什么</h3>{seq_html}' if seq_html else ''}
+  {f'<div class="notes">{quad}</div>' if quad else ''}
+
+  <div class="sec-label" style="margin-top:56px">Materials</div>
+  <h3 class="sec-title">材料与色彩</h3>
+  {_materials(concept, photos[1:])}
+  {_swatches(concept)}
+
+  <div class="notes" style="margin-top:40px">
+    <div class="warn">
+      <h5>代价与前提</h5>
+      <ul>{trade or '<li>—</li>'}</ul>
+    </div>
+    <div>
+      <h5>要结构与机电配合的地方</h5>
+      <p>{_h(_clip(d.get("technical_coordination") or "—", 160))}</p>
+      {f'<ul style="margin-top:6px">{risks}</ul>' if risks else ''}
+    </div>
+    <div>
+      <h5>尚待核实</h5>
+      <ul>{''.join(f'<li>{_h(x)}</li>' for x in unverified[:3]) or '<li>—</li>'}</ul>
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-top:56px">Precedents</div>
+  <h3 class="sec-title">案例参考 · 借的是手法，不是外观</h3>
+  {case_block}
+</section>""", fno + 1
 
 
 # --------------------------------------------------------------------------
@@ -596,7 +697,7 @@ LEGEND = """
 <div class="legend">
   <div><b><span class="dot case"></span>真实案例</b>第三方作品。给来源入口，不把照片搬进提案。</div>
   <div><b><span class="dot plate"></span>手法示意</b>本系统按案例公开文字画的关系图，不是原案例照片。</div>
-  <div><b><span class="dot own"></span>原创意向</b>OmniAiLab 画布生成，只表达氛围，不是本项目效果图。</div>
+  <div><b><span class="dot own"></span>素材库参考</b>自有素材库中的空间意象，用来说明方向，不是本项目效果图。</div>
   <div><b><span class="dot final"></span>正式效果图</b>G3 平面确认后生成。本次尚未进入 G3，因此页面里没有。</div>
 </div>"""
 
@@ -605,8 +706,13 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
              project_name: str = "", research: Optional[Dict[str, Any]] = None,
              project_dir: Optional[str | Path] = None,
              meta: Optional[Sequence[str]] = None,
-             filename: str = "index.html") -> Path:
-    """把 concept-options 渲染成一页客户提案。返回写出的文件路径。"""
+             filename: str = "index.html",
+             with_images: bool = True) -> Path:
+    """把 concept-options 渲染成一页客户提案。返回写出的文件路径。
+
+    `with_images=False` 时完全不碰素材库（离线/无网环境）：版面会自动落到
+    "无图"形态，而不是拿一张示意图去占 hero 的位置。
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     concepts = list(payload.get("concepts") or [])
@@ -618,9 +724,39 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
     name = project_name or str(payload.get("project_id") or "设计提案")
     lead_label = str(payload.get("lead_label") or "")
 
+    # 素材：封面一张、每方案一张 hero + 最多两张材料图。同一条目只用一次。
+    cover_imgs: List[Dict[str, Any]] = []
+    per_concept: Dict[str, List[Dict[str, Any]]] = {}
+    if with_images:
+        used: List[str] = []
+        # 庭院方案的封面要"地"不要"房"：带别墅/公寓标签的条目直接排除。
+        avoid = (("别墅", "公寓", "室内", "卧室", "客厅", "酒吧", "餐厅", "办公")
+                 if lead == "landscape" else ())
+        require = (("花园", "庭院", "树木", "景观草坪", "户外花园", "喷泉景观")
+                   if lead == "landscape" else ())
+        try:
+            cover_imgs = lib.gallery(
+                out, lead=lead, style_tags=(), keywords=LEAD_WORDS.get(lead, ()),
+                want=[("hero", "space")], exclude=used, avoid=avoid,
+                require=require)
+            used += [c.get("title", "") for c in cover_imgs]
+            for c in concepts:
+                got = lib.gallery(
+                    out, lead=lead,
+                    style_tags=[str(x) for x in (c.get("style_labels") or [])],
+                    keywords=LEAD_WORDS.get(lead, ()),
+                    want=[("hero", "space"), ("card", "material"), ("card", "material")],
+                    exclude=used, avoid=avoid, require=require)
+                used += [g.get("title", "") for g in got]
+                per_concept[str(c.get("concept_id"))] = got
+        except Exception:
+            cover_imgs, per_concept = [], {}
+    cover = cover_imgs[0] if cover_imgs else None
+
     # 统计只数真实存在的东西，不写"预计"
     n_figs = sum(len(_diagram_files(c)) for c in concepts)
     n_cases = sum(len((c.get("references") or {}).get("cases") or []) for c in concepts)
+    n_imgs = (1 if cover else 0) + sum(len(v) for v in per_concept.values())
     techs = set()
     for c in concepts:
         for r in (c.get("references") or {}).get("cases") or []:
@@ -630,68 +766,88 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
 
     jumps = "".join(
         f'<a class="jump" href="#{_h(str(c.get("concept_id")).lower())}">'
-        f'<div class="no">方案 {i:02d}　{_h(c.get("role_label"))}</div>'
+        + (f'<div class="thumb"><img src="{_h((per_concept.get(str(c.get("concept_id"))) or [{}])[0].get("file", ""))}" '
+           f'alt=""></div>'
+           if (per_concept.get(str(c.get("concept_id"))) or [{}])[0].get("file") else "")
+        + f'<div class="no">方案 {i:02d}　{_h(c.get("role_label"))}</div>'
         f'<h3>{_h(c.get("concept_name"))}</h3>'
-        f'<p>{_h(_clip((c.get("deliberation") or {}).get("parti")
-                       or c.get("design_strategy"), 74))}</p>'
-        f'<div class="tags"><span class="tag">'
-        f'{_h(FAMILY_CN.get(str((c.get("spatial_prototype") or {}).get("family")), "—"))}</span>'
-        f'<span class="tag">图 {len(_diagram_files(c))}</span>'
-        f'<span class="tag">案例 {len((c.get("references") or {}).get("cases") or [])}</span>'
-        f'</div></a>'
+        f'<p>{_h(_clip((c.get("deliberation") or {}).get("parti") or c.get("design_strategy"), 62))}</p>'
+        f'</a>'
         for i, c in enumerate(concepts, 1))
 
-    body = "".join(concept_section(c, i, lead=lead, research_index=rindex,
-                                   project_dir=pdir, out_dir=out)
-                   for i, c in enumerate(concepts, 1))
+    body = ""
+    fno = 2                      # FIG.01 是封面
+    for i, c in enumerate(concepts, 1):
+        photos = per_concept.get(str(c.get("concept_id"))) or []
+        section, fno = concept_section(c, i, lead=lead, research_index=rindex,
+                                       project_dir=pdir, out_dir=out,
+                                       photos=photos, fno_start=fno)
+        body += section
 
     meta_line = "　·　".join([x for x in (lead_label and f"{lead_label}主导",
                                           f"S2 概念 {len(concepts)} 套",
                                           *list(meta or [])) if x])
+
+    cover_style = ""
+    cover_img_html = ""
+    if cover:
+        cover_img_html = (f'<img class="cover-img" src="{_h(cover["file"])}" '
+                          f'alt="{_h(cover.get("title"))}">')
+    else:
+        cover_style = ' style="min-height:62vh"'
 
     page = f"""<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_h(name)} · 概念方案</title>
 <style>{CSS}</style></head>
-<body><main>
-<header class="cover">
- <div class="cover-in">
-  <div class="cover-top">OmniAiLab AI Architect　·　概念方案</div>
-  <h1>{_h(name)}</h1>
-  <p class="lede">{_h(meta_line or "设计提案")}</p>
-  <div class="stats">
-    <div><b>{len(concepts)}</b>套组织逻辑不同的方案</div>
-    <div><b>{n_figs}</b>张概念图解</div>
-    <div><b>{n_cases}</b>个已核验案例</div>
-    <div><b>{len(techs)}</b>类可借鉴手法</div>
+<body>
+<header class="cover"{cover_style}>
+  {cover_img_html}
+  <div class="cover-in">
+    <div class="cover-top">OmniAiLab AI Architect　·　Concept Proposal　·　S2</div>
+    <h1>{_h(name)}</h1>
+    <p class="sub">{_h(meta_line or "设计提案")}</p>
+    <div class="cover-meta">
+      <div><b>{len(concepts)}</b>套组织逻辑不同的方案</div>
+      <div><b>{n_figs}</b>张专业图解</div>
+      <div><b>{n_cases}</b>个已核验案例</div>
+      <div><b>{n_imgs}</b>张素材库参考图</div>
+    </div>
   </div>
- </div>
 </header>
 
+<div class="wrap">
+{_cap("FIG.01", "封面 · 空间意象", "素材库参考图，非本项目效果图",
+      (cover.get("source", "") + " · " + cover.get("title", "")) if cover else "") if cover else ""}
 {LEGEND}
 
-<div class="sec-label">Overview</div>
-<div class="sec-title">三套方案，差在组织逻辑，不差在材料</div>
-<div class="cards">{jumps or '<p>本次未生成概念方案。</p>'}</div>
+<div class="sec">
+  <div class="sec-label">Overview</div>
+  <h2 class="sec-title">三套方案，差在组织逻辑，不差在材料</h2>
+  <div class="jumps">{jumps or '<p>本次未生成概念方案。</p>'}</div>
+</div>
 
 {body}
 
-<div class="sec-label">Sources</div>
-<div class="sec-title">案例来源与使用边界</div>
-<blockquote>
-本页所有案例均来自可公开访问的案例页面，标题与链接经过回读核验。案例照片的权利属原作者与摄影师，
-本提案不下载、不重新托管、不嵌入；页面上出现的图是本系统按案例公开文字绘制的手法示意。
-需要原创设计意向图时使用 OmniAiLab 原生画布生成，并标注为「原创意向」，不与真实案例照片混用。
-</blockquote>
+<div class="sec">
+  <div class="sec-label">Sources &amp; Boundaries</div>
+  <h2 class="sec-title">图从哪来，用到哪为止</h2>
+  <blockquote>
+  案例来自可公开访问的项目页面，标题与链接经过回读核验；案例照片的权利属原作者与摄影师，
+  本提案不下载、不重新托管、不嵌入，页面上出现的案例图是本系统按公开文字绘制的手法示意。
+  空间意象图取自自有素材库（Luxora AI），用于说明设计方向，<b>不是本项目的效果图</b>；
+  正式效果图须在 G3 平面确认后依据平面生成。
+  </blockquote>
 
 <footer>
-  <b>OmniAiLab AI 建筑与室内设计总设计师</b>　·　本页由 S2 概念阶段产出，用于讨论设计方向。<br>
+  <span class="sig"><b>OmniAiLab AI 建筑与室内设计总设计师</b></span>　·　本页由 S2 概念阶段产出，用于讨论设计方向。<br>
   结构安全、消防、无障碍、机电负荷与当地法规符合性不在本系统结论范围，须由持证专业人员在项目所在地复核签署；
-  方案深度成果不得直接作为施工图；生成式图像不得作为尺寸依据。<br>
+  方案深度成果不得直接作为施工图；生成式图像与素材库参考图均不得作为尺寸依据。<br>
   © OmniAiLab ｜ 开发者：Mochiball ｜ omniailabx.com — 未经授权禁止复制、传播或二次分发。
 </footer>
-</main></body></html>"""
+</div>
+</body></html>"""
 
     path = out / filename
     path.write_text(page, encoding="utf-8")
@@ -699,4 +855,4 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
 
 
 __all__ = ["FAMILY_CN", "FIGURE_ORDER", "KIND_CN", "case_card", "concept_section",
-           "proposal"]
+           "proposal", "LEAD_WORDS"]

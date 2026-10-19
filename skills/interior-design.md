@@ -3,7 +3,7 @@ name: omniailab-interior-design
 description: 室内设计 —— 把已成立的平面发展成顶墙地界面、天花与软硬装做法，形成可施工方案
 capability: interior-design
 stages: [S4, S6]
-version: 1.7.0
+version: 1.8.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

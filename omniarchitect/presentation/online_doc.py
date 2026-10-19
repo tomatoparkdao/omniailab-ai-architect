@@ -214,11 +214,8 @@ def _page_concepts(run: Optional[Path], payload: Dict[str, Any],
         for d in figs:
             src = Path(str(d.get("path")))
             rel = _copy_asset(src, assets)
-            label = {"massing": "体量概念图", "section": "剖面与楼层图",
-                     "landscape": "景观结构图", "sequence": "空间序列图",
-                     "zoning": "分区图", "circulation": "动线概念图",
-                     "daylight": "采光策略图", "functional": "功能关系图"}.get(
-                         str(d.get("kind")), str(d.get("kind")))
+            from .html import KIND_CN
+            label = KIND_CN.get(str(d.get("kind")), str(d.get("kind")))
             out += [f"![{c.get('concept_name')} · {label}]({rel})", "",
                     f"*{label}：本系统确定性绘制，关系示意，非按比例*", ""]
     if md:
@@ -314,8 +311,13 @@ def build_package(project: Any, payload: Dict[str, Any],
                   out_dir: str | Path, *, project_name: str = "",
                   project_dir: Optional[str | Path] = None,
                   run_dir: Optional[str | Path] = None,
-                  carriers: Sequence[str] = ("feishu", "notion")) -> Dict[str, Any]:
-    """生成可导入的文档包。不创建线上文档，不发任何网络请求。"""
+                  carriers: Sequence[str] = ("feishu", "notion"),
+                  with_images: bool = False) -> Dict[str, Any]:
+    """生成可导入的文档包。
+
+    默认**不发任何网络请求**：素材库取图要显式传 `with_images=True` 才会发生。
+    这个开关是契约的一部分——文档包可能在离线环境生成，不能因为默认带图而失败。
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     run = Path(run_dir) if run_dir else None
@@ -358,7 +360,8 @@ def build_package(project: Any, payload: Dict[str, Any],
         # 整页 HTML 提案作为附件：导入器不吃 SVG 时，客户仍有一个能看的版本
         proposal = _html.proposal(payload, assets, project_name=name,
                                   research=research, project_dir=pdir,
-                                  filename="proposal.html")
+                                  filename="proposal.html",
+                                  with_images=with_images)
         written.append(f"assets/{proposal.name}")
 
         manifest = {

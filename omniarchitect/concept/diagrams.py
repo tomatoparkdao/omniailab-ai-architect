@@ -14,6 +14,7 @@ PPTX 与浏览器。图上标注取自真实房间名与需求活动名，不编
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
@@ -124,6 +125,51 @@ class Svg:
             f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" fill="{fill}" '
             f'stroke="{stroke}" stroke-width="{sw}"/>'
         )
+
+    def polygon(self, pts: Sequence[Tuple[float, float]], *, fill: str = "none",
+                stroke: str = "none", sw: float = 1.0, opacity: float = 1.0,
+                dash: str = "") -> None:
+        """Filled polygon — the primitive every axonometric face needs.
+
+        `polyline` is stroke-only by design; a solid face cannot be faked with a
+        thick stroke, so axonometric work needs this.
+        """
+        if len(pts) < 3:
+            return
+        path = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        s = f' stroke="{stroke}" stroke-width="{sw}"' if stroke != "none" else ""
+        self.body.append(
+            f'<polygon points="{path}" fill="{fill}"{s} stroke-linejoin="round"'
+            f' opacity="{opacity}"{d}/>'
+        )
+
+    def ellipse(self, cx: float, cy: float, rx: float, ry: float, *, fill: str = "none",
+                stroke: str = "none", sw: float = 1.0, opacity: float = 1.0,
+                rotate: float = 0.0) -> None:
+        t = f' transform="rotate({rotate:.1f} {cx:.1f} {cy:.1f})"' if rotate else ""
+        s = f' stroke="{stroke}" stroke-width="{sw}"' if stroke != "none" else ""
+        self.body.append(
+            f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{rx:.1f}" ry="{ry:.1f}" '
+            f'fill="{fill}"{s} opacity="{opacity}"{t}/>'
+        )
+
+    def gradient(self, name: str, stops: Sequence[Tuple[float, str]],
+                 *, x2: float = 0.0, y2: float = 1.0, opacity: float = 1.0) -> str:
+        """Linear gradient in objectBoundingBox space; returns `url(#name)`."""
+        body = "".join(
+            f'<stop offset="{o:.2f}" stop-color="{c}" stop-opacity="{opacity}"/>'
+            for o, c in stops)
+        self.defs.append(
+            f'<linearGradient id="{name}" x1="0" y1="0" x2="{x2:.2f}" y2="{y2:.2f}">'
+            f"{body}</linearGradient>")
+        return f"url(#{name})"
+
+    def clip_rect(self, name: str, w: float, h: float) -> str:
+        """A clip so painted grounds never bleed over the sheet margin."""
+        self.defs.append(
+            f'<clipPath id="{name}"><rect x="0" y="0" width="{w:.1f}" height="{h:.1f}"/></clipPath>')
+        return f"url(#{name})"
 
     def text(self, x: float, y: float, content: str, *, size: int = 14,
              color: str = C_INK, anchor: str = "start", weight: str = "400",
@@ -667,155 +713,545 @@ def _water_band(s: Svg, x: float, y: float, w: float, h: float, label: str = "�
     s.text(x + 8, y + h / 2 + 4, label, size=10, color="#2F6FB2")
 
 
+# --------------------------------------------------------------------------
+# 体量：等距轴测 + 连续形态演变
+# --------------------------------------------------------------------------
+#: 每一步的盒子用"米"作单位，再由 Iso 换算成图面像素。尺寸是**关系量**，
+#: 不是实测值——图注统一写"体量关系 · 非按比例"。
+Box = Tuple[float, float, float, float, float, float, str]   # x, y, z, w, d, h, fill
+
+_MASS_C = "#E7E0D0"      # 主体量：暖石灰
+_MASS_2 = "#D8D0BE"      # 次体量：深一档
+_MASS_3 = "#F6F3EC"      # 轻体量：白
+_MASS_CUT = "#C9C0AC"    # 被切开的面：最暗，读得出"这里削掉了"
+
+
+def _wrap(text: str, per_line: int = 13, max_lines: int = 4) -> List[str]:
+    """按**汉字数**折行（`_fit` 的预算是半角单位，直接传会砍掉一半字）。
+
+    先按标点切短语再拼行：纯按字数硬切会把"12×12 米"切成"1 / 2×12 米"，
+    数字被拆开，读起来像排版事故。
+    """
+    s = " ".join(str(text or "").split())
+    if not s:
+        return []
+    parts = [x for x in re.split(r"(?<=[，、；。：,;])", s) if x]
+    lines: List[str] = []
+    cur = ""
+    for part in parts:
+        rest = part
+        while len(rest) > per_line:
+            if cur:
+                lines.append(cur)
+                cur = ""
+            lines.append(rest[:per_line])
+            rest = rest[per_line:]
+        if len(cur) + len(rest) <= per_line:
+            cur += rest
+        else:
+            if cur:
+                lines.append(cur)
+            cur = rest
+    if cur:
+        lines.append(cur)
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        lines[-1] = lines[-1][:max(1, per_line - 1)] + "…"
+    return lines
+
+
+def _evolution(kind: str) -> List[Tuple[str, str, List[Box], Tuple[float, float, float, float]]]:
+    """每个体量类型的形成过程：三步，最后一步就是结果。
+
+    每一步必须**看得出差别**：先做满，再减去，最后加入场地。上一版把三步画成
+    同一个回字形，客户看到的是三张一样的图——那就等于没讲形成过程。
+
+    第四项是该步的水面 (x, y, w, d)；宽或深为 0 表示这一步还没有水。
+    """
+    no_water = (0.0, 0.0, 0.0, 0.0)
+    if kind == "stepped":
+        return [
+            ("先做满", "可建体量按三层做满：一个 8.4×6 米的完整长方体",
+             [(0, 0, 0, 8.4, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 8.4, 6.0, 2.9, _MASS_C),
+              (0, 0, 5.8, 8.4, 6.0, 2.9, _MASS_C)], no_water),
+            ("逐层退台", "每上一层退 1.2 米：退出来的平台朝南，是下一层的露台",
+             [(0, 0, 0, 8.4, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 7.2, 5.2, 2.9, _MASS_C),
+              (0, 0, 5.8, 5.4, 4.4, 2.9, _MASS_3)], no_water),
+            ("顶层收成院", "顶层只剩 4.8 米宽：剩下的屋顶做成种植屋面，与露台连着",
+             [(0, 0, 0, 8.4, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 7.2, 5.2, 2.9, _MASS_2),
+              (0, 0, 5.8, 4.8, 4.0, 2.9, _MASS_3)], (5.0, 1.0, 3.2, 3.0)),
+        ]
+    if kind == "floating":
+        return [
+            ("先落地", "底层先落在地上：院子与房子在同一标高，地面全被占住",
+             [(0, 0, 0, 9.0, 6.0, 2.8, _MASS_2),
+              (0, 0, 2.8, 9.0, 6.0, 2.8, _MASS_C),
+              (0, 0, 5.6, 9.0, 6.0, 2.8, _MASS_C)], no_water),
+            ("底层掏空", "底层只留柱与楼梯：地面还给院子，视线能穿过去",
+             [(0.5, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (4.2, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (7.9, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (0.5, 5.2, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (4.2, 5.2, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (7.9, 5.2, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (0, 0, 2.8, 9.0, 6.0, 5.6, _MASS_C)], no_water),
+            ("水穿其下", "水面从架空层底下穿过：院子延伸进屋，不是停车场",
+             [(0.5, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (4.2, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (7.9, 0.3, 0.0, 0.45, 0.45, 2.8, _MASS_CUT),
+              (0, 0, 2.8, 9.0, 6.0, 5.6, _MASS_C)], (0.1, 1.4, 3.4, 4.0)),
+        ]
+    if kind == "twin_wings":
+        return [
+            ("一条长体量", "面宽 14 米、进深 6 米：能建多少建多少，中间没有院子",
+             [(0, 0, 0, 14.0, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 14.0, 6.0, 2.9, _MASS_C)], no_water),
+            ("中间断开", "从中间拿出 4 米：两翼各 5 米，端头仍然对齐",
+             [(0, 0, 0, 5.0, 6.0, 2.9, _MASS_C),
+              (9.0, 0, 0, 5.0, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 5.0, 6.0, 2.9, _MASS_C),
+              (9.0, 0, 2.9, 5.0, 6.0, 2.9, _MASS_3)], no_water),
+            ("双翼夹院", "两翼之间是院与水；一道片墙把街上的视线收住",
+             [(0, 0, 0, 5.0, 6.0, 2.9, _MASS_C),
+              (9.0, 0, 0, 5.0, 6.0, 2.9, _MASS_C),
+              (0, 0, 2.9, 5.0, 6.0, 2.9, _MASS_2),
+              (9.0, 0, 2.9, 5.0, 6.0, 2.9, _MASS_2),
+              (5.0, 0, 0, 0.4, 6.0, 5.8, _MASS_3)], (5.4, 1.2, 3.2, 3.6)),
+        ]
+    if kind == "courtyard_carved":
+        return [
+            ("先做满", "四面围合的可建体量做满：12×12 米，两层通高 5.4 米",
+             [(0, 0, 0, 12.0, 12.0, 5.4, _MASS_C)], no_water),
+            ("院从中间挖出", "中间 8×8 米整块挖掉：房间全部朝院，光从上面下来",
+             [(0, 0, 0, 12.0, 2.0, 5.4, _MASS_C),
+              (0, 10.0, 0, 12.0, 2.0, 5.4, _MASS_C),
+              (0, 2.0, 0, 2.0, 8.0, 5.4, _MASS_2),
+              (10.0, 2.0, 0, 2.0, 8.0, 5.4, _MASS_2)], no_water),
+            ("引水入院", "院底放一块静水：倒影把层高与天空读进院子",
+             [(0, 0, 0, 12.0, 2.0, 5.4, _MASS_C),
+              (0, 10.0, 0, 12.0, 2.0, 5.4, _MASS_C),
+              (0, 2.0, 0, 2.0, 8.0, 5.4, _MASS_2),
+              (10.0, 2.0, 0, 2.0, 8.0, 5.4, _MASS_2)], (2.3, 2.3, 7.4, 7.4)),
+        ]
+    # 默认：单一体量 → 顶部退台 → 侧院
+    return [
+        ("先做满", "可建体量按三层做满：10×7 米，没有退让",
+         [(0, 0, 0, 10.0, 7.0, 2.9, _MASS_C),
+          (0, 0, 2.9, 10.0, 7.0, 2.9, _MASS_C),
+          (0, 0, 5.8, 10.0, 7.0, 2.9, _MASS_C)], no_water),
+        ("顶部退出平台", "顶层后退 2 米、收窄 1 米：西侧得到一个朝院子的平台",
+         [(0, 0, 0, 10.0, 7.0, 2.9, _MASS_C),
+          (0, 0, 2.9, 10.0, 7.0, 2.9, _MASS_2),
+          (0, 2.0, 5.8, 8.0, 5.0, 2.9, _MASS_3)], no_water),
+        ("院落补齐", "剩下的空地做成院：进院先看见树，再看见门",
+         [(0, 0, 0, 10.0, 7.0, 2.9, _MASS_C),
+          (0, 0, 2.9, 10.0, 7.0, 2.9, _MASS_2),
+          (0, 2.0, 5.8, 8.0, 5.0, 2.9, _MASS_3)], (0.4, 7.4, 4.4, 2.4)),
+    ]
+
+
+def _draw_mass_step(s: Svg, iso_mod: Any, boxes: Sequence[Box],
+                    water: Tuple[float, float, float, float], *,
+                    ox: float, oy: float, scale: float,
+                    ground: Tuple[float, float, float, float],
+                    yard: Sequence[Tuple[float, float, str]] = ()) -> None:
+    # 2:1 轴测：把竖向压到 0.78，院子与退台才看得进去，而不是只看到外墙
+    iso = iso_mod.Iso(ox, oy, scale=scale, z_scale=scale * 0.78)
+    gx, gy, gw, gd = ground
+    iso_mod.draw_ground(iso, s, gx, gy, gw, gd, grid=0)
+    # 阴影先画：压在地面上，逐个体量按底面投
+    for (x, y, z, w, d, h, _f) in boxes:
+        if z <= 0.01:
+            iso_mod.draw_shadow(iso, s, x, y, w, d, dx=0.6, dy=0.6, opacity=0.16)
+    wx, wy, ww, wd = water
+    if ww > 0 and wd > 0:
+        iso_mod.water_plane(iso, s, wx, wy, ww, wd)
+    ordered = sorted(boxes, key=lambda b: iso.depth(b[0] + b[3] * 0.5, b[1] + b[4] * 0.5, b[2]))
+    for (x, y, z, w, d, h, fill) in ordered:
+        iso_mod.draw_box(iso, s, x, y, z, w, d, h, fill=fill,
+                         edge="#3A3F44", sw=0.9)
+    # 院的标记：等距图上"凹进去的洞"必须被指认，否则看起来像画错了
+    for (cwx, cwy, label) in yard:
+        cx, cy = iso.p(cwx, cwy, 0.02)
+        s.text(cx, cy + 5, label, size=max(10, int(scale * 0.78)), anchor="middle",
+               color="#4E7C63", weight="600")
+
+
 def massing(concept: Dict[str, Any], ctx: Any) -> str:
-    """体量关系。分型来自推敲策略的 `massing_kind`，不是按空间家族猜的。"""
+    """体量关系：四联等距轴测，前三步是形成过程，第四格是结果。
+
+    上一版画的是俯视矩形拼接——没有高度、没有明暗、没有遮挡，读不出"哪个面
+    朝街、哪一层退进去"。体量推敲的**全部信息都在第三维**，所以这里改用等距
+    轴测，并把"怎么长成这样"画成可数的三步：做满 → 减去 → 加入场地。
+
+    图注写死"体量关系 · 非按比例"：尺度是关系量，尺寸由 S3/S4 图纸负责。
+    """
+    from . import iso as iso_mod
+
     p = concept["spatial_prototype"]
     d = concept.get("deliberation") or {}
     kind = _massing_kind(concept)
-    s = Svg(title=f"{concept['concept_id']} 体量概念")
-    _header(s, f"{concept['concept_name']} · 体量关系",
-            _fit(d.get("parti") or p.get("spatial_logic") or "", 88),
-            "体量示意 · 非按比例")
+    steps = _evolution(kind)
 
-    cx, cy = CANVAS_W / 2, 380
-    if kind == "courtyard_carved":
-        # 四面围合，中间是院与水；临街与院内要能分开看
-        for (dx, dy, w, h) in ((-230, -110, 190, 100), (40, -110, 190, 100),
-                               (-230, 10, 190, 100), (40, 10, 190, 100)):
-            s.rect(cx + dx, cy + dy, w, h, fill="#FFFFFF", stroke=C_INK, sw=1.4)
-        s.rect(cx - 30, cy - 100, 60, 200, fill="#F2F2EF", stroke=C_INK, sw=1.2)
-        _water_band(s, cx - 24, cy - 20, 48, 108, "水")
-        s.text(cx + 4, cy - 40, "院", size=13, anchor="middle", color=C_ACCENT)
-        s.text(cx + 4, cy + 124, "院墙（挡住街上视线）", size=10, anchor="middle",
-               color=C_MUTED)
-        # 临街面：实；院内面：透。这两句话是这张图的核心结论
-        s.text(cx - 236, cy - 132, "临街面：实（窗少而深）", size=10, color=C_MUTED)
-        s.line(cx - 250, cy - 136, cx - 250, cy + 130, stroke=C_MUTED, sw=1, dash="4 3")
-        s.text(cx + 250, cy - 132, "院内面：透（近全玻璃）", size=10, anchor="end",
-               color=C_ACCENT)
-        s.text(cx - 330, cy + 40, "入口", size=11, color=C_CIRC)
-        s.line(cx - 310, cy + 44, cx - 240, cy + 44, stroke=C_CIRC, sw=1.6, arrow=True)
-    elif kind == "stepped":
-        # 三层逐层后退，退出来的平台是上一层的院子
-        for i, (w, dy, fill) in enumerate(((440, 0, "#FFFFFF"), (350, -90, "#F2F2EF"),
-                                          (260, -180, "#FFFFFF"))):
-            s.rect(cx - 220, cy + dy, w, 78, fill=fill, stroke=C_INK, sw=1.4)
-            s.text(cx - 210, cy + dy + 46, f"L{i + 1}", size=11, color=C_MUTED)
-            if i < 2:
-                s.text(cx - 220 + w + 10, cy + dy + 46, "露台", size=10, color=C_ACCENT)
-                s.line(cx - 220 + w, cy + dy + 8, cx - 220 + w + 60, cy + dy + 8,
-                       stroke=C_ACCENT, sw=1.2, arrow=True)
-    elif kind == "floating":
-        # 底层架空，上部体量完整，水从下面穿过
-        _water_band(s, cx - 250, cy + 60, 500, 46, "水面穿过建筑底部")
-        for dx in (-220, -80, 80, 220):
-            s.line(cx + dx, cy + 100, cx + dx, cy - 10, stroke=C_INK, sw=3)
-        s.rect(cx - 240, cy - 180, 480, 170, fill="#FFFFFF", stroke=C_INK, sw=1.4)
-        s.text(cx - 230, cy - 90, "主体量（L2–L3）", size=12, color=C_INK)
-        s.text(cx - 230, cy + 56, "架空层（柱与楼梯）", size=11, color=C_MUTED)
-    elif kind == "twin_wings":
-        # 两个体量 + 中间的院与水
-        s.rect(cx - 260, cy - 90, 170, 180, fill="#FFFFFF", stroke=C_INK, sw=1.4)
-        s.rect(cx + 90, cy - 90, 170, 180, fill="#FFFFFF", stroke=C_INK, sw=1.4)
-        _water_band(s, cx - 80, cy - 30, 160, 50, "院 + 水")
-        s.text(cx - 175, cy - 4, "公共翼", size=11, anchor="middle", color=C_INK)
-        s.text(cx + 175, cy - 4, "私密翼", size=11, anchor="middle", color=C_INK)
-        s.text(cx, cy + 76, "片墙收住视线", size=10, anchor="middle", color=C_MUTED)
-        s.line(cx - 90, cy + 56, cx + 90, cy + 56, stroke=C_MUTED, sw=1.2)
-    else:
-        s.rect(cx - 210, cy - 40, 420, 120, fill="#FFFFFF", stroke=C_INK, sw=1.4)
-        s.rect(cx - 150, cy - 150, 300, 110, fill="#F2F2EF", stroke=C_INK, sw=1.4)
-        for i in range(4):
-            s.line(cx - 150 + i * 100, cy - 150, cx - 150 + i * 100, cy - 40,
-                   stroke=C_RULE, sw=1)
+    # 地面紧贴体量：留白多一圈，体块就小一圈，客户看到的是空白不是房子
+    xs = [b[0] for b in steps[-1][2]] + [b[0] + b[3] for b in steps[-1][2]]
+    ys = [b[1] for b in steps[-1][2]] + [b[1] + b[4] for b in steps[-1][2]]
+    mx = max(1.6, (max(xs) - min(xs)) * 0.12)
+    my = max(1.6, (max(ys) - min(ys)) * 0.12)
+    ground = (min(xs) - mx, min(ys) - my,
+              (max(xs) - min(xs)) + 2 * mx, (max(ys) - min(ys)) + 2 * my)
 
-    s.text(MARGIN, CANVAS_H - 108, "体量逻辑：", size=12, weight="600")
-    s.label(MARGIN, CANVAS_H - 106, CANVAS_W - 2 * MARGIN, 44,
-            [_fit(d.get("massing") or p.get("zoning") or "", 116),
-             _fit(d.get("facade") or "", 116)], size=11, color=C_MUTED)
-    _footer(s, ["体量只表达关系与朝向，不含尺寸、层数与结构结论；须在 S3/S4 用真实条件校核。",
-                ctx.dimensional_note])
+    s = Svg(1440, 800, title=f"{concept['concept_id']} 体量演变")
+    _header(s, f"{concept['concept_name']} · 体量如何形成",
+            _fit(d.get("parti") or p.get("spatial_logic") or "", 92),
+            "等距轴测 · 体量关系 · 非按比例")
+
+    cell_w = (1440 - 2 * MARGIN) / 4.0
+    top = 128
+    oy = top + 196.0
+    for i, (label, note, boxes, water) in enumerate(steps):
+        x0 = MARGIN + i * cell_w
+        if i:
+            s.line(x0 - 8, top, x0 - 8, 620, stroke=C_RULE, sw=0.8, dash="2 6")
+        s.text(x0, top - 26, f"0{i + 1}", size=20, color="#B9BEB4", weight="600")
+        s.text(x0 + 34, top - 26, _fit(label, 12), size=14, weight="600")
+        yard = (((water[0] + water[2] / 2), (water[1] + water[3] / 2), "院"),
+                ) if water[2] > 0 else ()
+        _draw_mass_step(s, iso_mod, boxes, water, ox=x0 + cell_w / 2 - 18, oy=oy,
+                        scale=min(15.5, cell_w / (ground[2] * 1.16)), ground=ground,
+                        yard=yard)
+        for j, line in enumerate(_wrap(note, 12, 3)):
+            s.text(x0, 646 + j * 20, line, size=12.5, color="#4C534C")
+
+    # 结果格
+    x0 = MARGIN + 3 * cell_w
+    last_label, last_note, last_boxes, last_water = steps[-1]
+    s.line(x0 - 8, top, x0 - 8, 620, stroke=C_RULE, sw=0.8, dash="2 6")
+    s.text(x0, top - 26, "04", size=20, color=C_INK, weight="600")
+    s.text(x0 + 34, top - 26, "结果：建成后的体量", size=14, weight="600")
+    yard = (((last_water[0] + last_water[2] / 2), (last_water[1] + last_water[3] / 2), "院"),
+            ) if last_water[2] > 0 else ()
+    _draw_mass_step(s, iso_mod, last_boxes, last_water, ox=x0 + cell_w / 2 - 10,
+                    oy=oy + 14, scale=min(17.0, cell_w / (ground[2] * 1.02)),
+                    ground=ground, yard=yard)
+    for j, line in enumerate(_wrap(last_note, 12, 3)):
+        s.text(x0, 646 + j * 20, line, size=12.5, color="#4C534C")
+
+    s.line(MARGIN, 716, 1440 - MARGIN, 716, stroke=C_RULE, sw=1)
+    s.text(MARGIN, 742, "体量逻辑", size=12, weight="600", color=C_INK)
+    s.text(MARGIN + 66, 742, _fit(d.get("massing") or p.get("zoning") or "", 84),
+           size=12, color="#4C534C")
+    s.text(MARGIN, 766, "界面处理", size=12, weight="600", color=C_INK)
+    s.text(MARGIN + 66, 766, _fit(d.get("facade") or "", 84), size=12, color="#4C534C")
+    s.text(MARGIN, 784, "体量只表达关系、朝向与层次，不含尺寸、层数与结构结论；须在 S3/S4 用真实条件校核。"
+           + "　" + ctx.dimensional_note, size=10, color=C_MUTED)
     return s.render()
 
 
 # --------------------------------------------------------------------------
 # 7. 剖面与竖向（建筑主导：楼层怎么分、光怎么进来）
 # --------------------------------------------------------------------------
-def section(concept: Dict[str, Any], ctx: Any) -> str:
-    """剖面示意：每层承担什么、院或挑空在哪、光从哪一侧来。
+def _poché(s: Svg, x: float, y: float, w: float, h: float, *,
+           fill: str = "#DDD6C4", line: str = "#FFFFFF", step: float = 8.0) -> None:
+    """Solid cut face with faint bedding lines.
 
-    剖面是「楼层空间」唯一能被讨论的图：平面上三层可以画得一样，剖面一画
-    就看出哪层在压缩、哪层在放开、哪层有院子。
+    斜线填充（hatch）在小尺寸剖面上会溢到轮廓外——线是画在矩形里的，但斜线的
+    端点落在矩形之外。现代建筑剖面本来就多用实心 poché，于是改用实填 + 极细的
+    水平分层线：既读得出"这是被剖到的实体"，又不会脏了整张图。
+    """
+    s.rect(x, y, w, h, fill=fill, stroke="#4A4F4B", sw=0.9, rx=0)
+    yy = y + step
+    while yy < y + h - 1:
+        s.line(x + 1, yy, x + w - 1, yy, stroke=line, sw=0.5)
+        yy += step
+
+
+def _person(s: Svg, x: float, ground: float, height: float, *,
+            color: str = "#B4AC9A") -> None:
+    """A 1.7 m silhouette: the only thing on the sheet that gives real scale."""
+    h = height
+    head_r = h * 0.075
+    s.circle(x, ground - h + head_r, head_r, fill=color, stroke="none")
+    body_top = ground - h + head_r * 2
+    s.polygon([(x - h * 0.085, body_top), (x + h * 0.085, body_top),
+               (x + h * 0.07, ground - h * 0.42), (x - h * 0.07, ground - h * 0.42)],
+              fill=color)
+    s.polygon([(x - h * 0.07, ground - h * 0.42), (x - h * 0.012, ground - h * 0.42),
+               (x - h * 0.012, ground), (x - h * 0.062, ground)], fill=color)
+    s.polygon([(x + h * 0.012, ground - h * 0.42), (x + h * 0.07, ground - h * 0.42),
+               (x + h * 0.062, ground), (x + h * 0.012, ground)], fill=color)
+
+
+def section(concept: Dict[str, Any], ctx: Any) -> str:
+    """剖面：楼板有厚度、墙被剖开、人在里面、光从一侧进来。
+
+    上一版剖面只有几条水平线和一个箭头：读起来像"层数示意"，不像剖面。剖面
+    之所以是概念阶段最硬的图，是因为它同时回答了三个问题——**每层承担什么、
+    哪一处是通的、光从哪个面进来**。这三件事都必须画出来才成立。
+
+    没有尺寸：层高按关系等分，图注写明"不含层高尺寸"。
     """
     p = concept["spatial_prototype"]
     d = concept.get("deliberation") or {}
     kind = _massing_kind(concept)
     prog = list(d.get("levels_program") or [])
-    n = max(1, min(4, len(prog) or 3))
+    levels = max(2, min(3, len(prog) or 3))
 
-    s = Svg(title=f"{concept['concept_id']} 剖面关系")
-    _header(s, f"{concept['concept_name']} · 剖面与楼层",
-            _fit(d.get("section") or "", 88), "剖面示意 · 非按比例")
+    s = Svg(1440, 820, title=f"{concept['concept_id']} 剖面与楼层")
+    _header(s, f"{concept['concept_name']} · 剖面",
+            _fit(d.get("section") or "", 96), "剖面示意 · 非按比例 · 不含层高尺寸")
 
-    ground = 560
-    base_x, width = 190, 580
-    step = 84
-    # 地面
-    s.line(120, ground, 980, ground, stroke=C_INK, sw=2)
-    s.text(120, ground + 20, "室外地坪", size=10, color=C_MUTED)
+    ground = 700
+    base_x, span = 300, 620
+    storey = 132
+    wall = 13
+    slab = 9
+    right = base_x + span
 
-    for i in range(n):
-        y = ground - i * step
-        s.line(base_x, y, base_x + width, y, stroke=C_INK, sw=2)
-        label = prog[i] if i < len(prog) else f"L{i + 1}"
-        # 层号与用途写在板线之上的图内左侧：放右侧会被画布边缘裁成半句。
-        s.text(base_x + 8, y - 10, f"L{i + 1}", size=12, color=C_INK, weight="600")
-        s.text(base_x + 46, y - 10, _fit(label, 26), size=10, color=C_MUTED)
+    # ---- 地坪与覆土 ----
+    _poché(s, base_x - wall, ground, span + 2 * wall, 26)
+    s.line(base_x - wall, ground, right + wall, ground, stroke=C_INK, sw=2.2)
+    s.text(base_x - wall, ground + 42, "室外地坪 ±0", size=10, color=C_MUTED)
 
-    # 通高 / 挑空：按策略放到不同位置
-    void_w = 130
-    void_x = base_x + 250
-    if kind == "courtyard_carved":
-        s.rect(void_x, ground - step * 2, void_w, step * 2, fill="#FFFFFF",
-               stroke=C_RULE, sw=1, dash="5 4")
-        _water_band(s, void_x + 12, ground - step * 2, void_w - 24, 22, "水")
-        s.text(void_x + 8, ground - step * 2 - 8, "院（两层通高）", size=11, color=C_ACCENT)
+    # ---- 层：楼板 + 外墙剖面 ----
+    for i in range(levels + 1):
+        y = ground - i * storey
+        _poché(s, base_x - wall, y - slab / 2, span + 2 * wall, slab, step=7)
+    for x in (base_x - wall, right):
+        _poché(s, x, ground - levels * storey, wall, levels * storey, step=7)
+
+    # ---- 通高 / 挑空：按策略放在不同位置 ----
+    void_w = 148
+    void_x = base_x + span * 0.52
+    if kind in ("courtyard_carved", "default"):
+        # 院井：从屋顶通到地面，两侧楼板断开
+        s.rect(void_x, ground - levels * storey + slab, void_w,
+               levels * storey - slab, fill="#F4F7F1", stroke="none", rx=0)
+        s.rect(void_x, ground - 26, void_w, 26, fill="#C6D8C4", stroke="none", rx=0)
+        s.text(void_x + void_w / 2, ground - levels * storey + 30, "院 · 通高",
+               size=11, color=C_ACCENT, anchor="middle", weight="600")
+        for i in range(1, levels):
+            y = ground - i * storey
+            s.rect(void_x, y - slab / 2, void_w, slab, fill="#F4F7F1", stroke="none", rx=0)
     elif kind == "floating":
-        s.rect(base_x, ground - step, width, step, fill="#F7F7F5", stroke="none")
-        s.text(base_x + 12, ground - step + 40, "架空层：净高压低", size=11, color=C_MUTED)
+        s.rect(base_x, ground - storey + slab, span, storey - slab,
+               fill="#F4F3EC", stroke="none", rx=0)
+        s.text(base_x + 16, ground - storey + 34, "架空层：净高压低，只走人",
+               size=11, color=C_MUTED)
+        for cx in (base_x + 90, base_x + span - 110):
+            s.rect(cx, ground - storey + slab, 16, storey - slab, fill="#D8D1BE",
+                   stroke="#4A4F4B", sw=0.8, rx=0)
     elif kind == "stepped":
-        for i in range(n):
-            y = ground - i * step
-            s.line(base_x + width, y, base_x + width + 90 * (i % 2), y,
-                   stroke=C_ACCENT, sw=1.4, dash="4 3")
-    elif kind == "twin_wings":
-        s.line(void_x + void_w / 2, ground, void_x + void_w / 2, ground - step * n,
-               stroke=C_RULE, sw=1, dash="5 4")
-        s.text(void_x + void_w / 2 + 6, ground - step * n + 18, "院", size=11, color=C_ACCENT)
+        # 退台：每层右侧缩进，露台在剖面上是一个缺口
+        for i in range(1, levels):
+            s.rect(right - i * 62, ground - i * storey - slab, i * 62, slab,
+                   fill="#FBFBFA", stroke="none", rx=0)
+            s.text(right - i * 62 + 5, ground - i * storey - 12, "露台", size=9.5,
+                   color=C_ACCENT)
+
+    # ---- 家具与人的尺度 ----
+    furn = ("床", "起居", "厨岛")
+    for i in range(levels):
+        gy = ground - i * storey
+        bx0 = base_x + 40
+        s.rect(bx0, gy - 34, 96, 34, fill="#CFC7B4", stroke="#8F8776", sw=0.8, rx=1)
+        s.text(bx0 + 48, gy - 12, furn[min(i, 2)], size=9.5, color="#585347",
+               anchor="middle")
+        s.rect(bx0 + 150, gy - 26, 60, 26, fill="#D6CFBD", stroke="#8F8776", sw=0.8, rx=1)
+    _person(s, base_x + 300, ground, storey * 0.62)
+    _person(s, base_x + 330, ground - storey, storey * 0.62)
+
+    # ---- 楼梯（层间联系，切到就画）----
+    for i in range(levels):
+        y0 = ground - i * storey - slab / 2
+        sx0 = base_x + span - 176
+        for k in range(8):
+            s.line(sx0 + k * 12, y0 - k * (storey - slab) / 8,
+                   sx0 + k * 12, y0 - slab, stroke="#9A9382", sw=0.9)
+        s.line(sx0, y0, sx0 + 8 * 12, y0 - (storey - slab), stroke="#6E746C", sw=1.2)
+
+    # ---- 光：从右侧进入，带落点 ----
+    for i in range(levels):
+        y = ground - i * storey - storey * 0.55
+        s.line(right + 82, y - 62, right - 6, y, stroke=C_LIGHT, sw=2.0, arrow=True)
+    s.text(right + 96, ground - levels * storey - 20, "主要采光面", size=10,
+           color=C_LIGHT, anchor="start")
+    if kind in ("courtyard_carved", "default"):
+        for i in range(levels):
+            y = ground - i * storey - storey * 0.5
+            s.line(void_x + void_w / 2, ground - levels * storey - 40, void_x + void_w / 2,
+                   y, stroke=C_LIGHT, sw=1.4, dash="7 5", arrow=True)
+        s.text(void_x + void_w / 2 + 8, ground - levels * storey - 46, "顶部采光",
+               size=10, color=C_LIGHT)
+
+    # ---- 右侧：层标注 ----
+    for i in range(levels):
+        y = ground - i * storey
+        label = prog[i] if i < len(prog) else f"第 {i + 1} 层"
+        s.text(base_x - wall - 14, y + slab / 2 - 6, f"L{i + 1}", size=13,
+               weight="600", anchor="end")
+        for j, line in enumerate(_wrap(label, 7, 2)):
+            s.text(base_x - wall - 14, y + slab / 2 + 12 + j * 14, line, size=10,
+                   color=C_MUTED, anchor="end")
+
+    # ---- 图例（顶部横排，与剖面拉开距离）----
+    lx, ly = 300, 154
+    _poché(s, lx, ly, 26, 12, step=5)
+    s.text(lx + 34, ly + 11, "被剖到的楼板与墙体", size=11, color=C_MUTED)
+    s.rect(lx + 216, ly, 26, 12, fill="#F4F7F1", stroke="#C6D8C4", sw=0.9, rx=0)
+    s.text(lx + 250, ly + 11, "通高 / 院井", size=11, color=C_MUTED)
+    s.line(lx + 372, ly + 6, lx + 408, ly + 6, stroke=C_LIGHT, sw=2.0, arrow=True)
+    s.text(lx + 416, ly + 11, "光的方向", size=10.5, color=C_LIGHT)
+    _person(s, lx + 520, ly + 14, 26)
+    s.text(lx + 538, ly + 11, "人体尺度 1.7 m", size=11, color=C_MUTED)
+
+    # ---- 右栏：这张剖面在说什么 ----
+    rx = 1000
+    s.line(rx - 26, 200, rx - 26, 700, stroke=C_RULE, sw=0.8)
+    s.text(rx, 218, "这张剖面在说什么", size=13, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(
+            "楼板被剖开，能数出几层；院井从屋顶通到地面，光从上面下来；"
+            "楼梯沿院边折上，每一层都在同一侧到达。", 24, 4)):
+        s.text(rx, 244 + i * 21, line, size=12, color="#3C443E")
+
+    s.text(rx, 366, "竖向关系", size=12.5, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(d.get("section") or "未给出竖向关系", 24, 3)):
+        s.text(rx, 390 + i * 21, line, size=12, color="#3C443E")
+
+    s.text(rx, 486, "专业配合", size=12.5, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(d.get("integration") or "按主导专业推进，其余专业做界面协调。",
+                                   24, 3)):
+        s.text(rx, 510 + i * 21, line, size=12, color="#3C443E")
+
+    # ---- 底栏 ----
+    s.line(MARGIN, 756, 1440 - MARGIN, 756, stroke=C_RULE, sw=1)
+    s.text(MARGIN, 780,
+           "剖面表达楼层分工与通高关系：层高按关系等分，不含尺寸、结构构件与管线结论；"
+           "结构与设备须在 S4 依据真实条件复核。", size=10, color=C_MUTED)
+    s.text(1440 - MARGIN, 780, ctx.dimensional_note, size=10, color=C_MUTED,
+           anchor="end")
+    return s.render()
+
+
+# --------------------------------------------------------------------------
+# 7b. 室内剖切轴测（室内主导：空间怎么被重新组织、光落在哪、视线通到哪）
+# --------------------------------------------------------------------------
+def axon(concept: Dict[str, Any], ctx: Any) -> str:
+    """室内剖切轴测：切掉两面墙的盒子，家具、界面与光一起看。
+
+    室内不能用建筑的体块图：体量图回答"这栋楼长什么样"，而室内要回答的是
+    "站在客厅能看见什么、光落在哪一面、哪一段是没有隔断的"。所以这里画的是
+    **一个被切开的房间**：地面、两面内墙、家具块、光斑与视线。
+
+    没有真实几何，所以只表达关系——进深分几段、通高在哪、视线是否被挡。图注
+    写明"不含开间进深尺寸"。
+    """
+    from . import iso as iso_mod
+
+    d = concept.get("deliberation") or {}
+    mats = [str(m.get("name") or "") for m in (concept.get("material_direction") or [])][:3]
+    light = (concept.get("lighting_direction") or [""])[0]
+
+    s = Svg(1440, 860, title=f"{concept['concept_id']} 空间轴测")
+    _header(s, f"{concept['concept_name']} · 剖切轴测",
+            _fit(d.get("parti") or concept.get("concept_statement") or "", 96),
+            "剖切轴测 · 关系示意 · 不含开间进深尺寸")
+
+    # 房间尺寸用关系量：8 米面宽、6 米进深、3 米净高
+    RW, RD, RH = 8.0, 6.0, 3.0
+    scale = 44.0
+    iso = iso_mod.Iso(420, 400, scale=scale, z_scale=scale * 0.92)
+
+    # 地面
+    iso_mod.draw_ground(iso, s, 0, 0, RW, RD, fill="#EFEBE1", edge="#B9B3A3", grid=0)
+    # 地面分格：木地板方向，暗示铺装
+    for i in range(1, 16):
+        s.line(*iso.p(RW * i / 16, 0, 0), *iso.p(RW * i / 16, RD, 0),
+               stroke="#E0DACA", sw=0.6)
+
+    # 两面内墙（切掉靠近观察者的两面）
+    back = iso.pts([(0, 0, 0), (RW, 0, 0), (RW, 0, RH), (0, 0, RH)])
+    side = iso.pts([(0, 0, 0), (0, RD, 0), (0, RD, RH), (0, 0, RH)])
+    s.polygon(back, fill="#E4DFD2", stroke="#4A4F4B", sw=1.3)
+    s.polygon(side, fill="#D6D0C0", stroke="#4A4F4B", sw=1.3)
+
+    # 后墙上的洞口：一扇窗（光从这面进来）+ 一条通高
+    wx0, wx1 = RW * 0.48, RW * 0.86
+    win = iso.pts([(wx0, 0, 1.0), (wx1, 0, 1.0), (wx1, 0, 2.5), (wx0, 0, 2.5)])
+    s.polygon(win, fill="#DCEBF2", stroke="#7FA5B8", sw=1.2)
+    gf = s.gradient("gl", [(0.0, "#FFFFFF"), (1.0, "#CFE3EC")], x2=0, y2=1)
+    s.polygon(win, fill=gf, stroke="none", opacity=0.75)
+
+    # 家具：按"起居—餐—卧室"三段布置，这一段是否连通一眼可见
+    blocks = [
+        (0.6, 4.2, 0, 2.2, 1.0, 0.45, "#CFC7B2"),     # 沙发
+        (3.2, 3.6, 0, 1.2, 1.2, 0.32, "#BDB4A0"),     # 茶几
+        (5.4, 3.8, 0, 2.2, 1.0, 0.75, "#C7BEA8"),     # 长桌
+        (0.6, 0.4, 0, 2.4, 0.6, 2.2, "#D2CAB6"),      # 通高柜
+        (4.4, 0.4, 0, 2.0, 0.6, 1.9, "#C9C0AB"),      # 书柜
+    ]
+    for (x, y, z, w, dd, h, fill) in sorted(
+            blocks, key=lambda b: iso.depth(b[0] + b[3] / 2, b[1] + b[4] / 2, b[2])):
+        iso_mod.draw_shadow(iso, s, x, y, w, dd, dx=0.35, dy=0.35, opacity=0.10)
+        iso_mod.draw_box(iso, s, x, y, z, w, dd, h, fill=fill, edge="#3A3F44", sw=0.9)
+
+    # 光：从窗进来，落在地面上的一块梯形
+    beam = iso.pts([(wx0, 0, 1.0), (wx1, 0, 1.0), (wx1 + 1.2, 2.6, 0), (wx0 + 0.6, 2.6, 0)])
+    gt = s.gradient("beam", [(0.0, "#F3C97A"), (1.0, "#F7E7C4")], x2=0, y2=1)
+    s.polygon(beam, fill=gt, stroke="none", opacity=0.34)
+    s.text(*iso.p((wx0 + wx1) / 2, -0.35, 2.72), "主要采光面", size=11.5,
+           color="#A9701F", anchor="middle")
+
+    # 视线：站位 → 窗 → 室外（能不能看见天空）
+    eye = iso.p(4.6, 5.0, 1.55)
+    target = iso.p((wx0 + wx1) / 2, 0.0, 1.9)
+    s.line(eye[0], eye[1], target[0], target[1], stroke=C_CIRC, sw=1.4, dash="7 5",
+           arrow=True)
+    s.circle(eye[0], eye[1], 4.5, fill=C_CIRC, stroke="none")
+    s.text(eye[0] - 6, eye[1] + 26, "站这里看", size=10.5, color=C_CIRC, anchor="middle")
+
+    # 无隔断的一段：用地面箭头说明"连续的空间"
+    a0 = iso.p(1.4, 2.1, 0.02)
+    a1 = iso.p(7.6, 2.1, 0.02)
+    s.line(a0[0], a0[1], a1[0], a1[1], stroke=C_ACCENT, sw=2.0, arrow=True)
+    s.text((a0[0] + a1[0]) / 2, a0[1] - 12, "连续空间：一盏灯到底", size=11,
+           color=C_ACCENT, anchor="middle")
+
+    # ---- 右侧说明 ----
+    rx = 790
+    s.line(rx - 26, 150, rx - 26, 720, stroke=C_RULE, sw=0.8)
+    s.text(rx, 168, "这张图在说什么", size=13, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(
+            "切掉靠观察者的两面墙，剩下的是一段连续的空间：从哪里坐下、光落在哪块"
+            "地面、视线能不能穿到窗。蓝色虚线是站立位置看向窗的视线。", 24, 4)):
+        s.text(rx, 194 + i * 21, line, size=12, color="#3C443E")
+
+    s.text(rx, 320, "界面与材料", size=12.5, weight="600", color=C_INK)
+    if mats:
+        for i, m in enumerate(mats):
+            s.rect(rx, 334 + i * 32, 11, 19, fill="#D8D1BE", stroke="#9A9382", sw=0.6, rx=1)
+            s.text(rx + 20, 349 + i * 32, _fit(m, 18), size=12, color="#3C443E")
     else:
-        s.rect(void_x, ground - step * 2, void_w, step * 2, fill="#F7F7F5",
-               stroke=C_RULE, sw=1, dash="5 4")
+        s.text(rx, 334, "本方案未指定材料方向。", size=11.5, color=C_MUTED)
 
-    # 采光：侧光 + 顶部光（有院/井时）
-    for i in range(n):
-        y = ground - i * step - step * 0.6
-        s.line(120, y, base_x - 12, y, stroke=C_LIGHT, sw=1.6, arrow=True)
-    if kind in ("courtyard_carved",):
-        s.line(void_x + void_w / 2, ground - step * n - 46, void_x + void_w / 2,
-               ground - step * n - 6, stroke=C_LIGHT, sw=1.6, arrow=True)
-        s.text(void_x + void_w / 2 + 6, ground - step * n - 50, "采光井", size=10, color=C_LIGHT)
+    s.text(rx, 462, "光", size=12, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(light or "未指定采光方向", 24, 3)):
+        s.text(rx, 486 + i * 21, line, size=12, color="#3C443E")
 
-    # 图例放在图内左上角，不跟地坪线抢位置
-    s.line(120, 132, 168, 132, stroke=C_LIGHT, sw=1.6, arrow=True)
-    s.text(176, 136, "光的方向", size=10, color=C_LIGHT)
-    s.rect(120, 146, 30, 12, fill="#FFFFFF", stroke=C_RULE, sw=1, dash="4 3")
-    s.text(158, 157, "通高 / 挑空", size=10, color=C_MUTED)
-    s.text(MARGIN, CANVAS_H - 104, "竖向判据：", size=12, weight="600")
-    s.label(MARGIN, CANVAS_H - 102, CANVAS_W - 2 * MARGIN, 44,
-            [_fit(d.get("section") or "", 116),
-             _fit(d.get("integration") or "", 116)], size=11, color=C_MUTED)
-    _footer(s, ["剖面表达楼层分工与通高关系，不含层高尺寸、结构构件与设备管线结论。",
-                ctx.dimensional_note])
+    s.text(rx, 590, "剖面关系", size=12, weight="600", color=C_INK)
+    for i, line in enumerate(_wrap(d.get("section") or "未给出竖向关系", 24, 3)):
+        s.text(rx, 614 + i * 21, line, size=12, color="#3C443E")
+
+    # ---- 底栏 ----
+    s.line(MARGIN, 776, 1440 - MARGIN, 776, stroke=C_RULE, sw=1)
+    s.text(MARGIN, 800,
+           "轴测只表达空间关系、视线与光的落点：不含开间进深、净高与家具尺寸；"
+           "尺寸与定位须在 S3 平面与 S4 深化中确定。", size=10, color=C_MUTED)
+    s.text(1440 - MARGIN, 800, ctx.dimensional_note, size=10, color=C_MUTED,
+           anchor="end")
     return s.render()
 
 
@@ -839,84 +1275,189 @@ def _zone_fill(name: str) -> str:
     return "#F2F2EF"
 
 
-def landscape(concept: Dict[str, Any], ctx: Any) -> str:
-    """景观结构：场地关系（左）+ 分区占比（右）+ 水/植物/铺装（下）。
+def _blob_path(cx: float, cy: float, rx: float, ry: float, *, seed: int = 1,
+               n: int = 10) -> str:
+    """A smooth organic outline — water and planting beds are never rectangles."""
+    import math
 
-    分区占比是**数据**，场地关系是**示意**，两者分开画。早先把占比画成
-    竖条纹铺满场地，再叠上游线和水面，读起来像一张色卡，看不出哪里是水、
-    人怎么绕——图看着满，信息是零。
+    pts = []
+    for i in range(n):
+        ang = i / n * math.tau
+        k = 1 + 0.13 * math.sin(ang * 3 + seed * 1.3) + 0.06 * math.sin(ang * 5 + seed * 2.1)
+        pts.append((cx + math.cos(ang) * rx * k, cy + math.sin(ang) * ry * k))
+    d = f"M {pts[0][0]:.1f} {pts[0][1]:.1f}"
+    for i in range(1, len(pts) + 1):
+        x0, y0 = pts[i - 1]
+        x1, y1 = pts[i % len(pts)]
+        d += f" Q {x0:.1f} {y0:.1f} {(x0 + x1) / 2:.1f} {(y0 + y1) / 2:.1f}"
+    return d + " Z"
+
+
+def _paving(s: Svg, x: float, y: float, w: float, h: float, *, fill: str = "#E5DFD1",
+            joint: str = "#C9C1AD", step: float = 26.0) -> None:
+    """Hard paving: a filled area with a joint grid, not a beige rectangle."""
+    s.rect(x, y, w, h, fill=fill, stroke=joint, sw=1.0, rx=0)
+    ny = int(h // step)
+    nx = int(w // step)
+    for i in range(1, nx):
+        s.line(x + i * step, y, x + i * step, y + h, stroke=joint, sw=0.5)
+    for j in range(1, ny):
+        s.line(x, y + j * step, x + w, y + j * step, stroke=joint, sw=0.5)
+
+
+def landscape(concept: Dict[str, Any], ctx: Any) -> str:
+    """景观总平面：建筑轮廓、硬质、绿地、乔灌木、水面、园路、活动区，各说各的。
+
+    上一版是"矩形当水池、圆点当树、蓝线当园路"——那是流程图，不是景观图。
+    景观总平面之所以能读，靠的是**图面层次**：底（土/草）→ 建筑与铺装（硬）→
+    水体（软而深）→ 种植（三种冠幅）→ 路径（双线带缘）→ 标注与指北。
+    少任何一层，画面就塌成色块。
+
+    仍然是示意图：不给放线、不给标高、不给面积。面积以分区占比单独列出。
     """
+    import math
+
+    from . import iso as iso_mod
+
     d = concept.get("deliberation") or {}
     zones = d.get("zones") or []
-    s = Svg(title=f"{concept['concept_id']} 景观结构")
-    _header(s, f"{concept['concept_name']} · 分区与游线",
-            _fit(d.get("parti") or "", 88), "分区示意 · 非按比例")
+    s = Svg(1440, 900, title=f"{concept['concept_id']} 景观总平面")
+    _header(s, f"{concept['concept_name']} · 总平面",
+            _fit(d.get("parti") or "", 96), "总平面示意 · 非按比例 · 不放线")
 
-    # ---- 左：场地关系 ----
-    sx, sy, sw, sh = 150, 156, 540, 380
-    s.rect(sx, sy, sw, sh, fill="#FBFBFA", stroke=C_INK, sw=1.6)
-    s.text(sx, sy - 10, "场地边界", size=10, color=C_MUTED)
+    # ---------------- 左：总平面 ----------------
+    px, py, pw, ph = 56, 138, 820, 596
+    s.rect(px - 10, py - 10, pw + 20, ph + 20, fill="#FFFFFF", stroke=C_RULE, sw=1, rx=2)
 
-    # 乔木带（上、左、右三边）
-    for i in range(5):
-        s.circle(sx + 52 + i * 108, sy + 32, 19, fill="#D8E6D2", stroke="#B9CDB2", sw=1)
-    for i in range(4):
-        s.circle(sx + 30, sy + 104 + i * 74, 19, fill="#D8E6D2", stroke="#B9CDB2", sw=1)
-        s.circle(sx + sw - 30, sy + 104 + i * 74, 19, fill="#D8E6D2", stroke="#B9CDB2", sw=1)
-    s.text(sx + 52, sy + 68, "乔木带：骨架与边界", size=10, color="#5C7A55")
+    # 底：草地
+    s.rect(px, py, pw, ph, fill="#E8EEE2", stroke="#B9C4B2", sw=1.0, rx=0)
+    # 草地的细微纹理：不等距横线，避免大片纯色
+    for i in range(1, 15):
+        yy = py + ph * i / 15.0
+        s.line(px + 4, yy, px + pw - 4, yy, stroke="#DFE7D9", sw=0.5)
 
-    # 水面
-    wx, wy, ww, wh = sx + sw * 0.28, sy + sh * 0.46, sw * 0.36, 88
-    s.rect(wx, wy, ww, wh, fill="#CFE3F2", stroke="#9CC3DE", sw=1.2, rx=6)
-    s.text(wx + 14, wy + 46, "水面", size=12, color="#2F6FB2")
-    s.text(wx + 14, wy + 66, "做法见下方水景一行", size=9, color="#2F6FB2")
+    # 建筑轮廓：左上角压住场地一角（院子在房子南侧）
+    bx, by, bw, bh = px, py, pw * 0.46, ph * 0.26
+    s.rect(bx, by, bw, bh, fill="#CBC5B4", stroke="#4E534E", sw=2.2, rx=0)
+    for i in range(1, 8):                     # 建筑用斜线填充，和绿地分开
+        s.line(bx + bw * i / 8, by + 2, bx + bw * i / 8 - bh * 0.8, by + bh - 2,
+               stroke="#AFA897", sw=0.8)
+    s.text(bx + 14, by + 26, "建筑", size=12, color="#4A4F4B", weight="600")
+    s.text(bx + 14, by + 44, "（不在本次景观范围内）", size=10, color="#6E736D")
 
-    # 茶席
-    tx, ty = sx + sw * 0.54, sy + sh * 0.12
-    s.rect(tx, ty, 148, 60, fill="#E8E2D2", stroke="#C9BFA6", sw=1.2)
-    s.text(tx + 12, ty + 25, "茶席 / 停留", size=11, color=C_INK)
-    s.text(tx + 12, ty + 44, "背靠种植，面向房子", size=9, color=C_MUTED)
+    # 硬质：茶席平台（靠建筑、面向水）
+    tx, ty, tw, th = px + pw * 0.56, py + ph * 0.10, pw * 0.28, ph * 0.16
+    _paving(s, tx, ty, tw, th, step=24)
+    s.text(tx + 10, ty + 20, "茶席 / 停留", size=11, color=C_INK, weight="600")
+    s.text(tx + 10, ty + 38, "背靠种植，面向水", size=9.5, color=C_MUTED)
 
-    # 游线：绕水一圈
-    cy = sy + sh * 0.66
-    s.polyline([(sx + 26, cy), (sx + sw * 0.20, sy + sh * 0.30),
-                (sx + sw * 0.52, sy + sh * 0.24), (sx + sw - 32, sy + sh * 0.38),
-                (sx + sw - 44, cy + 52), (sx + 44, cy + 56), (sx + 26, cy)],
-               stroke=C_CIRC, sw=2)
-    s.text(sx + 40, cy + 78, "游线：单向绕行，主路 900–1200 mm", size=10, color=C_CIRC)
+    # 水：有机形 + 岸线 + 涟漪 + 倒影
+    wcx, wcy = px + pw * 0.46, py + ph * 0.60
+    wrx, wry = pw * 0.20, ph * 0.17
+    s.path(_blob_path(wcx, wcy, wrx + 8, wry + 7, seed=3), fill="#DCE7DC",
+           stroke="#B9C4B2", sw=1.0)
+    s.path(_blob_path(wcx, wcy, wrx, wry, seed=3), fill="#BBD6E2", stroke="#7FA5B8", sw=1.2)
+    s.path(_blob_path(wcx - wrx * 0.10, wcy - wry * 0.12, wrx * 0.62, wry * 0.56, seed=5),
+           fill="#CFE3EC", stroke="none", opacity=0.9)
+    for i in range(1, 4):
+        s.path(_blob_path(wcx, wcy, wrx * (1 - i * 0.16), wry * (1 - i * 0.15), seed=3),
+               fill="none", stroke="#FFFFFF", sw=0.9, opacity=0.55)
+    s.text(wcx, wcy + 4, "静水", size=13, color="#2F6F8A", anchor="middle", weight="600")
+    s.text(wcx, wcy + 22, "水底铺深色砾石", size=9.5, color="#3F7C93", anchor="middle")
+
+    # 种植：边界乔木带（冠幅不等）+ 点景树 + 灌木丛
+    tree_pts = ([(px + 26, py + ph - 34 - i * 92) for i in range(5)]
+                + [(px + pw - 40 - i * 116, py + ph - 30) for i in range(4)]
+                + [(px + pw - 44, py + 60 + i * 110) for i in range(3)])
+    for k, (tx2, ty2) in enumerate(tree_pts):
+        iso_mod.canopy_plan(s, tx2, ty2, 26 + (k % 3) * 5, seed=k + 2,
+                            fill="#B7CCA8", edge="#87A276")
+    iso_mod.canopy_plan(s, px + pw * 0.78, py + ph * 0.42, 32, seed=9,
+                        fill="#B7CCA8", edge="#87A276")
+    iso_mod.canopy_plan(s, px + pw * 0.30, py + ph * 0.86, 24, seed=4,
+                        fill="#C2D5B4", edge="#87A276")
+
+
+    # 灌木：顺着水岸东侧成一串，不散落成点
+    for k in range(7):
+        ang = -0.5 + k * 0.30
+        sx = wcx + (wrx + 22) * math.cos(ang) * 1.05
+        sy = wcy + (wry + 20) * math.sin(ang) * 1.05
+        iso_mod.shrub_plan(s, sx, sy, 10 + (k % 3) * 2, seed=k)
+
+    # 园路：入口（南）→ 沿水西侧绕行 → 平台。**不能穿水**：这是上一版最刺眼的错。
+    road = [(px + pw * 0.30, py + ph - 6), (px + pw * 0.26, py + ph * 0.82),
+            (px + pw * 0.15, py + ph * 0.62), (px + pw * 0.14, py + ph * 0.40),
+            (px + pw * 0.28, py + ph * 0.30), (px + pw * 0.56, py + ph * 0.24)]
+    for off in (-7, 7):
+        pts = [(x + off, y) for x, y in road]
+        s.polyline(pts, stroke="#B2A78E", sw=1.4, arrow=False)
+    s.polyline(road, stroke="#EFE8D6", sw=11.0, arrow=False)
+    s.polyline(road, stroke="#C9BEA4", sw=0.9, arrow=False)
+    s.text(px + pw * 0.045, py + ph * 0.50, "园路 900–1200", size=10, color="#6B6455")
 
     # 入口
-    s.text(sx - 6, sy + sh + 26, "入口", size=10, color=C_MUTED)
-    s.line(sx + 22, sy + sh + 20, sx + 22, sy + sh - 8, stroke=C_CIRC, sw=1.6, arrow=True)
+    s.polygon([(px + pw * 0.30 - 16, py + ph + 10), (px + pw * 0.30 + 16, py + ph + 10),
+               (px + pw * 0.30, py + ph - 14)], fill="#8C7F63")
+    s.text(px + pw * 0.30, py + ph + 28, "入口", size=11, color="#6B6455", anchor="middle")
 
-    # ---- 右：分区占比（数据条，不是场地形状）----
-    bx, by, bw = CANVAS_W - 336, 176, 230
-    s.text(bx, by - 18, "分区占比", size=12, weight="600")
+    # 图面辅助：指北 + 比例条
+    iso_mod.north_arrow(s, px + pw - 34, py + 40, size=24, color="#4A4F4B")
+    iso_mod.scale_bar(s, px + 22, py + ph + 12, 120, seg_m=5, segments=2,
+                      color="#4A4F4B")
+
+    # ---------------- 右上：分区占比 ----------------
+    bx2, by2 = 916, 168
+    s.text(bx2, by2 - 22, "分区占比", size=13, weight="600")
+    s.text(bx2, by2 - 4, "取自本方案声明的分区，未声明的不补", size=9.5, color=C_MUTED)
     if zones:
+        total = max(1, len(zones))
         for i, z in enumerate(zones):
-            y = by + i * 42
+            y = by2 + 14 + i * 46
             name = str(z.get("name") or "")
-            s.rect(bx, y, bw, 34, fill=_zone_fill(name), stroke=C_RULE, sw=0.8)
-            s.text(bx + 10, y + 22, _fit(name, 11), size=11, color=C_INK)
-            s.text(bx + bw - 10, y + 22, str(z.get("share") or ""), size=11,
-                   color=C_MUTED, anchor="end")
+            share = str(z.get("share") or "")
+            s.rect(bx2, y, 468, 34, fill=_zone_fill(name), stroke="#D4D0C4", sw=0.8, rx=2)
+            s.text(bx2 + 12, y + 22, _fit(name, 15), size=12.5, color=C_INK)
+            s.text(bx2 + 456, y + 22, share, size=12, color="#5C6157", anchor="end")
     else:
-        s.text(bx, by + 20, "本方案未给分区占比", size=11, color=C_MUTED)
+        s.text(bx2, by2 + 16, "本方案未给分区占比：不编面积。", size=11, color=C_RISK)
 
-    # ---- 下：做法三行 ----
+    # ---------------- 右下：图例 ----------------
+    lx, ly = 916, 470
+    s.text(lx, ly - 14, "图例", size=12, weight="600", color=C_INK)
+    s.rect(lx, ly, 22, 14, fill="#D9D6CE", stroke="#5A5F5B", sw=1.2, rx=0)
+    s.text(lx + 32, ly + 12, "建筑轮廓", size=11.5, color="#4F554F")
+    _paving(s, lx, ly + 26, 22, 14, step=8)
+    s.text(lx + 32, ly + 40, "硬质铺装", size=11.5, color="#4F554F")
+    s.path(_blob_path(lx + 11, ly + 59, 11, 7, seed=3), fill="#BBD6E2", stroke="#7FA5B8", sw=1)
+    s.text(lx + 32, ly + 68, "静水面", size=11.5, color="#4F554F")
+    iso_mod.canopy_plan(s, lx + 11, ly + 86, 11, seed=3, shadow=False)
+    s.text(lx + 32, ly + 96, "乔木（冠幅）", size=11.5, color="#4F554F")
+    iso_mod.shrub_plan(s, lx + 11, ly + 110, 7, seed=1)
+    s.text(lx + 32, ly + 124, "灌木 / 地被", size=11.5, color="#4F554F")
+    s.line(lx, ly + 130, lx + 22, ly + 130, stroke="#F3EFE4", sw=8)
+    s.line(lx, ly + 130, lx + 22, ly + 130, stroke="#CFC5AE", sw=0.8)
+    s.text(lx + 32, ly + 148, "园路", size=11.5, color="#4F554F")
+
+    # ---------------- 底栏：做法三行 ----------------
+    y0 = 796
+    s.line(MARGIN, y0 - 22, 1440 - MARGIN, y0 - 22, stroke=C_RULE, sw=1)
     for i, (label, key) in enumerate((("水景", "water"), ("植物", "planting"),
                                       ("铺装", "paving"))):
-        y = CANVAS_H - 128 + i * 20
-        s.text(MARGIN, y, f"{label}：", size=11, weight="600")
-        s.text(MARGIN + 46, y, _fit(d.get(key) or "未设定", 96), size=10, color=C_MUTED)
-    _footer(s, ["左图为空间关系示意、右图为分区占比；都不代表实际放线、面积与尺寸。",
-                ctx.dimensional_note])
+        x = MARGIN + i * 460
+        s.text(x, y0, label, size=11, weight="600", color=C_INK)
+        val = str(d.get(key) or "未设定")
+        for j, line in enumerate(_wrap(val, 30, 2)):
+            s.text(x + 40, y0 + j * 17, line, size=11, color=C_MUTED)
+    s.text(MARGIN, 872, "总平面为关系示意：不给放线、标高与面积；面积以分区占比单列，"
+           "施工图阶段的竖向与定位须由持证专业人员按现场条件出图。",
+           size=10, color=C_MUTED)
     return s.render()
 
 
 # --------------------------------------------------------------------------
 DIAGRAM_KINDS = ("functional", "zoning", "circulation", "daylight", "sequence",
-                 "massing", "section", "landscape")
+                 "massing", "section", "landscape", "axon")
 
 
 def build(concept: Dict[str, Any], ctx: Any,
@@ -942,11 +1483,11 @@ def build(concept: Dict[str, Any], ctx: Any,
             if has_rooms:
                 want += ["functional", "zoning", "circulation"]
         elif lead == "interior":
-            # 室内同理：没有房间级数据时，分区/动线/采光三张图会把任务书原句
-            # 塞进同一个大框（"房子已经建好""是大平层"…），看着有图、读不出
-            # 任何空间关系。此时只给序列图，其余留到 S3 有了平面再画。
-            want = (["zoning", "circulation", "daylight", "sequence"]
-                    if has_rooms else ["sequence"])
+            # 室内不套建筑的体块图：体量回答的是"这栋楼长什么样"。
+            # 室内先给剖切轴测（空间重组、视线、光的落点），有房间级数据时
+            # 再补分区/动线/采光；没有就只留轴测与序列——不拿任务书原句填满图框。
+            want = (["axon", "zoning", "circulation", "daylight", "sequence"]
+                    if has_rooms else ["axon", "sequence"])
         elif ctx.profile_id == "architecture":
             want = ["massing", "section", "sequence"]
 
@@ -959,11 +1500,13 @@ def build(concept: Dict[str, Any], ctx: Any,
         "massing": lambda: massing(concept, ctx),
         "section": lambda: section(concept, ctx),
         "landscape": lambda: landscape(concept, ctx),
+        "axon": lambda: axon(concept, ctx),
     }
     titles = {
         "functional": "功能关系图", "zoning": "分区图", "circulation": "动线概念图",
         "daylight": "采光策略图", "sequence": "空间序列图", "massing": "体量概念图",
-        "section": "剖面与楼层图", "landscape": "景观结构图",
+        "section": "剖面与楼层图", "landscape": "景观总平面",
+        "axon": "室内剖切轴测",
     }
     made: List[Dict[str, str]] = []
     for kind in dict.fromkeys(want):
@@ -983,4 +1526,4 @@ def build(concept: Dict[str, Any], ctx: Any,
 
 __all__ = ["Svg", "DIAGRAM_KINDS", "build", "groups_for",
            "functional_relations", "zoning", "circulation", "daylight",
-           "sequence", "massing", "section", "landscape", "Group"]
+           "sequence", "massing", "section", "landscape", "axon", "Group"]

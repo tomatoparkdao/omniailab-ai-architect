@@ -3,7 +3,7 @@ name: omniailab-cost-check
 description: 造价适配 —— 从 S1 起随深化动态估算，用区间口径判断方案是否落在预算内并给出取舍建议
 capability: cost-check
 stages: [S1, S2, S3, S4, S5, S6]
-version: 1.7.0
+version: 1.8.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

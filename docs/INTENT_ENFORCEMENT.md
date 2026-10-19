@@ -1,7 +1,7 @@
 ---
 name: 设计意图执行层闭环
 description: 两阶段变更授权、预览零副作用、统一硬门槛、G2 事务字节级回滚、G3–G8 设计意图漂移检测——以及哪些判断仍须人工
-version: 1.7.0
+version: 1.8.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

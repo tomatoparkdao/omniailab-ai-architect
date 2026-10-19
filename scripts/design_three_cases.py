@@ -118,12 +118,13 @@ def run_case(key: str, cfg: dict) -> dict:
     # 客户提案：案例带图、链接可点、权利分层（presentation/html.py）
     page = html_mod.proposal(payload, out, project_name=cfg["name"],
                              research=research, project_dir=out,
-                             meta=[f"S2 {getattr(s2, 'status', '')}"])
+                             meta=[f"模型修订 r{payload.get('revision', 1)}"])
 
     # 在线文档包：飞书 / Notion 各一套可导入的 Markdown + 图（不联网、不发链接）
+    # 生产入口显式带图：提案与文档包里要用素材库的真实空间意向。
     package = online_doc.build_package(
         p, payload, research, out / "online-doc", project_name=cfg["name"],
-        project_dir=out, run_dir=run_dir)
+        project_dir=out, run_dir=run_dir, with_images=True)
 
     return {
         "key": key,
