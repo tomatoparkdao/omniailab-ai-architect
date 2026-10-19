@@ -3,7 +3,7 @@ name: omniailab-architectural-design
 description: 建筑设计 —— 把功能、场地与朝向组织成自洽的体量、立面和楼层策略（建筑项目启用，室内项目不启用）
 capability: architectural-design
 stages: [S1, S4]
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -78,6 +78,9 @@ agent_created: true
 - 上游能力：`design-brief`（任务书）、`site-analysis`（场地与建筑条件）
 - 下游能力：`space-planning`（房间与流线细化）、`building-services`（管井与净高）、`construction-detailing`（构造落地）
 - 本能力的产物进入：G1 任务书确认材料、S4 初步设计确认材料
+- 需要注册建筑师层面的知识（中外规范、防火疏散、构造围护、施工图审查）时，按 `SKILL.md` §4
+  「需要建筑师专业知识」一行的规则按需引用外部专业 Skill：先查本仓已有能力，仍缺才读，
+  **不下载、不复制、不入库**；规范条文以项目所在地现行规定为准。
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

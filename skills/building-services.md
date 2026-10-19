@@ -3,7 +3,7 @@ name: omniailab-building-services
 description: 机电与设备协同 —— 把电气、给排水、暖通、消防、智能化的空间与净高需求翻译成可协调的占位、剖面与点位清单
 capability: building-services
 stages: [S4, S6, S7]
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

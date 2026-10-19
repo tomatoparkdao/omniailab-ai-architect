@@ -1,7 +1,7 @@
 ---
 name: omniailab-docs-design-criteria
 description: 设计判据体系 —— 本系统在什么阶段、用哪些判据、通过哪项能力做设计判断
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -42,6 +42,15 @@ REFERENCE_LIBRARY_URL = (
 # 见 docs/VIDEO_PRODUCTION.md 的移交边界。
 DIRECTOR_SKILL_URL = "https://github.com/tomatoparkdao/omniailab-ai-director"
 
+# 注册建筑师 Skill（自有仓库，**外部知识参考**，不随本仓分发）。
+# 本系统仍是唯一的总设计师与主 Skill；只有在需要建筑师层面的知识（中外规范、
+# 防火疏散、构造围护、施工图审查）时才按需读取，读 main 最新、不锁 SHA。
+# 禁止 clone / submodule / 下载缓存 / 复制进本仓，见 SKILL.md §4 的同名表格行。
+ARCHITECT_SKILL_URL = "https://github.com/tomatoparkdao/registered-architect"
+ARCHITECT_SKILL_RAW_URL = (
+    "https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md"
+)
+
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:
     p = Path(path) if path else (ROOT / default)

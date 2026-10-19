@@ -1,7 +1,7 @@
 ---
 name: omniailab-providers-readme
 description: OmniAiLab 平台连接说明：API 契约填写模板、凭据放置位置、三步接入流程，以及创作能力独占的硬规则。
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

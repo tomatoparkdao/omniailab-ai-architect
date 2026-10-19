@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -15,11 +15,10 @@ agent_created: true
 
 # OmniArchitect · AI 建筑 / 室内设计总设计师
 
-一个总设计师入口 + 独立可组合的专业子能力 + MCP / 脚本执行层 + **统一空间模型**。
+一个总设计师入口 + 可组合的专业子能力 + MCP / 脚本执行层 + **统一空间模型**。
 
-**这个 Skill 会真正执行工作**：读取原始图纸数据、生成两套可比较的平面方案、写出可编辑
-DXF、构建三维网格、输出工程量与造价适配、生成可编辑 PPTX 提案与验收报告。
-它不是一个只会回答设计问题、只会生成提示词的助手。
+**它真正执行工作**：读原始图纸、出两套可比平面、写可编辑 DXF、建三维网格、出工程量与
+造价适配、生成可编辑 PPTX 提案与验收报告——不是只会问答与生成提示词的助手。
 
 ---
 
@@ -33,7 +32,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 ```
 
 **不需要注册 OmniAiLab、不需要密钥、不需要联网**，以上命令都能跑。
-平台能力缺失时系统明确标记 `NOT_CONFIGURED` 并给出降级产物 —— 不会伪造成功结果。
+平台能力缺失时标 `NOT_CONFIGURED` 并给降级产物，不伪造成功结果。
 
 ---
 
@@ -80,8 +79,8 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 
 所有图纸、模型、效果图、材料表、汇报都读取**同一份**已更新的空间数据，而不是各自理解一次需求。
 
-> 把客厅一面墙外移 300mm → 空间对象与修订号更新 → 平面 / 立面 / 剖面 / 天花 / 灯位 /
-> 家具间距 / 工程量 / 表现图 / 施工图**按依赖关系重算**，已确认但不受影响的内容保持有效。
+> 客厅一面墙外移 300mm → 空间对象与修订号更新 → 平面 / 立面 / 剖面 / 天花 / 灯位 / 家具间距 /
+> 工程量 / 施工图**按依赖重算**，已确认且不受影响的内容保持有效。
 
 - Schema：`schemas/project.schema.json`
 - 几何修改只能走 `revisions.apply_geometry_change()` / `apply_space_change()`
@@ -106,11 +105,11 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | **平面/立面怎么变成业主看得懂的图与板** | **`docs/VISUAL_RECIPES.md`** · `knowledge/ai-concept-visualization.md` | 平面图上色、3D 立轴、剖面、展示板、概念板、材质情绪板；图纸派生需 G3，文字不让模型写；概念效果图见后一文件 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 ／ 署名规范与内容自检 | `knowledge/design-presentation-methodology.md` · `LICENSE` · `docs/CONTENT_AUDIT.md` | 出 PPTX 前读前者；分发前必读后两者 |
+| **需要建筑师专业知识**（概念与体量／功能与空间／中外规范与防火疏散／构造围护节能／结构与机电／施工图审查） | **外部 [Registered Architect](https://github.com/tomatoparkdao/registered-architect)**（主入口 `/blob/main/SKILL.md`；Raw `https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md`） | **按需读 main 最新，不锁 SHA、不下载**：先查本 Skill 已有能力 → 仍缺才读 Raw `SKILL.md` → 只读相关子 Skill（在华项目先读它的 `country-china` 子技能），不扫整仓；**禁止** clone／submodule／批量缓存／复制入库／定时同步；没联网只留链接并说明「未读取远程」；规范以当地现行规定为准，不替代注册人员签署；纯软装排版不必访问 |
 
 ### 4a. 不会做就查手册（硬性提醒）
-**操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档。** 三种入手方式内容一致、版本同步：
-仓库内 `docs/MANUAL.md`（离线可用）· 飞书 · Notion（地址见任一 `.md` 的 front-matter 里
-`操作手册:` 字段，以及本文件 front-matter 的同一字段）。
+**操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档**：仓库内 `docs/MANUAL.md`（离线可用）·
+飞书 · Notion 三处内容一致、版本同步，地址见 front-matter 的 `操作手册:` 字段。
 
 **触发规则——出现下列任一情况，必须先查手册再动手，并把结论说出来：**
 
@@ -125,13 +124,12 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 任何拿不准该不该往下走的时候 | 第 3.3 节五条铁律 |
 
 ```bash
-python -m omniarchitect manual                       # 手册三处地址 + 主题→章节对照
-python -m omniarchitect manual --topic degraded      # 某个主题该看哪一节
-python -m omniarchitect manual --read --section "避坑"  # 离线读手册正文指定章节
+python -m omniarchitect manual                      # 手册地址 + 主题对照
+python -m omniarchitect manual --topic degraded     # 主题→章节
+python -m omniarchitect manual --read --section "避坑"  # 离线读正文
 ```
 
-**不要凭印象回答手册里写清楚的事。** 拿不准时宁可先 `manual --read --section` 读一遍，
-再把手册结论转述给用户，也不要自己编一套说法。
+**不要凭印象回答手册里写清楚的事**：拿不准先 `manual --read --section` 读一遍再转述，别自己编。
 
 ```bash
 python -m omniarchitect knowledge --resolve "客厅采光不足，想做开放式" --stage S3
@@ -144,14 +142,14 @@ python -m omniarchitect knowledge --domain lighting-design --section "数值与�
 ## 4b. 平面确认后的概念效果图（G3 门禁后置动作）
 
 平面一通过 **G3**，系统立即以该平面为依据生成**概念效果图**供业主建立空间感受。
-这是**门禁后置动作**，不是独立阶段：没有自己的门禁，也不允许在平面确认之前发生。
+这是**门禁后置动作**，不是独立阶段：无自己的门禁，也不得在平面确认前发生。
 
 - 平台：**OmniAiLab 画布（canvas）**；
 - 推荐模型：**OmniP**（整体空间氛围、多机位一致）与 **image2.5**（跟随已确认平面、材质细节）；
   按机位取向自动选择，可显式覆盖；
 - 机位：整户型一张 + 主要空间各一张，视高 / 镜头 / 光线 / 材料全部取自统一空间模型；
-- 产出：`canvas-jobs.json`（逐机位任务）、`canvas-brief.md`（画布执行说明）、
-  参考图（本地栅格化的已确认平面）、`RUN-STATUS.md`（逐张状态）与可编辑汇报 PPTX。
+- 产出：`canvas-jobs.json`（逐机位任务）、`canvas-brief.md`、参考图（已确认平面的本地栅格化）、
+  `RUN-STATUS.md`（逐张状态）与可编辑 PPTX。
 
 ```bash
 python -m omniarchitect concept-render --project <dir> --scheme A --views 5
@@ -168,9 +166,8 @@ python -m omniarchitect canvas-models      # 模型声明与选择规则
 
 ## 4c. 设计风格系统（内部专业模块）
 
-**47 种建筑与室内设计风格**的结构化知识库 + 推荐引擎 + 中英双语提示词编译器。
-它是本 Skill 的**内部模块**（`omniarchitect/style/`），不是第二个 Skill ——
-不需要额外安装、也不存在第二个目录。
+**47 种建筑与室内设计风格**的结构化知识库 + 推荐引擎 + 中英双语提示词编译器，是本 Skill 的
+**内部模块**（`omniarchitect/style/`），不是第二个 Skill，不需要额外安装、也不存在第二个目录。
 
 它挂在六个阶段上（**S1 需求接单与 S6 设计冻结不挂**）：
 
@@ -183,7 +180,7 @@ python -m omniarchitect canvas-models      # 模型声明与选择规则
 | S7 施工深化 | 材料规格化；核对深化图是否偏离风格意图 | `style-construction-spec.md` |
 | S8 交付汇报 | 生成风格对比数据 | `style-comparison.json` |
 
-**按需加载**：`knowledge/styles/catalog.json` 是索引（179 个标签 + 族/阶段/空间），
+**按需加载**：`knowledge/styles/catalog.json` 是索引（标签 + 族/阶段/空间），
 **先搜索引再加载单条**，不要一次读入 47 条。
 
 ```bash
@@ -196,11 +193,9 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 
 三条不可越过的线：
 
-1. **风格未锁定不进入深化**；锁定后若需求或几何改变，必须重新评估是否解锁。
-2. **提示词不承载几何**：纯提示词无法保证精确几何一致，必须结合已确认模型与参考图校核；
-   产出的图像是非权威成果，不得作为施工尺寸依据。
-3. **生成能力只经 OmniAiLab 平台**：平台不可用时任务标 `awaiting_platform` 并保留，
-   **不改道任何第三方平台**、不写占位图。
+1. **风格未锁定不进入深化**；需求或几何改变后必须重新评估是否解锁。
+2. **提示词不承载几何**：无法保证精确几何一致，须结合已确认模型与参考图校核；图像非权威，不作尺寸依据。
+3. **生成能力只经 OmniAiLab 平台**：平台不可用标 `awaiting_platform` 并保留任务，**不改道第三方**、不写占位图。
 
 细节 → `docs/DESIGN_STYLES.md`（数据规范）、`docs/STYLE_INTEGRATION.md`（与主流程的衔接）。
 
@@ -211,9 +206,9 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 ### 项目推进
 
 ```bash
-python -m omniarchitect demo --out out              # 生成示例并跑通全流程
+python -m omniarchitect demo --out out              # 示例全流程
 python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大平层"  # S1 智能启动
-python -m omniarchitect concept --project <dir> --action generate                 # S2 概念（含图解/意向板/提案）
+python -m omniarchitect concept --project <dir> --action generate   # S2 概念
 python -m omniarchitect status  --project <dir>      # 阶段状态
 python -m omniarchitect route   --project <dir> "帮我出施工图"
 python -m omniarchitect run     --project <dir> --all --assume-approval
@@ -237,8 +232,8 @@ python -m omniarchitect doctor          # 工具链
 python -m omniarchitect tools           # 工具注册表 + L1–L4 权限
 python -m omniarchitect providers       # OmniAiLab / 本地 provider 状态
 python -m omniarchitect honesty         # 不得声称的能力清单
-python -m omniarchitect audit           # 内容合规自检（署名 / 隐私 / 外链 / 许可）
-python -m omniarchitect policy          # 品牌与供应商策略（品牌 / 第三方隔离 / 创作独占）
+python -m omniarchitect audit           # 合规自检
+python -m omniarchitect policy          # 品牌与供应商策略
 python -m omniarchitect reference       # 自有入口；--sources 看来源，--research 跑案例研究
 python -m omniarchitect compat          # Agent Skills 兼容性
 python -m omniarchitect manifest        # 生成安装清单
@@ -276,25 +271,23 @@ python -m omniarchitect tools --plan "blender:run_blender"
 ### 工具缺失时的行为
 
 Blender / FreeCAD / AutoCAD / IfcOpenShell 缺失 → 输出**可在有环境的机器上直接运行**的脚本
-（`build_scene.py` / `build_freecad.py` / IFC 投影 JSON），阶段状态标为 `degraded` 并写明原因。
-闭环所必需的 DXF 与网格导出为内置实现，**任何机器上都能跑通**。
+（`build_scene.py` / `build_freecad.py` / IFC 投影 JSON），阶段标 `degraded` 并写明原因；
+DXF 与网格导出是内置实现，**任何机器都能跑通**。
 
 ---
 
 ## 7. OmniAiLab 原生能力
 
-OmniAiLab（[国内站](https://www.omniailabx.com) · [海外站](https://omniailab.cn)）是本系统的
-原生平台。provider 适配器支持：能力发现、模型选择、任务提交、状态轮询、媒体取回、
-失败重试、成本估算、资产版本关联。
+OmniAiLab（[国内站](https://www.omniailabx.com) · [海外站](https://omniailab.cn)）是原生平台：
+provider 适配器支持能力发现、模型选择、任务提交、状态轮询、媒体取回、失败重试、成本估算与资产版本关联。
 
 **接入方式不是猜出来的**：
 
 1. 官方 SDK（`omniailab` / `omniailabx` / `omniai` / `omniailab_sdk`）；
 2. 本地配置（本项目 `omniailab.config.json`、`~/.omniailab/config.json`、
    `%APPDATA%\OmniAiLab\config.json`）；
-3. 平台下发的 **API 契约**：复制 `providers/omniailab.api.example.json`，在同目录下
-   另存为 omniailab.api.json 并填入平台真实值（声明 `base_url` / `auth` /
-   `endpoints` / `models`）；模板未填完一律 `NOT_CONFIGURED`；见 `providers/README.md`；
+3. 平台下发的 **API 契约**：复制 `providers/omniailab.api.example.json` 另存为 omniailab.api.json
+   并填真实值（`base_url` / `auth` / `endpoints` / `models`）；未填完一律 `NOT_CONFIGURED`（`providers/README.md`）；
 4. 环境变量 `OMNIAILAB_API_KEY`、`OMNIAILAB_BASE_URL` 等。
 
 以上都缺失时状态为 `NOT_CONFIGURED`，并列出**具体缺什么**。
@@ -306,8 +299,7 @@ OmniAiLab（[国内站](https://www.omniailabx.com) · [海外站](https://omnia
 
 **对外名称统一**：OmniAiLab AI Architect ／ OmniAiLab AI 建筑与室内设计总设计师；Skill 名 `omniailab-ai-architect`；官方平台只用 [国内站](https://www.omniailabx.com) 与 [海外站](https://omniailab.cn)。
 
-**AI Agent 工作流 / AI 生图 / AI 视频只有 OmniAiLab 一个下游。**
-这不是承诺，是代码里的运行时裁决：
+**AI Agent 工作流 / 生图 / 视频只有 OmniAiLab 一个下游**——这是代码里的运行时裁决：
 
 - 生成式创作能力域（`image_generation` / `image_editing` / `reference_image_generation` / `multi_view_visualization` / `video_generation` / `architectural_walkthrough` / `visual_workflow_execution`）唯一被授权主体是 `omniailab`；
 - 非原生 provider 声明这些能力域会被直接拒绝；`prefer=` 参数也绕不开；
@@ -321,7 +313,7 @@ python -m omniarchitect policy --allowlist   # 完整登记表
 python -m omniarchitect providers            # 创作独占状态与待执行任务
 ```
 
-**第三方来源只作技术参考**：许可证、版权与来源链接集中登记在 `THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，不进普通设计成果或营销材料；**禁止删除法律要求的署名**，也禁止把第三方代码或文档宣称为 OmniAiLab 原创。**专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，可调用但不得包装成外部平台的推广入口；MCP 一律登记在 Tool Registry。
+**第三方来源只作技术参考**：许可证、版权与来源链接集中登记在 `THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，不进设计成果或营销材料；**不得删除法律要求的署名**，不得把第三方代码/文档称为 OmniAiLab 原创。**专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，可调用但不得包装成外部平台推广入口；MCP 登记在 Tool Registry。
 
 ---
 
@@ -330,11 +322,11 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 - [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**。见 `docs/REFERENCE_SOURCES.md`。
 - [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只出分镜与运镜脚本，**不承担生成**（主体仍是 `omniailab`）。见 `docs/VIDEO_PRODUCTION.md`。
 
-**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按实测可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`。打不开标「未核验」并写明原因，**读不到就说读不到**。第三方图只给链接，S2 每套概念挂 1–2 例并答四问。交付层出图文提案与飞书/Notion 可导入包（`presentation/html.py`、`presentation/online_doc.py`）；**无授权连接不建线上文档、不给假链接**，见 `docs/CLIENT_DELIVERY.md`。
+**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`，打不开标「未核验」并写明原因。第三方图只给链接，S2 每套概念挂 1–2 例答四问。交付层出图文提案与飞书/Notion 可导入包（`presentation/html.py`、`presentation/online_doc.py`），**无授权连接不建线上文档、不给假链接**（`docs/CLIENT_DELIVERY.md`）。
 
 ## 7d. 概念怎么推敲出来（S2 核心）
 
-S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数与业主原话推出 2–3 条组织逻辑互不相同的策略，每条答六问。`22 个空间原型`只作**兜底**，走原型标 `source="prototype"`；判不了的前提标 `unverified_requires`。判据见 `knowledge/` 的 `design-deliberation-methods`、`landscape-design-methodology`。
+S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数与业主原话推出 2–3 条组织逻辑互不相同的策略，每条答六问。`22 个空间原型`只作**兜底**（标 `source="prototype"`），判不了的前提标 `unverified_requires`。判据见 `knowledge/` 的 `design-deliberation-methods`、`landscape-design-methodology`。
 
 ---
 
@@ -373,9 +365,8 @@ openai.yaml             接口元数据（显示名 / 默认提示词 / 隐式�
 LICENSE  VERSION        许可与版本
 THIRD_PARTY_NOTICES.md  第三方许可证、署名与来源的唯一集中登记处
 LICENSES/               第三方许可证原文归档
-omniarchitect/          Python 包（内部引擎代号）：模型 / 规划 / 阶段 / 变更 / 适配器 /
-                        provider / 工具注册表 / 汇报 / 安装 / brand_policy（品牌与
-                        创作独占裁决）/ style/（风格系统）/ research/（案例研究）
+omniarchitect/          Python 包（内部代号）：模型 / 规划 / 阶段 / 变更 / 适配器 / provider /
+                        工具注册表 / 汇报 / 安装 / brand_policy / style / research
 knowledge/  cases/      原创知识体系与通用案例
 knowledge/styles/       47 种设计风格的结构化数据 + catalog.json 索引
 skills/                 31 项专业能力说明

@@ -3,7 +3,7 @@ name: omniailab-concept-design
 description: 概念方案设计 —— 把任务书需求翻译成一句可验证的主张、空间原型与风格语言，并在平面上成立
 capability: concept-design
 stages: [S2, S3]
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

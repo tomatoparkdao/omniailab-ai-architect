@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,45 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.10.0 · 外部建筑师知识：只登记地址，不搬运内容
+
+总设计师要回答注册建筑师层面的问题（中外规范、防火疏散、构造围护、施工图审查），
+但那不是本 Skill 的正文。这一版加的是**一条按需引用的通道**，不是第二套知识系统。
+
+### 登记
+
+| 项 | 值 |
+|---|---|
+| 仓库 | `tomatoparkdao/registered-architect` |
+| 主入口 | `blob/main/SKILL.md` |
+| 机读地址 | `raw.githubusercontent.com/.../main/SKILL.md` |
+
+**不锁 Commit SHA**：始终指向 main 最新可访问内容。地址的唯一来源是
+`paths.ARCHITECT_SKILL_URL` / `paths.ARCHITECT_SKILL_RAW_URL`，并在
+`brand_policy.OWN_URLS` 登记为自有仓库——否则合规审计会把它当外部推广链接。
+
+### 调用规则（写在 `SKILL.md` §4 的按需加载表里，只有这一处）
+
+先查本 Skill 已有能力 → 仍缺才读 Raw `SKILL.md` → 只读相关子技能（在华项目先读
+`country-china`），**不扫描整个仓库**。八个触发面：概念与体量、功能与空间、中外规范、
+防火疏散、构造围护、结构与机电、施工图审查。
+
+**纪律**：不 clone、不 submodule、不批量缓存、不复制进本仓、不做定时同步；没有联网或
+GitHub 读取工具时**只保留链接**并明说「本次未读取远程」，用现有知识继续。规范条文与
+有效版本以项目所在地现行官方规定为准——外部 Skill 不能替代法定核验与注册人员签署。
+
+### 没变
+
+S1–S8、31 项能力、47 种风格、视觉规范 `视觉.md`、创作能力独占（`omniailab`）全部未动。
+`SKILL.md` 仍是 380 行 / 23.9 KB，在 400 行与 24000 字节两条硬限制内（为塞进这一行，
+压缩了若干重复表述，未删任何规则）。
+
+### 守卫
+
+`test_external_architect_skill_is_linked_never_vendored`：地址必须无查询参数且登记为自有；
+`SKILL.md` 各出现一次（不在多文件重复维护）；调用规则必须与地址同一行；仓库内不得出现
+该仓库副本，也不得有 `.gitmodules`。
 
 ## v1.9.0 · 项目视觉规范：客户喜欢的审美，只表达一次
 

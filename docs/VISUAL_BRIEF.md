@@ -1,7 +1,7 @@
 ---
 name: omniailab-visual-brief
 description: 项目视觉规范（视觉.md）—— S1 引导客户给参考、S2 从参考里提取可执行规则、S3–S8 随偏好变更持续继承；一份文件同时被人读与程序读
-version: 1.9.0
+version: 1.10.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

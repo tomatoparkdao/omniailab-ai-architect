@@ -97,6 +97,10 @@ OWN_URLS: Tuple[str, ...] = (
     "https://tomatopark.notion.site/Luxora-AI-",
     # 影视级导演 Skill 仓库（自有原生技能，另一条产品线）
     "https://github.com/tomatoparkdao/omniailab-ai-director",
+    # 注册建筑师 Skill（自有仓库，外部知识参考，按需读取、不随本仓分发）。
+    # 登记在这里是因为它是**自家仓库**，不是推广链接；同族前缀覆盖 blob 与 raw 两种读法。
+    "https://github.com/tomatoparkdao/registered-architect",
+    "https://raw.githubusercontent.com/tomatoparkdao/registered-architect",
 )
 
 # 规范命名空间与本地地址：不是推广链接，任何位置都允许。

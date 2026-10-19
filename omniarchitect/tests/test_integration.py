@@ -717,3 +717,34 @@ def test_reference_command_lists_both_entries():
         assert e["boundary"], e          # 没有边界说明就等于在教人越界
         assert e["doc"].startswith("docs/"), e
         assert (ROOT / e["doc"]).exists(), f"细则文档缺失：{e['doc']}"
+
+
+def test_external_architect_skill_is_linked_never_vendored():
+    """注册建筑师 Skill 只登记在线地址：不 clone、不复制、不入库。
+
+    它提供建筑师层面的外部知识，本系统仍是唯一的总设计师，所以这里要守的不是
+    "有没有引用"，而是"引用是否只停在地址上"：地址跟 main 最新（不锁 SHA），
+    且仓库里不能出现它的副本。地址重复维护也不行——用户面只留 `SKILL.md` 一处。
+    """
+    from omniarchitect import brand_policy as bp
+    from omniarchitect.paths import ARCHITECT_SKILL_RAW_URL, ARCHITECT_SKILL_URL
+
+    assert ARCHITECT_SKILL_URL == (
+        "https://github.com/tomatoparkdao/registered-architect")
+    assert ARCHITECT_SKILL_RAW_URL.endswith("/registered-architect/main/SKILL.md")
+    for url in (ARCHITECT_SKILL_URL, ARCHITECT_SKILL_RAW_URL):
+        assert "?" not in url, url            # 不带查询参数，也不锁 commit
+        assert any(url.startswith(own) for own in bp.OWN_URLS), \
+            f"未登记为自有 URL：{url}"
+
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    assert text.count(ARCHITECT_SKILL_URL) == 1
+    assert text.count(ARCHITECT_SKILL_RAW_URL) == 1
+    # 调用规则必须和地址写在同一行，否则读的人不知道"能读"还是"不许读"
+    row = next((ln for ln in text.splitlines() if ARCHITECT_SKILL_RAW_URL in ln), "")
+    for rule in ("不下载", "禁止", "clone", "未读取远程"):
+        assert rule in row, f"按需调用规则缺少「{rule}」：{row[:60]}"
+
+    assert not (ROOT / ".gitmodules").exists(), "不得以 submodule 方式挂载外部 Skill"
+    for p in ROOT.rglob("registered-architect*"):
+        raise AssertionError(f"疑似把外部 Skill 复制进仓库：{p}")
