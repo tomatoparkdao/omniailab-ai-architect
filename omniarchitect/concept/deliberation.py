@@ -692,9 +692,22 @@ def get(strategy_id: str) -> Optional[Strategy]:
 
 
 def applies(ctx: Any) -> bool:
-    """这个项目该不该走推敲层：主导专业 + 项目类型都有可用策略才走。"""
-    return bool(for_project(getattr(ctx, "lead_id", ""),
-                            getattr(ctx, "profile_id", "")))
+    """这个项目该不该走推敲层。
+
+    有专属策略就走专属；没有专属策略**但**类型给了方向模板的，走模板；
+    名字在"已有成套策略"名单里的类型（住宅/办公/私家庭院…）保持原路，
+    免得新加的分类把它们原有的原型/平面策略挤掉。
+    """
+    if for_project(getattr(ctx, "lead_id", ""), getattr(ctx, "profile_id", "")):
+        return True
+    from .. import taxonomy as _tx
+
+    codes = _taxonomy_codes(ctx) or list(
+        (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
+    specs = [_tx.resolve(c) for c in codes]
+    if any(sp and (sp.uses_profile_strategies or sp.strategy_ids) for sp in specs):
+        return False
+    return bool(for_taxonomy(ctx, limit=2))
 
 
 # --------------------------------------------------------------------------
@@ -969,12 +982,103 @@ def _integration(s: Strategy, ctx: Any) -> str:
     return "；".join(parts) + "。"
 
 
+def _taxonomy_codes(ctx: Any) -> List[str]:
+    codes = getattr(ctx, "taxonomy_codes", None) or ()
+    return [str(c) for c in codes]
+
+
+def for_taxonomy(ctx: Any, *, limit: int = 3) -> List[Strategy]:
+    """按项目类型的方向模板造策略：2–3 条组织逻辑不同的方向。
+
+    这里**不是**第二套策略库：方向上写的是该类型的专业方法（医疗洁污双廊、
+    教育分龄组团、工业工艺流线……），字段与 `Strategy` 同构，所以下游的
+    六问、图解、提案不需要为新类型写分支。
+    """
+    from .. import taxonomy as _tx
+
+    discipline = str(getattr(ctx, "lead_id", "") or "")
+    codes = _taxonomy_codes(ctx) or list(
+        (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
+    dirs = _tx.directions(codes, discipline)[:max(2, min(3, limit))]
+    out: List[Strategy] = []
+    names = [d.name for d in dirs]
+    for i, d in enumerate(dirs):
+        code = codes[0] if codes else ""
+        spec = _tx.resolve(code)
+        label = spec.name if spec else discipline
+        focus = "、".join(spec.focus[:3]) if spec else ""
+        fam = _family_for(d.name, i)
+        out.append(Strategy(
+            id=f"TX-{code or discipline.upper()}-{i + 1}",
+            discipline=discipline,
+            name=d.name,
+            family=fam,
+            role=("A", "B", "C")[i % 3],
+            statement=f"{label}：{d.parti}",
+            parti=d.parti,
+            opportunity=d.why,
+            massing=f"按组织逻辑排布功能块：{d.parti}",
+            section="竖向关系按功能与流线确定；层高、净高须在 S3/S4 依据设备与结构条件定。",
+            facade="界面按功能露出程度分级：公共面开放、后勤面收实；材料不指定品牌与型号。",
+            circulation=f"主次流线由「{d.name}」决定，服务流线不与主动线交叉。",
+            daylight=f"优先保证{focus or '主要使用空间'}的采光与视线，其余按功能分级。",
+            materials_logic="材料按类型与当地做法确定；本方向只定原则（耐污、维护、质感），不定型号。",
+            sequence=(
+                ("第一眼", f"到达时先读到：{d.parti}", "入口与视线"),
+                ("转折", f"经过{focus or '过渡空间'}，从公共转向内部", "分区收放"),
+                ("主空间", f"停在「{d.name}」要解决的核心空间", "核心空间"),
+            ),
+            technical=("结构与设备条件须由相应专业确认",),
+            tradeoffs=(f"代价：{d.name}成立的前提是{focus or '功能与场地条件'}能够落实",),
+            risks=("缺少真实几何与设备条件时，本方向只作关系示意",),
+            cost_note="造价随构造与设备等级变化，本阶段只给方向，不给单价。",
+            maintenance="维护方式随运营主体确定；后场与设备可达性须在 S3 明确。",
+            serves=(),
+            keywords=(d.name,),
+            requires=(),
+            precedent=(),
+        ))
+    return out
+
+
+def _family_for(name: str, index: int) -> str:
+    """方向名 → 图解家族。只影响图形怎么画，不影响设计判断。"""
+    for key, fam in (("围合", "courtyard"), ("院", "courtyard"), ("组团", "cluster"),
+                     ("串联", "linear"), ("线性", "linear"), ("街", "linear"),
+                     ("核心", "radial"), ("模块", "grid"), ("阵列", "grid"),
+                     ("分区", "grid"), ("替代", "hall"), ("大厅", "hall")):
+        if key in name:
+            return fam
+    return ("linear", "cluster", "grid")[index % 3]
+
+
 def build_strategies(ctx: Any, research: Optional[Dict[str, Any]] = None,
                      *, limit: int = 3) -> List[Dict[str, Any]]:
     """产出 2–3 条推敲过的策略。每条都是完整方案内容，不含风格。"""
     discipline = str(getattr(ctx, "lead_id", "") or "")
-    pool = for_project(discipline, getattr(ctx, "profile_id", ""))
+    from .. import taxonomy as _tx
+
+    codes = _taxonomy_codes(ctx) or list(
+        (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
+    specs = [_tx.resolve(c) for c in codes]
+    # 已有成套策略库的类型（住宅、办公、私家庭院……）继续用老策略；
+    # 其余类型（医院、学校、厂房……）用它们自己的方向模板——
+    # 否则一座医院会拿到"院中取院／逐层退台"，那是住宅的答案。
+    has_dedicated = any(sp and (sp.uses_profile_strategies or sp.strategy_ids)
+                        for sp in specs)
+    if has_dedicated:
+        # 这些类型本来就有成套策略（住宅/办公/私家庭院…）。它们的策略池可能为空
+        # （例如办公走的是空间原型 + office_cluster 平面策略），这时**保持原样**，
+        # 把决定权交回调用方，不要用方法模板把已有能力顶掉。
+        pool = for_project(discipline, getattr(ctx, "profile_id", ""))
+        if not pool:
+            return []
+    else:
+        pool = []
     if not pool:
+        method = for_taxonomy(ctx, limit=limit)
+        if method:
+            return [_method_payload(ctx, st, research) for st in method]
         return []
 
     prec = precedent_signals(research)
@@ -1058,6 +1162,85 @@ def build_strategies(ctx: Any, research: Optional[Dict[str, Any]] = None,
     return out
 
 
+def _method_payload(ctx: Any, s: Strategy,
+                    research: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """把方向模板写成与推敲策略同形的结果（source=method）。"""
+    from .. import taxonomy as _tx
+
+    codes = _taxonomy_codes(ctx) or list(
+        (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
+    spec = _tx.resolve(codes[0]) if codes else None
+    seq = [{"step": a, "event": b, "device": c} for a, b, c in s.sequence]
+    fam_zh = {"linear": "线性", "radial": "环形 / 放射", "cluster": "组团",
+              "layered": "分层 / 递进", "hall": "大厅式", "courtyard": "院落式"}.get(
+                  s.family, s.family)
+    prot = {
+        "prototype_id": s.id, "id": s.id, "profile": s.discipline,
+        "name": s.name, "statement": s.statement,
+        "spatial_logic": s.parti, "zoning": s.massing, "circulation": s.circulation,
+        "daylight": s.daylight, "family": s.family, "family_zh": fam_zh,
+        "plan_strategy": "",
+        "experience": "；".join(x["event"] for x in seq),
+        "answers": [], "risks": list(s.risks), "cost_note": s.cost_note,
+        "maintenance": s.maintenance,
+    }
+    return {
+        "strategy_id": s.id,
+        "role": s.role,
+        "discipline": s.discipline,
+        "name": s.name,
+        "family": s.family,
+        "statement": s.statement,
+        "prototype": prot,
+        "sequence": {
+            "prototype_id": s.id, "family": s.family, "steps": seq,
+            "devices": [x["device"] for x in seq],
+            "missing_steps": [x for x in ("第一眼", "转折", "主空间")
+                              if not any(y["step"] == x for y in seq)],
+            "note": "序列来自项目类型的设计方法，不是从通用原型套出来的事件。",
+        },
+        "deliberation": {
+            "strategy_id": s.id,
+            "discipline": s.discipline,
+            "taxonomy_codes": codes,
+            "taxonomy_name": spec.name if spec else "",
+            "parti": s.parti,
+            "key_opportunity": s.opportunity,
+            "why_this_strategy": s.opportunity,
+            "experience": [{"step": x["step"], "event": x["event"]} for x in seq],
+            "light_view_proportion_material": s.daylight + " " + s.materials_logic,
+            "integration": ("按主导专业推进，其余专业做界面协调；"
+                            + ("本类型的专业要点：" + "、".join(spec.focus[:4]) if spec else "")),
+            "technical_coordination": list(s.technical),
+            "massing": s.massing,
+            "levels_program": [],
+            "section": s.section,
+            "facade": s.facade,
+            "zones": [],
+            "water": "", "planting": "", "paving": "",
+            "precedent_cases": [],
+            "precedent_note": "本方向由项目类型的设计方法推出，尚未匹配到同名手法案例。",
+            "evidence_score": 0.0,
+            "met_requires": [], "unmet_requires": [], "unverified_requires": [],
+            "facts_used": {},
+            "same_family_note": "",
+            "source": "method",
+            "gap": ("" if spec and spec.strategy_ids else
+                    f"本类型（{spec.name if spec else '未识别'}）没有专属推敲策略库，"
+                    "以上方向来自该类型的专业方法，深化时须按行业条件复核，"
+                    "不能当作已实现的算法能力。"),
+        },
+        "technical": list(s.technical),
+        "tradeoffs": list(s.tradeoffs),
+        "risks": list(s.risks),
+        "cost_note": s.cost_note,
+        "maintenance": s.maintenance,
+        "advantages": ["按项目类型的设计方法组织空间，不是套通用户型"],
+        "keywords_hit": [],
+        "source": "method",
+    }
+
+
 def _advantages(s: Strategy, item: Dict[str, Any], ctx: Any) -> List[str]:
     out: List[str] = []
     if item["score"] >= 20:
@@ -1094,6 +1277,6 @@ def _clip(text: str, n: int) -> str:
 __all__ = [
     "SIX_QUESTIONS", "Strategy", "STRATEGIES", "ARCHITECTURE", "INTERIOR",
     "LANDSCAPE", "PRECEDENT_TERMS", "SIGNAL_WEIGHT", "FALLBACK_NOTE",
-    "applies", "build_strategies", "for_discipline", "for_project", "get",
+    "applies", "build_strategies", "for_discipline", "for_project", "for_taxonomy", "get",
     "precedent_signals", "summary_lines",
 ]

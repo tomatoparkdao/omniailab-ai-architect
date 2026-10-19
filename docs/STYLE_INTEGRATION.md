@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-integration
 description: 风格系统在主流程中的位置 —— 它不再是独立工程，而是 omniailab-ai-architect 的内部专业模块：六个阶段介入点、内部调用方式，以及"为什么现在不会再漂移"。
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

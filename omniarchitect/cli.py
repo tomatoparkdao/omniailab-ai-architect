@@ -190,6 +190,92 @@ def cmd_reference(args) -> int:
     return 0
 
 
+def cmd_taxonomy(args) -> int:
+    """项目分类：查索引、看单个类型、按一句话识别。
+
+    索引是文档里那张表的机器版——不在 Markdown 里手抄一遍，避免两处漂移。
+    """
+    from . import taxonomy as tx
+
+    if getattr(args, "detect", None):
+        cls = tx.classify(args.detect)
+        data = cls.to_dict()
+        data["details"] = [tx.resolve(c).to_dict() for c in cls.codes if tx.resolve(c)]
+        data["questions"] = [q.qid for q in tx.questions_for(cls.codes)]
+        if args.json:
+            _print_json(data)
+            return 0
+        print(f"识别结果：{'、'.join(data['names']) or '未命中已知类型'}")
+        print(f"编码：{'、'.join(cls.codes) or '—'}　置信度：{cls.confidence}")
+        if data["nature_labels"]:
+            print("项目性质：" + "、".join(data["nature_labels"]))
+        if data["commission_labels"]:
+            print("委托范围：" + "、".join(data["commission_labels"]))
+        cap = tx.capability_of(cls.codes)
+        print(f"能力边界：{cap['label']}")
+        if cap.get("note"):
+            print(f"　{cap['note']}")
+        if data["questions"]:
+            print("行业专项问题：" + "、".join(data["questions"]))
+        if cls.note:
+            print("说明：" + cls.note)
+        return 0
+
+    if getattr(args, "show", None):
+        spec = tx.resolve(args.show)
+        if spec is None:
+            print(f"没有这个分类：{args.show}")
+            return 2
+        data = spec.to_dict()
+        data["focus"] = list(spec.focus)
+        data["directions"] = [{"name": d.name, "parti": d.parti, "why": d.why}
+                              for d in spec.directions]
+        data["questions"] = [{"id": q.qid, "text": q.text} for q in spec.questions]
+        data["s3_tasks"] = {
+            "base": list(tx.S3_BASE.get(spec.discipline, ())),
+            "specific": list(spec.s3_specific),
+        }
+        data["subtypes"] = list(spec.subtypes)
+        if args.json:
+            _print_json(data)
+            return 0
+        print(f"{spec.code} {spec.name}（{data['family_label']}／{spec.discipline}）")
+        print(f"子类 {len(spec.subtypes)} 项：{'、'.join(spec.subtypes[:8])}…")
+        print("专业要点：" + "、".join(spec.focus))
+        print("能力边界：" + data["capability_label"])
+        if spec.limitation:
+            print("　" + spec.limitation)
+        print("概念方向：")
+        for d in spec.directions:
+            print(f"  · {d.name}｜{d.parti}")
+        if spec.s3_specific:
+            print("S3 专属任务：")
+            for t in spec.s3_specific:
+                print(f"  - {t}")
+        return 0
+
+    rows = tx.index_rows()
+    if args.json:
+        _print_json({"count": len(rows), "types": [
+            {"code": c, "name": n, "discipline": d, "subtypes": int(k)}
+            for c, n, d, k in rows]})
+        return 0
+    print(f"项目分类索引（{len(rows)} 类／"
+          f"{sum(int(r[3]) for r in rows)} 个子类）")
+    print("民用建筑 = 居住建筑 + 公共建筑；工业与农业是生产建筑，不并入民用。")
+    print()
+    cur = ""
+    for code, name, disc, n in rows:
+        if code[0] != cur:
+            cur = code[0]
+            print({"A": "A 建筑", "B": "B 室内", "C": "C 景观"}.get(cur, cur))
+        print(f"  {code:<4} {name:<16} {disc:<12} 子类 {n}")
+    print()
+    print("看单个类型：python -m omniarchitect taxonomy --show A4")
+    print("按一句话识别：python -m omniarchitect taxonomy --detect \"新建综合医院 300 床\"")
+    return 0
+
+
 def _run_research(args) -> int:
     """S1 阶段的案例研究，单独可跑，也可由 S1 自动触发。"""
     from . import research as research_mod
@@ -531,6 +617,15 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--out", default="", help="配合 --research，输出目录")
     sp.add_argument("--no-verify", action="store_true",
                     help="配合 --research，只列不逐个回读（速度更快，但只能标部分核验）")
+
+    tp = sub.add_parser("taxonomy", help="项目分类索引、单个类型与按文字识别")
+    tp.add_argument("--json", action="store_true")
+    tp.add_argument("--list", action="store_true", help="列出全部分类（默认）")
+    tp.add_argument("--show", default="", metavar="CODE",
+                    help="看单个分类，如 A4 / B5 / C7")
+    tp.add_argument("--detect", default="", metavar="TEXT",
+                    help="按一句话识别用途、性质与委托范围")
+    tp.set_defaults(func=cmd_taxonomy)
     sp.set_defaults(func=cmd_reference)
 
     from .intake.cli import add_parser as _add_intake

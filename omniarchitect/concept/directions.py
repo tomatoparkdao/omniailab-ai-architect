@@ -533,7 +533,7 @@ def _from_deliberation(ctx: ConceptContext, strategies: Sequence[Dict[str, Any]]
             experience_sequence=st["sequence"],
             feeling_fit=_fit,
             deliberation=d,
-            source="deliberated",
+            source=("method" if (st.get("source") == "method") else "deliberated"),
             revision=ctx.revision,
             pre_gate=pre_gate,
         ))
@@ -544,7 +544,8 @@ def _from_deliberation(ctx: ConceptContext, strategies: Sequence[Dict[str, Any]]
         "profile_id": ctx.profile_id,
         "lead_discipline": ctx.lead_id,
         "lead_label": ctx.lead_label,
-        "source": "deliberated",
+        "source": ("method" if any(x.get("source") == "method" for x in strategies)
+                   else "deliberated"),
         "generated_at": __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M"),
         "concepts": [c.to_dict() for c in concepts],
         "count": len(concepts),
@@ -557,6 +558,34 @@ def _from_deliberation(ctx: ConceptContext, strategies: Sequence[Dict[str, Any]]
         "note": ("每套策略的组织逻辑互不相同（parti 不同、空间家族不同）；"
                  "若两套只差材料或措辞，说明推敲失效，应重做而不是沿用。"),
         "_concepts": concepts,
+    }
+
+
+def _taxonomy_block(ctx: ConceptContext) -> Dict[str, Any]:
+    """分类与能力边界：S2 的产物要能回答"这是什么项目、能做到哪一步"。"""
+    from .. import taxonomy as _tx
+
+    tax = dict(getattr(ctx, "taxonomy", {}) or {})
+    codes = [str(c) for c in (getattr(ctx, "taxonomy_codes", ()) or tax.get("codes") or [])]
+    cap = _tx.capability_of(codes)
+    focus: List[str] = []
+    for c in codes:
+        spec = _tx.resolve(c)
+        if spec:
+            focus += [x for x in spec.focus if x not in focus]
+    return {
+        "codes": codes,
+        "names": [(_tx.resolve(c).name if _tx.resolve(c) else c) for c in codes],
+        "natures": list(tax.get("natures") or []),
+        "nature_labels": list(tax.get("nature_labels") or []),
+        "commissions": list(tax.get("commissions") or []),
+        "capability": cap,
+        "focus": focus[:8],
+        "s3_tasks": {d: _tx.s3_tasks(codes, d)
+                     for d in ("architecture", "interior", "landscape")},
+        "unknown": bool(tax.get("unknown")),
+        "note": ("未识别出已知类型：按最宽口径推进，不套任何专项方法。"
+                 if tax.get("unknown") else ""),
     }
 
 
@@ -574,7 +603,9 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
     if delib.applies(ctx):
         strategies = delib.build_strategies(ctx, research, limit=limit)
         if strategies:
-            return _from_deliberation(ctx, strategies, pre_gate=pre_gate)
+            result = _from_deliberation(ctx, strategies, pre_gate=pre_gate)
+            result["taxonomy"] = _taxonomy_block(ctx)
+            return result
 
     ranked = _rank(ctx)
     picks = _pick(ranked, ctx)[:max(2, min(3, limit))]
@@ -678,6 +709,7 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
         "pre_gate": pre_gate,
         "note": ("每套方向的空间家族互不相同；若某方向与另一方向只有材料或颜色差异，"
                  "说明生成有误，应重跑而不是沿用。"),
+        "taxonomy": _taxonomy_block(ctx),
         "_concepts": concepts,      # 内部用，不写盘
     }
 
@@ -685,6 +717,26 @@ def generate_concepts(ctx: ConceptContext, *, limit: int = 3,
 def _deliberation_md(c: Dict[str, Any]) -> List[str]:
     """六问 + 专业分工 + 技术协同。没有推敲记录（原型兜底）时不伪造这一段。"""
     d = c.get("deliberation") or {}
+    if c.get("source") == "method" and d:
+        out = ["### 设计推敲（按项目类型的方法）", "",
+               "> 本类型的专属策略库尚未建立，因此方向来自该类型的设计方法："
+               "组织逻辑（parti）与专业要点是这一类项目的通行做法，"
+               "不是从通用住宅原型套出来的。深化时须按行业条件复核。", ""]
+        out += ["**parti（一句话的组织逻辑）**：{}".format(d.get("parti") or "—"), ""]
+        out += ["| 问题 | 本方案的答案 |", "|---|---|"]
+        out.append("| 最有价值的设计机会 | {} |".format(_cell(d.get("key_opportunity"))))
+        out.append("| 为什么采用这个策略 | {} |".format(_cell(d.get("why_this_strategy"))))
+        out.append("| 光、视线、比例、材料如何配合 | {} |".format(
+            _cell(d.get("light_view_proportion_material"))))
+        out.append("| 三个专业如何成整体 | {} |".format(_cell(d.get("integration"))))
+        out.append("")
+        if d.get("gap"):
+            out += ["> 缺口：{}".format(d["gap"]), ""]
+        if d.get("technical_coordination"):
+            out += ["**需要结构与机电配合的地方**：", ""]
+            out += ["- {}".format(x) for x in d["technical_coordination"]]
+            out.append("")
+        return out
     if c.get("source") != "deliberated" or not d:
         return ["> 本方向来自 22 个空间原型的经验库，未做本项目专项推敲；"
                 "空间逻辑是通用经验，须在 S3 按实测条件复核。", ""]

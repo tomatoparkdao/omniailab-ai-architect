@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-deliverable-checklist
 description: 交付清单 —— 逐阶段产物清单与收尾自查：该拿的东西拿齐了吗。
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

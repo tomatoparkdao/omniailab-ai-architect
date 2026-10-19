@@ -236,6 +236,11 @@ class ConceptContext:
     area_available_m2: Optional[float] = None
     target_area_m2: float = 0.0
 
+    #: 项目分类（用途可多选 + 性质 + 委托范围）。S2 用它选设计方法：
+    #: 学校要按分龄与教学组团推，医院要按医疗工艺与洁污分流推。
+    taxonomy: Dict[str, Any] = field(default_factory=dict)
+    taxonomy_codes: Tuple[str, ...] = ()
+
     style_preference: str = ""
     #: 业主原话里的空间感受诉求：{原词: [手法 id]}。
     #: 这是 S2 用来判断「这套方向给不给得出他要的感觉」的唯一依据；
@@ -410,6 +415,12 @@ def build_context(project: Project, *, require_gate: bool = True) -> ConceptCont
 
     ctx.answers = {str(k): str((v or {}).get("value") or "")
                    for k, v in (interview.answers or {}).items()}
+    # 分类是 S1 落的档，S2 只读不算——同一份判断不允许在第二个模块里重写
+    from ..intake import interview as _iv
+
+    _tax = _iv.classification(project)
+    ctx.taxonomy = dict(_tax)
+    ctx.taxonomy_codes = tuple(str(c) for c in (_tax.get("codes") or []))
     # 主导专业：S2 的权重与讨论顺序由它决定，不是所有项目套同一套权重
     try:
         from .. import disciplines as _disc

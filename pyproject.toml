@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "omniailab-ai-architect"
-version = "1.10.0"
+version = "1.11.0"
 description = "OmniArchitect — AI chief designer for architecture and interior design: eight-stage workflow, canonical spatial model, real DXF/mesh/PPTX output"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.10.0-1f6feb?style=flat-square" alt="版本 1.10.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.11.0-1f6feb?style=flat-square" alt="版本 1.11.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
@@ -25,9 +25,10 @@
 
 | 项目 | 值 | 说明 |
 |---|---|---|
+| 项目分类 | 36 类 / 575 子类 | 建筑 15 类、室内 12 类、景观 9 类；用途可多选，另有项目性质与委托范围两个独立维度（`docs/PROJECT_TAXONOMY.md`） |
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.10.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.11.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 配套操作手册 | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) ／ [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) ／ `docs/MANUAL.md` | 如何调用、三步启动、逐阶段操作细则、能力速查、避坑总表、常见问题、交付物清单 |
@@ -43,6 +44,26 @@
 
 
 ---
+
+## 先判断"这是什么项目"，再谈怎么设计
+
+同一句"做个酒店"，可以是新建一栋酒店，也可以只是既有酒店的室内精装——两者的专业、
+流程与成果完全不同。所以 S1 不再只问面积与房间数，而是先落三件事：
+
+- **用途**（可多选）：A 建筑 15 类 / B 室内 12 类 / C 景观 9 类，共 575 个子类；
+- **项目性质**：新建、改扩建、既有室内装修、独立景观、功能转换、历史保护；
+- **委托范围**：建筑、室内、景观里到底委托了哪几块——**名称不等于委托**。
+
+分类决定后面两件事：S2 用哪套设计方法推敲（医院按医疗工艺与洁污分流、学校按分龄与
+教学组团、厂房按工艺流线），S3 列哪些专业任务（科室面积表、客房模数、汇水分区……）。
+能力边界随类型写明：住宅能算到房间级，医院只能给概念与任务梳理，厂房必须由工艺专业给条件。
+
+```bash
+python -m omniarchitect taxonomy                      # 36 类索引
+python -m omniarchitect taxonomy --show A4            # 医院：要点 / 方向 / S3 任务
+python -m omniarchitect taxonomy --detect "既有酒店室内精装修"
+```
+
 
 ## 一句话
 
@@ -60,7 +81,7 @@
 |---|---|---|
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.10.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.11.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |

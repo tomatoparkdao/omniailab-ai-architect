@@ -1,11 +1,11 @@
 ---
 name: omniailab-ai-architect
-description: AI 建筑与室内设计总设计师。八个业务阶段 + 31 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 提案。可独立运行，检测到平台配置时接入 OmniAiLab 原生创作能力。覆盖住宅/办公/商业/酒店/展厅的任务书、概念推敲、平面比选、初步设计、表现与交付。
+description: AI 建筑与室内设计总设计师。八个业务阶段 + 31 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 提案。可独立运行，检测到平台配置时接入 OmniAiLab 原生创作能力。覆盖 36 类用途的任务书、概念推敲、平面比选、初步设计、表现与交付。
 license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -94,7 +94,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 |---|---|---|
 | **不会用 / 报错 / 术语看不懂** | **操作手册 `docs/MANUAL.md`** | **先读手册对应小节；在线版见 front-matter 的 `操作手册:` 字段** |
 | 设计判据与数值区间、项目类型案例 | `knowledge/`（13 个领域）· `cases/` | 先读 `knowledge/INDEX.md` 再按需读单篇；案例按类型查 `cases/` |
-| 31 项专业能力的职责与门禁 | `skills/` | 按能力名 |
+| 专业能力职责与门禁（31 项） | `skills/` | 按能力名 |
 | **多专业怎么分工、能力到哪一步** | **`docs/MULTIDISCIPLINARY_ARCHITECTURE.md`** · **`docs/MULTIDISCIPLINARY_ACCEPTANCE.md`** | 判"结构/机电/景观能不能出"读前者（能力矩阵）；引证据读后者（六案例实测） |
 | **谁主导设计、冲突怎么处理、改了怎么拦** | **`docs/DESIGN_LEADERSHIP.md`** · **`docs/INTENT_ENFORCEMENT.md`** | 前者判主导专业（五模式）与六级冲突顺序；后者是执行层：两阶段授权、硬门槛、G2 回滚、**G3–G8 漂移检测** |
 | 工具适配、权限分级与平台接入 | `adapters/specs/` · `docs/MCP_TOOLS.md` · `docs/OMNIAILAB_INTEGRATION.md` · `providers/README.md` | 需要调工具时看前两者；需要生成式图像 / 视频时看后两者 |
@@ -103,6 +103,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | **S2 概念怎么生成、怎么确认** | **`docs/S2_CONCEPT.md`** · **`docs/S2_MULTIDISCIPLINARY_CONCEPT.md`** | 出 2–3 套空间策略不同的方向、图解、意向板、比较与 G2 基准；**多专业项目**每套概念要含建筑/结构/机电/室内/景观立场并锁定同一 concept_id（读后者） |
 | **方案够不够"像设计师做的"**（体验序列 / 感受匹配 / 技术怎么实现） | **`docs/DESIGN_CAPABILITY.md`** | 空间体验词表与「走进去经历什么」、业主要的感觉这套给不给得出、结构与机电的实现路径与代价。**业主说「感觉不对」时先读这份** |
 | **平面/立面怎么变成业主看得懂的图与板** | **`docs/VISUAL_RECIPES.md`** · `knowledge/ai-concept-visualization.md` | 平面图上色、3D 立轴、剖面、展示板、概念板、材质情绪板；图纸派生需 G3，文字不让模型写；概念效果图见后一文件 |
+| **这是什么项目、该问什么、该做什么** | **`docs/PROJECT_TAXONOMY.md`**（36 类 / 575 子类）· `python -m omniarchitect taxonomy` | 先按用途（可多选）+ 性质 + 委托范围定位；再读该类型的专业要点、概念方向与 S3 任务。**名称不等于委托范围**：说「酒店」不等于要建酒店 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 ／ 署名规范与内容自检 | `knowledge/design-presentation-methodology.md` · `LICENSE` · `docs/CONTENT_AUDIT.md` | 出 PPTX 前读前者；分发前必读后两者 |
 | **需要建筑师专业知识**（概念与体量／功能与空间／各国规范与防火疏散／构造围护节能／结构与机电／施工图审查） | **外部 [Registered Architect](https://github.com/tomatoparkdao/registered-architect)**（主入口 `/blob/main/SKILL.md`；Raw `https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md`） | **按需读 main 最新，不锁 SHA、不下载**：先查本仓已有能力 → 仍缺才读 Raw `SKILL.md` → 只读相关子 Skill（按项目所在国选 `country-*` 共 10 国：中英美德日印新澳＋海湾，多国分别处理），不扫整仓；**禁止** clone／submodule／批量缓存／复制入库／定时同步；没联网只留链接并说明「未读取远程」；规范以当地规定为准，不替代注册人员签署；纯软装排版不必访问 |
@@ -209,7 +210,7 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 python -m omniarchitect demo --out out              # 示例全流程
 python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大平层"  # S1 智能启动
 python -m omniarchitect concept --project <dir> --action generate   # S2 概念
-python -m omniarchitect status  --project <dir>      # 阶段状态
+python -m omniarchitect status  --project <dir>
 python -m omniarchitect route   --project <dir> "帮我出施工图"
 python -m omniarchitect run     --project <dir> --all --assume-approval
 python -m omniarchitect confirm --project <dir> --stage S3 --by 业主
@@ -228,16 +229,11 @@ python -m omniarchitect concept-render --project <dir> --submit --authorize   # 
 ### 环境与合规
 
 ```bash
-python -m omniarchitect doctor          # 工具链
-python -m omniarchitect tools           # 工具注册表 + L1–L4 权限
-python -m omniarchitect providers       # OmniAiLab / 本地 provider 状态
-python -m omniarchitect honesty         # 不得声称的能力清单
+python -m omniarchitect tools           # 工具注册表 + 权限
+python -m omniarchitect providers       # provider 状态
 python -m omniarchitect audit           # 合规自检
 python -m omniarchitect policy          # 品牌与供应商策略
 python -m omniarchitect reference       # 自有入口；--sources 看来源，--research 跑案例研究
-python -m omniarchitect compat          # Agent Skills 兼容性
-python -m omniarchitect manifest        # 生成安装清单
-python -m omniarchitect install --dry-run
 ```
 
 ---
@@ -322,7 +318,7 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 - [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**。见 `docs/REFERENCE_SOURCES.md`。
 - [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只出分镜与运镜脚本，**不承担生成**（主体仍是 `omniailab`）。见 `docs/VIDEO_PRODUCTION.md`。
 
-**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`，打不开标「未核验」并写明原因。第三方图只给链接，S2 每套概念挂 1–2 例答四问。交付层出图文提案与飞书/Notion 可导入包（`presentation/html.py`、`presentation/online_doc.py`），**无授权连接不建线上文档、不给假链接**（`docs/CLIENT_DELIVERY.md`）。
+**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`，打不开标「未核验」。第三方图只给链接，S2 每套概念挂 1–2 例答四问。交付层出图文提案与双载体导入包（`presentation/html.py`、`presentation/online_doc.py`），**无授权连接不建线上文档、不给假链接**（`docs/CLIENT_DELIVERY.md`）。
 
 ## 7d. 概念怎么推敲出来（S2 核心）
 

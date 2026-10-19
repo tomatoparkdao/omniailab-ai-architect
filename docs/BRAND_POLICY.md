@@ -2,7 +2,7 @@
 name: omniailab-brand-policy
 description: 品牌与供应商策略审计报告（自动生成）：九条检测规则、命中分类、已登记清单与创作能力独占的判定依据。
 scope: 自动生成 · 每次 policy 覆盖
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

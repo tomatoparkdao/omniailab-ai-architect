@@ -166,6 +166,63 @@ def _answer_for_slot(project: Project, slot: str) -> Optional[Dict[str, Any]]:
     return None
 
 
+def _classify_texts(project: Project) -> List[str]:
+    """喂给分类器的文字：项目名 + 已答的需求类答案。
+
+    只用"客户说过的话"，不用推断字段——分类要能追溯，改口后要能变。
+    """
+    state = _store(project)
+    answers = state.get("answers") or {}
+    keys = ("base.project_type", "base.subtype", "base.commission", "base.needs",
+            "res.needs_extra", "base.feeling")
+    texts = [project.name or ""]
+    for k in keys:
+        rec = answers.get(k) or {}
+        # 只看客户真答过的；assumed 是系统按档案填的默认值，不能当分类依据
+        if str(rec.get("state") or "") != "answered":
+            continue
+        v = str(rec.get("value") or "")
+        if v:
+            texts.append(v)
+    for qid, ans in answers.items():
+        q = QUESTION_INDEX.get(qid)
+        if not q or q.slot not in ("needs", "subtype", "project_type", "commission"):
+            continue
+        # assumed 是系统替客户填的默认值（如档案推断的"住宅"），不能当分类依据
+        if str(ans.get("state") or "") != "answered":
+            continue
+        v = str(ans.get("value") or "")
+        if v and v not in texts:
+            texts.append(v)
+    return [t for t in texts if t]
+
+
+def classification(project: Project) -> Dict[str, Any]:
+    """项目分类（用途可多选 + 性质 + 委托范围）。按输入指纹缓存，改口即重算。
+
+    这是 S1 的**唯一分类入口**：S2/S3 都读这里写下的 `meta.intake.taxonomy`，
+    不允许在别的模块里再写一套关键词。
+    """
+    from .. import taxonomy as _tx
+
+    intake = _intake(project)
+    texts = _classify_texts(project)
+    digest = "|".join(texts)
+    stored = intake.get("taxonomy") or {}
+    if stored.get("basis") == digest and stored.get("codes") is not None:
+        return stored
+    cls = _tx.classify(texts)
+    data = cls.to_dict()
+    data["basis"] = digest
+    data["unknown"] = not bool(cls.codes)
+    intake["taxonomy"] = data
+    return data
+
+
+def taxonomy_codes(project: Project) -> List[str]:
+    return [str(c) for c in (classification(project).get("codes") or [])]
+
+
 def _covered_slots(project: Project) -> Dict[str, str]:
     """slot -> how it became known (answer id / model field)."""
     covered: Dict[str, str] = {}
@@ -370,6 +427,7 @@ def start_interview(project: Project, text: str = "",
 
         _disc.store(project, _disc.detect(
             [text, project.name or ""], profile_id=profile.id))
+        classification(project)
         _assume_project_type(project, profile)
         state = _store(project)
     state["updated_at"] = _now()
@@ -485,6 +543,20 @@ def next_questions(project: Project, limit: int = MAX_QUESTIONS_PER_ROUND,
             continue
         out.append(q)
 
+    # 行业专项：大类决定专业，细分类型决定"还要问什么"。
+    # 只取本项目类型特有的那几条，不是给每个业态造一套问卷。
+    from .profiles import register_questions, specialty_questions
+
+    _spec_qs = specialty_questions(taxonomy_codes(project))
+    register_questions(_spec_qs)
+    known = {q.id for q in out}
+    for q in _spec_qs:
+        if q.id in known or q.slot in excluded_slots:
+            continue
+        if q.slot in covered or q.id in asked:
+            continue
+        out.append(q)
+
     order = {q.id: i for i, q in enumerate(profile.questions)}
     base_len = len(profile.questions)
     out.sort(key=lambda q: (PRIORITY_ORDER.get(q.priority, 9),
@@ -595,6 +667,12 @@ def answer_question(project: Project, qid: str, value: str,
     """
     q = QUESTION_INDEX.get(qid)
     if q is None:
+        # 行业专项问题是按项目动态生成的：作答前先登记，否则永远答不了
+        from .profiles import register_questions, specialty_questions
+
+        register_questions(specialty_questions(taxonomy_codes(project)))
+        q = QUESTION_INDEX.get(qid)
+    if q is None:
         raise KeyError(f"unknown question '{qid}'")
     if state_name not in ANSWER_STATES:
         raise ValueError(f"unknown answer state '{state_name}'")
@@ -617,6 +695,7 @@ def answer_question(project: Project, qid: str, value: str,
     st["updated_at"] = _now()
     _intake(project)["interview"] = st
 
+    classification(project)          # 补了类型/委托就重算，S2/S3 读到的是最新的
     uncertainty_id = _sync_uncertainty(project, q, value, state_name)
     changed = bool(previous) and str(previous.get("value")) != rec["value"]
     reopened: List[str] = []
@@ -701,4 +780,5 @@ def summary(project: Project) -> Dict[str, Any]:
         "can_proceed": can_proceed,
         "completeness": comp,
         "focus": profile.focus,
+        "taxonomy": classification(project),
     }

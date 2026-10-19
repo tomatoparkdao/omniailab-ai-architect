@@ -31,6 +31,8 @@ from typing import Dict, List, Optional, Sequence, Tuple
 # label: shown to the user, never a code name
 SLOTS: Dict[str, Dict[str, object]] = {
     "project_type": {"weight": 3, "critical": True, "label": "项目类型与用途"},
+    "subtype": {"weight": 2, "critical": False, "label": "细分类型与业态"},
+    "commission": {"weight": 3, "critical": False, "label": "委托范围（哪些专业）"},
     "location": {"weight": 2, "critical": True, "label": "项目所在地"},
     "floor_area": {"weight": 3, "critical": True, "label": "面积或规模"},
     "occupants": {"weight": 2, "critical": False, "label": "使用者与人数"},
@@ -224,6 +226,22 @@ _Q_DEPTH = Question(
     why="交付深度决定工作量与责任边界，也决定哪些成果必须有人签字。",
 )
 
+#: 细分类型：同样是"酒店"，度假酒店与城市商务酒店的设计方法不同。
+#: 选项不写死——按已识别的专业动态给，避免几百套独立问卷。
+_Q_SUBTYPE = Question(
+    id="base.subtype", slot="subtype", priority="important", affects="S2",
+    text="再具体一点：属于哪一类？（例如度假酒店 / 城市商务酒店，或高层住宅 / 别墅）",
+    why="大类只决定专业，细分类型才决定设计方法：客房模数、公共区配比、流线都不一样。",
+    examples=("度假酒店，带温泉", "高层住宅，刚需户型", "九年一贯制学校"),
+)
+
+_Q_COMMISSION = Question(
+    id="base.commission", slot="commission", priority="important", affects="S3",
+    text="这次委托范围是哪几块：建筑、室内、景观？是新建还是既有空间改造？",
+    why="只委托室内时，建筑专业不进入范围——不能因为项目名字叫酒店就做一栋酒店。",
+    examples=("只做室内精装", "建筑+景观", "三专业整体委托", "既有空间改造"),
+)
+
 #: 视觉参考：不阻断流程，但没有它，S2 只能按风格库推荐（这是可接受的降级）。
 _Q_VISUAL = Question(
     id="base.visual_refs", slot="visual_refs", priority="deferrable", affects="S2",
@@ -235,8 +253,9 @@ _Q_VISUAL = Question(
 )
 
 BASE_QUESTIONS: Tuple[Question, ...] = (
-    _Q_TYPE, _Q_LOCATION, _Q_AREA, _Q_NEEDS, _Q_BUDGET, _Q_SCHEDULE,
-    _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_FEELING, _Q_VISUAL, _Q_DEPTH,
+    _Q_TYPE, _Q_SUBTYPE, _Q_COMMISSION, _Q_LOCATION, _Q_AREA, _Q_NEEDS, _Q_BUDGET,
+    _Q_SCHEDULE, _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_FEELING, _Q_VISUAL,
+    _Q_DEPTH,
 )
 
 
@@ -688,6 +707,31 @@ SCOPE_QUESTIONS: Tuple[Question, ...] = (
         examples=("需要报建", "已有规划条件", "不用报"),
     ),
 )
+
+def specialty_questions(codes: Sequence[str]) -> List[Question]:
+    """该项目的行业专项问题（从 taxonomy 转成问诊用的 Question）。
+
+    不给每个业态单独造一套问卷：类型只贡献它特有的那两三条，通用问诊照旧。
+    """
+    from .. import taxonomy as _tx
+
+    out: List[Question] = []
+    for q in _tx.questions_for(codes):
+        out.append(Question(
+            id=q.qid, slot=q.slot, text=q.text, priority="important", affects="S2",
+            kind="text", why=q.why, examples=tuple(q.examples),
+        ))
+    return out
+
+
+def register_questions(questions: Sequence[Question]) -> None:
+    """把动态生成的问题加入索引：答题与槽位判定都要能查到它。"""
+    for q in questions:
+        QUESTION_INDEX.setdefault(q.id, q)
+        ids = SLOT_QUESTIONS.setdefault(q.slot, [])
+        if q.id not in ids:
+            ids.append(q.id)
+
 
 QUESTION_INDEX: Dict[str, Question] = {}
 for _p in PROFILES.values():

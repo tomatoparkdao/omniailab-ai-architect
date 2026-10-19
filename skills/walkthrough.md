@@ -3,7 +3,7 @@ name: omniailab-walkthrough
 description: 漫游与多视角表现 —— 把空间序列翻译成全景与漫游，验证动线与观感并标注非权威
 capability: walkthrough
 stages: [S5]
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

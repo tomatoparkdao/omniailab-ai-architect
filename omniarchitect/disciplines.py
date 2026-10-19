@@ -410,6 +410,27 @@ def ensure(project: Any, *, profile_id: str = "") -> DisciplineScope:
         return scope
 
     detected = detect(texts, profile_id=profile_id or str((answers.get("profile_id") or "")))
+    # 委托范围优先于"名字里提到的用途"：客户只买室内，就不该按酒店名字排建筑平面。
+    # 只压掉**纯推断**（INFERRED）的那几个；由其他专业牵动的 REQUIRED、
+    # 以及资料不足的 UNKNOWN 不动——它们是后果，不是委托。
+    tax = (((getattr(project, "meta", {}) or {}).get("intake") or {})
+           .get("taxonomy") or {})
+    commissioned = [str(x) for x in (tax.get("commissions") or [])]
+    if commissioned:
+        why = "客户委托范围：" + "、".join(
+            {"architecture": "建筑", "interior": "室内", "landscape": "景观"}.get(c, c)
+            for c in commissioned)
+        for did in DISCIPLINES:
+            e = detected.entries.get(did)
+            if did in commissioned:
+                if e is None:
+                    e = detected.entry(did)
+                e.state = DECLARED
+                e.evidence = why
+            elif e is not None and e.state == INFERRED:
+                e.state = OUT_OF_SCOPE
+                e.evidence = why + f"；未包含{ {'architecture': '建筑', 'interior': '室内', 'landscape': '景观', 'structure': '结构', 'mep': '机电'}.get(did, did) }"
+
     for did, old in (scope.entries or {}).items():
         new = detected.entries.get(did)
         if new is None:

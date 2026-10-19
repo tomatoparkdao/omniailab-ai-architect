@@ -204,6 +204,59 @@ class RunManifest:
         return "\n".join(lines)
 
 
+
+def _s3_taxonomy_block(project: Any, active: Sequence[str]) -> List[str]:
+    """S3 开头先写清"这是什么项目、这一轮要做哪些专业任务"。
+
+    任务清单来自 `taxonomy`（唯一数据源），不是在这里另写一份；
+    能力边界也照实写——"能出任务"与"能出合规成果"是两件事。
+    """
+    from . import taxonomy as _tx
+    from .intake import interview as _iv
+
+    tax = _iv.classification(project)
+    codes = [str(c) for c in (tax.get("codes") or [])]
+    if not codes and not tax.get("natures"):
+        return ["## 项目分类", "",
+                "- 未识别出已知类型：按最宽口径推进，不套任何专项方法。", ""]
+    rows = ["## 项目分类", ""]
+    rows.append("| 项 | 内容 |")
+    rows.append("|---|---|")
+    rows.append("| 用途 | {} |".format(
+        "、".join(f"{c} {(_tx.resolve(c).name if _tx.resolve(c) else '')}".strip()
+                 for c in codes) or "未识别"))
+    if tax.get("nature_labels"):
+        rows.append("| 项目性质 | {} |".format("、".join(tax["nature_labels"])))
+    if tax.get("commission_labels"):
+        rows.append("| 委托范围 | {} |".format("、".join(tax["commission_labels"])))
+    cap = _tx.capability_of(codes)
+    rows.append("| 能力边界 | {} |".format(cap.get("label") or "未登记"))
+    if cap.get("note"):
+        rows.append("| 边界说明 | {} |".format(cap["note"]))
+    rows.append("")
+    focus: List[str] = []
+    for c in codes:
+        spec = _tx.resolve(c)
+        if spec:
+            focus += [x for x in spec.focus if x not in focus]
+    if focus:
+        rows += ["**本类型必须处理的专业要点**：" + "、".join(focus[:8]), ""]
+    for did in ("architecture", "interior", "landscape"):
+        if did not in active:
+            continue
+        tasks = _tx.s3_tasks(codes, did)
+        if not tasks:
+            continue
+        label = {"architecture": "建筑设计", "interior": "室内设计",
+                 "landscape": "景观设计"}[did]
+        rows += [f"### {label}任务（S3）", ""]
+        rows += [f"{i}. {t}" for i, t in enumerate(tasks, 1)]
+        rows.append("")
+    rows += ["> 任务清单是**要做什么**，不是**已经做到什么**："
+             "标注为概念/专项的类型，其合规结论仍须相应专业人员给出。", ""]
+    return rows
+
+
 class StageRunner:
     def __init__(
         self,
@@ -974,6 +1027,8 @@ class StageRunner:
         # 专业范围路由：平面生成器只覆盖建筑/室内的空间组织。
         # 景观、结构、机电专项不能拿住宅/办公的房间算法冒充成品。
         from . import disciplines as _disc
+        from . import taxonomy as _tax
+        from .intake import interview as _iv
 
         _scope = _disc.ensure(self.project)
         _active = set(_scope.active())
@@ -1051,7 +1106,9 @@ class StageRunner:
         concept_check = verify_scheme(handoff, self.schemes["A"], self.project) \
             if handoff.get("status") in ("locked", "selected_not_confirmed") else None
 
-        rows = ["# 平面方案对比（S3）", "", "## 面积表", "",
+        rows = ["# 平面方案对比（S3）", ""]
+        rows += _s3_taxonomy_block(self.project, sorted(_active))
+        rows += ["## 面积表", "",
                 "| 房间 | 方案A m² | 方案B m² | 目标 m² | 偏差 |", "|---|---|---|---|---|"]
         ids = sorted({r["id"] for s in self.schemes.values() for r in s.area_table()})
         for rid in ids:
@@ -1183,6 +1240,11 @@ class StageRunner:
                     "**不能视为概念的落地**，G3 不得正式签发（需换支持的方向或另行深化）")
         else:
             notes.append("无已确认概念：平面仅供探索，不得签发正式 G3")
+        # 能力边界跟着项目类型走：医院/厂房这类不能因为生成了平面就当成合规成果
+        _cap = _tax.capability_of((_iv.classification(self.project).get("codes") or []))
+        if _cap.get("level") in ("concept_only", "specialist"):
+            notes.append(f"能力边界（{_cap.get('level')}）：{_cap.get('label')}；"
+                         f"{_cap.get('note')}")
         return StageOutcome("S3", artifacts=arts, adapter="dxf", notes=notes)
 
     # ==================================================================

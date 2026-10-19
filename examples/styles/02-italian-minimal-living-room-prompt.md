@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-prompt-interior-render
 description: 提示词任务包 —— 室内效果图（`interior-render`）：中英双语分层结构、几何保持规则与产出后校核清单；风格 意式极简（Italian Minimal），一致性指纹 sp-22db636aa74d。
-version: 1.10.0
+version: 1.11.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
