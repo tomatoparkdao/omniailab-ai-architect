@@ -1,7 +1,7 @@
 ---
 name: omniailab-adapters-specs-ifc
 description: IFC adapter —— Purpose: IFC read/write, BIM spatial/semantic audit.
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

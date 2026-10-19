@@ -246,7 +246,8 @@ def _borrow_for(concept: Dict[str, Any], case: Dict[str, Any]) -> List[str]:
 
 def _transform_for(concept: Dict[str, Any], case: Dict[str, Any]) -> str:
     """How the case becomes *this* project's own scheme."""
-    name = concept.get("name") or concept.get("concept_id") or "本方案"
+    name = (concept.get("concept_name") or concept.get("name")
+            or concept.get("concept_id") or "本方案")
     return ("「{}」借的是它的组织逻辑，落地时按你的地块、层数和实测尺寸重排；"
             "形态与材料按本方案的主张重新定，不复制它的外观".format(name))
 
@@ -265,8 +266,11 @@ def _why_for(case: Dict[str, Any], concept: Dict[str, Any]) -> str:
     fits = case.get("fits") or []
     if fits:
         return "；".join(fits[:2])
-    return "它在「{}」这个方向上是我们这次找到的可核验案例".format(
-        concept.get("name") or concept.get("concept_id") or "本方向")
+    # 名称优先取 concept_name：`name` 在推敲路径里不一定存在，回退到它会把
+    # 「它在「C-A」这个方向上…」印给客户——客户不知道 C-A 是什么。
+    label = (concept.get("concept_name") or concept.get("name")
+             or concept.get("concept_id") or "本方向")
+    return "它在「{}」这个方向上是我们这次找到的可核验案例".format(label)
 
 
 def build(concepts: Sequence[Dict[str, Any]],

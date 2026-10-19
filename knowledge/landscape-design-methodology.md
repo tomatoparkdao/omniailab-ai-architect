@@ -5,7 +5,7 @@ description: 景观设计方法论 —— 庭院与室外空间的专项判断�
 stage_affinity: [S1, S2, S3, S4]
 loads_when: 当委托涉及庭院、花园、屋顶花园、室外景观或任何景观主导的设计时加载
 load_cost: medium
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

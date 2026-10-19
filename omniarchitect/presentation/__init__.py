@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from ..model import Project
+from . import html, online_doc  # noqa: F401
 from .deck import DeckBuilder, build, kinds  # noqa: F401
 from .layouts import (  # noqa: F401
     DECK_KINDS,
@@ -87,5 +88,5 @@ __all__ = [
     "render", "build", "kinds", "DeckBuilder", "Deck", "Slide", "Brand",
     "new_deck", "slide_order", "DECK_KINDS", "SLIDE_KINDS",
     "write_pptx", "write_markdown", "write_html", "export_pdf",
-    "available_backends",
+    "available_backends", "html", "online_doc",
 ]

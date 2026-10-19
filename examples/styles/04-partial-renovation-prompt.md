@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-prompt-partial-renovation
 description: 提示词任务包 —— 局部改造（`partial-renovation`）：中英双语分层结构、几何保持规则与产出后校核清单；风格 意式极简（Italian Minimal），一致性指纹 sp-f6ccffddc94b。
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-reference-sources
 description: 参考图来源、专业案例检索与使用边界 —— 素材库用于方向调研，案例站用于设计研究，材料站用于选材；可带走的只有结论（关键词、比例、材质组合），原图不进交付物
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

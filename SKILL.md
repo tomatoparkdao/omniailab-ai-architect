@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -330,11 +330,11 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 - [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**。见 `docs/REFERENCE_SOURCES.md`。
 - [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只出分镜与运镜脚本，**不承担生成**（主体仍是 `omniailab`）。见 `docs/VIDEO_PRODUCTION.md`。
 
-**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按**实测可达性**补充。每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`；打不开标「未核验」并写明原因，**读不到就说读不到，不编造**。第三方图只给链接；S2 每套概念挂 1–2 例，答「为什么参考／借鉴什么／怎么转化／什么不能照搬」。
+**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按实测可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`。打不开标「未核验」并写明原因，**读不到就说读不到**。第三方图只给链接，S2 每套概念挂 1–2 例并答四问。交付层出图文提案与飞书/Notion 可导入包（`presentation/html.py`、`presentation/online_doc.py`）；**无授权连接不建线上文档、不给假链接**，见 `docs/CLIENT_DELIVERY.md`。
 
 ## 7d. 概念怎么推敲出来（S2 核心）
 
-S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数、业主原话推出 2–3 条组织逻辑互不相同的策略，每条答六问（机会／理由／体验／光视比例材料／三专业整合／技术协同）。`22 个空间原型`只作**兜底**，走原型时标 `source="prototype"`；判不了的前提标 `unverified_requires`，不算满足也不算不满足。判据见 `knowledge/` 下 `design-deliberation-methods` 与 `landscape-design-methodology`。
+S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数与业主原话推出 2–3 条组织逻辑互不相同的策略，每条答六问。`22 个空间原型`只作**兜底**，走原型标 `source="prototype"`；判不了的前提标 `unverified_requires`。判据见 `knowledge/` 的 `design-deliberation-methods`、`landscape-design-methodology`。
 
 ---
 

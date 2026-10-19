@@ -1,7 +1,7 @@
 ---
 name: omniailab-compatibility-agent-skills
 description: Agent Skills 兼容规范对照 —— OmniArchitect 遵循通用 Agent Skills 约定，不绑定任何单一厂商运行时。
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

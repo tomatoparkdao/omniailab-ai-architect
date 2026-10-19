@@ -11,7 +11,8 @@
     diagrams/*.svg       体量 / 剖面 / 景观结构 / 功能 / 动线 / 采光 / 序列
     deck.pptx            提案
     reference-shortlist.md  案例参考（联网时）
-    index.html           单页阅读版（内嵌图解，浏览器直接打开）
+    index.html           客户提案：图文案例卡 + 图解 + 链接可点
+    online-doc/          可导入飞书 / Notion 的文档包（Markdown + 图 + zip）
 
 用法：
     python scripts/design_three_cases.py            # 联网取案例
@@ -21,10 +22,8 @@
 """
 from __future__ import annotations
 
-import html
 import json
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -34,6 +33,7 @@ sys.path.insert(0, str(ROOT))
 from omniarchitect import workflow                              # noqa: E402
 from omniarchitect.intake.interview import record_answer        # noqa: E402
 from omniarchitect.model import Project                          # noqa: E402
+from omniarchitect.presentation import html as html_mod, online_doc  # noqa: E402
 
 OUT = ROOT / "out" / "design-round1"
 
@@ -111,6 +111,20 @@ def run_case(key: str, cfg: dict) -> dict:
     found = sorted(run_dir.rglob("concept-options.json"))
     payload = (json.loads(found[0].read_text(encoding="utf-8")) if found else {})
 
+    shortlist = next(iter(sorted(run_dir.rglob("reference-shortlist.json"))), None)
+    research = (json.loads(shortlist.read_text(encoding="utf-8"))
+                if shortlist else {"cases": []})
+
+    # 客户提案：案例带图、链接可点、权利分层（presentation/html.py）
+    page = html_mod.proposal(payload, out, project_name=cfg["name"],
+                             research=research, project_dir=out,
+                             meta=[f"S2 {getattr(s2, 'status', '')}"])
+
+    # 在线文档包：飞书 / Notion 各一套可导入的 Markdown + 图（不联网、不发链接）
+    package = online_doc.build_package(
+        p, payload, research, out / "online-doc", project_name=cfg["name"],
+        project_dir=out, run_dir=run_dir)
+
     return {
         "key": key,
         "project": cfg["name"],
@@ -120,6 +134,8 @@ def run_case(key: str, cfg: dict) -> dict:
         "run_dir": str(run_dir),
         "lead": payload.get("lead_label", ""),
         "source": payload.get("source", ""),
+        "proposal": str(page),
+        "doc_package": package,
         "concepts": [
             {
                 "id": c.get("concept_id"),
@@ -137,163 +153,6 @@ def run_case(key: str, cfg: dict) -> dict:
     }
 
 
-# --------------------------------------------------------------------------
-# 单页阅读版：把概念文档与图解放进一个 HTML，客户直接打开就能看
-# --------------------------------------------------------------------------
-def _svg_inline(path: Path) -> str:
-    text = path.read_text(encoding="utf-8")
-    text = re.sub(r"<\?xml[^>]*\?>", "", text).strip()
-    return text
-
-
-def _md_blocks(md: str) -> str:
-    """极简 Markdown → HTML：标题、表格、列表、引用、段落。
-
-    只解析本仓库自己产出的那几种结构，不引入通用解析器。
-    """
-    out: list[str] = []
-    lines = md.splitlines()
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        if not line.strip():
-            i += 1
-            continue
-        if line.startswith("|"):
-            rows = []
-            while i < len(lines) and lines[i].startswith("|"):
-                rows.append(lines[i])
-                i += 1
-            cells = [[c.strip() for c in r.strip("|").split("|")] for r in rows]
-            body = [r for r in cells if not all(set(c) <= set("-: ") for c in r)]
-            if body:
-                out.append("<table>")
-                for n, r in enumerate(body):
-                    tag = "th" if n == 0 else "td"
-                    out.append("<tr>" + "".join(
-                        f"<{tag}>{html.escape(c)}</{tag}>" for c in r) + "</tr>")
-                out.append("</table>")
-            continue
-        if line.startswith("### "):
-            out.append(f"<h3>{html.escape(line[4:])}</h3>")
-        elif line.startswith("## "):
-            out.append(f"<h2>{html.escape(line[3:])}</h2>")
-        elif line.startswith("# "):
-            # 页面已经有一个 h1（项目名）；正文里的 h1 降一级，
-            # 否则一份文档会出现两个同等权重的标题。
-            out.append(f"<h2>{html.escape(line[2:])}</h2>")
-        elif line.startswith("> "):
-            out.append(f"<blockquote>{html.escape(line[2:])}</blockquote>")
-        elif line.startswith("- "):
-            items = []
-            while i < len(lines) and lines[i].startswith("- "):
-                items.append(html.escape(lines[i][2:]))
-                i += 1
-            out.append("<ul>" + "".join(f"<li>{x}</li>" for x in items) + "</ul>")
-            continue
-        elif re.match(r"^\d+\.\s", line):
-            items = []
-            while i < len(lines) and re.match(r"^\d+\.\s", lines[i]):
-                items.append(html.escape(re.sub(r"^\d+\.\s", "", lines[i])))
-                i += 1
-            out.append("<ol>" + "".join(f"<li>{x}</li>" for x in items) + "</ol>")
-            continue
-        else:
-            out.append(f"<p>{html.escape(line)}</p>")
-        i += 1
-    return "\n".join(out)
-
-
-PAGE = """<!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="utf-8">
-<title>{title}</title>
-<style>
-:root {{ --ink:#1E2328; --muted:#6B7280; --rule:#D6D9DD; --bg:#FBFBFA;
-         --accent:#3F7D58; }}
-* {{ box-sizing:border-box; }}
-body {{ margin:0; background:var(--bg); color:var(--ink);
-        font-family:'Microsoft YaHei','Noto Sans SC','PingFang SC',sans-serif;
-        line-height:1.75; }}
-main {{ max-width:1180px; margin:0 auto; padding:48px 28px 96px; }}
-h1 {{ font-size:30px; margin:0 0 6px; }}
-h2 {{ font-size:22px; margin:44px 0 12px; padding-bottom:8px;
-      border-bottom:1px solid var(--rule); }}
-h3 {{ font-size:17px; margin:28px 0 10px; color:var(--accent); }}
-p, li {{ font-size:14.5px; }}
-table {{ border-collapse:collapse; width:100%; margin:12px 0 20px;
-         font-size:13.5px; background:#fff; }}
-th, td {{ border:1px solid var(--rule); padding:8px 10px; text-align:left;
-          vertical-align:top; }}
-th {{ background:#F2F3F1; font-weight:600; }}
-blockquote {{ margin:12px 0; padding:10px 14px; border-left:3px solid var(--accent);
-              background:#F4F7F4; color:#374151; font-size:13.5px; }}
-.fig {{ margin:18px 0 26px; background:#fff; border:1px solid var(--rule);
-        border-radius:10px; padding:12px; overflow:auto; }}
-.fig svg {{ display:block; width:100%; height:auto; }}
-.cap {{ font-size:12.5px; color:var(--muted); margin-top:6px; }}
-.meta {{ color:var(--muted); font-size:13px; margin-bottom:8px; }}
-</style></head>
-<body><main>
-<h1>{title}</h1>
-<div class="meta">{meta}</div>
-{body}
-</main></body></html>
-"""
-
-
-def build_html(key: str, cfg: dict, result: dict) -> Path:
-    out = Path(result["run_dir"])
-    md_path = next(iter(sorted(out.rglob("concept-options.md"))), None)
-    md = md_path.read_text(encoding="utf-8") if md_path else ""
-
-    # 图解按 concept_id 分组，插到对应概念段落之后
-    svgs = sorted(p for d in out.rglob("concept-diagrams") for p in d.glob("*.svg"))
-    by_concept: dict[str, list[Path]] = {}
-    for s in svgs:
-        cid = s.stem.split("-")[0].upper() + "-" + s.stem.split("-")[1].upper() \
-            if "-" in s.stem else s.stem
-        by_concept.setdefault(cid.upper(), []).append(s)
-
-    body = _md_blocks(md)
-    titles = {"functional": "功能关系图", "zoning": "分区图", "circulation": "动线概念图",
-              "daylight": "采光策略图", "sequence": "空间序列图", "massing": "体量概念图",
-              "section": "剖面与楼层图", "landscape": "景观结构图"}
-    for cid, files in by_concept.items():
-        blocks = []
-        for f in files:
-            kind = f.stem.split("-", 2)[-1] if f.stem.count("-") >= 2 else f.stem
-            label = titles.get(kind, kind)
-            blocks.append(
-                f'<div class="fig">{_svg_inline(f)}'
-                f'<div class="cap">{html.escape(label)}（确定性 SVG，非按比例）</div></div>')
-        marker = f"<h2>{cid}"
-        idx = body.find(marker)
-        if idx == -1:
-            body += "\n<h2>图解 · {}</h2>".format(cid) + "".join(blocks)
-        else:
-            # 插在标题之后：读者先看到方案名，再看到图，最后读文字。
-            after = body.find("</h2>", idx)
-            after = len(body) if after == -1 else after + len("</h2>")
-            body = body[:after] + "\n" + "".join(blocks) + body[after:]
-
-    ref = next(iter(sorted(out.rglob("reference-shortlist.md"))), None)
-    if ref:
-        ref_md = ref.read_text(encoding="utf-8")
-        # 清单自己是独立文档，有一个 h1；嵌进来要降一级，否则页面出现两个 h1
-        ref_md = re.sub(r"^# ", "## ", ref_md, count=1, flags=re.M)
-        body += "\n" + _md_blocks(ref_md)
-
-    meta_bits = [f"主导专业：{result.get('lead') or '—'}",
-                 f"概念来源：{'按本项目推敲' if result.get('source') == 'deliberated' else '原型经验库'}",
-                 f"S1 {result.get('s1_status')} ／ S2 {result.get('s2_status')}"]
-    page = PAGE.format(title=html.escape(cfg["name"]),
-                       meta="　·　".join(html.escape(x) for x in meta_bits),
-                       body=body)
-    path = OUT / key / "index.html"
-    path.write_text(page, encoding="utf-8")
-    return path
-
-
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     online = os.environ.get("OMNIAILAB_NO_NETWORK", "").strip().lower() not in (
@@ -304,13 +163,15 @@ def main() -> int:
     for key, cfg in CASES.items():
         print(f"\n=== {key}：{cfg['name']}", flush=True)
         r = run_case(key, cfg)
-        build_html(key, cfg, r)
         results.append(r)
         print(f"    S1 {r['s1_status']} ／ S2 {r['s2_status']}　主导：{r['lead']}"
               f"　来源：{r['source']}", flush=True)
         for c in r["concepts"]:
             print(f"    {c['id']} {c['name']}（{c['family']}）"
                   f" 图 {len(c['diagrams'])} 张　案例 {len(c['cases'])} 个", flush=True)
+        for carrier, info in (r["doc_package"]["carriers"] or {}).items():
+            print(f"    文档包 {info['label']}：{info['pages']} 页 / "
+                  f"{info['assets']} 个附件 → {info['root']}", flush=True)
 
     (OUT / "summary.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")

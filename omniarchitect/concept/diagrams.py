@@ -942,7 +942,11 @@ def build(concept: Dict[str, Any], ctx: Any,
             if has_rooms:
                 want += ["functional", "zoning", "circulation"]
         elif lead == "interior":
-            want = ["zoning", "circulation", "daylight", "sequence"]
+            # 室内同理：没有房间级数据时，分区/动线/采光三张图会把任务书原句
+            # 塞进同一个大框（"房子已经建好""是大平层"…），看着有图、读不出
+            # 任何空间关系。此时只给序列图，其余留到 S3 有了平面再画。
+            want = (["zoning", "circulation", "daylight", "sequence"]
+                    if has_rooms else ["sequence"])
         elif ctx.profile_id == "architecture":
             want = ["massing", "section", "sequence"]
 

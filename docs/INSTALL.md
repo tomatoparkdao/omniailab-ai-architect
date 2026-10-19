@@ -1,7 +1,7 @@
 ---
 name: omniailab-install
 description: 安装与独立运行 —— OmniArchitect 支持独立安装：不强制注册 OmniAiLab，不读取任何平台密钥，
-version: 1.6.0
+version: 1.7.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
