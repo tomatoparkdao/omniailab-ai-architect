@@ -1,21 +1,44 @@
-# OmniAiLab AI Architect
+<h1 align="center">OmniAiLab AI Architect for Architecture & Interior Design</h1>
 
-Not just producing renderings — AI taking part in the whole architecture and interior design process. From design requirements and concept ideas, through space planning and layout options, to preliminary design, 3D modelling, AI renderings, CAD/BIM construction development and professional design delivery, one Skill covers 8 design stages, 31 professional capabilities and 47 design styles, and works with the OmniAiLab AI creation platform and professional MCP tools so AI moves from design advice to real design execution.
-
-<p>
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.6.0-1f6feb?style=flat-square" alt="版本 1.6.0"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
-  <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
-  <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
-  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 30 能力">
-  <img src="https://img.shields.io/badge/%E4%BA%A4%E4%BB%98-%E6%96%B9%E6%A1%88_%7C_%E6%96%BD%E5%B7%A5%E5%9B%BE-1d76db?style=flat-square" alt="交付 方案 | 施工图">
-  <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="兼容 Codex / Claude / Cursor / WorkBuddy">
+<p align="center">
+  <b>An end-to-end AI architect Skill for architecture, interior and landscape — one that reasons, and says no</b><br>
+  Architecture · interior · landscape as parallel lead disciplines　｜　one brief → concept → layouts → construction-depth DXF　｜　from design brief to deliverable
 </p>
 
-[简体中文](README.md)　｜　**English**
+<p align="center">
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.6.0-1f6feb?style=flat-square" alt="Version 1.6.0"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="License MIT"></a>
+  <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="Platform OmniAiLab"></a>
+  <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-Architecture_%7C_Interior_%7C_Landscape-0e8a16?style=flat-square" alt="Domain Architecture | Interior | Landscape">
+  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_Stages_%C3%97_31_Capabilities-0969da?style=flat-square" alt="8 stages x 31 capabilities">
+  <img src="https://img.shields.io/badge/%E4%BA%A4%E4%BB%98-Design_%7C_Construction-1d76db?style=flat-square" alt="Delivery Design | Construction">
+  <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="Compatible Codex / Claude / Cursor / WorkBuddy">
+</p>
 
-> © OmniAiLab ｜ Developer: Mochiball ｜ Platform: [omniailabx.com](https://www.omniailabx.com/) ｜ Repo: [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
+<p align="center">
+  <a href="README.md">简体中文</a>　｜　<b>English</b>
+</p>
+
+> © OmniAiLab ｜ Developer: Mochiball ｜ Platform: [omniailabx.com](https://www.omniailabx.com/)
+
+Not just producing renderings — AI taking part in the whole architecture and interior design process. **It does not merely run a pipeline: the first thing it does is pin down function, site and budget**, then lets the lead discipline set the order of reasoning — architecture decides massing and section first, interior decides reorganisation and interfaces first, landscape decides zoning and routes first. From there it advances stage by stage to deliverable drawings, models and material schedules, and at the end of every stage you only answer "confirmed" or "change item X". One Skill covering 8 design stages, 31 professional capabilities and 47 design styles, working with the OmniAiLab AI creation platform and professional MCP tools.
+
+| Item | Value | Notes |
+|---|---|---|
+| Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
+| Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
+| Version | v1.6.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
+| Publisher / Developer | OmniAiLab / Mochiball | — |
+| License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
+| Operation manual | [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) / [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) / `docs/MANUAL.md` | Invocation, three-step start, per-stage rules, capability index, pitfalls, FAQ, deliverable list |
+| Repository | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | All source, documentation and acceptance scripts; **currently a private repository** — once public, `git clone` and issues work directly |
+| Requirements | Python 3.10+ | Zero hard dependencies: DXF, mesh and PPTX all have built-in writers |
+| Native platform | [OmniAiLab China site](https://www.omniailabx.com/) / [International site](https://omniailab.cn/) | Generative image and video capabilities come from the platform; **the system runs normally when it is not connected** |
+
+The invocation name is **all-lowercase with hyphens** (`omniailab-ai-architect`), not the display name "OmniAiLab AI Architect for Architecture & Interior Design". Tools with native skill support are best driven by the invocation name; tools without it still trigger from a natural-language description of the design task.
+
+> **One naming trap**: the repository root is `omniailab-ai-architect` (hyphenated — that is the Skill name), while the Python package inside is `omniarchitect` (the internal engine code name, importable). **They are not duplicate directories** — the root is the Skill payload (`SKILL.md` / `knowledge/` / `skills/` / `docs/`), and the package directory holds all executable code.
+
 
 ---
 
@@ -27,7 +50,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 
 | Scope | What it covers |
 |---|---|
-| **Applicable · any project type** | Residential flats, large flats, villas, offices, retail, restaurants, hotels, showrooms; both the schematic stage and the development stage are in scope. **Architecture and interior are the core**; outdoor and landscape work is limited to **interface coordination** (outdoor equipment positions, landscape lighting connections, setbacks and interface finishes) — no landscape schemes are produced |
+| **Applicable · any project type** | Residential flats, large flats, villas, offices, retail, restaurants, hotels, showrooms; both the schematic stage and the development stage are in scope. **Architecture, interior and landscape can each be the lead discipline**: a new build is led by architecture, an existing space takes interior only, a standalone courtyard takes landscape only — the lead discipline sets the order of reasoning, and non-lead disciplines do **interface coordination** only (equipment positions, lighting connections, setbacks, interface finishes) |
 | **Applicable · controllable depth** | Ask for "just compare two layouts", or ask for "layouts + 3D + a render task package + construction-depth DXF + material schedules + a presentation deck"; the same single pipeline serves them on demand |
 | **Not applicable (said plainly)** | **Final conclusions** on structural safety, fire, accessibility, MEP loads and local code compliance are **not** this system's conclusions; the system only flags issues and gives a to-be-reviewed list, which a licensed professional must verify and sign off in the project's jurisdiction |
 

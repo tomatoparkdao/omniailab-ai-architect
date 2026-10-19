@@ -1,21 +1,46 @@
-# OmniAiLab AI 建筑与室内设计总设计师
+<h1 align="center">OmniAiLab AI 建筑与室内设计总设计师</h1>
 
-不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。从设计需求、概念创意、空间规划、平面方案，到初步设计、3D 建模、AI 效果图、CAD/BIM 施工深化与专业设计交付，一个 Skill 覆盖 8 大设计阶段、31 项专业能力与 47 种设计风格，并通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
+<p align="center">
+  <b>建筑 / 室内 / 景观全流程 AI 总设计师 Skill，也是一个会推敲、会说不的设计系统</b><br>
+  建筑 · 室内 · 景观三类主导并行支持　｜　一句话需求 → 概念 → 平面 → 施工图深度 DXF　｜　从设计任务书到可交付成果
+</p>
 
-<p>
+<p align="center">
   <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.6.0-1f6feb?style=flat-square" alt="版本 1.6.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
-  <a href="https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd"><img src="https://img.shields.io/badge/%E6%89%8B%E5%86%8C-%E9%A3%9E%E4%B9%A6-db6d28?style=flat-square" alt="操作手册（飞书）"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
-  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_30_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 30 能力">
+  <img src="https://img.shields.io/badge/%E6%B5%81%E7%A8%8B-8_%E9%98%B6%E6%AE%B5_%C3%97_31_%E8%83%BD%E5%8A%9B-0969da?style=flat-square" alt="8 阶段 × 31 能力">
   <img src="https://img.shields.io/badge/%E4%BA%A4%E4%BB%98-%E6%96%B9%E6%A1%88_%7C_%E6%96%BD%E5%B7%A5%E5%9B%BE-1d76db?style=flat-square" alt="交付 方案 | 施工图">
   <img src="https://img.shields.io/badge/%E5%85%BC%E5%AE%B9-Codex_%7C_Claude_%7C_Cursor_%7C_WorkBuddy-6f42c1?style=flat-square" alt="兼容 Codex / Claude / Cursor / WorkBuddy">
 </p>
 
-**简体中文**　｜　[English](README_EN.md)
+<p align="center">
+  <b>简体中文</b>　｜　<a href="README_EN.md">English</a>
+</p>
 
-> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/) ｜ 仓库：[tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect)
+> © OmniAiLab ｜ 开发者：Mochiball ｜ 平台：[omniailabx.com](https://www.omniailabx.com/)
+
+不止于生成效果图，而是让 AI 真正参与建筑与室内设计的全过程。**它不只执行流程——开工第一件事是问清功能、场地与预算**，再按主导专业决定推敲顺序：建筑先定体量与剖面，室内先定空间重组与界面，景观先定分区与游线；然后按阶段推进到可交付的图纸、模型与物料清单，你在每个阶段末尾只需回答"确认"或"要改哪里"。一个 Skill 覆盖 8 大设计阶段、31 项专业能力与 47 种设计风格，并通过 OmniAiLab AI 创作平台与专业 MCP 工具协同，让 AI 从设计建议走向真实的设计执行。
+
+| 项目 | 值 | 说明 |
+|---|---|---|
+| Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
+| 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
+| 版本 | v1.6.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
+| 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
+| 配套操作手册 | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) ／ [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) ／ `docs/MANUAL.md` | 如何调用、三步启动、逐阶段操作细则、能力速查、避坑总表、常见问题、交付物清单 |
+| 仓库 | [tomatoparkdao/omniailab-ai-architect](https://github.com/tomatoparkdao/omniailab-ai-architect) | 全部源码、文档与验收脚本；**当前为私有仓库**，公开后可直接 `git clone` 与提 issue |
+| 运行要求 | Python 3.10+ | 零硬依赖：DXF、网格、PPTX 都有内置写出器 |
+| 原生平台 | [OmniAiLab 中国站](https://www.omniailabx.com/) ／ [海外站](https://omniailab.cn/) | 生成式图像与视频能力来自平台；**未接入时系统照常运行** |
+
+调用名是**全小写连字符**写法（`omniailab-ai-architect`），不是「OmniAiLab AI 建筑与室内设计总设计师」这个显示名。支持 skill 的工具直接用调用名最稳；不支持原生 skill 的工具，用自然语言描述设计任务也能触发。
+
+> **名字里的一个坑**：仓库根目录叫 `omniailab-ai-architect`（含连字符，这是 Skill 名），
+> 里面的 Python 包叫 `omniarchitect`（内部引擎代号，可导入）。**两者不是重复目录**——
+> 根目录是 Skill 载荷（`SKILL.md` / `knowledge/` / `skills/` / `docs/`），包目录是全部可执行代码。
+
 
 ---
 
@@ -27,7 +52,7 @@
 
 | 适用范围 | 具体是什么 |
 |---|---|
-| **适用 · 项目类型不限** | 住宅公寓、大平层、别墅，办公、商业、餐饮、酒店、展厅；方案阶段与深化阶段都在范围内。**建筑与室内为主体**，室外与景观只做**界面协调**（室外设备位置、景观照明接线、退界与界面材质），不出景观方案 |
+| **适用 · 项目类型不限** | 住宅公寓、大平层、别墅，办公、商业、餐饮、酒店、展厅；方案阶段与深化阶段都在范围内。**建筑、室内、景观三类都可以做主专业**：新建项目由建筑统筹、既有空间只做室内、独立庭院只做景观，主导专业决定推敲顺序；不属于主导的专业只做**界面协调**（设备位置、照明接线、退界与接口材质） |
 | **适用 · 深度可控** | 只要"两套平面比一比"，或要"平面 + 三维 + 效果图任务包 + 施工图深度 DXF + 物料清单 + 汇报 PPT"，用同一条管线按需取用 |
 | **不适用（明确说不）** | 结构安全、消防、无障碍、机电负荷与当地法规符合性的**最终结论**不在本系统结论范围内；本系统只标注问题、给出待复核清单，须由持证专业人员在项目所在地复核签署 |
 
