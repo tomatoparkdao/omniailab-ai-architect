@@ -117,6 +117,26 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         return {"count": 0, "files": [], "warnings": concept_set.get("note", ""),
                 "precision": ctx.precision, "profile": ctx.profile_label}
 
+    # 视觉规范：有就应用，没有就按参考目录与客户原话补一份。
+    # 应用必须在画第一张图之前——图元的纸色、墨色、线宽都是从这里读的。
+    from .. import visualref as _vref
+
+    rules = _vref.load(project, project_dir)
+    if rules is None:
+        refs_path = Path(project_dir) / "references" if project_dir else None
+        paths = [refs_path] if refs_path and refs_path.exists() else []
+        client_text = "；".join(x for x in (
+            getattr(ctx, "feeling", "") or "",
+            getattr(ctx, "style_preference", "") or "",
+            getattr(ctx, "summary_text", "") or "",
+        ) if x)
+        rules = _vref.from_refs(
+            project, paths, client_text=client_text, lead=getattr(ctx, "lead_id", ""),
+            style_labels=[s for c in concept_set["concepts"] for s in c.get("style_labels") or []][:3],
+            project_dir=project_dir)
+    _vtheme = dict(rules.get("tokens") or {})
+    dia.apply_theme(_vtheme)
+
     catalog = load_catalog()
     style_docs: Dict[str, Dict[str, Any]] = {}
     policies: Dict[str, Dict[str, Any]] = {}
@@ -236,6 +256,7 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         "presentation": deck_info.get("pptx", {}).get("path", ""),
         "presentation_md": deck_info.get("markdown", ""),
         "g2_summary": str(summary_path),
+        "visual_rules": str(_vref.path_for(project, project_dir)),
         "diagram_dir": str(out / "concept-diagrams"),
         "moodboard_dir": str(out / "moodboards"),
     }

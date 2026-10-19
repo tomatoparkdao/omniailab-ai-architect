@@ -1,7 +1,7 @@
 ---
 name: omniailab-omniailab-integration
 description: OmniAiLab 平台接入 —— OmniAiLab 是 OmniArchitect 的原生平台，但接入是发现式的，不是写死的。
-version: 1.8.0
+version: 1.9.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

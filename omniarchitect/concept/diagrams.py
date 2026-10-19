@@ -37,6 +37,45 @@ C_LIGHT = "#E8A33D"       # 光：橙
 C_RISK = "#C0392B"        # 问题：红
 C_ACCENT = "#3F7D58"      # 亮点：绿
 
+#: 版面线宽系数。`视觉.md` 里写"细线"时这里是 0.9，写"粗线"时 1.5。
+#: 语义色（公共/私密/服务）不随主题变——它们表达内容，不表达风格。
+LINE_W = 1.0
+
+
+def apply_theme(theme: Dict[str, Any] | None) -> Dict[str, Any]:
+    """把项目视觉规范应用到本模块的图元配色与线宽。
+
+    只改**表达**：纸色、墨色、线色、强调色、线宽。分区语义色、风险红、光色不动——
+    那些是信息层，跟着内容走，不跟着客户喜好的排版走。
+
+    返回实际生效的值，便于调用方写进报告（"这张图用了哪套配色"）。
+    """
+    global C_INK, C_MUTED, C_RULE, C_BG, C_ACCENT, LINE_W
+    t = dict(theme or {})
+    if t.get("ink"):
+        C_INK = str(t["ink"])
+    if t.get("muted"):
+        C_MUTED = str(t["muted"])
+    if t.get("line"):
+        C_RULE = str(t["line"])
+    if t.get("paper"):
+        C_BG = str(t["paper"])
+    if t.get("accent"):
+        C_ACCENT = str(t["accent"])
+    if t.get("line_weight"):
+        try:
+            LINE_W = max(0.5, min(2.0, float(t["line_weight"])))
+        except (TypeError, ValueError):
+            LINE_W = 1.0
+    return {"ink": C_INK, "muted": C_MUTED, "line": C_RULE, "paper": C_BG,
+            "accent": C_ACCENT, "line_weight": LINE_W}
+
+
+def reset_theme() -> None:
+    """回到仓库默认配色。测试与"无规范项目"靠它保证不串味。"""
+    apply_theme({"ink": "#1E2328", "muted": "#6B7280", "line": "#D6D9DD",
+                 "paper": "#FBFBFA", "accent": "#3F7D58", "line_weight": 1.0})
+
 
 def _dw(text: str) -> int:
     """Display width in half-width units (CJK counts 2)."""
@@ -63,13 +102,15 @@ class Svg:
     """Minimal deterministic SVG writer. No styling libraries, no canvas."""
 
     def __init__(self, width: int = CANVAS_W, height: int = CANVAS_H,
-                 title: str = "", subtitle: str = "", bg: str = C_BG) -> None:
+                 title: str = "", subtitle: str = "", bg: Optional[str] = None) -> None:
         self.w, self.h = width, height
         self.body: List[str] = []
         self.defs: List[str] = []
         self.title = title
         self.subtitle = subtitle
-        self.bg = bg
+        # 默认值不能写在参数里：那是导入时求值，apply_theme 改了全局也不生效
+        self.bg = C_BG if bg is None else bg
+        self.lw = LINE_W
         self._marker("arrow", C_CIRC)
 
     # -- primitives -----------------------------------------------------
@@ -81,23 +122,26 @@ class Svg:
         )
 
     def rect(self, x: float, y: float, w: float, h: float, *, fill: str = "none",
-             stroke: str = C_RULE, sw: float = 1.0, rx: float = 8.0,
+             stroke: Optional[str] = None, sw: float = 1.0, rx: float = 8.0,
              dash: str = "", opacity: float = 1.0) -> None:
+        stroke = C_RULE if stroke is None else stroke
         d = f' stroke-dasharray="{dash}"' if dash else ""
         self.body.append(
             f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" '
-            f'rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"'
+            f'rx="{rx}" fill="{fill}" stroke="{stroke}" '
+            f'stroke-width="{sw * self.lw:.2f}"'
             f'{d} opacity="{opacity}"/>'
         )
 
     def line(self, x1: float, y1: float, x2: float, y2: float, *,
-             stroke: str = C_RULE, sw: float = 1.2, dash: str = "",
+             stroke: Optional[str] = None, sw: float = 1.2, dash: str = "",
              arrow: bool = False) -> None:
+        stroke = C_RULE if stroke is None else stroke
         d = f' stroke-dasharray="{dash}"' if dash else ""
         m = ' marker-end="url(#arrow)"' if arrow else ""
         self.body.append(
             f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
-            f'stroke="{stroke}" stroke-width="{sw}"{d}{m}/>'
+            f'stroke="{stroke}" stroke-width="{sw * self.lw:.2f}"{d}{m}/>'
         )
 
     def polyline(self, pts: Sequence[Tuple[float, float]], *, stroke: str = C_CIRC,
@@ -109,21 +153,21 @@ class Svg:
         m = ' marker-end="url(#arrow)"' if arrow else ""
         self.body.append(
             f'<polyline points="{path}" fill="none" stroke="{stroke}" '
-            f'stroke-width="{sw}" stroke-linejoin="round"{d}{m}/>'
+            f'stroke-width="{sw * self.lw:.2f}" stroke-linejoin="round"{d}{m}/>'
         )
 
     def path(self, d: str, *, fill: str = "none", stroke: str = C_RULE,
              sw: float = 1.5, opacity: float = 1.0) -> None:
         self.body.append(
-            f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" '
-            f'opacity="{opacity}"/>'
+            f'<path d="{d}" fill="{fill}" stroke="{stroke}" '
+            f'stroke-width="{sw * self.lw:.2f}" opacity="{opacity}"/>'
         )
 
     def circle(self, cx: float, cy: float, r: float, *, fill: str = "none",
                stroke: str = C_RULE, sw: float = 1.2) -> None:
         self.body.append(
             f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" fill="{fill}" '
-            f'stroke="{stroke}" stroke-width="{sw}"/>'
+            f'stroke="{stroke}" stroke-width="{sw * self.lw:.2f}"/>'
         )
 
     def polygon(self, pts: Sequence[Tuple[float, float]], *, fill: str = "none",
@@ -138,7 +182,8 @@ class Svg:
             return
         path = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
         d = f' stroke-dasharray="{dash}"' if dash else ""
-        s = f' stroke="{stroke}" stroke-width="{sw}"' if stroke != "none" else ""
+        s = (f' stroke="{stroke}" stroke-width="{sw * self.lw:.2f}"'
+             if stroke != "none" else "")
         self.body.append(
             f'<polygon points="{path}" fill="{fill}"{s} stroke-linejoin="round"'
             f' opacity="{opacity}"{d}/>'
@@ -148,7 +193,7 @@ class Svg:
                 stroke: str = "none", sw: float = 1.0, opacity: float = 1.0,
                 rotate: float = 0.0) -> None:
         t = f' transform="rotate({rotate:.1f} {cx:.1f} {cy:.1f})"' if rotate else ""
-        s = f' stroke="{stroke}" stroke-width="{sw}"' if stroke != "none" else ""
+        s = f' stroke="{stroke}" stroke-width="{sw * self.lw:.2f}"' if stroke != "none" else ""
         self.body.append(
             f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{rx:.1f}" ry="{ry:.1f}" '
             f'fill="{fill}"{s} opacity="{opacity}"{t}/>'
@@ -172,8 +217,9 @@ class Svg:
         return f"url(#{name})"
 
     def text(self, x: float, y: float, content: str, *, size: int = 14,
-             color: str = C_INK, anchor: str = "start", weight: str = "400",
+             color: Optional[str] = None, anchor: str = "start", weight: str = "400",
              opacity: float = 1.0, mono: bool = False) -> None:
+        color = C_INK if color is None else color
         family = ("ui-monospace, SFMono-Regular, Menlo, monospace" if mono else
                   "'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif")
         self.body.append(
@@ -183,7 +229,7 @@ class Svg:
         )
 
     def label(self, x: float, y: float, w: float, h: float, lines: Sequence[str],
-              *, size: int = 13, color: str = C_INK, weight: str = "400",
+              *, size: int = 13, color: Optional[str] = None, weight: str = "400",
               padding: float = 6.0) -> None:
         """Centre a short block of text; trims rather than overflowing."""
         budget = max(4, int((w - 2 * padding) / (size * 0.52)))
@@ -1525,5 +1571,6 @@ def build(concept: Dict[str, Any], ctx: Any,
 
 
 __all__ = ["Svg", "DIAGRAM_KINDS", "build", "groups_for",
+           "apply_theme", "reset_theme", "LINE_W",
            "functional_relations", "zoning", "circulation", "daylight",
            "sequence", "massing", "section", "landscape", "axon", "Group"]

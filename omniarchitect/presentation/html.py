@@ -55,7 +55,7 @@ FIGURE_ORDER: Dict[str, Tuple[str, ...]] = {
 #: 每个专业取图时的检索词（素材库标签里真的有的词）
 LEAD_WORDS: Dict[str, Tuple[str, ...]] = {
     "architecture": ("别墅", "现代建筑", "庭院", "住宅", "泳池"),
-    "interior": ("客厅", "公寓", "卧室", "餐厅", "室内设计"),
+    "interior": ("客厅", "卧室", "公寓", "室内设计", "极简"),
     "landscape": ("花园", "庭院", "景观草坪", "户外花园", "树木"),
 }
 
@@ -109,7 +109,7 @@ a:hover{text-decoration:underline}
 .dot.own{background:var(--warm)}.dot.final{background:#191C19}
 
 /* ---------- 段落系统 ---------- */
-.sec{padding:52px 0 10px}
+.sec{padding:var(--sec-pad,52px) 0 10px}
 .sec-label{font-size:11px;letter-spacing:.24em;color:var(--brand);
   text-transform:uppercase;margin:0 0 10px}
 .sec-title{font-family:var(--serif);font-size:clamp(24px,2.4vw,32px);font-weight:600;
@@ -130,7 +130,8 @@ a:hover{text-decoration:underline}
 .jump p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.7}
 
 /* ---------- 方案 ---------- */
-.concept{padding:88px 0 40px;border-top:1px solid var(--line);margin-top:64px}
+.concept{padding:var(--sec-pad-lg,88px) 0 40px;border-top:1px solid var(--line);
+  margin-top:var(--sec-gap,64px)}
 .c-head{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;
   align-items:start;margin-bottom:30px}
 .c-no{font-size:12px;letter-spacing:.22em;color:var(--brand);margin-bottom:14px}
@@ -147,8 +148,8 @@ a:hover{text-decoration:underline}
 
 /* ---------- 图 ---------- */
 .hero{margin:0 0 10px}
-.hero img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;
-  background:var(--paper-2)}
+.hero img{display:block;width:100%;aspect-ratio:var(--hero-ar,16/9);
+  object-fit:cover;background:var(--paper-2)}
 .hero.tall img{aspect-ratio:4/3}
 .cap{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
   border-top:1px solid var(--line);margin-top:10px;padding-top:9px;
@@ -260,6 +261,83 @@ footer b{color:var(--ink)}
   a{color:#000}
 }
 """
+
+
+# --------------------------------------------------------------------------
+# 视觉规范：只覆盖色值与字族，不改版式结构
+# --------------------------------------------------------------------------
+def _hex_rgb(h: str) -> Tuple[int, int, int]:
+    h = str(h or "").lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    try:
+        return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    except ValueError:
+        return 128, 128, 128
+
+
+def _mix(a: str, b: str, t: float) -> str:
+    ar, ag, ab = _hex_rgb(a)
+    br, bg, bb = _hex_rgb(b)
+    t = max(0.0, min(1.0, t))
+    return "#{:02X}{:02X}{:02X}".format(
+        int(round(ar + (br - ar) * t)),
+        int(round(ag + (bg - ag) * t)),
+        int(round(ab + (bb - ab) * t)))
+
+
+def read_theme(project_dir: Optional[Path]) -> Dict[str, Any]:
+    """从 `<project>/视觉.md` 的机读块取主题。读不到就返回空——版面回退默认。"""
+    if not project_dir:
+        return {}
+    p = Path(project_dir) / "视觉.md"
+    if not p.exists():
+        return {}
+    try:
+        from ..visualref import brief as vbrief
+
+        data = vbrief.load(type("P", (), {"project_id": "", "name": ""})(), project_dir)
+    except Exception:                              # noqa: BLE001
+        return {}
+    return dict((data or {}).get("tokens") or {})
+
+
+def theme_css(t: Dict[str, Any]) -> str:
+    """把配色压成 CSS 变量覆盖。**只改颜色与字族，不动栅格与间距。**
+
+    版式结构由内容决定（图该多大、几栏），不该因为客户喜欢另一个色系就重排——
+    那是把"配色偏好"误当成"信息架构偏好"。
+    """
+    if not t:
+        return ""
+    paper = str(t.get("paper") or "#FAF8F3")
+    ink = str(t.get("ink") or "#1A1D1A")
+    muted = str(t.get("muted") or _mix(ink, paper, 0.45))
+    line = str(t.get("line") or _mix(ink, paper, 0.86))
+    accent = str(t.get("accent") or "#2F5D45")
+    serif = ("var(--sans)" if t.get("serif_titles") is False
+             else "'Songti SC','Noto Serif SC','Source Han Serif SC',Georgia,serif")
+    # 留白与主图比例也是规则：写了不用，规范就成了摆设。
+    try:
+        ws = float(t.get("whitespace") or 0.40)
+    except (TypeError, ValueError):
+        ws = 0.40
+    ws = max(0.28, min(0.62, ws))
+    sec_pad = int(round(40 + ws * 90))          # 0.40 → 76px，0.52 → 87px
+    ratio = str(t.get("image_ratio") or "16:9").replace(":", "/")
+    if not re.match(r"^\d{1,2}/\d{1,2}$", ratio):
+        ratio = "16/9"
+    return f"""
+:root{{
+  --paper:{paper}; --paper-2:{_mix(paper, ink, 0.06)};
+  --ink:{ink}; --body:{_mix(ink, paper, 0.16)};
+  --muted:{muted}; --line:{line}; --line-soft:{_mix(line, paper, 0.5)};
+  --brand:{accent}; --brand-soft:{_mix(accent, paper, 0.88)};
+  --serif:{serif};
+  --sec-pad:{max(36, sec_pad - 24)}px; --sec-pad-lg:{sec_pad}px;
+  --sec-gap:{max(40, sec_pad - 20)}px;
+  --hero-ar:{ratio};
+}}"""
 
 
 # --------------------------------------------------------------------------
@@ -731,7 +809,11 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
         used: List[str] = []
         # 庭院方案的封面要"地"不要"房"：带别墅/公寓标签的条目直接排除。
         avoid = (("别墅", "公寓", "室内", "卧室", "客厅", "酒吧", "餐厅", "办公")
-                 if lead == "landscape" else ())
+                 if lead == "landscape"
+                 # 住宅室内不用咖啡店/酒吧/酒店：画面里常有招牌与品牌字，
+                 # 而且商空的比例与光环境跟住宅不是一回事。
+                 else ("咖啡馆", "咖啡店", "酒吧", "餐厅设计", "酒店设计", "大堂")
+                 if lead == "interior" else ())
         require = (("花园", "庭院", "树木", "景观草坪", "户外花园", "喷泉景观")
                    if lead == "landscape" else ())
         try:
@@ -752,6 +834,9 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
         except Exception:
             cover_imgs, per_concept = [], {}
     cover = cover_imgs[0] if cover_imgs else None
+
+    theme = read_theme(pdir) or dict(payload.get("_visual") or {})
+    extra_css = theme_css(theme)
 
     # 统计只数真实存在的东西，不写"预计"
     n_figs = sum(len(_diagram_files(c)) for c in concepts)
@@ -800,7 +885,7 @@ def proposal(payload: Dict[str, Any], out_dir: str | Path, *,
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_h(name)} · 概念方案</title>
-<style>{CSS}</style></head>
+<style>{CSS}{extra_css}</style></head>
 <body>
 <header class="cover"{cover_style}>
   {cover_img_html}

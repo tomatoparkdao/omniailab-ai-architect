@@ -3,7 +3,7 @@ name: omniailab-material-schedule
 description: 材料与物料表 —— 把选定的材料体系翻译成可采购的物料表：规格、用量、损耗与替代，数量与单价分开列
 capability: material-schedule
 stages: [S8]
-version: 1.8.0
+version: 1.9.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

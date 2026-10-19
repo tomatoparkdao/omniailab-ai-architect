@@ -42,6 +42,7 @@ SLOTS: Dict[str, Dict[str, object]] = {
     "structure": {"weight": 2, "critical": False, "label": "结构与机电信息"},
     "style": {"weight": 1, "critical": False, "label": "审美与风格倾向"},
     "feeling": {"weight": 2, "critical": False, "label": "想要的空间感受"},
+    "visual_refs": {"weight": 1, "critical": False, "label": "视觉参考与排版偏好"},
     "deliverable_depth": {"weight": 1, "critical": False, "label": "交付深度"},
 }
 
@@ -223,9 +224,19 @@ _Q_DEPTH = Question(
     why="交付深度决定工作量与责任边界，也决定哪些成果必须有人签字。",
 )
 
+#: 视觉参考：不阻断流程，但没有它，S2 只能按风格库推荐（这是可接受的降级）。
+_Q_VISUAL = Question(
+    id="base.visual_refs", slot="visual_refs", priority="deferrable", affects="S2",
+    text=("有没有您喜欢的设计案例、作品集、排版样本或参考文档？"
+          "图片、PDF、PPT、Markdown 或链接都可以发给我。"),
+    why="参考文件决定'图长什么样'：配色、留白、图幅、字族都从它提取。"
+        "没有也能继续——会先按风格库给方向，您看到后再改。",
+    examples=("喜欢瑞士那类大留白作品集", "参考图在附件里，三张客厅"),
+)
+
 BASE_QUESTIONS: Tuple[Question, ...] = (
     _Q_TYPE, _Q_LOCATION, _Q_AREA, _Q_NEEDS, _Q_BUDGET, _Q_SCHEDULE,
-    _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_FEELING, _Q_DEPTH,
+    _Q_DRAWINGS, _Q_SITE, _Q_STRUCTURE, _Q_STYLE, _Q_FEELING, _Q_VISUAL, _Q_DEPTH,
 )
 
 

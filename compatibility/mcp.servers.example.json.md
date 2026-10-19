@@ -1,7 +1,7 @@
 ---
 name: omniailab-compatibility-mcp-servers-example-json
 description: MCP 服务器声明示例 —— 本文件是示例，不会被自动加载。真实配置请放到项目根目录的 mcp.json。
-version: 1.8.0
+version: 1.9.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-adapters-specs-blender
 description: BLENDER adapter —— Purpose: Scene building, camera, materials, rendered frames.
-version: 1.8.0
+version: 1.9.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

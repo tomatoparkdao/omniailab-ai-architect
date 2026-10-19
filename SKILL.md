@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.8.0
+version: 1.9.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

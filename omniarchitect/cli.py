@@ -537,6 +537,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     _add_intake(sub)
 
+    from .visualref.cli import add_parser as _add_visual
+
+    _add_visual(sub)
+
     sp = sub.add_parser("stages", help="打印八阶段模型")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_stages)
