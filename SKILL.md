@@ -105,7 +105,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | **平面/立面怎么变成业主看得懂的图与板** | **`docs/VISUAL_RECIPES.md`** · `knowledge/ai-concept-visualization.md` | 平面图上色、3D 立轴、剖面、展示板、概念板、材质情绪板；图纸派生需 G3，文字不让模型写；概念效果图见后一文件 |
 | **设计风格**（47 种风格知识库 / 推荐 / 配色材料灯光 / 提示词） | `knowledge/styles/catalog.json` 索引 + `docs/DESIGN_STYLES.md` | **先查索引，再按需加载单条风格**，不要一次全读 |
 | 汇报与提案方法 ／ 署名规范与内容自检 | `knowledge/design-presentation-methodology.md` · `LICENSE` · `docs/CONTENT_AUDIT.md` | 出 PPTX 前读前者；分发前必读后两者 |
-| **需要建筑师专业知识**（概念与体量／功能与空间／中外规范与防火疏散／构造围护节能／结构与机电／施工图审查） | **外部 [Registered Architect](https://github.com/tomatoparkdao/registered-architect)**（主入口 `/blob/main/SKILL.md`；Raw `https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md`） | **按需读 main 最新，不锁 SHA、不下载**：先查本 Skill 已有能力 → 仍缺才读 Raw `SKILL.md` → 只读相关子 Skill（在华项目先读它的 `country-china` 子技能），不扫整仓；**禁止** clone／submodule／批量缓存／复制入库／定时同步；没联网只留链接并说明「未读取远程」；规范以当地现行规定为准，不替代注册人员签署；纯软装排版不必访问 |
+| **需要建筑师专业知识**（概念与体量／功能与空间／各国规范与防火疏散／构造围护节能／结构与机电／施工图审查） | **外部 [Registered Architect](https://github.com/tomatoparkdao/registered-architect)**（主入口 `/blob/main/SKILL.md`；Raw `https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md`） | **按需读 main 最新，不锁 SHA、不下载**：先查本仓已有能力 → 仍缺才读 Raw `SKILL.md` → 只读相关子 Skill（按项目所在国选 `country-*` 共 10 国：中英美德日印新澳＋海湾，多国分别处理），不扫整仓；**禁止** clone／submodule／批量缓存／复制入库／定时同步；没联网只留链接并说明「未读取远程」；规范以当地规定为准，不替代注册人员签署；纯软装排版不必访问 |
 
 ### 4a. 不会做就查手册（硬性提醒）
 **操作手册 `docs/MANUAL.md` 是本 Skill 的一部分，不是外部文档**：仓库内 `docs/MANUAL.md`（离线可用）·

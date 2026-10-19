@@ -43,8 +43,10 @@ REFERENCE_LIBRARY_URL = (
 DIRECTOR_SKILL_URL = "https://github.com/tomatoparkdao/omniailab-ai-director"
 
 # 注册建筑师 Skill（自有仓库，**外部知识参考**，不随本仓分发）。
-# 本系统仍是唯一的总设计师与主 Skill；只有在需要建筑师层面的知识（中外规范、
+# 本系统仍是唯一的总设计师与主 Skill；只有在需要建筑师层面的知识（各国规范、
 # 防火疏散、构造围护、施工图审查）时才按需读取，读 main 最新、不锁 SHA。
+# 它按项目所在国家路由到 `country-*` 模块（中/美/英/德/日/印/新/澳/阿联酋/沙特），
+# 不同司法辖区要分别处理，不能把一国的限值套到另一国。
 # 禁止 clone / submodule / 下载缓存 / 复制进本仓，见 SKILL.md §4 的同名表格行。
 ARCHITECT_SKILL_URL = "https://github.com/tomatoparkdao/registered-architect"
 ARCHITECT_SKILL_RAW_URL = (

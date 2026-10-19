@@ -744,6 +744,8 @@ def test_external_architect_skill_is_linked_never_vendored():
     row = next((ln for ln in text.splitlines() if ARCHITECT_SKILL_RAW_URL in ln), "")
     for rule in ("不下载", "禁止", "clone", "未读取远程"):
         assert rule in row, f"按需调用规则缺少「{rule}」：{row[:60]}"
+    # 它覆盖 10 个国家/地区模块，不是只服务中国项目：路由必须按项目所在国走
+    assert "country-*" in row and "10 国" in row, f"缺分国路由说明：{row[:60]}"
 
     assert not (ROOT / ".gitmodules").exists(), "不得以 submodule 方式挂载外部 Skill"
     for p in ROOT.rglob("registered-architect*"):
