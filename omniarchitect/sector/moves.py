@@ -38,6 +38,10 @@ class Move:
     diagram: str = "zoning"
     #: S3 用：房间带顺序（从入口到后场）。空表示由程序按 zone 推。
     bands: Tuple[str, ...] = ()
+    #: S3 用：这套方向对应的**平面组织方式**（`sector.parti.PROFILES` 的键）。
+    #: 空 = 本方向没有可执行的平面组织方式，S3 不得声称已落实，只能探索。
+    #: 写在这里而不是让 S3 猜：概念说"洁污双廊"，平面就得真的排出两条走廊。
+    plan_layout: str = ""
     uses: Tuple[str, ...] = ()       # 用到的输入键
     answers: Tuple[str, ...] = ()    # 回应哪几条矛盾（前缀匹配即可）
 
@@ -51,6 +55,7 @@ class Move:
             "technical": list(self.technical), "costs": list(self.costs),
             "risks": list(self.risks), "family": self.family,
             "diagram": self.diagram, "bands": list(self.bands),
+            "plan_layout": self.plan_layout,
             "uses": list(self.uses), "answers": list(self.answers),
         }
 
@@ -106,6 +111,7 @@ def _education(b: SectorBrief) -> List[Move]:
         risks=("组团式对场地宽度有要求：地块进深不足 60 m 时组团会被压成一条",),
         family="cluster", diagram="zoning",
         bands=("teaching", "special", "office", "service"),
+        plan_layout="cluster_atrium",
         uses=("classes", "students", "teaching_m2"),
         answers=("容积率", "建筑密度"),
     ))
@@ -131,6 +137,7 @@ def _education(b: SectorBrief) -> List[Move]:
         risks=("最远教室到厕所超过 60 m 时，课间使用会很紧张",),
         family="linear", diagram="zoning",
         bands=("teaching", "special", "office", "service"),
+        plan_layout="linear_corridor",
         uses=("classes", "teaching_m2"),
         answers=("容积率",),
     ))
@@ -154,6 +161,7 @@ def _education(b: SectorBrief) -> List[Move]:
         risks=("社区化运营会带来停车与噪声压力，须先有运营方案",),
         family="courtyard", diagram="zoning",
         bands=("public", "teaching", "special", "office", "service"),
+        plan_layout="public_front",
         uses=("classes", "gym_m2"),
         answers=("建筑密度",),
     ))
@@ -202,6 +210,7 @@ def _healthcare(b: SectorBrief) -> List[Move]:
                    "洁污分流需两端各留一部污物梯，否则只能靠管理弥补"),
             family="radial", diagram="zoning",
             bands=("public", "outpatient", "tech", "ward"),
+            plan_layout="tech_core",
             uses=("beds", "outpatient", "tech_m2"),
             answers=("洁污", "门诊"),
         ),
@@ -228,6 +237,7 @@ def _healthcare(b: SectorBrief) -> List[Move]:
             risks=("双廊对进深要求高：进深不足 30 m 时两条走廊会挤掉房间",),
             family="grid", diagram="functional",
             bands=("outpatient", "tech", "ward", "service"),
+            plan_layout="dual_corridor",
             uses=("beds", "outpatient"),
             answers=("洁污",),
         ),
@@ -251,6 +261,7 @@ def _healthcare(b: SectorBrief) -> List[Move]:
             risks=("街太长会出现「找不到科室」，需要靠分段命名与色彩导视",),
             family="linear", diagram="circulation",
             bands=("public", "outpatient", "tech", "service"),
+            plan_layout="medical_street",
             uses=("outpatient", "opd_units"),
             answers=("门诊",),
         ),
@@ -291,6 +302,7 @@ def _industrial(b: SectorBrief) -> List[Move]:
             risks=("用地紧张时单层会把绿地与停车挤掉，须先算总图指标",),
             family="linear", diagram="zoning",
             bands=("production", "warehouse", "office", "service"),
+            plan_layout="process_line",
             uses=("area", "bay", "docks"),
             answers=("单层", "工艺"),
         ),
@@ -315,6 +327,7 @@ def _industrial(b: SectorBrief) -> List[Move]:
             risks=("货梯一旦故障，二层产能归零：须评估工艺是否允许停机",),
             family="grid", diagram="massing",
             bands=("warehouse", "production", "office", "service"),
+            plan_layout="stacked_module",
             uses=("area", "bay"),
             answers=("单层",),
         ),
@@ -337,6 +350,7 @@ def _industrial(b: SectorBrief) -> List[Move]:
             risks=("地块过窄时环道做不出来，只能做尽端式回车场",),
             family="courtyard", diagram="circulation",
             bands=("office", "production", "warehouse", "service"),
+            plan_layout="front_yard",
             uses=("annex_m2", "docks"),
             answers=("物流",),
         ),
@@ -378,6 +392,7 @@ def _hospitality(b: SectorBrief) -> List[Move]:
             risks=("既有建筑柱网若小于 8 m，客房开间会被结构定死，房型数量难调",),
             family="linear", diagram="zoning",
             bands=("guest", "public", "boh"),
+            plan_layout="guest_wing",
             uses=("keys", "guest_m2"),
             answers=("后场",),
         ),
@@ -402,6 +417,7 @@ def _hospitality(b: SectorBrief) -> List[Move]:
             risks=("公共核与客房层共用电梯时，宴会散场会挤占住客电梯",),
             family="cluster", diagram="functional",
             bands=("public", "boh", "guest"),
+            plan_layout="public_core",
             uses=("keys", "public_m2", "boh_m2"),
             answers=("后场",),
         ),
@@ -424,6 +440,7 @@ def _hospitality(b: SectorBrief) -> List[Move]:
             risks=("既有管井位置固定，卫生间一味追求统一会导致排水坡度过长",),
             family="grid", diagram="zoning",
             bands=("guest", "public", "boh"),
+            plan_layout="guest_wing",
             uses=("keys",),
             answers=("后场",),
         ),
@@ -461,6 +478,7 @@ def _landscape(b: SectorBrief) -> List[Move]:
             risks=("有儿童时水深须控制在 300 mm 以内或做护栏",),
             family="courtyard", diagram="landscape",
             bands=("water", "planting", "paving"),
+            plan_layout="water_loop",
             uses=("site_area", "water_m2"),
             answers=("水面",),
         ),
@@ -483,6 +501,7 @@ def _landscape(b: SectorBrief) -> List[Move]:
             risks=("旱溪做得浅会积水发臭，纵坡必须算",),
             family="layered", diagram="landscape",
             bands=("planting", "paving", "water"),
+            plan_layout="terrace",
             uses=("green_m2", "site_area"),
             answers=("水面", "维护"),
         ),
@@ -505,6 +524,7 @@ def _landscape(b: SectorBrief) -> List[Move]:
             risks=("种植过密会影响一层采光与通风",),
             family="cluster", diagram="landscape",
             bands=("planting", "paving"),
+            plan_layout="grove_edge",
             uses=("site_area", "green_m2"),
             answers=("私密",),
         ),

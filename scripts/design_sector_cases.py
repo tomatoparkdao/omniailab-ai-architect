@@ -1,7 +1,10 @@
-"""四个行业案例：S1 → S2 → S3 真实跑通，产出图纸、数据与客户提案。
+"""五个行业案例：S1 → S2 → S3 真实跑通，产出图纸、数据与客户提案。
 
 不是分类演示：每个案例都走真实入口（`StageRunner`、`concept.generate_bundle`、
-`G1/G2/G3` 门禁），数字来自业主原话，图纸来自 S3 的排布结果。
+`G1/G2/G3` 门禁），数字来自业主原话，图纸来自 S3 按 S2 选定概念排布的结果。
+
+外加一个对照案例 `school_surveyed`：同一所小学，几何来源换成实测边界，
+用来证明 G3 的"仅可探索"与"正式可确认"两种状态都能真的跑出来。
 
 产物（`out/sector-round/<case>/`）：
     design-brief.md        S1 任务书
@@ -17,6 +20,7 @@
 用法：
     python scripts/design_sector_cases.py            # 全部
     python scripts/design_sector_cases.py school     # 单个
+    python scripts/design_sector_cases.py school_surveyed   # 实测边界对照
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
@@ -107,10 +111,26 @@ CASES = {
     },
 }
 
+# 实测边界版：同一所小学，几何来源换成业主提供的实测边界。
+# 存在的意义是让"仅可探索"与"正式可确认"两种 G3 状态都能被真的跑出来，
+# 而不是靠改测试预期说门禁变严了。
+CASES["school_surveyed"] = dict(
+    CASES["school"],
+    name="新建 24 班小学（实测边界）",
+    geometry={"width_mm": 96_000, "depth_mm": 72_000,
+              "source": "survey_2026", "note": "业主提供的实测边界（含坐标点）"},
+)
+
 
 def _latest_run(case_dir: Path) -> Path:
     runs = [d for d in case_dir.glob("run-*") if d.is_dir()]
     return max(runs, key=lambda d: d.stat().st_mtime) if runs else case_dir
+
+
+def _basis_of(p: Project) -> str:
+    from omniarchitect.sector import layout as lay
+
+    return str(lay.geometry_basis(p).get("label") or "")
 
 
 def _shot(svg_path: Path, png_path: Path, width: int = 1280) -> bool:
@@ -140,6 +160,36 @@ def _shot(svg_path: Path, png_path: Path, width: int = 1280) -> bool:
         return False
 
 
+def _install_actual_boundary(p: Project, g: dict) -> None:
+    """把实测边界装进模型。
+
+    只写来源与精度都明确的 envelope：`source` 不含 survey/实测 时
+    `layout.geometry_basis` 就不会判成"实测"，所以这里不能含糊。
+    """
+    from omniarchitect.model import Element, Level, Space
+
+    W, H = float(g["width_mm"]), float(g["depth_mm"])
+    if not p.levels:
+        p.levels = [Level(id="L1", name="一层", elevation_mm=0.0, height_mm=3900.0)]
+    level = p.levels[0]
+    p.spaces.append(Space(
+        id="S-ENV", level_id=level.id, name="实测边界", use="envelope",
+        boundary_mm2d=[[0.0, 0.0], [W, 0.0], [W, H], [0.0, H]],
+        source=str(g["source"]), confidence=1.0,
+        properties={"precision": "authoritative", "note": g.get("note", ""),
+                    "requires_door": False},
+    ))
+    for i, (a, b) in enumerate([((0, 0), (W, 0)), ((W, 0), (W, H)),
+                                ((W, H), (0, H)), ((0, H), (0, 0))], 1):
+        p.elements.append(Element(
+            id=f"W-EXT-{i:03d}", type="wall", level_id=level.id,
+            geometry={"start": [a[0], a[1]], "end": [b[0], b[1]],
+                      "thickness_mm": 240.0, "height_mm": level.height_mm,
+                      "kind": "exterior"},
+            source=str(g["source"]), confidence=1.0,
+        ))
+
+
 def run_case(key: str, cfg: dict) -> dict:
     out = OUT / key
     out.mkdir(parents=True, exist_ok=True)
@@ -164,6 +214,10 @@ def run_case(key: str, cfg: dict) -> dict:
         concept_gate.select(p, str(concepts[0]["concept_id"]))
         g2 = runner.approve("S2", by="业主", note="选定第一套方向")
 
+    # 有些项目在 S1 就拿到了实测边界：先装几何，S3 才可能给出"正式可确认"
+    if cfg.get("geometry"):
+        _install_actual_boundary(p, cfg["geometry"])
+
     s3 = runner.stage_S3()
 
     # 平面图与总平面
@@ -174,7 +228,9 @@ def run_case(key: str, cfg: dict) -> dict:
         for v, sch in schemes.items():
             svg = out / f"plan-{v}.svg"
             svg.write_text(plandraw.plan_svg(
-                sch, title=f"{cfg['name']} · 方案{v}", base_walls=walls), encoding="utf-8")
+                sch, title=f"{cfg['name']} · 方案{v}", base_walls=walls,
+                unit=str((p.meta.get("sector_program") or {}).get("unit") or "")),
+                encoding="utf-8")
             png = out / f"plan-{v}.png"
             if _shot(svg, png):
                 pngs.append(str(png))
@@ -216,8 +272,13 @@ def run_case(key: str, cfg: dict) -> dict:
         "s3_error": getattr(s3, "error", "") or "",
         "s3_notes": list(getattr(s3, "notes", []) or []),
         "g3": g3.get("status"),
+        "g3_formal": bool(g3.get("formal")),
+        "g3_state": assess.get("state"),
+        "g3_state_label": assess.get("state_label"),
         "g3_blockers": [b["id"] for b in assess.get("blockers") or []],
+        "g3_critical": [c["id"] for c in assess.get("critical") or []],
         "g3_conditions": [c["id"] for c in assess.get("conditions") or []],
+        "geometry_basis": _basis_of(p),
         "codes": (payload.get("taxonomy") or {}).get("codes"),
         "concepts": [{"id": c.get("concept_id"), "name": c.get("concept_name")}
                      for c in concepts],
@@ -237,13 +298,15 @@ def main() -> int:
         results.append(r)
         print(f"    S1 {r['s1']} / G1 {r['g1']} 　S2 {r['s2']} / G2 {r['g2']} 　"
               f"S3 {r['s3']} / G3 {r['g3']}", flush=True)
-        print(f"    类型 {r['codes']}　平面 {len(r['pngs'])} 张图", flush=True)
+        print(f"    类型 {r['codes']}　平面 {len(r['pngs'])} 张图　"
+              f"几何依据：{r['geometry_basis']}", flush=True)
         if r["s3_error"]:
             print(f"    S3 说明：{r['s3_error']}", flush=True)
         for n in r["s3_notes"][:3]:
             print(f"    - {n}", flush=True)
-        print(f"    G3 blockers {r['g3_blockers']} / conditions {r['g3_conditions']}",
-              flush=True)
+        print(f"    G3 状态：{r['g3_state_label']}（formal={r['g3_formal']}）", flush=True)
+        print(f"    G3 blockers {r['g3_blockers']} / critical {r['g3_critical']} "
+              f"/ conditions {r['g3_conditions']}", flush=True)
     (OUT / "summary.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n产物：{OUT}", flush=True)

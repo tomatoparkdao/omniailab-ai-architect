@@ -118,10 +118,13 @@ def education(b: SectorBrief, *, per_floor_classes: int = 0) -> SectorProgram:
     total = b.get("building_m2")
     footprint = total / max(1.0, math.ceil(classes / per) if classes else 1)
     side = math.sqrt(max(footprint, 100.0) / 1.6)
+    floors = b.get("floors") or _floors(b)
     p.blocks = [
-        {"key": "teach", "name": "教学楼", "area_m2": footprint,
+        # 面积写总建筑面积，楼层单列：总图的容积率要的是总量，不是底层投影
+        {"key": "teach", "name": "教学楼", "area_m2": footprint * floors,
+         "floors": floors,
          "w": round(side * 1.6, 1), "d": round(side, 1), "kind": "building",
-         "note": f"{math.ceil(classes / per) if classes else 1} 层 × {footprint:,.0f} m²"},
+         "note": f"{floors:.0f} 层 × {footprint:,.0f} m²"},
     ]
     if b.get("canteen_m2"):
         p.blocks.append({"key": "canteen", "name": "学生食堂", "area_m2": b.get("canteen_m2"),
@@ -147,16 +150,24 @@ def _floors(b: SectorBrief) -> float:
 def healthcare(b: SectorBrief) -> SectorProgram:
     op = b.get("outpatient")
     units = b.get("opd_units") or max(4.0, round(op / 400.0))
-    rooms_per_unit = 2
+    # 诊室数按"日门诊 ÷ 每诊室 40 人次"推：8 间诊室撑不起 1200 人次，
+    # 那样排出来的平面会在诊室带尽头空出一大片，等于没做功能。
+    # 但一层放不下全部诊室：本层按两条诊室带能排下的数量出图，其余交给相邻楼层。
+    n_need = int(max(4, min(40, b.get("clinics") or round(op / 40.0))))
+    n = min(n_need, 16)
     rows: List[ProgramRow] = []
-    n = int(max(4, min(12, units * rooms_per_unit)))
     for i in range(n):
         rows.append(_row(f"O{i + 1:02d}", f"诊室 {i + 1}", 18.0, "outpatient",
                          "clinic", 20, "18 m²/间（一人一诊室）", band="front"))
-    # 候诊单独一条带：和诊室挤在一条带里，会把诊室压成 2 m 宽的窄条
-    # （候诊进深 8 m，诊室只有 18 m²，宽度就按 8 m 进深反算了）。
-    rows.append(_row("WT1", "候诊区", max(60.0, op * 0.35), "public", "waiting", 30,
-                     "0.35 m²/人次 × 日门诊量", band="public"))
+    # 候诊按门诊单元分设：一处大候诊会让患者穿过整层去找自己的科室，
+    # 也会在诊室带尽头留出一大块用不上的面积。
+    n_wait = int(max(2, min(6, units)))
+    for i in range(n_wait):
+        rows.append(_row(f"WT{i + 1:02d}", f"候诊 {i + 1}", round(max(40.0, op * 0.35 / n_wait), 1),
+                         "public", "waiting", 30,
+                         f"0.35 m²/人次 ÷ {n_wait} 个门诊单元", band="public"))
+    rows.append(_row("LB1", "门诊大厅", max(80.0, op * 0.12), "public", "hall", 25,
+                     "入口集散、导医与收费", band="public"))
     rows.append(_row("TX1", "检验", 120.0, "tech", "lab", 40, "按医技 27% 中的检验部分",
                      band="back"))
     rows.append(_row("TX2", "影像（CT/DR）", 150.0, "tech", "lab", 40, "含屏蔽与设备荷载",
@@ -172,7 +183,9 @@ def healthcare(b: SectorBrief) -> SectorProgram:
                      band="back"))
     p = SectorProgram(
         rows=rows, unit="门诊医技层",
-        note=(f"按日门诊 {op:,.0f} 人排 {n} 间诊室；手术部与 ICU 不在本层——"
+        note=(f"按日门诊 {op:,.0f} 人约需 {n_need} 间诊室，本层排 {n} 间，"
+              f"其余 {max(0, n_need - n)} 间在相邻楼层（共用同一组竖向交通）；"
+              f"手术部与 ICU 不在本层——"
               f"{b.get('ors', 0):.0f} 间手术室、{b.get('icu_beds', 0):.0f} 床 ICU 须独立成区，"
               "由医疗工艺顾问确认后另行展开。"),
         corridor_width_mm=2400.0,
@@ -262,10 +275,15 @@ def hospitality(b: SectorBrief, *, keys_per_floor: int = 0) -> SectorProgram:
                          band=band))
     rows.append(_row("PB1", "电梯厅", 36.0, "public", "waiting", 30, "2 客梯 + 1 服务梯",
                      band="back"))
-    rows.append(_row("PB2", "服务间与布草", 18.0, "boh", "storage", 40, "走廊尽端，贴服务梯",
-                     band="back"))
-    rows.append(_row("PB3", "备品与清洁", 8.0, "boh", "storage", 45, "与布草合并",
-                     band="back"))
+    # 后场按"每间客房约 2.6 m²"折：16 间/层 → 约 42 m²，够布草周转、备品与清洁。
+    # 写死 26 m² 的话，一层 19 间房只有一只储物柜那么大的后场，图上也撑不起一块。
+    boh_total = max(24.0, per * 2.6)
+    rows.append(_row("PB2", "服务间与布草", round(boh_total * 0.55, 1), "boh", "storage",
+                     40, f"{per} 间/层 × 2.6 m² × 55%（布草周转）", band="back"))
+    rows.append(_row("PB3", "备品与清洁", round(boh_total * 0.28, 1), "boh", "storage",
+                     45, "与布草合并，贴服务梯", band="back"))
+    rows.append(_row("PB4", "员工卫生间", round(boh_total * 0.17, 1), "boh", "bathroom",
+                     48, "后场内，不对客人开放", band="back"))
     p = SectorProgram(
         rows=rows, unit="客房标准层",
         note=(f"每层 {per} 间；全店 {keys:.0f} 间约需 {math.ceil(keys / per) if keys else 1} 层。"

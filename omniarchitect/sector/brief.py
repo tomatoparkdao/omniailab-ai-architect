@@ -103,6 +103,24 @@ HOTEL_WORDS = ("大堂", "宴会", "会议", "SPA", "泳池", "行政酒廊", "�
                "中餐厅", "后勤", "布草")
 
 
+#: 参数来源四分档。所有推算都要能落进其中一档，不能把经验值写成"规范强制"。
+PROVENANCE = {
+    "client": "客户明确数据",
+    "reference": "有来源的专业参考值",
+    "assumption": "系统暂定探索假设",
+    "consultant": "须专业顾问确认",
+}
+
+#: 输入键 → 中文名（报告与参数台账共用一份，避免两处各写一套）
+INPUT_LABEL = {
+    "classes": "班数", "students": "学生人数", "per_class": "每班人数",
+    "beds": "床位数", "outpatient": "日门诊量", "keys": "客房数",
+    "area": "建筑面积", "site_area": "用地面积", "floors": "层数",
+    "grid": "柱网", "seats": "座位数", "shifts": "供餐批次",
+    "rooms": "房间 / 包间数",
+}
+
+
 @dataclass
 class SectorBrief:
     """一个项目的行业输入与由它推出的事实。"""
@@ -126,6 +144,16 @@ class SectorBrief:
     ancillary: List[Dict[str, str]] = field(default_factory=list)
     #: 客户原话里的关键词（工艺、专科、酒店功能区…），不是猜的
     signals: Dict[str, List[str]] = field(default_factory=dict)
+    #: 关键参数的来源台账：{name, value, kind, basis}
+    params: List[Dict[str, str]] = field(default_factory=list)
+    #: 客户原话（场地方位、朝向、退界都从这里读，不另猜）
+    text: str = ""
+
+    def param(self, name: str, value: str, kind: str, basis: str = "") -> None:
+        """登记一个参数，并说明它凭什么。缺依据的一律不算客户数据。"""
+        self.params.append({"name": name, "value": value,
+                            "kind": kind, "label": PROVENANCE.get(kind, kind),
+                            "basis": basis})
 
     def get(self, key: str, default: float = 0.0) -> float:
         try:
@@ -153,6 +181,8 @@ class SectorBrief:
             "assumptions": list(self.assumptions),
             "ancillary": [dict(a) for a in self.ancillary],
             "signals": {k: list(v) for k, v in self.signals.items()},
+            "params": [dict(p) for p in self.params],
+            "text": self.text[:1200],
         }
 
 
@@ -206,6 +236,13 @@ def _quantities(brief: SectorBrief, text: str) -> None:
                                              else 45))
         if classes and "per_class" not in inp:
             brief.assumptions.append(f"每班人数按 {per:.0f} 人计（客户未给班额）")
+        brief.param("每班人数", f"{per:.0f} 人",
+                    "client" if "per_class" in inp else "assumption",
+                    "客户指定班额" if "per_class" in inp
+                    else "中小学常用班额；客户未给时用于推算学生数与洁具")
+        brief.param("普通教室面积", "65 m²/班", "reference",
+                    "含讲台与储藏的中小学常用值，非现行规范强制指标")
+
         students = float(inp.get("students") or classes * per)
         teaching = classes * 65.0
         special = max(2.0, math.ceil(classes / 4.0)) * 90.0
@@ -269,6 +306,12 @@ def _quantities(brief: SectorBrief, text: str) -> None:
             admin = total * 0.03
             ors = max(2.0, round(beds / 50.0))
             icu = max(4.0, round(beds * 0.03))
+            brief.param("总建筑面积", f"{beds:.0f} 床 × 90 m²", "reference",
+                        "综合医院 90 m²/床 的常用估算区间（60–100），随规模与标准变化")
+            brief.param("手术室数量", f"{ors:.0f} 间", "reference",
+                        "每 50 床 1 间的经验配比，非现行规范强制值；实际按手术量与专科定")
+            brief.param("ICU 床位", f"{icu:.0f} 床", "assumption",
+                        "按总床位数 3% 暂定，须由医疗工艺顾问按重症收治率确认")
             brief.quant.update({"beds": beds, "outpatient": outpatient,
                                 "building_m2": total, "outpatient_m2": outpatient_a,
                                 "tech_m2": tech, "ward_m2": ward,
@@ -280,10 +323,15 @@ def _quantities(brief: SectorBrief, text: str) -> None:
             fact("手术室与 ICU", f"{ors:.0f} 间 / {icu:.0f} 床", "每 50 床 1 间；ICU 取 3%")
         if outpatient:
             units = max(4.0, round(outpatient / 400.0))
-            brief.quant.update({"opd_units": units,
+            clinics = max(4.0, round(outpatient / 40.0))
+            brief.param("每诊室日接诊", "约 40 人次", "reference",
+                        "一医一诊室的常用接诊量（30–50），按专科与排班浮动；非规范强制值")
+            brief.quant.update({"opd_units": units, "clinics": clinics,
                                 "waiting_m2": outpatient * 0.35})
             fact("门诊单元与候诊", f"{units:.0f} 个单元 / {outpatient * 0.35:,.0f} m²",
                  f"日门诊 {outpatient:.0f} 人 ÷ 400 人/单元；候诊 0.35 m²/人次")
+            fact("诊室数量（估）", f"{clinics:.0f} 间",
+                 f"日门诊 {outpatient:.0f} 人 ÷ 40 人次/诊室")
             if beds and outpatient / beds > 6:
                 brief.tensions.append(
                     f"日门诊 {outpatient:.0f} 人对 {beds:.0f} 床，门诊压力高于常见配比（3–5 人/床）："
@@ -311,6 +359,8 @@ def _quantities(brief: SectorBrief, text: str) -> None:
                                 "formula": "客户指定"})
         else:
             brief.assumptions.append(f"柱网按 {bay:.1f} × {bay:.1f} m 假设（客户未给设备尺寸）")
+            brief.param("柱网", f"{bay:.1f} × {bay:.1f} m", "assumption",
+                        "客户未给设备尺寸时按通用跨度暂定，直接影响生产区排布")
         process = [w for w in PROCESS_WORDS if w in text]
         if process:
             brief.signals["process"] = process
@@ -318,6 +368,12 @@ def _quantities(brief: SectorBrief, text: str) -> None:
         if area:
             annex = area * 0.08
             docks = max(1.0, round(float(inp.get("shifts") or area / 3000.0)))
+            brief.param("生产区进深", "60 m（大跨单层）", "reference",
+                        "单层大跨厂房的常用进深区间 45–80 m，取决于工艺与屋面体系")
+            brief.param("装卸位", f"{docks:.0f} 个", "assumption",
+                        "按面积 1 个/3000 m² 暂定，须按车次与月台长度核算")
+            brief.param("配套办公面积", f"{annex:,.0f} m²", "assumption",
+                        "按厂房 8% 估算，须按实际在岗人数与班制确认")
             brief.quant.update({"area": area, "annex_m2": annex,
                                 "bays_x": math.ceil(math.sqrt(area) / bay),
                                 "bays_y": math.ceil(area / (bay * math.ceil(math.sqrt(area) / bay)) / bay),
@@ -354,6 +410,12 @@ def _quantities(brief: SectorBrief, text: str) -> None:
             brief.quant.update({"keys": keys, "building_m2": gfa, "guest_m2": guest,
                                 "public_m2": public, "boh_m2": boh,
                                 "per_key_m2": 75.0})
+            brief.param("单房面积（含公摊）", "75 m²/间", "reference",
+                        "中高端城市酒店 65–90 的常用区间；度假与公寓型差异大")
+            brief.param("客房净面积", "45 m²/间", "assumption",
+                        "按 4.2 m 开间 × 8 m 进深加卫生间的常用值暂定，须按品牌标准确认")
+            brief.param("后场比例", "15%", "assumption",
+                        "按建筑面积比例暂定；低于 12 m²/间时运营会明显吃紧")
             fact("总建筑面积（估）", f"{gfa:,.0f} m²", f"{keys:.0f} 间 × 75 m²/间")
             fact("客房 / 公共 / 后场", f"{guest:,.0f} / {public:,.0f} / {boh:,.0f} m²",
                  "客房 45 m²/间；公共 18%；后场 15%")
@@ -424,6 +486,7 @@ def build(ctx: Any) -> SectorBrief:
         primary=codes[0] if codes else "",
         discipline=str(getattr(ctx, "lead_id", "") or ""),
         ancillary=[dict(a) for a in (tax.get("ancillary") or [])],
+        text=text,
     )
     # 抽数不看行业：先把这个项目提到的所有量都取出来，再由行业决定用哪些。
     # 只按 NEEDS 抽会漏掉"厂房 12000 平方米"里的面积——它不在工业的必需项里，
@@ -457,6 +520,13 @@ def build(ctx: Any) -> SectorBrief:
     if not brief.codes:
         brief.missing.append("未识别项目类型：先确认这是建筑、室内还是景观项目")
         return brief
+    # 客户给的量登记为"客户明确数据"；不是客户原话来的标成假设，不冒充条件
+    for key, value in brief.inputs.items():
+        if key in ("grid_x", "grid_y"):
+            continue
+        src = brief.sources.get(key, "")
+        brief.param(INPUT_LABEL.get(key, key), f"{float(value):g}",
+                    "client" if src == "客户原话" else "assumption", src)
     _quantities(brief, text)
     return brief
 
@@ -494,5 +564,5 @@ def from_project(project: Any) -> SectorBrief:
     return build(adapter)
 
 
-__all__ = ["NEEDS", "SECTOR_LABELS", "SECTOR_OF", "SectorBrief", "build", "from_project",
-           "sector_of"]
+__all__ = ["INPUT_LABEL", "NEEDS", "PROVENANCE", "SECTOR_LABELS", "SECTOR_OF",
+           "SectorBrief", "build", "from_project", "sector_of"]

@@ -686,9 +686,18 @@ class StageRunner:
         if source == "owner":
             ok, blockers = can_confirm(self.project, "S3")
             if not ok:
-                notes.append("不能签发正式 G3：")
-                notes += [f"  [{b['id']}] {b['text']}" for b in assess["blockers"]]
-                notes.append("平面可作为探索稿继续深化；正式 G3 须先解决以上条件。"
+                notes.append(f"不能签发正式 G3（当前状态：{assess.get('state_label') or '仅可探索'}）："
+                             f"{assess.get('verdict') or ''}")
+                if assess["blockers"]:
+                    notes.append("硬阻断（连方案都不成立）：")
+                    notes += [f"  [{b['id']}] {b['text']}" for b in assess["blockers"]]
+                if assess.get("critical"):
+                    notes.append("关键前提未满足（方案可讨论，不能声称已核实通过）：")
+                    notes += [f"  [{c['id']}] {c['text']}" for c in assess["critical"]]
+                if assess.get("conditions"):
+                    notes.append("以下不影响本轮确认深度，记录在案：")
+                    notes += [f"  [{c['id']}] {c['text']}" for c in assess["conditions"]]
+                notes.append("平面可作为探索稿继续深化；正式 G3 须先解决以上硬阻断与关键前提。"
                              "--force 不能绕过。")
                 if assess.get("manual_review"):
                     notes.append(f"另有 {len(assess['manual_review'])} 项待人工复核，未计入通过")

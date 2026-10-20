@@ -1,7 +1,7 @@
 ---
 name: omniailab-PROJECT_TAXONOMY
 description: PROJECT_TAXONOMY —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

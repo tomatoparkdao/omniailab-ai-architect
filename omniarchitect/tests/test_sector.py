@@ -172,12 +172,40 @@ def test_gate_records_the_proposed_envelope_and_type_limits() -> None:
                                         "depth_mm": 16500},
                            "missing_inputs": ["缺日门诊量：算不出门诊单元数量"]}}
     out = sck.assess(None, rec, ["architecture"])
-    ids = [c["id"] for c in out["conditions"]]
-    assert not out["blockers"]
-    assert "G3-PROPOSED-ENVELOPE" in ids
+    assert not out["blockers"], "建议轮廓不妨碍做探索，不该一刀切阻断"
+    crit = [c["id"] for c in out["critical"]]
+    cond = [c["id"] for c in out["conditions"]]
+    # 建议轮廓、缺日门诊量都会改变方案成立条件 —— 属关键前提，不是"待完善"
+    assert "G3-PROPOSED-ENVELOPE" in crit
+    assert "G3-MISSING-INPUT" in crit
+    assert "G3-PROPOSED-ENVELOPE" not in cond, "不能一边说没核实、一边当条件项放过"
     # 医疗属专项：必须留"须专项顾问复核"的条件
-    assert "G3-SPECIALIST-REVIEW" in ids
-    assert "G3-MISSING-INPUT" in ids
+    assert "G3-SPECIALIST-REVIEW" in cond
+
+
+def test_gate_states_the_envelope_basis_four_ways() -> None:
+    """实测/已有图纸/业主估算/系统建议，四种依据必须给出不同结论。"""
+    def ids(basis: str):
+        rec = {"sector": "education", "rooms": 12,
+               "design_data": {"codes": ["A3"], "geometry_basis": basis,
+                               "envelope": {"area_m2": 3000, "width_mm": 60000,
+                                            "depth_mm": 50000},
+                               "categories": ["teaching", "study", "office", "bathroom"]}}
+        out = sck.assess(None, rec, ["architecture"])
+        return ([c["id"] for c in out["critical"]],
+                [c["id"] for c in out["conditions"]])
+
+    crit, cond = ids("surveyed")
+    assert "G3-SURVEYED-ENVELOPE" in cond and not crit, "实测边界不该被列为关键前提"
+
+    crit, cond = ids("drawing")
+    assert "G3-DRAWING-ENVELOPE" in cond and not crit
+
+    crit, cond = ids("client")
+    assert "G3-ESTIMATED-ENVELOPE" in crit, "业主估算不能当正式确认的几何依据"
+
+    crit, cond = ids("proposed")
+    assert "G3-PROPOSED-ENVELOPE" in crit, "系统建议轮廓更不能"
 
 
 def test_landscape_gate_marks_zoning_as_schematic() -> None:

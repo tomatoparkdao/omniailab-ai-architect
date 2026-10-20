@@ -1,7 +1,7 @@
 ---
 name: omniailab-mcp-tools
 description: MCP 与工具执行系统 —— 统一工具注册表、L1–L4 权限分级与产物独立校验
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

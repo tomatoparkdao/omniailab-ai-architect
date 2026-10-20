@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-example-five-rooms
 description: 示例 · 五房间一致性任务包 —— 五个房间共用同一一致性指纹，各自保留自己的几何。
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

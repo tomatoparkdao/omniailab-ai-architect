@@ -1,7 +1,7 @@
 ---
 name: omniailab-concept-render
 description: 概念效果图 —— 平面方案通过门禁 G3 之后，由 OmniAiLab 画布（推荐 OmniP / image2.5）生成给客户看的概念效果图；含机位规则、提示词结构、任务包格式、授权与降级口径
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

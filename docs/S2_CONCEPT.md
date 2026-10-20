@@ -1,7 +1,7 @@
 ---
 name: omniailab-s2-concept
 description: S2 概念方案设计 —— 从已确认任务书生成 2–3 套空间策略不同的方向、条件化审美判据、确定性概念图解、真实意向板、OmniAiLab 概念视觉、方案比较与 G2 基准及 S3 交接
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -84,8 +84,14 @@ S2 原来的实现写死了两个住宅策略——「中部服务脊」和「�
 宁可只出两套，也不给两个换了措辞的同款。
 
 `plan_strategy` 只有一种合法填法：平面算法真的实现了同一套组织逻辑。
-目前只有「一条服务脊」= `spine_centre`。其余策略留空，S3 会如实标
+住宅/室内目前只有「一条服务脊」= `spine_centre`。其余策略留空，S3 会如实标
 `plan_strategy_supported=False`，G3 不允许把近似平面当作概念落地。
+
+学校、医院、厂房、酒店、景观这几类走行业层：概念在交接文件里写的是
+`design.plan_layout`（组团中庭 / 线形连廊 / 医疗街 / 医技居中 / 洁污双廊 /
+工艺单向 / 公共核 / 客房翼 / 环水游线…共 12 种），S3 用它决定剖面与结构，
+并在图上逐条核对"这套概念要求的结构"是否成立。概念没说清楚就回落通用带序，
+记录里写明"本轮平面不是该概念的实现"。细则见 `docs/SECTOR_DESIGN.md`。
 
 ## 四、方向生成：三条硬规则
 

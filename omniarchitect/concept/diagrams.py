@@ -218,14 +218,15 @@ class Svg:
 
     def text(self, x: float, y: float, content: str, *, size: int = 14,
              color: Optional[str] = None, anchor: str = "start", weight: str = "400",
-             opacity: float = 1.0, mono: bool = False) -> None:
+             opacity: float = 1.0, mono: bool = False, rotate: float = 0.0) -> None:
         color = C_INK if color is None else color
         family = ("ui-monospace, SFMono-Regular, Menlo, monospace" if mono else
                   "'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif")
+        t = f' transform="rotate({rotate:.1f} {x:.1f} {y:.1f})"' if rotate else ""
         self.body.append(
             f'<text x="{x:.1f}" y="{y:.1f}" font-family="{family}" '
             f'font-size="{size}" fill="{color}" text-anchor="{anchor}" '
-            f'font-weight="{weight}" opacity="{opacity}">{escape(str(content))}</text>'
+            f'font-weight="{weight}" opacity="{opacity}"{t}>{escape(str(content))}</text>'
         )
 
     def label(self, x: float, y: float, w: float, h: float, lines: Sequence[str],

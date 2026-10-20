@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -56,7 +56,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 |---|---|---|---|
 | S1 | 项目启动与设计任务书 | 设计任务书、原始条件报告 | G1 任务书确认 |
 | S2 | 概念方案设计 | 概念方案、风格意向板 | G2 概念方案确认 |
-| S3 | 平面方案设计 | 两至三套平面方案、对比分析 | G3 平面方案确认 |
+| S3 | 平面方案设计 | 按 G2 选定概念排两套平面（另一组织逻辑作对照） | G3 平面确认（分探索/正式） |
 | S3·门禁后 | **概念效果图**（G3 通过后自动执行） | 概念效果图 + 画布任务包 + 汇报 PPTX | 无（附属于 G3） |
 | S4 | 初步设计与方案深化 | 初步设计图纸、材料与灯光方案 | G4 初步设计确认 |
 | S5 | 三维建模与效果图表现 | 3D 模型、空间效果图、漫游 | G5 表现成果确认 |

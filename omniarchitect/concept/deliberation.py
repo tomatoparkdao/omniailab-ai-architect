@@ -1044,9 +1044,11 @@ def for_taxonomy(ctx: Any, *, limit: int = 3) -> List[Strategy]:
             keywords=(mv.name,),
             requires=(),
             precedent=(),
-            # 行业方向的落地方案就是 `zone_bands`：按带铺房间。
-            # 不填会让 G3 判成"概念没有对应平面策略"（那是给原型兜底用的判据）。
-            plan_strategy="zone_bands",
+            # 行业方向的落地方案由 `sector.parti` 定义（组团中庭 / 洁污双廊 /
+            # 诊疗街 / 单向工艺流线……）。写在这里，S3 才知道要排什么结构，
+            # 而不是所有项目都退回同一套带序。
+            plan_strategy=(f"concept_{mv.plan_layout}" if mv.plan_layout
+                           else "zone_bands"),
         )
         # 保留原始 Move：带序、代价、用到的输入都在里面，S3 排房间要用。
         # Strategy 是 frozen 的，不能挂属性，用模块内的映射按 id 取。
@@ -1196,9 +1198,10 @@ def _method_payload(ctx: Any, s: Strategy,
         "name": s.name, "statement": s.statement,
         "spatial_logic": s.parti, "zoning": s.massing, "circulation": s.circulation,
         "daylight": s.daylight, "family": s.family, "family_zh": fam_zh,
-        # 行业方向由 `zone_bands` 落地：不写这一行，交接文件会说"没有平面策略"，
-        # G3 就会判概念没法实现（那是给旧原型兜底的判据）。
+        # 行业方向由 `sector.parti` 落地：不写这一行，交接文件只说"有平面策略"，
+        # S3 无从知道要排出哪套结构（中庭/双廊/街/工艺流线），只能退回通用带序。
         "plan_strategy": s.plan_strategy,
+        "plan_layout": (getattr(mv, "plan_layout", "") if mv else ""),
         "experience": "；".join(x["event"] for x in seq),
         "answers": [], "risks": list(s.risks), "cost_note": s.cost_note,
         "maintenance": s.maintenance,
@@ -1254,6 +1257,10 @@ def _method_payload(ctx: Any, s: Strategy,
             "missing_inputs": list(_brief.missing),
             "assumptions": list(_brief.assumptions),
             "zone_order": list(getattr(mv, "bands", ()) or ()),
+            "plan_layout": (getattr(mv, "plan_layout", "") if mv else ""),
+            "plan_layout_note": ("S3 按这套组织方式排平面（结构可在图上核对）"
+                                 if getattr(mv, "plan_layout", "")
+                                 else "本方向没有可执行的平面组织方式：S3 只能探索"),
             "gap": ("" if spec and spec.strategy_ids else
                     f"本类型（{spec.name if spec else '未识别'}）没有专属推敲策略库，"
                     "以上方向来自该类型的专业方法，深化时须按行业条件复核，"

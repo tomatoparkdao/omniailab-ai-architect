@@ -110,6 +110,9 @@ def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
         },
         "adjacency": adjacency,
         "separation": separation,
+        # 概念在平面上要落成什么结构：S2 自己写清楚，S3 照着排、照着核。
+        # 旧项目没有这一块，`parti.resolve` 会降级并写明"未声明"，不猜。
+        "design": _design_block(chosen),
         "opportunities": list(chosen.get("s1_opportunity_refs") or []),
         "style": {
             "style_ids": list(chosen.get("style_ids") or []),
@@ -126,6 +129,39 @@ def build(project: Project, ctx: Any, concept_set: Dict[str, Any],
                        for u in ctx.uncertainty],
         "note": ("S3 必须以此文件为设计输入；不得重新凭默认模板推断业主需求。"
                  "若平面算法无法满足，应报告无法支持，而不是生成不符概念的方案。"),
+    }
+
+
+def _design_block(chosen: Dict[str, Any]) -> Dict[str, Any]:
+    """概念的可执行部分：组织方式 + 必须在图上出现的结构。
+
+    读的是 S2 落盘的 `deliberation.plan_layout`。没有就返回空结构并写明，
+    让 S3 知道"这套概念没有可执行的平面组织方式"，而不是默认按带序排完
+    还声称实现了概念。
+    """
+    d = chosen.get("deliberation") or {}
+    kind = str(d.get("plan_layout") or "")
+    label = ""
+    devices: List[Dict[str, Any]] = []
+    try:
+        from ..sector import parti as _parti
+
+        label = _parti.KIND_LABEL.get(kind, "")
+        devices = [{"key": x.key, "label": x.label, "critical": x.critical}
+                   for x in _parti.DEVICES.get(kind, ())]
+    except Exception:                                  # noqa: BLE001
+        pass
+    return {
+        "plan_layout": kind,
+        "label": label,
+        "sector": str(d.get("sector") or ""),
+        "parti": str(d.get("parti") or ""),
+        "zone_order": [str(x) for x in (d.get("zone_order") or [])],
+        "structures": devices,
+        "declared": bool(kind),
+        "note": (d.get("plan_layout_note")
+                 or ("S3 须按这套组织方式排平面" if kind
+                     else "S2 未声明这套概念的平面组织方式：S3 只能做探索性排布")),
     }
 
 
@@ -266,7 +302,7 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
     if handoff.get("status") not in ("locked", "selected_not_confirmed"):
         return {"conformance": "not_applicable", "checks": [], "conflicts": [],
                 "manual_review": [], "auto_pass": False, "fully_verified": False,
-                "manual_review_required": 0,
+                "manual_review_required": 0, "structure": {}, "implements_concept": None,
                 "note": "无概念交接文件，不做一致性判断（也不假装通过）"}
 
     m = dict(getattr(scheme, "metrics", {}) or {})
@@ -380,6 +416,37 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
     # 5. 隔离要求：访客动线不得穿越私密区（用走廊是否贴着私密房间的间接证据不足，
     #    这里只做"私密区是否有独立门禁位置"的可判定检查）
 
+    # 4c. 概念要求的结构在不在图上：中庭、双廊、诊疗街、工艺顺序……
+    #     这是"概念是否被实现"唯一能自动判的部分；判不了的进人工复核。
+    structure: Dict[str, Any] = {}
+    design = handoff.get("design") or {}
+    if design.get("plan_layout"):
+        try:
+            from ..sector import parti as _parti
+
+            p = _parti.resolve(handoff, sector=str(design.get("sector") or ""))
+            structure = _parti.inspect(p, scheme)
+            for d in structure["devices"]:
+                checks.append({"check": f"概念结构 · {d['label']}", "ok": d["ok"],
+                               "detail": d["detail"]})
+                if not d["ok"]:
+                    conflicts.append({
+                        "id": "H-CONCEPT-DEVICE" if d["critical"] else "H-CONCEPT-DEVICE-MINOR",
+                        "severity": "major" if d["critical"] else "minor",
+                        "detail": (f"「{p.concept_name}」要求「{d['label']}」，"
+                                   f"平面里找不到：{d['detail']}"),
+                    })
+        except Exception as exc:                       # noqa: BLE001
+            checks.append({"check": "概念结构可判定", "ok": False,
+                           "detail": f"结构判定失败：{type(exc).__name__}: {exc}"})
+            conflicts.append({"id": "H-CONCEPT-UNCHECKED", "severity": "major",
+                              "detail": "概念结构未能判定：不能声称这套平面实现了概念"})
+    elif design:
+        # S2 没写 plan_layout：概念本身没有可执行的平面组织方式
+        manual_review.append(
+            f"{design.get('note') or '概念未声明平面组织方式'}："
+            "本轮平面是按通用带序排的，须由图确认它与概念的关系")
+
     major = [c for c in conflicts if c["severity"] == "major"]
     conformance = "fail" if major else ("partial" if conflicts else "pass")
     auto_pass = conformance == "pass"
@@ -394,6 +461,9 @@ def verify_scheme(handoff: Dict[str, Any], scheme: Any,
         "checks": checks,
         "conflicts": conflicts,
         "manual_review": manual_review,
+        "structure": structure,
+        "implements_concept": (bool(structure.get("implemented"))
+                               if structure else None),
         "note": ("pass = 可自动判定的检查全部通过；partial = 只有次要冲突；"
                  "fail = 存在重大冲突，该平面不能作为概念的落地成果。"
                  "注意：pass 不等于概念优秀，也不等于全部核实——"
@@ -423,20 +493,26 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
 
     The distinction matters: S3 may run without a confirmed concept — that is a
     legitimate exploratory study. What it may not do is turn that study into a
-    signed gate. Formal issuance needs four things at once:
+    signed gate.
 
-    1. a G2 concept baseline that still matches the live concept;
-    2. an S3 record produced against *that* baseline, on the current revision;
-    3. no major conformance conflict;
-    4. a plan strategy that actually implements the selected prototype.
+    这里把待办事项分成两档，避免"全阻断"与"全放行"两个极端：
+
+    * **关键前提（critical）**——不解决就不成立：没有已签概念、基准过期、
+      平面没实现概念、轮廓只是系统建议、关键输入缺失（例如没有工艺顺序）。
+      有任一关键前提，G3 只能给"探索/讨论态"，不能声称已核实通过。
+    * **条件项（advisory）**——不影响本轮确认深度：专项顾问复核、实测复核、
+      人工看图。照实记录，不阻断。
+
+    两态都保留历史：已签发的 G3 记录不会被重算改写（兼容旧项目）。
     """
     state = _concept(project)
     base = check_baseline(project)
     handoff = load_for(project)
     rec = plan_record(project)
 
-    blockers: List[Dict[str, str]] = []
-    conditions: List[Dict[str, str]] = []
+    blockers: List[Dict[str, str]] = []          # 硬阻断：连探索稿都不成立
+    critical: List[Dict[str, str]] = []          # 关键前提：只能探索，不能正式签
+    conditions: List[Dict[str, str]] = []        # 条件项：记录在案，不阻断
     manual_review: List[str] = []
 
     # 任务书基准变了，概念与平面都失去依据 —— G3 不能只盯概念那一个 digest
@@ -495,11 +571,21 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
                 "text": "所选概念的空间原型没有对应的平面策略：本轮平面是通用策略的近似结果，"
                         "不能声称为该概念的实现；需换支持的方向，或由主创另行深化",
             })
+        elif rec.get("implements_concept") is False and rec.get("concept_id"):
+            missing = [str(x.get("label") or x.get("key"))
+                       for x in (rec.get("structures") or []) if not x.get("ok")]
+            critical.append({
+                "id": "G3-CONCEPT-NOT-REALIZED",
+                "text": ("平面没有落实所选概念的结构"
+                         + ("（" + "、".join(missing[:4]) + "）" if missing else "")
+                         + "：这只能是概念对比稿，不能算已实现的概念方案"),
+            })
         manual_review = list(rec.get("manual_review") or [])
         for c in (rec.get("conditions") or []):
             conditions.append({"id": str(c.get("id") or "G3-COND"), "text": str(c.get("text"))})
 
-    # 行业项目的专业核验：有没有设计数据、轮廓是不是实测、类型限制在哪
+    # 行业项目的专业核验：有没有设计数据、轮廓是不是实测、类型限制在哪。
+    # 返回的两档直接决定"能否正式签"，不再一律降级成"条件"。
     try:
         from ..sector import check as _sector_check
         from .. import disciplines as _disc
@@ -507,9 +593,10 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
         _active = _disc.load(project).active()
         _extra = _sector_check.assess(project, rec, _active)
         blockers += _extra["blockers"]
-        conditions += _extra["conditions"]
+        critical += _extra.get("critical") or []
+        conditions += _extra.get("conditions") or []
     except Exception:                      # noqa: BLE001  行业核验失败不能吞掉门禁
-        conditions.append({
+        critical.append({
             "id": "G3-SECTOR-CHECK-FAILED",
             "text": "行业核验未能完成：本次不能声称已通过专业校核",
         })
@@ -521,10 +608,23 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
                     "（未计入通过）",
         })
 
+    formal = not blockers and not critical
+    if blockers:
+        state_label, verdict = "blocked", "不能提交 G3：先解决硬阻断项"
+    elif critical:
+        state_label, verdict = "exploratory", "可作探索/讨论方案，不能声称已核实通过"
+    else:
+        state_label, verdict = "formal", "可签发正式 G3"
     return {
-        "formal_ready": not blockers,
+        "formal_ready": formal,
+        "state": state_label,
+        "state_label": {"formal": "正式可确认", "exploratory": "仅可探索",
+                        "blocked": "阻断"}[state_label],
+        "verdict": verdict,
         "blockers": blockers,
         "blocked_reasons": [b["text"] for b in blockers],
+        "critical": critical,
+        "critical_reasons": [c["text"] for c in critical],
         "conditions": conditions,
         "manual_review": manual_review,
         "conformance": rec.get("conformance", "not_applicable"),

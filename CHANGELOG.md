@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,71 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.13.0 · 概念继承与 G3 的三种结论
+
+v1.12 的行业 S3 能用，但有个根本问题：**S2 选定的概念只被读成一个策略名**。
+不管选的是"组团中庭"还是"线形连廊"，S3 都用同一套固定带序，A/B 只差一个翻转；
+`strategy_supported` 还写死为 `True`。这一版让平面真正从概念长出来，
+并把"探索""可讨论""可正式确认"三件事分开。
+
+### 一、S2 → S3：概念落到剖面与结构上
+
+新增 `sector/parti.py` + `sector/plans.py`：
+
+- `parti.resolve(handoff)` 读 G2 选定概念声明的 `plan_layout`，翻成一份可执行的剖面：
+  带序、每带进深、西端块、合成空间（走廊/中庭/诊疗街），以及这套概念
+  **必须看得见的空间结构**（`DEVICES`）。
+- 12 种组织方式各有自己的排布：组团中庭（教室按组团分开、每团一处中庭）、
+  线形连廊（通长连廊、两侧都挂房间）、医疗街（贯通诊疗街 + 候诊贴街）、
+  医技居中（门诊绕医技一圈）、洁污双廊（病房夹在中间、污物有后场出口）、
+  工艺单向（原料→生产→成品、装卸分两端）、客房双面走廊、环水游线……
+- **A 就是选定概念，B 是另一种组织逻辑**（`ALT`），不是镜像翻转：面积表、
+  剖面构成、流线都不同。
+- `parti.inspect` 用几何关系逐条判定结构是否成立（共线贴边、走廊贯通、端部后场），
+  不是读名字。判不出来写"未找到"，报告里直说"本轮平面不是该概念的实现"。
+- `strategy_supported` 改为由实际排出的 `metrics["parti"]` 与声明比对得出。
+
+### 二、几何依据四档，建议轮廓不再冒充实测
+
+`layout.geometry_basis` 只看可核对来源：`surveyed` / `drawing` 可支撑正式确认，
+`client`（业主估算）/ `proposed`（系统反算）只能探索。已有真实几何时
+`has_envelope` 为真，不再执行 `install_envelope`，方案直接排在既有外墙里。
+总平面与景观按客户原话的方位组织；没说方位就按南侧入口假设，并在图上写明是假设——
+不再出现"运动场永远在南、水景永远在南、绿地永远在北"。
+
+### 三、G3 改成三档结论
+
+`assess_plan_gate` 把待办分成三档，`formal_ready = 无 blockers 且无 critical`：
+
+- **blockers**：连探索稿都不成立（`G3-NO-DESIGN-DATA`）；
+- **critical**：可作探索/讨论方案，不能声称已核实通过（`G3-PROPOSED-ENVELOPE`、
+  `G3-ESTIMATED-ENVELOPE`、`G3-MISSING-INPUT`、`G3-FUNCTION-INCOMPLETE`、
+  `G3-CONCEPT-STRUCTURE`、`G3-CONCEPT-NOT-REALIZED`）；
+- **conditions**：记录在案，不阻断确认深度（`G3-SPECIALIST-REVIEW`、
+  `G3-ASSUMPTION-USED`、`G3-STRUCTURE-CHECKED`、`G3-HUMAN-REVIEW`）。
+
+房间数达标不等于功能对：`REQUIRED_USES` 逐类核对（医院要有诊室/医技/候诊/卫生间）。
+会改变房间数量与面积的输入算关键前提，专项顾问复核与实测放线算条件项。
+旧记录没有 `categories` 字段就不做追溯判定，已签发的 G3 不重算。
+
+### 四、参数来源四分档
+
+`brief.param()` 登记每个关键参数与依据：客户明确数据 / 有来源的专业参考值 /
+系统暂定探索假设 / 须专业顾问确认。报告里逐行给出，经验值不再被写成"现行规范强制值"。
+
+### 五、图纸
+
+平面图：门画成门扇 + 开启弧，左侧带名按该带**实际构成**合成（不再拿最大那间房代表整条带），
+中庭/诊疗街与走廊用不同底色。景观总平面：水面成一块、种植沿界、园路成环，
+**面积占比图与总平分布图分开表达**。
+
+### 六、验收
+
+五个案例 + 一个实测边界对照全部走通 S1→G1→S2→G2→S3→G3：
+小学 13 间 / 医院 16 间 / 厂房 7 区 / 酒店 19 间 / 庭院 4 分区。
+`school` 为建议轮廓 → G3 仅可探索（`G3-PROPOSED-ENVELOPE`）；
+`school_surveyed` 换成实测边界 → G3 正式可确认。714 项测试通过。
 
 ## v1.12.0 · 行业设计层：让分类真正参与设计
 

@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-example-comparison
 description: 示例 · 同一户型三风格对比 —— 空间原则、材料、色板与冲突项的并排比对。
-version: 1.12.0
+version: 1.13.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
