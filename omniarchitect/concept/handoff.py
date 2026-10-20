@@ -499,6 +499,21 @@ def assess_plan_gate(project: Project) -> Dict[str, Any]:
         for c in (rec.get("conditions") or []):
             conditions.append({"id": str(c.get("id") or "G3-COND"), "text": str(c.get("text"))})
 
+    # 行业项目的专业核验：有没有设计数据、轮廓是不是实测、类型限制在哪
+    try:
+        from ..sector import check as _sector_check
+        from .. import disciplines as _disc
+
+        _active = _disc.load(project).active()
+        _extra = _sector_check.assess(project, rec, _active)
+        blockers += _extra["blockers"]
+        conditions += _extra["conditions"]
+    except Exception:                      # noqa: BLE001  行业核验失败不能吞掉门禁
+        conditions.append({
+            "id": "G3-SECTOR-CHECK-FAILED",
+            "text": "行业核验未能完成：本次不能声称已通过专业校核",
+        })
+
     if manual_review:
         conditions.append({
             "id": "G3-HUMAN-REVIEW",

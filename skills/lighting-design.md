@@ -3,7 +3,7 @@ name: omniailab-lighting-design
 description: 灯光设计 —— 把自然光与人工光统一成一套策略，输出照度、色温、灯具布置与控制判据
 capability: lighting-design
 stages: [S2, S4, S7]
-version: 1.11.0
+version: 1.12.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

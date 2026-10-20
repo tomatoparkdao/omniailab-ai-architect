@@ -918,6 +918,11 @@ class StageRunner:
         d = self._dir("S1")
         self.ensure_intake()
 
+        # 行业任务书：房间清单属于 S1——客户签的是"要哪些房间、各多大"。
+        # 如果等到 S3 才补，任务书基准会在平面阶段变化，G3 必然判"任务书已变更"。
+        # 这不是为了过门禁，而是本来就该在委托确认时讲清楚。
+        program_note = self._install_sector_program()
+
         # The estimate is produced inside the bundle so both entry points agree.
         # Case research runs on the live stage but is switched off by the test
         # harness (`OMNIAILAB_NO_NETWORK`), because a suite that depends on
@@ -932,6 +937,8 @@ class StageRunner:
             f"完整度 {bundle['completeness'] * 100:.0f}%，"
             f"需求 {bundle['opportunities']} 个设计机会",
         ]
+        if program_note:
+            notes.insert(0, program_note)
         if blocks:
             notes.append("后续阶段仍受限：" + "；".join(
                 f"{sid} {len(v)} 项" for sid, v in blocks.items()))
@@ -943,6 +950,27 @@ class StageRunner:
             artifacts=[str(d / name) for name in bundle["files"]],
             notes=notes,
         )
+
+    def _install_sector_program(self) -> str:
+        """按行业生成任务书房间清单（只在学校/医院/厂房/酒店这类有程序的类型跑）。
+
+        景观不出房间：分区与做法在 S3 直接给，避免把绿地塞进房间表。
+        """
+        from . import sector as _sector
+
+        if self.project.program:
+            return ""
+        b = _sector.brief.from_project(self.project)
+        if b.sector not in _sector.program.BUILDERS or not b.codes:
+            return ""
+        if b.sector == "landscape":
+            return ""
+        prog = _sector.program.build(b)
+        if not rows_or_empty(prog):
+            return ""
+        _sector.layout.install_program(self.project, prog)
+        return (f"行业任务书：{prog.unit} {len(prog.rows)} 项"
+                f"（{prog.area_m2:,.0f} m²，按客户给的规模推出）")
 
     def ensure_intake(self) -> None:
         """Make sure S1 has an interview state before it generates anything.
@@ -1032,6 +1060,34 @@ class StageRunner:
 
         _scope = _disc.ensure(self.project)
         _active = set(_scope.active())
+
+        # ---- 行业分支：学校 / 医院 / 厂房 / 酒店 / 景观 ----
+        # 走各行业自己的任务书与排布（sector.stage），但仍是同一个 S3：
+        # 同一入口、同一 G3、同一空间模型与 DXF 适配器。
+        from . import sector as _sector
+
+        _sb = _sector.brief.from_project(self.project)
+        _res = _sector.stage.run(self, d, _sb, sorted(_active))
+        if not _res.get("skip"):
+            if _res.get("status") == "blocked":
+                return StageOutcome(
+                    "S3", "03 平面方案设计", skills_for_stage("S3"), adapter="dxf",
+                    status="blocked", error=_res.get("error", ""),
+                    next_action=_res.get("next_action", ""),
+                    notes=list(_res.get("notes") or []),
+                )
+            arts = list(_res.get("artifacts") or [])
+            register_artifact(self.project, "art-schemes", "document",
+                              ["project:program", "shell"], "space-planning",
+                              relpath(d / "scheme-comparison.md"), "draft")
+            if (d / "site-plan.svg").exists():
+                register_artifact(self.project, "art-site-plan", "drawing",
+                                  ["project:program"], "site-planning",
+                                  relpath(d / "site-plan.svg"), "draft")
+            return StageOutcome("S3", "03 平面方案设计", skills_for_stage("S3"),
+                                artifacts=arts, adapter="dxf",
+                                notes=list(_res.get("notes") or []))
+
         # 只有"真的有房间要做"才轮到空间规划算法；
         # 纯景观/结构委托即使挂着建筑专业，也不该被房间组合顶替。
         _room_like = [x for x in (self.project.program or [])
@@ -1763,6 +1819,10 @@ def _scheme_options(variant: str, profile: str = "residential") -> "SchemeOption
         variant=variant, title=f"方案{variant}",
         strategy="band_day_night" if variant == "A" else "spine_centre",
     )
+
+
+def rows_or_empty(prog: Any) -> bool:
+    return bool(getattr(prog, "rows", None))
 
 
 def _install_scheme(project: Project, s: SchemeResult) -> None:

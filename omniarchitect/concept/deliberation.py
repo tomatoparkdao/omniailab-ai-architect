@@ -982,62 +982,76 @@ def _integration(s: Strategy, ctx: Any) -> str:
     return "；".join(parts) + "。"
 
 
+#: 策略 id -> 行业方向（Strategy 是 frozen dataclass，不能挂属性）
+_MOVES: Dict[str, Any] = {}
+
+
 def _taxonomy_codes(ctx: Any) -> List[str]:
     codes = getattr(ctx, "taxonomy_codes", None) or ()
     return [str(c) for c in codes]
 
 
 def for_taxonomy(ctx: Any, *, limit: int = 3) -> List[Strategy]:
-    """按项目类型的方向模板造策略：2–3 条组织逻辑不同的方向。
+    """按行业数据推方向：2–3 条组织逻辑不同的策略。
 
-    这里**不是**第二套策略库：方向上写的是该类型的专业方法（医疗洁污双廊、
-    教育分龄组团、工业工艺流线……），字段与 `Strategy` 同构，所以下游的
-    六问、图解、提案不需要为新类型写分支。
+    这里**不是**第二套策略库：行业方法算出来的组织方式，字段与 `Strategy`
+    同构，下游的六问、图解、提案不需要为新类型写分支。
+
+    关键差别在内容从哪来：早先每条方向是一句写死的模板（"公共面开放、
+    后勤面收实"），任何公共建筑都成立，也就什么都没说。现在每条方向由
+    S1 给的班数、床位、客房数、柱网、工艺推出，并写明它回应哪条矛盾、
+    用掉了哪几个数、还缺什么——`sector.moves` 里能看到算式。
     """
+    from .. import sector
     from .. import taxonomy as _tx
 
     discipline = str(getattr(ctx, "lead_id", "") or "")
-    codes = _taxonomy_codes(ctx) or list(
-        (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
-    dirs = _tx.directions(codes, discipline)[:max(2, min(3, limit))]
+    brief = sector.brief.build(ctx)
+    if not brief.codes:
+        return []
+    code = brief.primary or (brief.codes[0] if brief.codes else "")
+    spec = _tx.resolve(code)
+    label = spec.name if spec else discipline
     out: List[Strategy] = []
-    names = [d.name for d in dirs]
-    for i, d in enumerate(dirs):
-        code = codes[0] if codes else ""
-        spec = _tx.resolve(code)
-        label = spec.name if spec else discipline
-        focus = "、".join(spec.focus[:3]) if spec else ""
-        fam = _family_for(d.name, i)
-        out.append(Strategy(
+    for i, mv in enumerate(sector.moves.moves(brief, limit=limit)):
+        _st = Strategy(
             id=f"TX-{code or discipline.upper()}-{i + 1}",
             discipline=discipline,
-            name=d.name,
-            family=fam,
+            name=mv.name,
+            family=mv.family,
             role=("A", "B", "C")[i % 3],
-            statement=f"{label}：{d.parti}",
-            parti=d.parti,
-            opportunity=d.why,
-            massing=f"按组织逻辑排布功能块：{d.parti}",
-            section="竖向关系按功能与流线确定；层高、净高须在 S3/S4 依据设备与结构条件定。",
-            facade="界面按功能露出程度分级：公共面开放、后勤面收实；材料不指定品牌与型号。",
-            circulation=f"主次流线由「{d.name}」决定，服务流线不与主动线交叉。",
-            daylight=f"优先保证{focus or '主要使用空间'}的采光与视线，其余按功能分级。",
-            materials_logic="材料按类型与当地做法确定；本方向只定原则（耐污、维护、质感），不定型号。",
-            sequence=(
-                ("第一眼", f"到达时先读到：{d.parti}", "入口与视线"),
-                ("转折", f"经过{focus or '过渡空间'}，从公共转向内部", "分区收放"),
-                ("主空间", f"停在「{d.name}」要解决的核心空间", "核心空间"),
+            statement=f"{label}：{mv.parti}",
+            parti=mv.parti,
+            opportunity=mv.why,
+            massing=mv.massing or f"按组织逻辑排布功能块：{mv.parti}",
+            section=mv.section or "竖向关系按功能与流线确定；层高与净高须在 S3/S4 依据设备与结构条件定。",
+            facade=mv.facade or "界面按功能露出程度分级，材料不指定品牌与型号。",
+            circulation=mv.circulation or f"主次流线由「{mv.name}」决定，服务流线不与主动线交叉。",
+            daylight=mv.daylight or "优先保证主要使用空间的采光与视线，其余按功能分级。",
+            materials_logic=mv.materials or "材料按类型与当地做法确定；本方向只定原则，不定型号。",
+            sequence=mv.sequence or (
+                ("第一眼", f"到达时先读到：{mv.parti}", "入口与视线"),
+                ("转折", "从公共转向内部", "分区收放"),
+                ("主空间", f"停在「{mv.name}」要解决的核心空间", "核心空间"),
             ),
-            technical=("结构与设备条件须由相应专业确认",),
-            tradeoffs=(f"代价：{d.name}成立的前提是{focus or '功能与场地条件'}能够落实",),
-            risks=("缺少真实几何与设备条件时，本方向只作关系示意",),
-            cost_note="造价随构造与设备等级变化，本阶段只给方向，不给单价。",
+            technical=mv.technical or ("结构与设备条件须由相应专业确认",),
+            tradeoffs=mv.costs or (f"代价：{mv.name}成立的前提能够落实",),
+            risks=mv.risks or ("缺少真实几何与设备条件时，本方向只作关系示意",),
+            cost_note=(mv.costs[0] if mv.costs else
+                       "造价随构造与设备等级变化，本阶段只给方向，不给单价。"),
             maintenance="维护方式随运营主体确定；后场与设备可达性须在 S3 明确。",
-            serves=(),
-            keywords=(d.name,),
+            serves=mv.answers,
+            keywords=(mv.name,),
             requires=(),
             precedent=(),
-        ))
+            # 行业方向的落地方案就是 `zone_bands`：按带铺房间。
+            # 不填会让 G3 判成"概念没有对应平面策略"（那是给原型兜底用的判据）。
+            plan_strategy="zone_bands",
+        )
+        # 保留原始 Move：带序、代价、用到的输入都在里面，S3 排房间要用。
+        # Strategy 是 frozen 的，不能挂属性，用模块内的映射按 id 取。
+        _MOVES[_st.id] = mv
+        out.append(_st)
     return out
 
 
@@ -1165,11 +1179,14 @@ def build_strategies(ctx: Any, research: Optional[Dict[str, Any]] = None,
 def _method_payload(ctx: Any, s: Strategy,
                     research: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """把方向模板写成与推敲策略同形的结果（source=method）。"""
+    from .. import sector
     from .. import taxonomy as _tx
 
     codes = _taxonomy_codes(ctx) or list(
         (getattr(ctx, "taxonomy", {}) or {}).get("codes") or [])
     spec = _tx.resolve(codes[0]) if codes else None
+    _brief = sector.brief.build(ctx)
+    mv = _MOVES.get(s.id)
     seq = [{"step": a, "event": b, "device": c} for a, b, c in s.sequence]
     fam_zh = {"linear": "线性", "radial": "环形 / 放射", "cluster": "组团",
               "layered": "分层 / 递进", "hall": "大厅式", "courtyard": "院落式"}.get(
@@ -1179,7 +1196,9 @@ def _method_payload(ctx: Any, s: Strategy,
         "name": s.name, "statement": s.statement,
         "spatial_logic": s.parti, "zoning": s.massing, "circulation": s.circulation,
         "daylight": s.daylight, "family": s.family, "family_zh": fam_zh,
-        "plan_strategy": "",
+        # 行业方向由 `zone_bands` 落地：不写这一行，交接文件会说"没有平面策略"，
+        # G3 就会判概念没法实现（那是给旧原型兜底的判据）。
+        "plan_strategy": s.plan_strategy,
         "experience": "；".join(x["event"] for x in seq),
         "answers": [], "risks": list(s.risks), "cost_note": s.cost_note,
         "maintenance": s.maintenance,
@@ -1225,6 +1244,16 @@ def _method_payload(ctx: Any, s: Strategy,
             "facts_used": {},
             "same_family_note": "",
             "source": "method",
+            # 行业数据：S3 与报告都读这里，不再各自去解析客户原话
+            "sector": _brief.sector,
+            "sector_label": _brief.sector_label,
+            "inputs": dict(_brief.inputs),
+            "input_sources": dict(_brief.sources),
+            "facts": [dict(f) for f in _brief.facts],
+            "tensions": list(_brief.tensions),
+            "missing_inputs": list(_brief.missing),
+            "assumptions": list(_brief.assumptions),
+            "zone_order": list(getattr(mv, "bands", ()) or ()),
             "gap": ("" if spec and spec.strategy_ids else
                     f"本类型（{spec.name if spec else '未识别'}）没有专属推敲策略库，"
                     "以上方向来自该类型的专业方法，深化时须按行业条件复核，"

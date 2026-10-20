@@ -1,7 +1,7 @@
 ---
 name: omniailab-s1-intake
 description: S1 智能项目启动 —— 三种启动情形、按项目类型的动态访谈、五态置信度、五类可行性、设计机会识别、八份成果包与 G1 基准
-version: 1.11.0
+version: 1.12.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

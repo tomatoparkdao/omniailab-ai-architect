@@ -88,6 +88,25 @@ ROOM_RECIPES: Dict[str, Dict[str, object]] = {
     "hall": {"use": "circulation", "furniture": [], "daylight": False, "min_depth": 1200},
     "corridor": {"use": "circulation", "furniture": [], "daylight": False, "min_depth": 1000},
     "balcony": {"use": "outdoor", "furniture": [], "daylight": True, "min_depth": 1200},
+
+    # ---- 行业房间（学校 / 医疗 / 酒店 / 厂房）----
+    # 与住宅同一套排布规则：只是用途、采光要求与最小进深不同。
+    # 教室要 7.5 m 进深才排得下 45 人的课桌；诊室 18 m² 一人一诊；
+    # 病房按 3 床间；客房按 4.2 m 开间；生产区只关心柱网与通道。
+    "classroom": {"use": "teaching", "furniture": ["desk"], "daylight": True,
+                  "min_depth": 6300},
+    "clinic": {"use": "diagnosis", "furniture": ["desk", "basin"], "daylight": True,
+               "min_depth": 3600},
+    "ward": {"use": "ward", "furniture": ["bed_queen", "nightstand"], "daylight": True,
+             "min_depth": 3300},
+    "guest_room": {"use": "guest", "furniture": ["bed_king", "nightstand", "wardrobe"],
+                   "daylight": True, "min_depth": 4200},
+    "waiting": {"use": "public", "furniture": [], "daylight": True, "min_depth": 3000},
+    "office_cell": {"use": "office", "furniture": ["desk", "shelf_unit"],
+                    "daylight": True, "min_depth": 3000},
+    "lab": {"use": "lab", "furniture": ["desk"], "daylight": False, "min_depth": 4200},
+    "workshop": {"use": "production", "furniture": [], "daylight": False,
+                 "min_depth": 6000},
 }
 
 OPEN_PLAN_RECIPES = ("living", "dining", "entry", "hall", "corridor")
@@ -103,6 +122,9 @@ class RoomSpec:
     zone: str = "day"
     recipe: str = "bedroom"
     priority: int = 50
+    #: 排布带：沿走廊的一条带。行业程序指定（教学带 / 后场带），
+    #: 不指定时等于 zone——住宅与办公仍按 zone 排，行为不变。
+    band: str = ""
 
     @property
     def use(self) -> str:
@@ -138,6 +160,13 @@ class SchemeOptions:
     furnish: bool = True
     #: 办公策略用：把会议/接待带换到另一侧，用来生成第二套可比方案
     flip: bool = False
+    #: `zone_bands` 用：房间带的顺序（从入口到后场）。行业程序给，不由算法猜。
+    band_order: Tuple[str, ...] = ()
+    #: 走廊插在第几个带之后（0 表示最前面）
+    corridor_after: int = 1
+    #: 各带的进深（mm）。行业程序给：教室 7500、客房 8000、厂房 12000……
+    #: 不给就按面积与最小进深反算。
+    band_depths: Tuple[Tuple[str, float], ...] = ()
 
     @classmethod
     def from_dict(cls, d: Dict[str, object], variant: str = "A") -> "SchemeOptions":
@@ -381,6 +410,7 @@ class PlanGenerator:
                     zone=str(item.get("zone") or "day"),
                     recipe=recipe,
                     priority=int(item.get("priority", 50)),
+                    band=str(item.get("band") or item.get("zone") or "day"),
                 )
             )
         return out
@@ -451,6 +481,8 @@ class PlanGenerator:
             return self._spine_centre(core, specs, opts)
         if opts.strategy == "office_cluster":
             return self._office_cluster(core, specs, opts)
+        if opts.strategy == "zone_bands":
+            return self._zone_bands(core, specs, opts)
         raise ModelError(f"unknown strategy '{opts.strategy}'")
 
     def _band_day_night(self, core: Rect, specs: List[RoomSpec],
@@ -507,6 +539,124 @@ class PlanGenerator:
             )
             zones.update(n_placed)
             self._deviations.update(n_dev)
+        return zones
+
+    def _zone_bands(self, core: Rect, specs: List[RoomSpec],
+                    opts: SchemeOptions) -> Dict[str, Rect]:
+        """按"带"排：每个 zone 一条带，走廊插在指定位置。
+
+        学校、医院、客房层、厂房共用这一套排布——差别只在带序与房间清单，
+        不为每个行业写一个专用算法。带高按面积比分配，但每带不低于该带
+        房间的最小进深；分不下的写进 deviations，不静默压缩。
+        """
+        x0, y0, x1, y1 = core
+        W, H = x1 - x0, y1 - y0
+        self._deviations = {}
+        self._overrun = 0.0
+        self._residual = 0.0
+
+        order: List[str] = [str(z) for z in (opts.band_order or ())]
+        for sp in specs:
+            key_band = sp.band or sp.zone
+            if key_band not in order:
+                order.append(key_band)
+        groups = {z: [sp for sp in specs if (sp.band or sp.zone) == z] for z in order}
+        groups = {z: g for z, g in groups.items() if g}
+        if not groups:
+            raise ModelError("zone_bands 需要带序或 zone 标注")
+
+        corr = float(opts.corridor_width_mm)
+        if corr < 500.0:          # 厂房这类不需要公共走廊的，直接铺满
+            corr = 0.0
+        avail = max(H - corr, 1.0)
+        areas = {z: sum(sp.target_area_m2 for sp in g) * 1e6 for z, g in groups.items()}
+        mins = {z: max([sp.min_depth for sp in g] or [2000.0]) for z, g in groups.items()}
+        total_a = sum(areas.values()) or 1.0
+
+        given = dict(opts.band_depths or ())
+        heights = {z: max(mins[z], float(given.get(z) or (avail * areas[z] / total_a)))
+                   for z in groups}
+        # 走廊之外只有 avail：超了就把"非最小"的带按比例收回来
+        over = sum(heights.values()) - avail
+        if over > 0:
+            slack = {z: max(0.0, heights[z] - mins[z]) for z in groups}
+            total_slack = sum(slack.values()) or 1.0
+            for z in groups:
+                heights[z] -= over * slack[z] / total_slack
+                heights[z] = max(mins[z], heights[z])
+            self._overrun = max(0.0, sum(heights.values()) - avail)
+        elif over < 0:
+            # 有余量给面积最大的那条带，避免留一整条空带
+            biggest = max(areas, key=lambda z: areas[z])
+            heights[biggest] += -over
+
+        bands = list(groups.keys())
+        after = max(0, min(int(opts.corridor_after), len(bands)))
+        zones: Dict[str, Rect] = {}
+        y = y0
+        for i, z in enumerate(bands):
+            h = heights[z]
+            if opts.flip:
+                band: Rect = (x0, y1 - h - (y - y0), x1,
+                              y1 - (y - y0))
+            else:
+                band = (x0, y, x1, y + h)
+            placed, dev, residual = _strip(
+                band, sorted(groups[z], key=lambda sp: sp.priority), "x")
+            # 余量小的时候把这一带铺满：一条带末端只剩几米，图上像"忘了排"。
+            # 超过 12% 就不铺——那说明任务书本身没填满这条带，应当留白并报出来。
+            band_w = x1 - x0
+            if residual > 0 and band_w > 0 and residual <= band_w * 0.18:
+                used = band_w - residual
+                k = band_w / used if used > 0 else 1.0
+                bx0 = x0
+                placed = {key: (bx0 + (r[0] - bx0) * k, r[1],
+                                bx0 + (r[2] - bx0) * k, r[3])
+                          for key, r in placed.items()}
+                if k > 1.08:
+                    for sp in groups[z]:
+                        got = (placed[sp.key][2] - placed[sp.key][0]) * \
+                            (placed[sp.key][3] - placed[sp.key][1]) / 1e6
+                        if sp.target_area_m2 and got > sp.target_area_m2 * 1.08:
+                            self._deviations.setdefault(
+                                sp.key,
+                                f"{sp.name}：按带宽放大到 {got:.1f}㎡"
+                                f"（任务书 {sp.target_area_m2:.1f}㎡）——"
+                                "楼层轮廓比房间需求宽，差额不是任务书的要求")
+                residual = 0.0
+            if residual > 0 and band_w > 0:
+                # 留白要画成"预留"，不能留一条空白：图上空白会被读成"漏排了"
+                used = band_w - residual
+                if opts.flip:
+                    zones[f"reserve{len(zones)}"] = (
+                        x0, band[1], x0 + residual, band[3]) if used <= 1.0 else \
+                        (x1 - residual, band[1], x1, band[3])
+                else:
+                    zones[f"reserve{len(zones)}"] = (
+                        (x0, band[1], x0 + residual, band[3]) if used <= 1.0
+                        else (x1 - residual, band[1], x1, band[3]))
+            zones.update(placed)
+            self._deviations.update(dev)
+            self._residual = max(self._residual, residual)
+            y += h
+            if corr > 0 and i + 1 == after and after < len(bands):
+                if opts.flip:
+                    zones["corridor"] = (x0, y1 - (y - y0) - corr, x1, y1 - (y - y0))
+                else:
+                    zones["corridor"] = (x0, y, x1, y + corr)
+                y += corr
+        if corr > 0 and "corridor" not in zones:
+            zones["corridor"] = (x0, max(y0, y1 - corr), x1, y1)
+
+        for sp in specs:
+            r = zones.get(sp.key)
+            if not r:
+                continue
+            got = max(0.0, (r[2] - r[0]) * (r[3] - r[1])) / 1e6
+            if sp.target_area_m2 and got < sp.target_area_m2 * 0.8:
+                self._deviations[sp.key] = (
+                    f"{sp.name}：目标 {sp.target_area_m2:.1f}㎡，实得 {got:.1f}㎡，"
+                    "差额需主创决定从哪让出")
         return zones
 
     def _office_cluster(self, core: Rect, specs: List[RoomSpec],
@@ -664,7 +814,9 @@ class PlanGenerator:
         out: List[Space] = []
         for key, r in placed.items():
             spec = by_key.get(key)
-            recipe = spec.recipe if spec else ("corridor" if key == "corridor" else "hall")
+            recipe = spec.recipe if spec else (
+                "corridor" if key == "corridor" else
+                "hall" if str(key).startswith("reserve") else "hall")
             poly = clip_polygon(_poly_of(r), env) or _poly_of(r)
             area = polygon_area(poly)
             if area < 1.2e6:
@@ -674,7 +826,9 @@ class PlanGenerator:
                 Space(
                     id=f"S{opts.variant}-{key}",
                     level_id=self.level_id,
-                    name=(spec.name if spec else ("走廊" if key == "corridor" else key)),
+                    name=(spec.name if spec else (
+                        "走廊" if key == "corridor" else
+                        "预留（交通 / 辅助）" if str(key).startswith("reserve") else key)),
                     use=(spec.use if spec else "circulation"),
                     boundary_mm2d=[[round(p[0], 2), round(p[1], 2)] for p in poly],
                     source=f"scheme_{opts.variant}",
@@ -862,8 +1016,10 @@ class PlanGenerator:
             axis = w.wall_axis()
             if not axis:
                 continue
-            (x1, y1), (x2, y2) = axis
-            if _point_near_polyline(((x1 + x2) / 2.0, (y1 + y2) / 2.0), hugs, tol=500.0):
+            # 外墙通常是一条通长线，一段墙可能服务好几个房间：不能用"墙中点
+            # 靠近房间贴边"来判断（中点往往落在别的房间上），要看墙段与该贴边
+            # 是否有共线重叠。
+            if any(_wall_overlaps(axis, seg, tol=120.0) for seg in hugs):
                 out.append(w)
         return out
 
@@ -1009,6 +1165,31 @@ def _hugs_envelope(poly, env, tol: float = 40.0) -> List[Seg]:
                 out.append(((float(p[0]), float(p[1])), (float(q[0]), float(q[1]))))
                 break
     return out
+
+
+def _wall_overlaps(wall: Seg, hug: Seg, tol: float = 120.0) -> bool:
+    """墙段与房间贴边是否共线且有重叠（用于判断这面墙是否给这个房间采光）。"""
+    (ax, ay), (bx, by) = wall
+    (cx, cy), (dx, dy) = hug
+    # 贴边两端点到墙线的距离都要在容差内（共线）
+    for (px, py) in ((cx, cy), (dx, dy)):
+        wx, wy = bx - ax, by - ay
+        L = math.hypot(wx, wy)
+        if L < 1e-6:
+            return False
+        dist = abs((px - ax) * wy - (py - ay) * wx) / L
+        if dist > tol:
+            return False
+    # 投影重叠长度
+    wx, wy = bx - ax, by - ay
+    L = math.hypot(wx, wy)
+    ux, uy = wx / L, wy / L
+
+    def t(px: float, py: float) -> float:
+        return (px - ax) * ux + (py - ay) * uy
+
+    t1, t2 = sorted((t(cx, cy), t(dx, dy)))
+    return min(t2, L) - max(t1, 0.0) > 1.0
 
 
 def _seg_on_seg(p, q, a, b, tol: float) -> bool:

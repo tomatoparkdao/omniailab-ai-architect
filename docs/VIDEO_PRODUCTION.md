@@ -1,7 +1,7 @@
 ---
 name: omniailab-video-production
 description: 方案视频制作与导演技能移交 —— 视频默认由 OmniAiLab 平台出片；需要叙事结构与镜头语言时，把分镜与运镜脚本移交给自有导演技能，但生成主体不变
-version: 1.11.0
+version: 1.12.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

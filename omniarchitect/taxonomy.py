@@ -1352,6 +1352,13 @@ class Classification:
     subtype_hits: Dict[str, str] = field(default_factory=dict)
     confidence: str = "low"            # low | medium | high
     note: str = ""
+    #: 主体项目里的配套功能（食堂、体育馆、酒店餐厅…）。**不是**独立用途，
+    #: 不进委托范围，但 S3 的任务书要把它们的房间算进去。
+    ancillary: List[Dict[str, str]] = field(default_factory=list)
+    #: 被降级掉的用途编码（原本命中、判定为配套），留作解释用
+    demoted: List[str] = field(default_factory=list)
+    #: 同一项目的另一专业（如新建医院的室内工装），不进用途清单、但可能有委托
+    sibling: List[Dict[str, str]] = field(default_factory=list)
 
     @property
     def primary(self) -> str:
@@ -1375,6 +1382,10 @@ class Classification:
             "commissions": list(self.commissions),
             "commission_labels": [COMMISSION_LABELS.get(c, c) for c in self.commissions],
             "subtype_hits": dict(self.subtype_hits),
+            "ancillary": [dict(a) for a in self.ancillary],
+            "ancillary_labels": [a["label"] for a in self.ancillary],
+            "demoted": list(self.demoted),
+            "sibling": [dict(x) for x in self.sibling],
             "evidence": {k: v[:4] for k, v in self.evidence.items()},
             "scores": {k: round(v, 2) for k, v in self.scores.items()},
             "confidence": self.confidence,
@@ -1402,6 +1413,95 @@ COMMISSION_CUES: Dict[str, Tuple[str, ...]] = {
     "landscape": ("庭院", "景观", "花园", "种植", "水景", "游线", "园林", "绿化"),
 }
 
+#: 主体类型里"可以有"的配套功能。
+#:
+#: 「学校里的食堂」与「一家餐饮工装」不是同一个委托：前者是校园的配套房间，
+#: 后者是一整套后厨、排烟、隔油、营业流程。同理，酒店里的餐厅、SPA、会议中心
+#: 是酒店的功能组成，不等于客户另外委托了三份工装。
+#:
+#: 结构：主体编码 -> ((配套标签, 触发词, 该配套真正要解决的问题), ...)
+FACILITY_TERMS: Dict[str, Tuple[Tuple[str, Tuple[str, ...], str], ...]] = {
+    "A3": (("学生食堂", ("食堂", "餐厅"),
+            "按就餐人数、供餐批次与后场流线定面积，不做对外营业"),
+           ("校园体育馆", ("体育馆", "风雨操场"),
+            "按班额与体育课排课定规模，兼顾雨天活动"),
+           ("报告厅", ("报告厅", "礼堂"),
+            "与教学区分时使用，注意疏散与声学"),
+           ("学生宿舍", ("宿舍",),
+            "涉及住宿管理、淋浴与晚自习流线")),
+    "A4": (("院内食堂", ("食堂", "餐厅"), "按床位数与陪护人数定，需与洁污流线分开"),
+           ("药房与库房", ("药房", "库房"), "涉及药品管理与配送流线")),
+    "A5": (("餐饮业态", ("餐饮", "餐厅", "美食广场"), "作为租户业态，只定位置与机电条件"),
+           ("影院业态", ("影院", "影城"), "涉及层高、疏散与结构荷载"),
+           ("超市业态", ("超市", "卖场"), "涉及卸货与冷链")),
+    "A6": (("酒店餐饮", ("餐厅", "餐饮", "宴会厅", "咖啡"), "按座位数与餐段定，含后场与送餐流线"),
+           ("酒店会议", ("会议中心", "会议室", "宴会厅"), "按会议规模定，需独立出入口与货运"),
+           ("酒店SPA与健身", ("SPA", "健身", "泳池"), "涉及湿区防水、设备荷载与运营时段")),
+    "A10": (("社区食堂", ("食堂", "餐厅"), "按服务人数与供餐方式定"),),
+    "A12": (("厂区办公", ("办公", "研发"), "与生产区分离，独立出入口"),
+            ("员工食堂与宿舍", ("食堂", "宿舍"), "按班次与倒班人数定")),
+    "A14": (("配套餐饮", ("餐厅", "餐饮"), "作为游客服务配套，注意高峰瞬时客流"),),
+    "B4": (("酒店餐饮", ("餐厅", "宴会厅"), "按座位与餐段定，后场独立"),
+           ("酒店SPA与健身", ("SPA", "健身", "泳池"), "湿区与设备条件优先"),
+           ("酒店会议", ("会议", "宴会"), "独立出入口与货运")),
+    "B12": (("生产辅助", ("生产", "洁净"), "工艺条件优先于装饰逻辑"),),
+}
+
+#: 同一栋楼里的室内专业：它不是第二个"用途"，而是同一项目的另一个专业范围。
+#: 「新建医院」里出现 B8 医疗工装，不等于客户另委托一家医院室内设计。
+INTERIOR_COUNTERPART: Dict[str, str] = {
+    "A1": "B1", "A2": "B3", "A4": "B8", "A6": "B4", "A12": "B12",
+}
+
+#: 明确要求"另建 / 单独委托"时，配套升级为独立用途。
+SEPARATE = ("独立", "单独", "另建", "另外一栋", "另一栋", "分设", "独立单体",
+            "单独委托", "作为独立项目", "独立报建", "分开委托", "单独报建")
+
+
+def facilities(blob: str, primary: str) -> List[Dict[str, str]]:
+    """主体类型下出现的配套功能（按词表，不猜）。"""
+    out: List[Dict[str, str]] = []
+    for label, terms, note in FACILITY_TERMS.get(primary, ()):
+        hit = next((t for t in terms if t.lower() in blob.lower()), "")
+        if not hit:
+            continue
+        out.append({"term": hit, "label": label, "note": note,
+                    "primary": primary})
+    return out
+
+
+def facility_owners() -> Dict[str, Tuple[str, ...]]:
+    """配套词 -> 它属于哪些主体类型。"""
+    out: Dict[str, Tuple[str, ...]] = {}
+    for code, rows in FACILITY_TERMS.items():
+        for _label, terms, _note in rows:
+            for t in terms:
+                out.setdefault(t, ())
+                if code not in out[t]:
+                    out[t] = out[t] + (code,)
+    return out
+
+
+def _facility_only(term: str, code: str,
+                   owners: Dict[str, Tuple[str, ...]]) -> bool:
+    """这个命中词是否只是别的主体的配套（因此不能作为本类型的证据）。"""
+    own = owners.get(term, ())
+    return bool(own) and code not in own
+
+
+def _is_facility_evidence(code: str, matched: Sequence[str],
+                          anc: Sequence[Dict[str, str]], blob: str) -> bool:
+    """某类型的命中是不是"只是在说主体项目里的配套"。"""
+    if not matched or not anc:
+        return False
+    terms = {str(a["term"]).lower() for a in anc}
+    # 命中词全部落在配套词里，才算"只是配套"
+    if not all(any(t in m.lower() or m.lower() in t for t in terms) for m in matched):
+        return False
+    # 明确说要独立，就不降级
+    return not any(w in blob for w in SEPARATE)
+
+
 #: 明确排除 / 独占的表达：说了"只做"，其它专业就不自动进入范围。
 EXCLUSIVE = ("只做", "只委托", "只需要", "仅做", "仅室内", "只负责", "不含")
 
@@ -1424,17 +1524,31 @@ def classify(texts: Sequence[str] | str, *, discipline: str = "",
         return out
 
     low = blob.lower()
+    owners = facility_owners()
+    # 客户说了"另建 / 独立 / 单独委托"，配套词就回到实质证据——这时它真是另一栋楼
+    separate = any(w in blob for w in SEPARATE)
     hits: Dict[str, List[str]] = {}
     scores: Dict[str, float] = {}
+    rank_scores: Dict[str, float] = {}
+    substantive: Dict[str, float] = {}
     for code, spec in TYPES.items():
         matched = [k for k in spec.keywords if k.lower() in low]
         if not matched:
             continue
-        # 专业提示只用于打破平局，不制造命中
-        s = sum(_kw_score(k) for k in matched)
+        # 配套词只算"很弱的证据"：它说明这个房间里可能有它，不说明项目是它。
+        # 「酒店的会议中心」不该把 A2 办公抬成主体；「学校的食堂」不该带出 B5。
+        strong = matched if separate else [
+            k for k in matched if not _facility_only(k, code, owners)]
+        weak = [k for k in matched if k not in strong]
+        s = sum(_kw_score(k) for k in strong) + 0.25 * sum(
+            _kw_score(k) for k in weak)
+        # 排序用**永远**按配套折算的那一版：「另建独立体育馆」里，体育馆要留在
+        # 用途清单里，但主体仍是学校——不能因为客户加建一栋就把学校改叫体育馆。
+        pure = [k for k in matched if not _facility_only(k, code, owners)]
+        s_rank = sum(_kw_score(k) for k in pure) + 0.25 * sum(
+            _kw_score(k) for k in matched if k not in pure)
         if discipline and spec.discipline == discipline:
             s += 0.6
-        # 命中具体子类（「高层住宅」「屋顶花园」）比只命中大类词更可信
         for sub in spec.subtypes:
             if len(sub) >= 3 and sub in blob:
                 out.subtype_hits[code] = sub
@@ -1442,10 +1556,8 @@ def classify(texts: Sequence[str] | str, *, discipline: str = "",
                 break
         hits[code] = matched
         scores[code] = s
-        for sub in spec.subtypes:
-            if len(sub) >= 3 and sub in blob:
-                out.subtype_hits[code] = sub
-                break
+        rank_scores[code] = s_rank
+        substantive[code] = sum(_kw_score(k) for k in strong)
 
     if not hits:
         out.note = "未命中已知类型：按最宽口径提问，不套任何专项"
@@ -1453,16 +1565,57 @@ def classify(texts: Sequence[str] | str, *, discipline: str = "",
         out.commissions = commissions(blob)
         return out
 
-    ranked = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))[:max(1, limit)]
+    # 主体要看"实质证据"：只有配套词的编码（酒店里的会议中心）不该排在前面
+    ranked = sorted(scores.items(),
+                    key=lambda kv: (-rank_scores.get(kv[0], kv[1]), -kv[1], kv[0])
+                    )[:max(1, limit)]
     # 明显弱于首项的命中不并列，避免「有酒店两个字就多一个类型」。
     # 下限取 1.0：单个两字关键词（酒店 / 医院 / 公园）本来只有 1.5 分，
     # 拿 2.0 当门槛会把整类项目判成「不认识」。
     top = ranked[0][1]
-    out.codes = [c for c, s in ranked if s >= max(1.0, top * 0.45)]
+    kept = [c for c, s in ranked if s >= max(1.0, top * 0.45)]
+    out.evidence = {c: hits[c][:6] for c in kept}
+
+    # 「学校里的食堂」不是「餐饮工装」：只有配套证据的编码降级为附属功能，
+    # 只有明确说要独立（另建 / 单独委托）才保留成第二用途。
+    primary = kept[0] if kept else ""
+    # 配套从**所有**主体类型取：综合体这类"容器型"主体自己不写配套表，
+    # 它下面的商业/酒店才写——不然"综合体含影院餐饮"会静默丢掉两条。
+    _seen: set = set()
+    for code in kept:
+        for a in facilities(blob, code):
+            if a["label"] in _seen:
+                continue
+            _seen.add(a["label"])
+            out.ancillary.append(a)
+    if kept and not separate:
+        rest = []
+        counterpart = INTERIOR_COUNTERPART.get(primary, "")
+        for code in kept:
+            if code != primary and substantive.get(code, 0.0) <= 0.0:
+                out.demoted.append(code)
+                continue
+            if code == counterpart:
+                # 新建医院里的"医疗工装"是同一栋楼的室内专业，不是第二用途。
+                # 委托范围仍由客户的话决定（说了精装修才进范围）。
+                out.sibling.append({
+                    "code": code, "name": TYPES[code].name, "discipline": "interior",
+                    "note": "同一项目的室内专业，随委托范围决定是否展开",
+                })
+                continue
+            rest.append(code)
+        kept = rest
+
+    out.codes = kept
     out.scores = {c: scores[c] for c in out.codes}
-    out.evidence = {c: hits[c][:6] for c in out.codes}
+    out.evidence = {c: out.evidence.get(c, []) for c in out.codes}
+    for c in out.demoted:
+        out.evidence.setdefault(f"demoted:{c}", hits.get(c, [])[:4])
     out.natures = natures(blob)
     out.commissions = commissions(blob, codes=out.codes)
+    if out.demoted:
+        out.note = ("配套功能按主体项目处理，不单独形成委托："
+                    + "、".join(a["label"] for a in out.ancillary))
 
     if out.subtype_hits and out.codes:
         out.confidence = "high"
@@ -1618,7 +1771,8 @@ def summary_lines(codes: Sequence[str]) -> List[str]:
 __all__ = [
     "CAPABILITY_LABELS", "COMMISSION_CUES", "COMMISSION_LABELS", "Classification",
     "Direction", "EXCLUSIVE", "FAMILY", "FAMILY_LABELS", "NATURE_CUES", "NATURE_LABELS",
-    "S3_BASE", "SpecialQuestion", "TYPES", "TypeSpec", "by_discipline", "capability_of",
+    "FACILITY_TERMS", "SEPARATE", "S3_BASE", "SpecialQuestion", "TYPES", "TypeSpec",
+    "INTERIOR_COUNTERPART", "by_discipline", "capability_of", "facilities",
     "classify", "commissions", "directions", "index_rows", "natures", "questions_for",
     "resolve", "s3_tasks", "summary_lines",
 ]

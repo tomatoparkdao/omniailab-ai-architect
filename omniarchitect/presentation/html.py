@@ -343,6 +343,25 @@ def theme_css(t: Dict[str, Any]) -> str:
 # --------------------------------------------------------------------------
 # 小工具
 # --------------------------------------------------------------------------
+def _as_list(v: Any) -> List[str]:
+    """把"可能是字符串、可能是列表"的字段统一成列表。
+
+    坑：`tradeoffs` 有时是字符串，`for x in "中庭占了…"` 会把一句话拆成
+    一个个汉字，提案里就出现"中 / 庭 / 占"三条代价。
+    """
+    if v is None or v == "":
+        return []
+    if isinstance(v, str):
+        return [v]
+    if isinstance(v, (list, tuple, set)):
+        return [str(x) for x in v if str(x).strip()]
+    return [str(v)]
+
+
+def _join(v: Any, sep: str = "；") -> str:
+    return sep.join(_as_list(v))
+
+
 def _h(x: Any) -> str:
     return html.escape(str(x if x is not None else ""))
 
@@ -689,10 +708,13 @@ def concept_section(concept: Dict[str, Any], idx: int, *, lead: str,
                   f'<p style="color:var(--muted);font-size:14px">'
                   f'{_h((concept.get("references") or {}).get("note") or "本次无可用案例")}</p>')
 
-    trade = "".join(f"<li>{_h(_clip(x, 64))}</li>" for x in (concept.get("tradeoffs") or [])[:3])
-    risks = "".join(f"<li>{_h(_clip(x, 60))}</li>" for x in (concept.get("technical_risks") or [])[:2])
-    adv = "".join(f"<li>{_h(_clip(x, 64))}</li>" for x in (concept.get("advantages") or [])[:3])
-    unverified = d.get("unverified_requires") or []
+    trade = "".join(f"<li>{_h(_clip(x, 64))}</li>"
+                    for x in _as_list(concept.get("tradeoffs"))[:3])
+    risks = "".join(f"<li>{_h(_clip(x, 60))}</li>"
+                    for x in _as_list(concept.get("technical_risks"))[:2])
+    adv = "".join(f"<li>{_h(_clip(x, 64))}</li>"
+                  for x in _as_list(concept.get("advantages"))[:3])
+    unverified = _as_list(d.get("unverified_requires"))
 
     hero = _hero_block(photos[0] if photos else None, f"FIG.{fno_start:02d}",
                        f"{family} · 空间意象", "素材库参考图，非本项目效果图")
@@ -753,7 +775,7 @@ def concept_section(concept: Dict[str, Any], idx: int, *, lead: str,
     </div>
     <div>
       <h5>要结构与机电配合的地方</h5>
-      <p>{_h(_clip(d.get("technical_coordination") or "—", 160))}</p>
+      <p>{_h(_clip(_join(d.get("technical_coordination")) or "—", 160))}</p>
       {f'<ul style="margin-top:6px">{risks}</ul>' if risks else ''}
     </div>
     <div>

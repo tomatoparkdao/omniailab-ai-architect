@@ -3,7 +3,7 @@ name: omniailab-create-draw
 description: 概念图解与评图 —— 用约定的图形语义把设计判断画成一张可读的图，并让评图意见跨轮可追踪核销
 capability: create-draw
 stages: [S2, S4, S7]
-version: 1.11.0
+version: 1.12.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
