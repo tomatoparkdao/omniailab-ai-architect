@@ -1,7 +1,7 @@
 ---
 name: 多专业升级验收
 description: 六组跨专业案例的真实运行结果——哪些走完了全链、哪些被正确拦下、哪些是能力缺口，以及每条结论的证据在哪
-version: 1.13.0
+version: 1.14.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

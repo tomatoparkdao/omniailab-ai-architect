@@ -946,6 +946,16 @@ class StageRunner:
             f"完整度 {bundle['completeness'] * 100:.0f}%，"
             f"需求 {bundle['opportunities']} 个设计机会",
         ]
+        # 一页设计判断：客户先看到"我们怎么理解你的项目"，而不是一堆清单。
+        # 复用同一份问诊与分类，不另写一套判断逻辑。
+        from .concept import quick as _quick
+
+        try:
+            pos = _quick.write(self.project, d)
+            notes.append(f"设计定位：{pos['headline']}")
+        except Exception as exc:            # noqa: BLE001  判断失败不能挡住任务书
+            pos = {}
+            notes.append(f"设计定位未生成：{type(exc).__name__}")
         if program_note:
             notes.insert(0, program_note)
         if blocks:
@@ -954,11 +964,10 @@ class StageRunner:
         if assess.blocks_gate:
             notes.append("G1 前需业主决定：" + "；".join(
                 b["problem"] for b in assess.blocks_gate[:2]))
-        return StageOutcome(
-            "S1",
-            artifacts=[str(d / name) for name in bundle["files"]],
-            notes=notes,
-        )
+        arts = [str(d / name) for name in bundle["files"]]
+        if pos.get("path"):
+            arts.append(pos["path"])
+        return StageOutcome("S1", artifacts=arts, notes=notes)
 
     def _install_sector_program(self) -> str:
         """按行业生成任务书房间清单（只在学校/医院/厂房/酒店这类有程序的类型跑）。
@@ -1022,7 +1031,16 @@ class StageRunner:
                      f"待平台 {visual.get('deferred', 0)}／待费用确认 {visual.get('held', 0)}，"
                      f"本次提交 {visual.get('submitted', 0)}")
         if bundle.get("deck"):
-            notes.append(f"可编辑提案：{bundle['deck'].get('slides')} 页（{bundle['deck'].get('backend')}）")
+            notes.append(f"逐条文字提案（附录留档）：{bundle['deck'].get('slides')} 页"
+                         f"（{bundle['deck'].get('backend')}）")
+        prop = bundle.get("proposal") or {}
+        if prop.get("pages"):
+            notes.append(f"客户版概念汇报：{prop['pages']} 页（HTML + PPTX 同一份页面模型）"
+                         + (f"，精选参考 {prop['curation']['count']} 张"
+                            if (prop.get("curation") or {}).get("count") else
+                            "；素材库无同类实景，未取图"))
+        if prop.get("motion"):
+            notes.append("概念动画：体块演变四步（离线可播 HTML，非生成式视频）")
         for w in (bundle.get("warnings") or [])[:3]:
             notes.append(w)
 

@@ -71,6 +71,10 @@ RESEARCH_BUNDLE_FILES = (
     "reference-shortlist.json",
 )
 
+#: S1 的一页判断。由 `concept/quick.py` 写出（它同时供 S2 汇报第一页使用），
+#: 但归属 S1 的产出——客户先看到"我们怎么理解你的项目"。
+S1_JUDGMENT_FILES = ("design-position.md",)
+
 #: 多专业项目额外产出的六份。
 #:
 #: 单专业（纯室内）项目不生成——空表比没有更危险：一份"全部 not_applicable"

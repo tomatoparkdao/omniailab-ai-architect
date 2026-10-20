@@ -25,6 +25,7 @@ from omniarchitect.intake import (
     DISCIPLINE_BUNDLE_FILES,
     S1_BUNDLE_FILES,
     RESEARCH_BUNDLE_FILES,
+    S1_JUDGMENT_FILES,
     answer_question,
     assess_gate,
     check_stage,
@@ -79,7 +80,9 @@ def test_a_one_sentence_runs_the_whole_s1_engine():
         # 关键是清单与实际产出一致——不许"清单说有、目录里没有"。
         assert not (set(RESEARCH_BUNDLE_FILES) & produced), (
             f"离网时不该写出案例清单：{set(RESEARCH_BUNDLE_FILES) & produced}")
-        assert produced == set(S1_BUNDLE_FILES) | set(DISCIPLINE_BUNDLE_FILES), produced
+        # 一页判断（design-position.md）也是 S1 的产出：客户先看判断，再看任务书。
+        assert produced == (set(S1_BUNDLE_FILES) | set(DISCIPLINE_BUNDLE_FILES)
+                            | set(S1_JUDGMENT_FILES)), produced
 
         # 无几何时精度为诊断级，并写进产出
         assert p.meta["intake"]["precision"] == "diagnostic"

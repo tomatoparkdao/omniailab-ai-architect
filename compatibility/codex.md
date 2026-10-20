@@ -1,7 +1,7 @@
 ---
 name: omniailab-compatibility-codex
 description: OmniArchitect × OpenAI Codex —— OmniArchitect 是一个标准 Agent Skill：仓库根目录的 SKILL.md 是入口，
-version: 1.13.0
+version: 1.14.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

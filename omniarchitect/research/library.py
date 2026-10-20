@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import urllib.request
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
@@ -219,6 +220,11 @@ def _cache_name(entry: Dict[str, Any], ratio: str) -> str:
 
 
 def _download(url: str, dest: Path) -> Optional[Path]:
+    # 离线校验模式（测试、无网机器）：不发起请求。
+    # 原来这里会等满 45 s 超时，一次取 5 张图就是近 4 分钟——
+    # 测试超时的真凶就在这。
+    if os.environ.get("OMNIAILAB_NO_NETWORK"):
+        return None
     if dest.exists() and dest.stat().st_size > 4096:
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)

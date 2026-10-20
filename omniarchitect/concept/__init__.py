@@ -30,12 +30,16 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from ..model import Project
 from ..style import load_catalog
+from . import anim as anim_mod
 from . import compare as cmp
+from . import curation as cur_mod
 from . import deck as deck_mod
 from . import diagrams as dia
 from . import handoff as handoff_mod
 from . import moodboard as mb_mod
 from . import palette as pal
+from . import proposal as prop_mod
+from . import quick as quick_mod
 from . import visual as vis
 from .context import ConceptContext, assert_ready, build_context
 from .directions import ROLE_LABEL, generate_concepts, markdown as options_md, resolve_style_id
@@ -66,6 +70,11 @@ BUNDLE_FILES = (
     "concept-visual-jobs.json",
     "concept-visual-brief.md",
     "concept-presentation.pptx",
+    "concept-proposal.html",
+    "concept-proposal.pptx",
+    "concept-proposal.md",
+    "concept-motion.html",
+    "design-position.md",
     "g2-approval-summary.md",
     "concept-handoff.json",
 )
@@ -230,12 +239,71 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
     cmp_path = out / "concept-comparison.md"
     cmp_path.write_text(cmp.markdown(comparison, concept_set) + "\n", encoding="utf-8")
 
-    # 提案 PPTX
+    # 提案 PPTX（逐条文字版，留档与快速改稿用）
     deck_info: Dict[str, Any] = {}
     if with_deck:
         deck = deck_mod.build(project, ctx, concept_set, comparison,
                               moodboards, all_diagrams, visual_res.to_dict())
         deck_info = deck_mod.write(deck, out)
+
+    # ---- 概念汇报：先给设计，再给数据（8–12 页，图为主）----
+    # 与上面的逐条 PPTX 不是两套内容：这份是**给客户看的那一版**，
+    # HTML 与 PPTX 从同一份页面模型渲染，改稿只改一处。
+    proposal_info: Dict[str, Any] = {}
+    motion_info: Dict[str, Any] = {}
+    if with_deck:
+        rec_id = str((comparison.get("recommendation") or {}).get("concept_id") or "")
+        rec_c = next((c for c in concept_set["concepts"]
+                      if c["concept_id"] == rec_id), concept_set["concepts"][0])
+        try:
+            from ..sector import brief as _sector_brief
+
+            _sector = _sector_brief.from_project(project).sector
+        except Exception:                   # noqa: BLE001  非行业项目就是普通项目
+            _sector = ""
+        cur = cur_mod.curate(
+            out, ctx=ctx, sector=_sector,
+            style_labels=[str(x) for x in (rec_c.get("style_labels") or [])],
+            max_items=5)
+        judgment = quick_mod.judge(project)
+        model = prop_mod.build(
+            project, ctx, concept_set, comparison, moodboards, all_diagrams,
+            visual_res.to_dict(), curation=cur, judgment=judgment, rules=rules,
+            out_dir=out)
+        html_path = prop_mod.write_html(model, out,
+                                        title=f"{project.name or project.project_id} · 概念汇报")
+        pptx_info = prop_mod.write_pptx(model, out,
+                                        title=f"{project.name or project.project_id} · 概念汇报")
+        md_path2 = prop_mod.write_markdown(model, out)
+        motion_info = anim_mod.build(
+            project, rec_c, out_dir=out,
+            theme={"paper": str((rules or {}).get("tokens", {}).get("paper") or "")})
+        proposal_info = {
+            "html": html_path,
+            "pptx": pptx_info.get("path", ""),
+            "pptx_ok": bool(pptx_info.get("ok")),
+            "markdown": md_path2,
+            "pages": model.get("count", 0),
+            "recommended": model.get("recommended", ""),
+            "alternative": model.get("alternative", ""),
+            "curation": {"available": cur.get("available"),
+                         "count": cur.get("count", 0),
+                         "reason": cur.get("reason", "")},
+            "motion": motion_info.get("path", ""),
+            "judgment": judgment,
+        }
+        prop_mod.release()          # 交出浏览器：同进程可能还要截图/出别的文档
+        (out / "concept-proposal.json").write_text(
+            json.dumps({"pages": [{"kind": p.kind, "title": p.title,
+                                   "kicker": p.kicker} for p in model.get("pages") or []],
+                        "recommended": model.get("recommended"),
+                        "alternative": model.get("alternative"),
+                        "theme": model.get("theme").__dict__,
+                        "curation": {"available": cur.get("available"),
+                                     "count": cur.get("count", 0),
+                                     "terms": cur.get("terms")},
+                        "files": proposal_info},
+                       ensure_ascii=False, indent=1), encoding="utf-8")
 
     # G2 摘要（先出草稿，确认后重写为正式版）
     summary_path = out / "g2-approval-summary.md"
@@ -255,6 +323,12 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         "visual_brief": visual_files["brief"],
         "presentation": deck_info.get("pptx", {}).get("path", ""),
         "presentation_md": deck_info.get("markdown", ""),
+        "proposal_html": proposal_info.get("html", ""),
+        "proposal_pptx": proposal_info.get("pptx", ""),
+        "proposal_md": proposal_info.get("markdown", ""),
+        "motion": proposal_info.get("motion", ""),
+        "design_position": str(Path(out) / "design-position.md")
+        if (Path(out) / "design-position.md").exists() else "",
         "g2_summary": str(summary_path),
         "visual_rules": str(_vref.path_for(project, project_dir)),
         "diagram_dir": str(out / "concept-diagrams"),
@@ -301,6 +375,7 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         "comparison": {"ranking": comparison["ranking"],
                        "recommendation": comparison["recommendation"]},
         "handoff": handoff_path,
+        "proposal": proposal_info,
         "warnings": warnings,
         "bundle_files": [name for name in BUNDLE_FILES if (out / name).exists()],
         "context": ctx.to_dict(),

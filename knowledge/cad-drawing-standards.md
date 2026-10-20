@@ -5,7 +5,7 @@ description: CAD 制图标准 —— 图层、线型、标注、文字、比例�
 stage_affinity: [S7]
 loads_when: 当任务涉及图层命名、线型线宽、尺寸标注、图框比例、图纸编号或制图规范时加载
 load_cost: medium
-version: 1.13.0
+version: 1.14.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

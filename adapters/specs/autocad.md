@@ -1,7 +1,7 @@
 ---
 name: omniailab-adapters-specs-autocad
 description: AUTOCAD adapter —— Purpose: DXF drafting and optionally DWG via licensed AutoCAD.
-version: 1.13.0
+version: 1.14.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

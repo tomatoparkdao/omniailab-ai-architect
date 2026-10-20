@@ -154,6 +154,8 @@ PREFERENCE_SYNONYMS: Dict[str, Tuple[str, ...]] = {
 
 # Space-type affinity by family — a coarse prior, refined by the record's own
 # `applicable_spaces` during scoring.
+#: 空间用途 → 常用的风格族。用途没被任何风格显式声明时，用这一层兜底，
+#: 免得候选池空掉后按字母序选出一个跟项目无关的风格。
 SPACE_FAMILY_PRIOR: Dict[str, Tuple[str, ...]] = {
     "住宅": ("modern", "oriental", "natural-organic", "classic"),
     "办公": ("modern", "industrial", "experimental"),
@@ -161,6 +163,17 @@ SPACE_FAMILY_PRIOR: Dict[str, Tuple[str, ...]] = {
     "餐饮": ("industrial", "deco-retro", "natural-organic", "regional"),
     "酒店": ("modern", "natural-organic", "regional", "classic"),
     "展厅": ("experimental", "modern", "industrial"),
+    "展陈": ("experimental", "modern", "industrial"),
+    "教育": ("modern", "natural-organic", "industrial"),
+    "医疗": ("modern", "natural-organic"),
+    "康养": ("natural-organic", "modern", "oriental"),
+    "工业": ("industrial", "modern"),
+    "农业": ("industrial", "natural-organic"),
+    "景观": ("natural-organic", "oriental", "modern"),
+    "庭院": ("natural-organic", "oriental", "modern"),
+    "文化": ("modern", "experimental", "industrial", "regional"),
+    "交通": ("modern", "industrial"),
+    "体育": ("modern", "industrial", "natural-organic"),
 }
 
 SMALL_AREA_M2 = 90        # below this, heavy ornament and deep mouldings hurt
@@ -538,11 +551,35 @@ def recommend(
     cat = catalog or load_catalog()
     climate_ids, climate_note = _climate_hint(request.location)
 
+    # 先按"这个用途"收窄候选池：风格记录自己声明了适用空间，就以声明为准；
+    # 声明不足三条时，用同族风格补足。不收窄的话，一个没人声明过的用途
+    # （比如"医疗""工业"）会让所有风格同分，最后按 style_id 字母序选出
+    #  africain-contemporary 这种跟项目完全无关的风格。
+    pool: List[StyleEntry] = []
+    if request.space_type:
+        pool = [e for e in cat
+                if any(request.space_type in str(sp) for sp in e.applicable_spaces)]
+        if len(pool) < 3:
+            fams = SPACE_FAMILY_PRIOR.get(request.space_type, ())
+            pool += [e for e in cat if e.family in fams and e not in pool]
+    if len(pool) < 3:
+        pool = list(cat)
+
     scored: List[Tuple[float, StyleEntry, List[str], List[str]]] = []
-    for entry in cat:
+    for entry in pool:
         score, why, cautions = _score(entry, request, climate_ids)
         scored.append((score, entry, why, cautions))
-    scored.sort(key=lambda t: (-t[0], t[1].style_id))
+    # 同分时按该用途的常用族排序，而不是按 style_id 字母序——
+    # 字母序会让 african-contemporary 永远排在第一个。
+    prior_fams = SPACE_FAMILY_PRIOR.get(request.space_type, ())
+
+    def _rank(entry: StyleEntry) -> int:
+        try:
+            return prior_fams.index(entry.family)
+        except ValueError:
+            return len(prior_fams) + 1
+
+    scored.sort(key=lambda t: (-t[0], _rank(t[1]), t[1].style_id))
 
     options: List[Recommendation] = []
     used_families: set[str] = set()

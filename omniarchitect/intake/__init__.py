@@ -51,6 +51,7 @@ from .opportunities import OPPORTUNITY_FIELDS, Opportunity, find_opportunities
 from .profiles import PROFILES, QUESTION_INDEX, SLOTS, Question, Profile, profile_for
 from .report import (
     DISCIPLINE_BUNDLE_FILES,
+    S1_JUDGMENT_FILES,
     RESEARCH_BUNDLE_FILES,
     S1_BUNDLE_FILES,
     generate_bundle,
@@ -86,6 +87,7 @@ __all__ = [
     "OPPORTUNITY_FIELDS", "Opportunity", "find_opportunities",
     "PROFILES", "QUESTION_INDEX", "SLOTS", "Question", "Profile", "profile_for",
     "S1_BUNDLE_FILES", "DISCIPLINE_BUNDLE_FILES", "RESEARCH_BUNDLE_FILES",
+    "S1_JUDGMENT_FILES",
     "generate_bundle",
     "ApprovalOutcome", "GateAssessment", "approval_summary_text", "assess_gate",
     "baseline_digest", "check_baseline", "decide_gate",

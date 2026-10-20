@@ -356,3 +356,26 @@ def test_not_configured_error_says_what_is_missing():
     err = P.NotConfigured(["base_url"], "补上契约即可")
     assert "base_url" in str(err)
     assert "补上契约即可" in str(err)
+
+
+def test_candidates_are_narrowed_to_the_actual_space_use():
+    """用途要先收窄候选池：否则所有风格同分，按字母序挑出无关风格。
+
+    "教育""医疗""工业"这些用途只有少数风格声明过；不收窄时
+    african-contemporary 会因为 style_id 排第一而永远当"稳妥方案"。
+    """
+    for space in ("教育", "医疗", "工业", "酒店", "景观"):
+        rs = R.recommend(R.RecommendRequest(space_type=space, area_m2=20000))
+        top = rs.option("safe")
+        assert top is not None, space
+        entry = CAT.get(top.style_id)
+        declared = any(space in str(sp) for sp in entry.applicable_spaces)
+        prior = entry.family in R.SPACE_FAMILY_PRIOR.get(space, ())
+        assert declared or prior, f"{space} 推了不相干的风格：{top.style_id}"
+
+
+def test_school_is_not_offered_african_contemporary_as_the_safe_option():
+    rs = R.recommend(R.RecommendRequest(space_type="教育", area_m2=20000))
+    ids = [o.style_id for o in rs.options]
+    assert "african-contemporary" not in ids, ids
+    assert "bauhaus" in ids or "biophilic" in ids, ids

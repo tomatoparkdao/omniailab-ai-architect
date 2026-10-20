@@ -123,10 +123,27 @@ def _style_brief(ctx: ConceptContext, preference: str) -> RecommendRequest:
     )
 
 
+#: 项目类型 → 风格库里的"空间用途"词。风格记录声明的是用途（教育、医疗、
+#: 酒店公区…），不是专业名。传"建筑"进去，等于所有风格都不匹配，打分只剩
+#: 造价与气候，最后会挑出一个跟项目无关的风格（学校被推参数化未来主义就是这么来的）。
+TYPE_SPACE = {
+    "A1": "住宅", "A2": "办公", "A3": "教育", "A4": "医疗", "A5": "商业",
+    "A6": "酒店", "A7": "办公", "A8": "文化", "A9": "商业", "A10": "交通",
+    "A11": "体育", "A12": "工业", "A13": "农业", "A14": "文化",
+    "B1": "住宅", "B2": "住宅", "B3": "办公", "B4": "酒店", "B5": "餐饮",
+    "B6": "商业", "B7": "展陈", "B8": "教育", "B9": "医疗", "B10": "康养",
+    "C1": "景观", "C2": "庭院", "C3": "景观", "C4": "景观", "C5": "景观",
+    "C6": "景观", "C7": "景观", "C8": "景观", "C9": "景观",
+}
+
+
 def _space_type(ctx: ConceptContext) -> str:
+    for code in (ctx.taxonomy_codes or ()):
+        word = TYPE_SPACE.get(str(code))
+        if word:
+            return word
     return {"residential": "住宅", "office": "办公", "hospitality": "酒店",
-            "retail": "商业", "exhibition": "展厅", "architecture": "建筑"}.get(
-        ctx.profile_id, "住宅")
+            "retail": "商业", "exhibition": "展厅"}.get(ctx.profile_id, "住宅")
 
 
 def _maintenance_level(text: str) -> str:
