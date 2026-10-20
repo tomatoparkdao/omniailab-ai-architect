@@ -1,10 +1,10 @@
 <h1 align="center">OmniAiLab AI Architect for Architecture & Interior Design</h1>
 
 <p align="center">
-  <b>An end-to-end AI architect Skill for architecture, interior and landscape — asks first, reasons in the open, and says no</b><br>
-  Three parallel lead disciplines　｜　36 project types / 575 subtypes, classified before design　｜　8 stages × 31 capabilities × 47 design styles<br>
-  Brief → concept reasoning and diagrams → layout comparison → preliminary design → concept renders (post-G3) → construction-depth DXF → schedules and handover<br>
-  Zero hard dependencies, runs offline end to end　｜　never claims structural / fire / accessibility conclusions　｜　generative media only via OmniAiLab
+  <b>AI architect Skill — architecture, interior, landscape as parallel leads; asks first, reasons openly, says no</b><br>
+  36 types / 575 subtypes, classified before design　｜　8 stages × 31 capabilities × 47 design styles<br>
+  Brief → concept reasoning → layouts → preliminary design → construction-depth DXF → handover<br>
+  Renders only after G3, via OmniAiLab　｜　offline, zero deps　｜　no structural / fire / accessibility claims
 </p>
 
 <p align="center">
