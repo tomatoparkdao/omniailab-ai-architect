@@ -1,176 +1,95 @@
-"""概念演示动画：先让客户看懂体块怎么长出来的。
+"""概念演示动画：讲清这套方案是怎么成立的。
 
-概念阶段不一定需要"视频"。真正有用的是一个**能在浏览器里播放**的演示：
-体块从占满退界，到断开、切缺口、连桥与入口，四步走完，讲清设计的必然性。
+动画不是"每个项目配一段视频"。它只在**真有演变逻辑**时出现：
 
-产物是 `concept-motion.html`：单文件、离线可播、可暂停/重播/逐帧，
-每一帧都是**自有矢量图**（`concept/iso.py`），不是生成式图像，所以不存在
-"伪造效果图"的问题；反过来，它也不是效果图，页脚会写明"体块关系示意"。
+* 建筑：场地限界 → 体量分解 → 加入要素 → 结果形态；
+* 室内：功能重组 → 空间序列 → 界面与通透 → 核心空间；
+* 景观：场地与边界 → 空间层次 → 园路与节点 → 水景与种植。
 
-不接第三方视频平台、不发起付费生成任务：平台未配置时，本模块照样交付
-一个真能播的动画；需要生成式氛围短片时，仍走 `providers/canvas.py` 的授权链路。
+步骤由 `concept/evolution.py` 从本项目的概念数据推出来（分区、序列、采光、
+主张）。推不出来时 `plan()` 会说缺什么，这里返回 ``skipped``——调用方出
+**静态分析图**，不拿不相干的建筑体块动画凑数。v1.14 就是四步固定体块：
+酒店室内被演成体块生成，私家庭院被演成建筑加法，客户一眼看出不是他的项目。
+
+产物是 `concept-motion.html`：单文件、离线可播、可暂停/重播/逐帧，每一帧都是
+自有矢量图（`concept/iso.py`），不是生成式图像，也不冒充效果图。
+
+不接第三方视频平台、不发起付费生成任务。需要生成式氛围短片时，仍走
+`providers/canvas.py` 的授权链路。
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence
 
-from . import iso as iso_mod
-from .iso import Iso, draw_box, draw_ground, draw_shadow, tree
+from . import evolution as evo
 
 FILE = "concept-motion.html"
-
-#: 四步体块推演（单位 m）。每一步只改一件事，客户才看得懂因果。
-STEPS: Tuple[Dict[str, Any], ...] = (
-    {"n": "01", "name": "占满可建范围", "note": "先按退界与限高做满，确认最大可建体量",
-     "g": ["full"]},
-    {"n": "02", "name": "断成两段", "note": "中间让出院子／中庭，进深从 32 m 收到 13 m",
-     "g": ["bar_n", "bar_s", "court"]},
-    {"n": "03", "name": "切出缺口", "note": "每段再切一口，主要房间都能有两面采光",
-     "g": ["bar_n1", "bar_n2", "bar_s", "court"]},
-    {"n": "04", "name": "连桥与入口", "note": "连桥把两段重新连起来，入口留出灰空间",
-     "g": ["bar_n1", "bar_n2", "bar_s", "court", "bridge", "canopy", "trees", "people"]},
-)
-
-
-class _Canvas:
-    """只画不排版的极简 SVG 画布，接口对齐 `diagrams.Svg`，好让 iso 直接用。"""
-
-    def __init__(self) -> None:
-        self.body: List[str] = []
-
-    def polygon(self, pts: Sequence[Tuple[float, float]], *, fill: str = "none",
-                stroke: str = "none", sw: float = 1.0, opacity: float = 1.0,
-                dash: str = "") -> None:
-        p = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.body.append(
-            f'<polygon points="{p}" fill="{fill}" stroke="{stroke}" '
-            f'stroke-width="{sw:.2f}" opacity="{opacity:.3f}"{d}/>')
-
-    def line(self, x1: float, y1: float, x2: float, y2: float, *, stroke: str = "#999",
-             sw: float = 1.0, opacity: float = 1.0, dash: str = "") -> None:
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.body.append(
-            f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
-            f'stroke="{stroke}" stroke-width="{sw:.2f}" opacity="{opacity:.3f}"{d}/>')
-
-    def polyline(self, pts: Sequence[Tuple[float, float]], **kw: Any) -> None:
-        self.polygon(pts, **kw)
-
-    def circle(self, cx: float, cy: float, r: float, *, fill: str = "none",
-               stroke: str = "none", sw: float = 1.0, opacity: float = 1.0) -> None:
-        self.body.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" '
-                         f'fill="{fill}" stroke="{stroke}" stroke-width="{sw:.2f}" '
-                         f'opacity="{opacity:.3f}"/>')
-
-    def ellipse(self, cx: float, cy: float, rx: float, ry: float, *, fill: str = "none",
-                stroke: str = "none", sw: float = 1.0, opacity: float = 1.0) -> None:
-        self.body.append(f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{rx:.1f}" '
-                         f'ry="{ry:.1f}" fill="{fill}" stroke="{stroke}" '
-                         f'stroke-width="{sw:.2f}" opacity="{opacity:.3f}"/>')
-
-    def rect(self, x: float, y: float, w: float, h: float, *, fill: str = "none",
-             stroke: str = "none", sw: float = 1.0, opacity: float = 1.0) -> None:
-        self.body.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" '
-                         f'fill="{fill}" stroke="{stroke}" stroke-width="{sw:.2f}" '
-                         f'opacity="{opacity:.3f}"/>')
-
-    def path(self, d: str, *, fill: str = "none", stroke: str = "none",
-             sw: float = 1.0, opacity: float = 1.0) -> None:
-        self.body.append(f'<path d="{d}" fill="{fill}" stroke="{stroke}" '
-                         f'stroke-width="{sw:.2f}" opacity="{opacity:.3f}"/>')
-
-
-#: 体块清单：名字 → (x, y, z, w, d, h)
-BOXES: Dict[str, Tuple[float, float, float, float, float, float]] = {
-    "full": (8, 4, 0, 40, 32, 10),
-    "bar_n": (8, 4, 0, 40, 13, 10),
-    "bar_s": (8, 23, 0, 40, 13, 10),
-    "bar_n1": (8, 4, 0, 17, 13, 10),
-    "bar_n2": (31, 4, 0, 17, 13, 10),
-    "bridge": (16, 16, 6.0, 24, 8, 2.4),
-    "canopy": (20, 17, 0, 16, 5, 3.4),
-}
-
-
-def _scene(names: Sequence[str], *, pal: Dict[str, str], w: int, h: int) -> str:
-    c = _Canvas()
-    iso = Iso(w * 0.50, h * 0.30, scale=min(w, h) / 44.0, z_scale=1.0)
-    draw_ground(iso, c, 2, 0, 54, 40, fill=pal["ground"], edge=pal["line"], grid=0)  # type: ignore[arg-type]
-    if "court" in names:
-        c.polygon(iso.pts([(8, 17, 0.05), (48, 17, 0.05), (48, 23, 0.05), (8, 23, 0.05)]),
-                  fill=pal["court"], stroke="none", sw=0)
-    for name in names:
-        box = BOXES.get(name)
-        if box is None:
-            continue
-        x, y, z, bw, bd, bh = box
-        if name in ("bridge",):
-            continue
-        if name != "canopy":
-            draw_shadow(iso, c, x, y, bw, bd, opacity=0.10)  # type: ignore[arg-type]
-        roof = name != "canopy"
-        draw_box(iso, c, x, y, z, bw, bd, bh, fill=pal["mass"], edge=pal["ink"],  # type: ignore[arg-type]
-                 sw=1.2, roof=roof)
-    if "bridge" in names:
-        x, y, z, bw, bd, bh = BOXES["bridge"]
-        draw_box(iso, c, x, y, z, bw, bd, bh, fill=pal["mass2"], edge=pal["ink"],  # type: ignore[arg-type]
-                 sw=1.1)
-    if "trees" in names:
-        for tx, ty in ((5, 2), (52, 6), (6, 37), (51, 36), (28, 20)):
-            tree(iso, c, tx, ty, r=0.55, h=2.0, crown=pal["green"])  # type: ignore[arg-type]
-    if "people" in names:
-        for px, py in ((28, 37), (34, 36), (12, 15)):
-            x1, y1 = iso.p(px, py, 0)
-            c.circle(x1, y1, 2.2, fill=pal["ink"], opacity=0.85)
-            c.line(x1, y1, x1, y1 - 8, stroke=pal["ink"], sw=1.6)
-    body = "".join(c.body)
-    return (f'<svg viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" '
-            f'preserveAspectRatio="xMidYMid meet">{body}</svg>')
 
 
 def build(project: Any = None, concept: Optional[Dict[str, Any]] = None, *,
           out_dir: str | Path = ".", title: str = "",
           steps: Optional[Sequence[Dict[str, Any]]] = None,
-          theme: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
-    """Write the standalone animation. Always returns a path, even without a concept."""
+          theme: Optional[Dict[str, str]] = None,
+          discipline: str = "") -> Dict[str, Any]:
+    """Write the standalone animation, or say why this project gets none.
+
+    返回 ``{"path": "", "skipped": 原因}`` 是正常结果：没有演变逻辑时，
+    少一个动画比多一个错的专业推演好。
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    pal = {"paper": "#FAF8F3", "ink": "#1E2328", "line": "#D6D2C6",
-           "mass": "#E4EDE3", "mass2": "#C9DCC8", "ground": "#F2F0E8",
-           "court": "#EFE3D2", "green": "#C6D6BE"}
-    for k, v in (theme or {}).items():
-        if k in pal and isinstance(v, str) and v.startswith("#"):
-            pal[k] = v
-    items = list(steps or STEPS)
-    scenes = [_scene(s["g"], pal=pal, w=720, h=500) for s in items]
+
+    disc = discipline or _discipline_of(concept)
+    pal = evo._pal(theme)                          # noqa: SLF001  同一套配色
+
+    if steps is None:
+        if not concept:
+            return {"path": "", "steps": 0, "skipped": "没有概念数据，不出动画"}
+        plan = evo.plan(concept, disc)
+        if not plan.ok:
+            return {"path": "", "steps": 0, "skipped": plan.reason}
+        images = evo.scenes(concept, disc, width=720, height=500, theme=theme)
+        items = [{"n": s.n, "name": s.name, "note": s.note} for s in plan.steps]
+        lead = (list(plan.labels) or [""])[0]
+    else:
+        images = [str(s.get("svg") or "") for s in steps]
+        items = [{"n": s.get("n", ""), "name": s.get("name", ""),
+                  "note": s.get("note", "")} for s in steps]
+        lead = ""
+
+    if not images:
+        return {"path": "", "steps": 0, "skipped": "没有可画的步骤"}
+
     name = (title or getattr(project, "name", "") or "概念演示").strip()
     cid = str((concept or {}).get("concept_id") or "")
     cname = str((concept or {}).get("concept_name") or "")
-    lead = str((concept or {}).get("concept_statement") or
-               "体块不是造型，是被场地、采光与流线一步步逼出来的结果。")
+    statement = str((concept or {}).get("concept_statement") or lead or
+                    "方案不是造型，是被场地、使用与光线一步步逼出来的结果。")
 
     frames = "".join(
-        f'<figure class="scene{" on" if i == 0 else ""}" data-i="{i}">{scenes[i]}'
+        f'<figure class="scene{" on" if i == 0 else ""}" data-i="{i}">{img}'
         f'<figcaption><b>{s["n"]}</b><span>{s["name"]}</span></figcaption></figure>'
-        for i, s in enumerate(items))
+        for i, (s, img) in enumerate(zip(items, images)))
     caps = "".join(
         f'<div class="cap{" on" if i == 0 else ""}" data-i="{i}">'
         f'<em>{s["n"]}</em><h3>{s["name"]}</h3><p>{s["note"]}</p></div>'
         for i, s in enumerate(items))
     dots = "".join(f'<button class="dot{" on" if i == 0 else ""}" data-go="{i}" '
                    f'aria-label="{s["n"]}"></button>' for i, s in enumerate(items))
+    kicker = {"architecture": "MASSING · 体量与形态",
+              "interior": "SEQUENCE · 功能与序列",
+              "landscape": "SITE · 场地与游线"}.get(disc, "CONCEPT · 概念推演")
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{name} · 概念生成动画</title>
+<title>{name} · 概念推演</title>
 <style>
 :root{{--paper:{pal["paper"]};--ink:{pal["ink"]};--line:{pal["line"]};
---accent:#2F5D45;--muted:#6E736A;
+--accent:{pal["accent"]};--muted:{pal["muted"]};
 --sans:'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;
 --serif:'Songti SC','Noto Serif SC','SimSun',serif}}
 *{{box-sizing:border-box;margin:0;padding:0}}
@@ -213,16 +132,16 @@ footer .n{{margin-left:auto;font-size:10.5px;color:var(--muted);letter-spacing:.
 aside{{border-left:0;border-top:1px solid var(--line)}}}}
 </style></head>
 <body><div class="stage">
-<header><div class="k">MASS EVOLUTION · 概念生成</div>
+<header><div class="k">{kicker}</div>
 <div class="p">{name}　{cid} {cname}</div></header>
 <div class="scenes">{frames}</div>
-<aside><div class="t">{cname or "体块推演"}</div>
-<div class="l">{lead}</div>
+<aside><div class="t">{cname or "概念推演"}</div>
+<div class="l">{statement}</div>
 <div class="cap-wrap">{caps}</div>
 </aside>
 <footer><div class="dots">{dots}</div>
 <button class="play" id="play">暂停</button>
-<span class="n">自有矢量图解 · 体块关系示意，不作尺寸依据</span></footer>
+<span class="n">自有矢量图解 · 空间关系示意，不作尺寸依据</span></footer>
 </div>
 <script>
 (function(){{
@@ -239,7 +158,7 @@ aside{{border-left:0;border-top:1px solid var(--line)}}}}
   }}
   function tick(){{show(i+1);}}
   function start(){{stop();playing=true;document.getElementById('play').textContent='暂停';
-    t=setInterval(tick,2600);}}
+    t=setInterval(tick,3000);}}
   function stop(){{if(t)clearInterval(t);t=null;}}
   document.getElementById('play').onclick=()=>{{
     if(playing){{stop();playing=false;
@@ -247,7 +166,7 @@ aside{{border-left:0;border-top:1px solid var(--line)}}}}
     else{{start();}}
   }};
   dots.forEach(d=>d.onclick=()=>{{show(+d.dataset.go);
-    if(playing){{stop();t=setInterval(tick,2600);}}}});
+    if(playing){{stop();t=setInterval(tick,3000);}}}});
   document.addEventListener('keydown',e=>{{
     if(e.key===' '){{
       e.preventDefault();
@@ -261,7 +180,20 @@ aside{{border-left:0;border-top:1px solid var(--line)}}}}
 </script></body></html>"""
     path = out / FILE
     path.write_text(html, encoding="utf-8")
-    return {"path": str(path), "steps": len(items), "name": name}
+    return {"path": str(path), "steps": len(items), "name": name,
+            "discipline": disc, "skipped": ""}
 
 
-__all__ = ["FILE", "STEPS", "build"]
+def _discipline_of(concept: Optional[Dict[str, Any]]) -> str:
+    proto = (concept or {}).get("spatial_prototype") or {}
+    disc = str(proto.get("profile") or "").strip()
+    if disc in evo.DISCIPLINE_STEPS:
+        return disc
+    for d in (concept or {}).get("disciplines") or ():
+        key = str((d or {}).get("id") if isinstance(d, dict) else d)
+        if key in evo.DISCIPLINE_STEPS:
+            return key
+    return "architecture"
+
+
+__all__ = ["FILE", "build"]

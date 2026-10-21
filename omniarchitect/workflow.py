@@ -1040,7 +1040,12 @@ class StageRunner:
                             if (prop.get("curation") or {}).get("count") else
                             "；素材库无同类实景，未取图"))
         if prop.get("motion"):
-            notes.append("概念动画：体块演变四步（离线可播 HTML，非生成式视频）")
+            label = {"architecture": "体量与形态", "interior": "功能与序列",
+                     "landscape": "场地与游线"}.get(
+                str(prop.get("discipline") or ""), "概念推演")
+            notes.append(f"概念动画：{label}（离线可播 HTML，非生成式视频）")
+        elif prop.get("motion_skipped"):
+            notes.append(f"本方案不出动画：{prop['motion_skipped']}（静态分析图已出）")
         for w in (bundle.get("warnings") or [])[:3]:
             notes.append(w)
 

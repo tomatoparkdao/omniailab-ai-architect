@@ -63,6 +63,40 @@ CATEGORY_PAGES: Dict[str, Tuple[str, ...]] = {
     ),
 }
 
+#: 按**项目类型**挑分类页。学校去教育分类，医院去医疗分类，厂房去工业分类——
+#: 这一层以前只有专业，没有类型，于是小学检索落进 houses，案例页上全是别墅。
+#: 每个 slug 都是实测可打开的（200 + 24 条可解析条目），不是猜的。
+ASPECT_PAGES: Dict[str, Tuple[str, ...]] = {
+    "education": (
+        "https://www.archdaily.com/category/educational-architecture",
+    ),
+    "healthcare": (
+        "https://www.archdaily.com/category/healthcare-architecture",
+    ),
+    "industrial": (
+        "https://www.archdaily.com/category/industrial-architecture",
+    ),
+    "hospitality": (
+        "https://www.archdaily.com/category/hospitality-architecture",
+        "https://www.archdaily.com/category/hotels",
+    ),
+    "civic": (
+        "https://www.archdaily.com/category/cultural-architecture",
+        "https://www.archdaily.com/category/offices",
+    ),
+    "office": (
+        "https://www.archdaily.com/category/offices",
+    ),
+    "retail": (
+        "https://www.archdaily.com/category/restaurants-and-bars",
+        "https://www.archdaily.com/category/commercial-architecture",
+    ),
+    "residential": (
+        "https://www.archdaily.com/category/apartments",
+        "https://www.archdaily.com/category/houses",
+    ),
+}
+
 
 # --------------------------------------------------------------------------
 # transport
@@ -311,35 +345,78 @@ SIGNALS: Dict[str, Dict[str, int]] = {
         "garden": 4, "courtyard": 4, "park": 2, "landscape": 4, "terrace": 2,
         "pool": 2, "plaza": 1, "roof": 1,
     },
+    # 类型信号：出现在标题/URL 里就说明这条案例讲的就是这一类项目
+    "education": {
+        "school": 5, "campus": 5, "education": 4, "kindergarten": 4,
+        "classroom": 4, "library": 2, "academy": 3, "university": 3,
+        "college": 3, "nursery": 3,
+    },
+    "healthcare": {
+        "hospital": 5, "health": 4, "clinic": 5, "medical": 4, "care": 3,
+        "wellness": 1, "rehabilitation": 3,
+    },
+    "industrial": {
+        "factory": 5, "industrial": 5, "warehouse": 4, "workshop": 4,
+        "plant": 3, "manufactur": 4, "logistics": 4,
+    },
+    "hospitality": {
+        "hotel": 5, "resort": 4, "hospitality": 5, "inn": 2, "lodge": 3,
+        "guesthouse": 3,
+    },
+    "civic": {
+        "museum": 4, "cultural": 4, "library": 4, "theatre": 3, "gallery": 3,
+        "community": 3,
+    },
 }
 
 #: Words that make a case useless for a *private* project, however good it is.
 NOISE = ("museum", "stadium", "airport", "school", "hospital", "factory",
          "office building", "apartment complex", "housing complex")
 
+#: 每一类项目自己的"噪声"：除目标类型之外都不相干。
+#: 学校项目里 "school" 是信号不是噪声；原来把它写成固定噪声，
+#: 结果小学检索把教育建筑全扣了分，只剩别墅排在前面。
+NOISE_BY_ASPECT: Dict[str, Tuple[str, ...]] = {
+    "education": ("museum", "stadium", "airport", "hospital", "factory",
+                  "office building", "apartment complex", "housing complex",
+                  "villa", "house"),
+    "healthcare": ("museum", "stadium", "airport", "school", "factory",
+                   "office building", "villa", "house", "apartment complex"),
+    "industrial": ("museum", "stadium", "airport", "school", "hospital",
+                   "villa", "house", "apartment complex", "housing complex"),
+    "hospitality": ("museum", "stadium", "airport", "school", "hospital",
+                    "factory", "apartment complex", "housing complex"),
+    "civic": ("stadium", "airport", "villa", "apartment complex"),
+    "retail": ("museum", "stadium", "airport", "school", "hospital", "factory"),
+    "office": ("museum", "stadium", "airport", "villa", "apartment complex"),
+}
+
 
 def score_case(item: Dict[str, str], discipline: str,
-               terms: Sequence[str]) -> int:
+               terms: Sequence[str], aspect: str = "") -> int:
     """How likely is this listed project to answer the client's question."""
     hay = (item.get("title", "") + " " + item.get("url", "")).lower()
     score = 0
-    for sig, weight in SIGNALS.get(discipline, {}).items():
+    signals = dict(SIGNALS.get(discipline, {}))
+    signals.update(SIGNALS.get(aspect, {}))
+    for sig, weight in signals.items():
         if sig in hay:
             score += weight
     for t in terms:
         t = t.strip().lower()
         if len(t) >= 4 and t in hay:
             score += 2
-    for bad in NOISE:
+    for bad in NOISE_BY_ASPECT.get(aspect, NOISE):
         if bad in hay:
             score -= 6
     return score
 
 
 def pick_candidates(items: Sequence[Dict[str, str]], discipline: str,
-                    terms: Sequence[str], limit: int = 6) -> List[Dict[str, str]]:
+                    terms: Sequence[str], limit: int = 6,
+                    aspect: str = "") -> List[Dict[str, str]]:
     """Best-scoring items, never padded with noise to reach ``limit``."""
-    scored = [(score_case(i, discipline, terms), i) for i in items]
+    scored = [(score_case(i, discipline, terms, aspect), i) for i in items]
     scored = [(s, i) for s, i in scored if s > 0]
     scored.sort(key=lambda x: -x[0])
     return [i for _, i in scored[:limit]]
@@ -364,7 +441,8 @@ class SearchLog:
 def search(discipline: str, terms: Sequence[str], limit: int = 6,
            fetch_fn: Optional[Fetcher] = None,
            verify_pages: bool = True,
-           log: Optional[SearchLog] = None) -> List[Case]:
+           log: Optional[SearchLog] = None,
+           aspect: str = "") -> List[Case]:
     """Find real cases for one discipline.
 
     Returns at most ``limit`` cases. Fewer is acceptable — an empty list with a
@@ -373,9 +451,11 @@ def search(discipline: str, terms: Sequence[str], limit: int = 6,
     f = fetch_fn or fetch
     log = log if log is not None else SearchLog()
 
-    pages = CATEGORY_PAGES.get(discipline) or ()
+    # 先按项目类型找分类页（教育/医疗/工业…），没有才退回专业通用页。
+    pages = ASPECT_PAGES.get(aspect) or CATEGORY_PAGES.get(discipline) or ()
     if not pages:
-        log.add(source="archdaily", action="skip", detail="无可用分类页：" + discipline)
+        log.add(source="archdaily", action="skip",
+                detail="无可用分类页：" + (aspect or discipline))
         return []
 
     items: List[Dict[str, str]] = []
@@ -400,8 +480,9 @@ def search(discipline: str, terms: Sequence[str], limit: int = 6,
                 detail="分类页可访问但没有解析出条目，未编造替代数据")
         return []
 
-    picked = pick_candidates(items, discipline, terms, limit=limit)
-    log.add(source="archdaily", action="pick", detail=f"{len(picked)}/{len(items)}")
+    picked = pick_candidates(items, discipline, terms, limit=limit, aspect=aspect)
+    log.add(source="archdaily", action="pick",
+            detail=f"{len(picked)}/{len(items)}（{aspect or discipline}）")
 
     cases: List[Case] = []
     for item in picked:
@@ -501,6 +582,27 @@ READING_SIGNALS: Dict[str, Tuple[str, str]] = {
     "path": ("园路的材料与转折节奏", "看路面怎么从硬到软过渡"),
     "paving": ("铺装的模数与排水坡向", "看缝往哪边排、雨停后哪里积水"),
     "park": ("公共绿地的边界与开放方式", "看它怎么把园子交给城市"),
+    # ---- 教育 / 医疗 / 工业：这三类以前没有词条，案例只能落到通用兜底句 ----
+    "school": ("教学组团怎么分、共享空间放在哪",
+               "看普通教室与专用教室是不是同一套结构逻辑"),
+    "campus": ("校园的公共骨架与教学单元的关系",
+               "看学生从校门到教室要经过几层公共空间"),
+    "classroom": ("教室的采光方向与走廊界面",
+                  "看走廊是不是只用来走路，还是兼作学习空间"),
+    "kindergarten": ("小尺度体量与儿童视线高度",
+                     "看窗台高度、转角处理与安全细节"),
+    "canteen": ("食堂的排队与就餐流线", "看它与教学区的高峰时段怎么错开"),
+    "library": ("阅览与藏书的空间关系", "看它在校园里是不是被当作公共客厅"),
+    "hospital": ("门诊、医技与住院的分区逻辑",
+                 "看病人在院内要换几次楼、走多远"),
+    "clinic": ("候诊与诊室的空间关系", "看候诊是不是能看见叫号与护士站"),
+    "health": ("洁污流线与无障碍的组织",
+               "看医护人员与病人是不是走同一部电梯"),
+    "factory": ("生产工艺与柱网、跨度的对应关系",
+                "看设备布置决定了哪些尺寸，建筑只是围合"),
+    "industrial": ("物流、装卸与生产区的关系",
+                   "看货运车怎么进、在哪儿掉头"),
+    "warehouse": ("仓储高度与货架模数", "看层高是被货架定的，不是被造型定的"),
 }
 
 
@@ -523,9 +625,11 @@ def reading_for(case: "Case") -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
     matched.sort(key=lambda w: (_SIGNAL_WEIGHT.get(w, 3), list(
         READING_SIGNALS).index(w)))
     borrow: List[str] = []
-    for word in matched:
+    for word in matched[:2]:
         why, how = READING_SIGNALS[word]
-        borrow.extend([why, how])
+        # 每多一个不同信号只取一句：两条案例若命中的特征不同，
+        # 读图要点就自然不同，不会整段照抄。
+        borrow.append(why if not borrow else how)
         if len(borrow) >= 2:
             break
     if not borrow:
@@ -541,6 +645,10 @@ _SIGNAL_WEIGHT: Dict[str, int] = {
     "vegetation": 1, "planting": 1, "path": 1, "paving": 1,
     "landscape": 2, "park": 2, "apartment": 2,
     "villa": 5, "minimal": 5,
+    # 类型词：越具体越先读。学校教育、医疗、工业各有自己的重点。
+    "school": 0, "campus": 0, "factory": 0, "hospital": 0, "kindergarten": 0,
+    "classroom": 1, "clinic": 1, "industrial": 1, "landscape": 1,
+    "library": 2, "health": 2, "warehouse": 2, "canteen": 2,
 }
 
 

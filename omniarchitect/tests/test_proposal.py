@@ -167,11 +167,46 @@ def test_html_and_pptx_share_the_same_page_count() -> None:
 
 
 def test_motion_is_a_real_playable_html() -> None:
-    info = anim_mod.build(out_dir=_tmp())
+    """有概念数据时才出动画；动画内容按专业画，不是固定体块。"""
+    info = anim_mod.build(concept=_concept(), out_dir=_tmp(), discipline="interior")
     text = Path(info["path"]).read_text(encoding="utf-8")
     assert "<svg" in text and "<script>" in text
     assert "setInterval" in text
     assert text.count('class="scene') >= 4
+    assert "SEQUENCE" in text, "室内项目的动画应是功能与序列，不是体块生成"
+    assert "客房走廊" in text or "公共核" in text
+
+
+def test_motion_is_skipped_when_the_concept_has_no_evolution_logic() -> None:
+    """推不出来就不出动画：宁可少一个动画，不放不相干的专业推演。"""
+    thin = {"concept_id": "C-X", "concept_name": "空概念",
+            "spatial_prototype": {"family": "cluster"}}
+    info = anim_mod.build(concept=thin, out_dir=_tmp(), discipline="interior")
+    assert info["path"] == ""
+    assert info["skipped"], info
+
+
+def test_evolution_steps_follow_the_discipline() -> None:
+    """建筑／室内／景观各自四条线，不能互相顶替。"""
+    evo = prop.evo_mod
+    arch = evo.plan(_concept(), "architecture")
+    inner = evo.plan(_concept(), "interior")
+    land = evo.plan(_concept(), "landscape")
+    assert [s.name for s in arch.steps][:2] == ["场地与限界", "体量分解"]
+    assert [s.name for s in inner.steps][:2] == ["功能重组", "空间序列"]
+    assert [s.name for s in land.steps][:2] == ["场地与边界", "空间层次"]
+    for p_ in (arch, inner, land):
+        assert p_.ok, p_.reason
+        assert len({s.note for s in p_.steps}) >= 3, "四步不能复读同一句话"
+
+
+def test_evolution_refuses_without_the_data_it_needs() -> None:
+    """没有分区也没有序列时，室内推敲必须说"做不了"，而不是编一套。"""
+    thin = {"concept_id": "C-Y", "concept_name": "空概念",
+            "spatial_prototype": {"family": "cluster"}}
+    p_ = prop.evo_mod.plan(thin, "interior")
+    assert p_.ok is False
+    assert "分区" in p_.reason or "序列" in p_.reason
 
 
 def test_quick_judgment_is_one_page_and_at_most_three_questions() -> None:

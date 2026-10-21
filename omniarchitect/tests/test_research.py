@@ -403,3 +403,44 @@ def test_json_payload_carries_verify_state_per_case():
     for c in payload["cases"]:
         assert c["verify"] in case_mod.VERIFY_STATES
         assert c["image_rights"] == "link_only"
+
+
+def test_school_research_asks_for_schools_not_villas():
+    """学校要检索教育建筑；以前它落进 houses 分类页，案例页上全是别墅。
+
+    这一条守两件事：分类页按项目类型选、类型词不再当噪声扣分。
+    """
+    from omniarchitect.research import brief as B
+    from omniarchitect.research import cases as C
+
+    assert "education" in B.ASPECTS, "教育类型必须有专属要点表"
+    assert B.CODE_ASPECT["A3"] == "education"
+    assert B.CODE_ASPECT["A12"] == "industrial"
+    assert "educational-architecture" in " ".join(C.ASPECT_PAGES["education"])
+
+    item = {"title": "Hongling Middle School Shixia Campus",
+            "architect": "Tumushi Architects", "url": "https://x/1"}
+    score = C.score_case(item, "architecture", ("school", "campus"),
+                         aspect="education")
+    assert score > 0, "学校项目里 school 是信号，不该被当噪声扣成负数"
+    assert C.score_case({"title": "DUA Villa", "architect": "X", "url": "https://x/2"},
+                        "architecture", ("school", "campus"),
+                        aspect="education") < score, "别墅不该压过学校"
+
+
+def test_case_reading_is_derived_from_the_case_itself():
+    """读图要点必须来自该案例自身文字；两条案例不能输出同一段话。"""
+    from omniarchitect.research import cases as C
+
+    a = C.Case(title="City Pride School", architect="A Threshold",
+               url="https://x/a", source="archdaily", discipline="architecture",
+               summary="A primary school with classrooms around a courtyard.")
+    b = C.Case(title="Yumoto Electric Factory", architect="YKAD",
+               url="https://x/b", source="archdaily", discipline="architecture",
+               summary="A factory where the production line sets the grid.")
+    ba, _ = C.reading_for(a)
+    bb, _ = C.reading_for(b)
+    assert ba and bb
+    assert ba != bb, "两台不同的项目不该得到同一段读图要点"
+    assert any(("教室" in x) or ("教学" in x) or ("庭院" in x) or ("组团" in x)
+               for x in ba), ba

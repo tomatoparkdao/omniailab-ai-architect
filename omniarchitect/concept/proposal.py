@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
+from . import evolution as evo_mod
 from . import plate as plate_mod
 
 PAGE_W, PAGE_H = 1280, 720
@@ -91,6 +92,8 @@ class Page:
     foot: str = ""
     notes: str = ""
     steps: List[str] = field(default_factory=list)
+    #: 对标案例卡片（只有文字与链接，第三方图片不进版面）
+    refs: List[Dict[str, Any]] = field(default_factory=list)
 
 
 def theme_from(rules: Optional[Dict[str, Any]]) -> Theme:
@@ -199,6 +202,12 @@ def release() -> None:
     _BROWSER = None
     _PW = None
     _TRIED = False
+
+
+def _theme_tokens(th: "Theme") -> Dict[str, str]:
+    """页面主题 → 图版配色。图与页面必须同一套色，否则像拼贴。"""
+    return {"paper": th.paper, "ink": th.ink, "muted": th.muted,
+            "line": th.line, "accent": th.accent}
 
 
 def _png(svg: str | Path, cache_dir: str | Path) -> str:
@@ -497,6 +506,20 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
             notes="图源：" + "、".join(s.get("credit", "") for s in intent_shots[:3]),
         ))
 
+    # 3b 对标案例：素材库没有同类实景时，这一页就是主要的"别人怎么做"证据。
+    # 只放文字与链接——第三方照片有版权，不嵌进可再分发的 PPTX。
+    refs = [c for c in ((rec.get("references") or {}).get("cases") or [])
+            if str(c.get("title") or "").strip()]
+    if len(refs) >= 2:
+        pages.append(Page(
+            kind="cases", kicker="03 / 对标案例", title="同类项目是怎么解决的",
+            lead="真实建成项目，按可核验程度标注；只给项目页链接，不把别人的照片搬进提案。",
+            refs=refs[:3],
+            foot="案例只用于讨论方法，不代表本项目效果；引用信息以原始项目页为准。",
+            notes="来源：" + "；".join(
+                f"{c.get('title')}（{c.get('architect')}，{c.get('url')}）" for c in refs[:3]),
+        ))
+
     # 4 设计机会
     opps = list(getattr(ctx, "opportunities", []) or [])[:3]
     opp_blocks = [Block("", _clip(o.get("problem") or o.get("design_goal") or "", 54),
@@ -547,24 +570,51 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
         notes="这一页回答客户最关心的：我说的那些事，你到底怎么做。",
     ))
 
-    # 6 概念推敲（只有存在体块演变图时才出这一页，不重复同一张图）
-    evo_svg = plate_mod.write_steps(rec, out / "concept-plates",
-                                    stem="steps-" + rec["concept_id"].lower())
-    evo_png = _png(evo_svg, cache) if evo_svg else ""
-    if evo_png:
-        evo_fig = _figure(evo_png, caption="体块演变（自有图解·非按比例）",
+    # 6 概念推敲：按专业推（建筑体块／室内序列／景观场地），不套同一套动画。
+    # 概念数据不足以支撑推敲时，不出图也不出动画，只把四条判断写清楚。
+    evo = evo_mod.plan(rec, lead)
+    evo_png = ""
+    if evo.ok:
+        evo_svg = evo_mod.strip(rec, lead, width=700, height=470,
+                                theme={k: v for k, v in _theme_tokens(th).items()})
+        if evo_svg:
+            path = out / "concept-plates" / ("steps-" + rec["concept_id"].lower() + ".svg")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(evo_svg, encoding="utf-8")
+            evo_png = _png(path, cache)
+    evo_caption = {"architecture": "体块推演（自有图解·非按比例）",
+                   "interior": "功能与序列（自有图解·非按比例）",
+                   "landscape": "场地与游线（自有图解·非按比例）"}.get(lead, "概念推敲")
+    evo_title = {"architecture": "这个形态是怎么长出来的",
+                 "interior": "这套空间是怎么排出来的",
+                 "landscape": "这个院子是怎么组织起来的"}.get(lead, "这套方案是怎么成立的")
+    evo_lead = {"architecture": "四步推演：从场地限界推到最终形态，每一步都对应一条约束。",
+                "interior": "四步推演：从功能重组推到核心空间体验，每一步都改变人的走法。",
+                "landscape": "四步推演：从场地边界推到水景种植，每一步都改变人在院子里的感受。"}.get(
+        lead, "四步推演：每一步都对应一条设计约束。")
+    if evo.ok and evo_png:
+        evo_fig = _figure(evo_png, caption=evo_caption,
                           credit="OmniAiLab 自有图解", role="diagram", kind="analysis")
-        steps = [f"场地与体量：{_clip(proto.get('zoning', ''), 30)}",
-                 f"组织：{_clip(proto.get('spatial_logic', ''), 34)}",
-                 f"动线：{_clip(proto.get('circulation', ''), 34)}",
-                 f"光：{_clip(proto.get('daylight', ''), 34)}"]
         pages.append(Page(
-            kind="evolution", kicker="05 / 概念推敲", title="这个形态是怎么长出来的",
-            lead="四步推演：从场地关系推到最终形态，每一步都有理由。",
-            figures=[evo_fig] if evo_fig else [], steps=steps,
+            kind="evolution", kicker="05 / 概念推敲", title=evo_title,
+            lead=evo_lead,
+            figures=[evo_fig] if evo_fig else [],
+            steps=[f"{s.name}：{_clip(s.note, 44)}" for s in evo.steps],
             blocks=[Block("专业判断", _clip("；".join(_as_list(rec.get("advantages"))[:2]), 60))],
-            foot="图解为空间关系示意，不按比例；形态依据见 S3 的平面与实测条件。",
-            notes="体块演变不是装饰：每一格都对应一条设计约束。",
+            foot="图解为空间关系示意，不按比例；尺寸与构造依据见 S3。",
+            notes="；".join(f"{s.n} {s.name} 依据 {s.basis}" for s in evo.steps),
+        ))
+    else:
+        # 不出图：把概念里真实存在的四条判断排清楚，比放一张不相干的图诚实
+        pages.append(Page(
+            kind="tensions", kicker="05 / 概念要成立，靠这四件事", title="这套方案凭什么成立",
+            lead=evo.reason or "概念数据不足以做推演，以下四条取自本方案自己的说法。",
+            blocks=[Block("分区", _clip(proto.get("zoning", ""), 84)),
+                    Block("动线", _clip(proto.get("circulation", ""), 84)),
+                    Block("光", _clip(proto.get("daylight", ""), 84)),
+                    Block("代价", _clip("；".join(_as_list(rec.get("tradeoffs"))[:2]), 84))],
+            foot="不做推演图的场合，也不出动画：宁可少一张图，不放不相干的推演。",
+            notes="这一页的所有句子都来自本方案自己的策略字段。",
         ))
 
     # 7 材料与光
@@ -894,6 +944,56 @@ def layout(page: Page, th: Theme) -> List[Dict[str, Any]]:
             e.append(_t(x2, yy + 18, 460, gap - 32, b.text, size=12, color=th.ink, lh=1.65))
         if page.foot:
             e.append(_t(M, 676, 1152, 16, page.foot, size=9.5, color=th.muted))
+        return e
+
+    if k == "cases":
+        n = max(1, min(3, len(page.refs)))
+        gap = 26.0
+        fw = (PAGE_W - 2 * M - gap * (n - 1)) / n
+        rows_of = [("为什么", lambda c: str(c.get("why") or "")),
+                   ("借什么", lambda c: "；".join(str(x) for x in (c.get("borrow") or []))[:96]),
+                   ("不照搬", lambda c: "；".join(str(x) for x in (c.get("limits") or []))[:96])]
+        for i, c in enumerate(page.refs[:n]):
+            x = M + i * (fw + gap)
+            e.append({"t": "rule", "x": x, "y": 186, "w": fw, "h": 1, "color": th.line})
+            e.append(_t(x, 200, fw, 16, f"0{i + 1}", size=11.5, color=th.accent,
+                        weight=700))
+            e.append(_t(x, 222, fw, 52, str(c.get("title") or ""), size=18,
+                        color=th.ink, font="serif", lh=1.3))
+            verify = {"verified": "已核验", "partial": "部分核验",
+                      "unverified": "未核验"}.get(str(c.get("verify") or ""), "")
+            src = {"archdaily": "ArchDaily"}.get(str(c.get("source") or ""),
+                                                 str(c.get("source") or ""))
+            meta = "　".join(str(v) for v in (c.get("architect"), c.get("year"), src,
+                                             verify) if v)
+            e.append(_t(x, 278, fw, 30, meta, size=9.5, color=th.muted, lh=1.5))
+            yy = 316.0
+            for label, getter in rows_of:
+                text = getter(c)
+                if not text:
+                    continue
+                e.append(_t(x, yy, fw, 14, label, size=9.5, color=th.accent,
+                            weight=600, spacing=1.1))
+                e.append(_t(x, yy + 16, fw, 62, text, size=10.5, color=th.ink, lh=1.55))
+                yy += 86
+            url = str(c.get("url") or "")
+            e.append(_t(x, 664, fw, 14, _clip(url, 46), size=8.5, color=th.muted))
+        if page.foot:
+            e.append(_t(M, 690, 900, 14, _clip(page.foot, 52), size=9, color=th.muted))
+        return e
+
+    if k == "tensions":
+        y = 200.0
+        for i, b in enumerate(page.blocks[:4]):
+            yy = y + i * 112
+            e.append({"t": "rule", "x": M, "y": yy - 22, "w": 1152, "h": 1,
+                      "color": th.line})
+            e.append(_t(M, yy, 120, 14, b.label, size=10, color=th.accent,
+                        weight=600, spacing=1.2))
+            e.append(_t(M + 130, yy - 4, 1000, 76, b.text, size=14.5, color=th.ink,
+                        lh=1.7))
+        if page.foot:
+            e.append(_t(M, 682, 900, 14, _clip(page.foot, 52), size=9, color=th.muted))
         return e
 
     if k == "recommend":

@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.14.0
+version: 1.15.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

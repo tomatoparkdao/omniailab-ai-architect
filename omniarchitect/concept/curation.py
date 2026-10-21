@@ -187,9 +187,9 @@ def explain(shot: Dict[str, Any], *, sector: str = "",
 
     solve: List[str] = []
     if "自然光" in tags or "玻璃窗" in tags:
-        solve.append("用通高开窗把光带进进深——这是解决「内侧偏暗」最省钱的一招")
+        solve.append("用通高开窗把光带进进深——可对照本案的采光难点看是否适用")
     if "极简主义" in tags or "单色" in tags or "黑白灰" in tags:
-        solve.append("靠「少材料、大面整」压住杂乱，适合使用频率高的空间")
+        solve.append("靠「少材料、大面整」压住杂乱——看它的分缝与收口，不搬颜色")
     if "室内植物" in tags or "郁郁葱葱的绿植" in tags:
         solve.append("用一处集中的绿，替代分散的小装饰，视线有落点")
     if not solve:
@@ -201,7 +201,7 @@ def explain(shot: Dict[str, Any], *, sector: str = "",
     borrow = [b for b in borrow if b]
 
     limits = ["住宅层高与住宅家具尺度不能直接搬到公共空间",
-              "照片里的软装比例偏「展示」，实际使用要减三成"]
+              "照片按「展示」布置，实际使用的家具与软装量须按本项目使用人数重新定"]
     if "别墅" in tags:
         limits.append("这是住宅外立面，不能当公共建筑的形象参考")
     return {"why": why[:2], "solve": solve[:2], "borrow": borrow[:3], "limits": limits[:2]}

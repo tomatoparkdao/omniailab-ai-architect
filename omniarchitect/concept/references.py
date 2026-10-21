@@ -230,47 +230,99 @@ def _first_step(concept: Dict[str, Any]) -> str:
 
 
 def _borrow_for(concept: Dict[str, Any], case: Dict[str, Any]) -> List[str]:
-    """What we take from the case, phrased as method tied to this concept."""
-    out: List[str] = []
-    first = _first_step(concept)
-    if first:
-        out.append("它的入场处理可以直接对照你的「{}」这一步，看它是怎么收住视线的".format(first))
+    """借鉴什么：先用案例自己的读图要点，再补本案可对照的环节。
+
+    顺序很重要：先放"这条案例自己的"（读图要点、地点/年代条件），
+    再放通用对照。反过来的话，两条同类案例会共用同一段兜底句。
+    """
+    out: List[str] = [str(x) for x in (case.get("borrow") or []) if str(x).strip()]
+    if len(out) < 2:
+        where = "、".join(x for x in (str(case.get("city") or ""),
+                                    str(case.get("country") or "")) if x)
+        year = str(case.get("year") or "")
+        if where or year:
+            cond = "、".join(x for x in (year, where) if x)
+            out.append("看它在 {} 的条件下怎么处理同一件事（换到本案要重算）".format(cond))
+    if len(out) < 2:
+        first = _first_step(concept)
+        if first:
+            out.append("对照本案「{}」这一步看它怎么处理，取方法不取形式".format(first))
     mats = concept.get("materials") or []
-    if mats:
-        out.append("它的材料分布关系（不是材料本身）可用来检验你选的{}是否站得住".format(
+    if len(out) < 2 and mats:
+        out.append("看它的材料分配关系（不是材料本身），检验本案选的{}是否站得住".format(
             "、".join(str(m)[:10] for m in mats[:2])))
     if not out:
-        out.append("主要看它的空间关系与体量处理，不照搬具体做法")
+        out.append("看它的空间关系与体量处理；具体做法不照搬")
     return out[:2]
 
 
 def _transform_for(concept: Dict[str, Any], case: Dict[str, Any]) -> str:
-    """How the case becomes *this* project's own scheme."""
+    """怎么转化：写清本案与它**不同**的地方，而不是夸一句"重新设计"。"""
+    proto = concept.get("spatial_prototype") or {}
+    zoning = str(proto.get("zoning") or "").strip()
     name = (concept.get("concept_name") or concept.get("name")
             or concept.get("concept_id") or "本方案")
-    return ("「{}」借的是它的组织逻辑，落地时按你的地块、层数和实测尺寸重排；"
-            "形态与材料按本方案的主张重新定，不复制它的外观".format(name))
+    if zoning:
+        return ("借组织逻辑，不借形式：本案按「{}」重排，{}；"
+                "尺度与做法回本项目条件重新定".format(name, zoning[:46]))
+    return ("借组织逻辑，不借形式：「{}」按本项目的场地、规模与运营条件重排，"
+            "外观与材料不复制".format(name))
 
 
 def _limits_for(case: Dict[str, Any]) -> List[str]:
+    """不能照搬什么：优先用案例自己的限制，再用它的年份/地点说明条件差异。
+
+    两条案例的限制如果一字不差，客户会认为我们没真读——所以至少把
+    "哪一年、在哪个国家"这条差异带上。
+    """
     out = list(case.get("avoid") or [])
+    where = "、".join(x for x in (str(case.get("city") or ""),
+                                  str(case.get("country") or "")) if x)
+    year = str(case.get("year") or "")
     if case.get("area"):
         out.insert(0, "它的面积是 {}，属于它自己的规模与规范，不能反推本项目尺寸".format(
             case["area"]))
+    if where or year:
+        cond = "、".join(x for x in (year, where) if x)
+        out.append("它的做法绑定 {} 的规范、气候与施工条件，换到本项目要重算".format(cond))
     if not out:
         out = ["尺寸、预算与当地规范都不通用，须按本项目条件重算"]
-    return out[:3]
+    # 去重后截断，避免同一条限制出现两次
+    seen: List[str] = []
+    for x in out:
+        if x not in seen:
+            seen.append(x)
+    return seen[:3]
 
 
 def _why_for(case: Dict[str, Any], concept: Dict[str, Any]) -> str:
-    fits = case.get("fits") or []
+    """为什么把它摆在你面前：它答的是你提过的哪件事。
+
+    只认案例自己的证据（`fits` 来自标题与简介里真实出现的词）与本案的
+    设计问题。两边都拿不到就直说"对应关系待读图确认"，不写"它很契合"。
+    """
+    fits = [str(x) for x in (case.get("fits") or []) if str(x).strip()]
+    title = str(case.get("title") or "").strip()
+    label = "「{}」".format(title[:22]) if title else "这个案例"
+    # 用概念自己的主张，而不是 design_problem：后者是把 S1 的需求串起来，
+    # 需求抽歪时会把不相干的话（"收藏展示"）印到案例页上。
+    problem = str(concept.get("concept_statement")
+                  or concept.get("design_problem") or "").strip()
+    if fits and problem:
+        return "{}答的是「{}」；本案要处理的是「{}」".format(
+            label, "、".join(fits[:2]), problem[:36])
     if fits:
-        return "；".join(fits[:2])
-    # 名称优先取 concept_name：`name` 在推敲路径里不一定存在，回退到它会把
-    # 「它在「C-A」这个方向上…」印给客户——客户不知道 C-A 是什么。
-    label = (concept.get("concept_name") or concept.get("name")
-             or concept.get("concept_id") or "本方向")
-    return "它在「{}」这个方向上是我们这次找到的可核验案例".format(label)
+        return "{}答的是「{}」——与本案任务同类".format(label, "、".join(fits[:2]))
+    # 没有可引用的契合点：用这条案例自己的读图要点说清"该对照什么"。
+    # 不引用英文原文——客户看不懂，截断成二十个字母比不写更难看。
+    tip = str((case.get("borrow") or [""])[0] if case.get("borrow") else "").strip()
+    if tip and problem:
+        return "{}值得对照的是「{}」；本案要处理「{}」，属同一类问题".format(
+            label, tip[:30], problem[:30])
+    if problem:
+        return "{}属同类任务；本案要处理「{}」，对应关系需读图确认".format(
+            label, problem[:36])
+    return "{}属同类任务；与本方案的对应关系需主创读图确认".format(label)
 
 
 def build(concepts: Sequence[Dict[str, Any]],
@@ -341,6 +393,11 @@ def build(concepts: Sequence[Dict[str, Any]],
                 "architect": cs.get("architect"),
                 "url": cs.get("url"),
                 "image_url": cs.get("image_url"),
+                "source": cs.get("source"),
+                "year": cs.get("year"),
+                "city": cs.get("city"),
+                "country": cs.get("country"),
+                "area": cs.get("area"),
                 "verify": cs.get("verify"),
                 "verify_label": cs.get("verify_label"),
                 "usage": usage,

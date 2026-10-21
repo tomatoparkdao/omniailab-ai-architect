@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-cold-start-prompts
 description: 起手话术 —— 不知道怎么说时直接复制：4 种起手式、31 项能力点名表与卡住时的三句话。
-version: 1.14.0
+version: 1.15.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

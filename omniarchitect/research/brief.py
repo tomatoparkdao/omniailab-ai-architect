@@ -81,6 +81,64 @@ ASPECTS: Dict[str, Dict[str, Tuple[str, ...]]] = {
         "landscape": ("景观空间布局", "植物配置与季相", "水景与铺装",
                        "庭院体验与动线", "维护条件"),
     },
+    # ---- 教育建筑：看的是"教学怎么组织"，不是"像不像住宅" ----
+    # 学校项目的参考案例长期被住宅/别墅占满，原因就是这个表里没有教育，
+    # 于是落到 architecture 那一档（villa / courtyard）。这里按这一类
+    # 项目真正要回答的问题列，检索词也随之换成 school / campus。
+    "education": {
+        "architecture": ("教学组团与年级分区", "交通核心与疏散组织",
+                          "共享空间（中庭/图书馆/食堂）与公共界面",
+                          "专用教室与独立体量（体育馆/报告厅）的关系"),
+        "interior": ("教室与共享空间的界面", "走廊作为学习空间的用法",
+                      "采光与眩光控制", "材料耐久与维护"),
+        "landscape": ("校园户外与教学的关系", "出入口、接送与家长等候",
+                       "运动场与绿地的边界处理"),
+    },
+    # ---- 医疗建筑：分区、洁污、医患分流 ----
+    "healthcare": {
+        "architecture": ("门诊/医技/住院的功能分区", "洁污与医患流线分离",
+                          "后勤、设备与竖向运输", "改扩建与分期建设"),
+        "interior": ("候诊与诊室的空间关系", "导向与标识", "洁净与易清洁构造",
+                      "病房的采光与隐私"),
+        "landscape": ("疗愈花园与视线", "出入口集散与落客"),
+    },
+    # ---- 工业建筑：工艺与物流优先 ----
+    "industrial": {
+        "architecture": ("生产工艺与柱网/跨度", "物流、装卸与场地组织",
+                          "设备用房与辅助功能", "消防、通风与屋面构造"),
+        "interior": ("生产环境的洁净与照明", "控制室/办公与车间的界面"),
+        "landscape": ("厂前区与货运流线分离",),
+    },
+    # ---- 酒店/文旅：到达、公共区节奏、客房体验 ----
+    "hospitality": {
+        "architecture": ("建筑与场地的关系", "到达体验与入口序列",
+                          "公共区与客房的体量关系"),
+        "interior": ("公共区域的空间节奏", "客房体验与私密性",
+                      "品牌氛围的表达方式", "灯光与材料的配合"),
+        "landscape": ("入口与庭院体验",),
+    },
+    # ---- 文化/展陈 ----
+    "civic": {
+        "architecture": ("公共界面与城市关系", "参观序列与流线",
+                          "无柱大空间与结构表达"),
+        "interior": ("展陈与空间的一体化", "光环境控制"),
+        "landscape": ("室外展场与集散",),
+    },
+}
+
+#: 分类代码 → 研究类型。研究要按"这一类项目该看什么"检索；
+#: 只按专业名检索，学校会搜到别墅、医院会搜到住宅。
+CODE_ASPECT: Dict[str, str] = {
+    "A1": "residential", "A2": "office", "A3": "education", "A4": "healthcare",
+    "A5": "retail", "A6": "hospitality", "A7": "office", "A8": "civic",
+    "A9": "retail", "A10": "civic", "A11": "civic", "A12": "industrial",
+    "A13": "industrial", "A14": "civic",
+    "B1": "residential", "B2": "residential", "B3": "office", "B4": "hospitality",
+    "B5": "retail", "B6": "retail", "B7": "civic", "B8": "education",
+    "B9": "healthcare", "B10": "healthcare",
+    "C1": "landscape", "C2": "landscape", "C3": "landscape", "C4": "landscape",
+    "C5": "landscape", "C6": "landscape", "C7": "landscape", "C8": "landscape",
+    "C9": "landscape",
 }
 
 #: Aspect table keyed by the intake profile id when it differs from type.
@@ -108,12 +166,15 @@ class Direction:
     avoid: Tuple[str, ...] = DEFAULT_AVOID
     sources: Tuple[str, ...] = ()
     note: str = ""
+    #: 检索类型（education / healthcare / industrial …）。空表示按专业通用页。
+    aspect: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "discipline": self.discipline,
             "discipline_label": _disc_label(self.discipline),
             "aspects": list(self.aspects),
+            "aspect": self.aspect,
             "idea": list(self.idea),
             "avoid": list(self.avoid),
             "sources": list(self.sources),
@@ -195,15 +256,19 @@ PURE_LANDSCAPE_WORDS: Tuple[str, ...] = (
 )
 
 
-def classify(project: Any, declared: str = "") -> str:
-    """Which aspect table to use: architecture / residential / landscape.
+def classify(project: Any, declared: str = "", discipline: str = "") -> str:
+    """Which aspect table to use: education / healthcare / industrial / …
 
-    Three cases that the intake profile merges but research must not:
+    S1 已经判定过项目类型（36 类分类），研究就该用那个判定，而不是再从
+    "新建/装修/景观"三个词里猜。猜的后果很具体：学校被归进 architecture，
+    检索词变成 villa / courtyard，案例页上出现一排别墅。
 
-    - ``architecture`` a new building (massing, facade, courtyard)
-    - ``residential``  a fit-out inside an existing shell
-    - ``landscape``    outdoor work as the whole job
+    只有 S1 还没分类时，才退回按文字判专业的老办法。
     """
+    code = _code_aspect(project, discipline)
+    if code:
+        return code
+
     text = " ".join([declared, getattr(project, "name", "") or "",
                      str((getattr(project, "constraints", None) or {}).get("style") or "")])
     has_new = any(w in text for w in NEW_BUILD_WORDS)
@@ -219,6 +284,38 @@ def classify(project: Any, declared: str = "") -> str:
     if has_new:
         return "architecture"
     return "residential"
+
+
+def _code_aspect(project: Any, discipline: str = "") -> str:
+    """S1 的分类代码 → 研究类型。取不到就是空串，不猜。
+
+    一个项目可以同时有建筑、室内、景观三个代码（别墅带庭院就是 A1 + B2 + C2）。
+    研究要按**专业**取对应那条：建筑看 A1，室内看 B2，景观看 C2。
+    只取第一个代码，别墅项目会整体按景观检索，建筑方向就搜不到房子。
+    """
+    codes: Sequence[str] = ()
+    try:
+        from ..intake.interview import taxonomy_codes
+
+        codes = tuple(taxonomy_codes(project) or ())
+    except Exception:                     # noqa: BLE001  分类不可用时不阻断研究
+        codes = ()
+    if not codes:
+        tax = (getattr(project, "meta", {}) or {}).get("taxonomy") or {}
+        codes = tuple(str(c) for c in (tax.get("codes") or ()))
+    from .. import taxonomy as tax
+
+    want = str(discipline or "").strip()
+    ordered = list(codes)
+    if want:
+        same = [c for c in ordered
+                if getattr(tax.TYPES.get(str(c)), "discipline", "") == want]
+        ordered = same + [c for c in ordered if c not in same]
+    for c in ordered:
+        hit = CODE_ASPECT.get(str(c))
+        if hit:
+            return hit
+    return ""
 
 
 def _profile_id(project: Any) -> str:
@@ -328,11 +425,17 @@ def _query_terms(project: Any, discipline: str,
     if discipline == "architecture":
         base = {
             "architecture": ["villa", "courtyard"],
-            "residential": ["apartment building", "renovation"],
-            "hospitality": ["hotel", "retreat"],
+            # 居住建筑在"建筑"这条线里是**新建**（A1），搜 house/villa；
+            # apartment/renovation 属于室内改造那条线，放在 interior 里。
+            "residential": ["house", "villa"],
+            "hospitality": ["hotel", "resort"],
             "retail": ["restaurant", "cafe"],
             "exhibition": ["museum", "pavilion"],
             "office": ["office building", "workplace"],
+            "education": ["school", "campus"],
+            "healthcare": ["hospital", "health centre"],
+            "industrial": ["factory", "industrial building"],
+            "civic": ["cultural centre", "library"],
         }.get(t, ["house", "villa"])
         terms.extend(base[:2])
     elif discipline == "interior":
@@ -343,6 +446,10 @@ def _query_terms(project: Any, discipline: str,
             "retail": ["restaurant interior", "retail interior"],
             "exhibition": ["gallery interior"],
             "office": ["office interior", "workspace"],
+            "education": ["classroom", "school interior"],
+            "healthcare": ["clinic interior", "hospital interior"],
+            "industrial": ["factory interior", "workshop"],
+            "civic": ["library interior", "museum interior"],
         }.get(t, ["interior design"])
         terms.extend(base[:2])
     elif discipline == "landscape":
@@ -354,6 +461,10 @@ def _query_terms(project: Any, discipline: str,
             "retail": ["outdoor seating"],
             "exhibition": ["museum garden"],
             "office": ["courtyard office"],
+            "education": ["schoolyard", "campus landscape"],
+            "healthcare": ["healing garden"],
+            "industrial": ["factory landscape"],
+            "civic": ["public plaza"],
         }.get(t, ["garden", "courtyard"])
         terms.extend(base[:2])
 
@@ -405,14 +516,17 @@ def derive(project: Any) -> ResearchBrief:
     disciplines = _active_disciplines(project, aspect_type)
     readiness, missing, readiness_note = _readiness(project)
 
-    table = ASPECTS.get(aspect_type) or ASPECTS.get(ptype) or ASPECTS["residential"]
-
     directions: List[Direction] = []
     for disc in disciplines:
+        # 每个专业用自己的类型：别墅是 A1（建筑）+ B2（室内）+ C2（景观），
+        # 三条线该看的东西完全不同。
+        aspect_d = classify(project, declared_type, disc)
+        table = (ASPECTS.get(aspect_d) or ASPECTS.get(aspect_type)
+                 or ASPECTS.get(ptype) or ASPECTS["residential"])
         aspects = tuple(table.get(disc) or ())
         if not aspects:
             continue
-        idea = _query_terms(project, disc, feelings, style, aspect_type)
+        idea = _query_terms(project, disc, feelings, style, aspect_d)
         from .sources import case_sources
 
         src = tuple(s.id for s in case_sources(disc))
@@ -421,7 +535,7 @@ def derive(project: Any) -> ResearchBrief:
             note = "本项目无景观范围，不做景观案例研究"
         directions.append(Direction(
             discipline=disc, aspects=aspects, idea=idea,
-            sources=src, note=note,
+            sources=src, note=note, aspect=aspect_d,
         ))
 
     trigger = "S1 已识别项目类型" if declared_type else "S1 已推断项目类型"

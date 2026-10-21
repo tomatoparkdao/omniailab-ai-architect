@@ -1,7 +1,7 @@
 ---
 name: omniailab-presentation
 description: 设计汇报与 PPT 交付 —— 汇报能力是跨阶段通用能力（design-presentation，参与 S2–S8），不是流程末尾的一次动作。
-version: 1.14.0
+version: 1.15.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

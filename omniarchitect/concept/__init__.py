@@ -275,9 +275,12 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         pptx_info = prop_mod.write_pptx(model, out,
                                         title=f"{project.name or project.project_id} · 概念汇报")
         md_path2 = prop_mod.write_markdown(model, out)
+        # 动画按专业推：没有演变逻辑就返回 skipped，提案里只留静态分析图。
         motion_info = anim_mod.build(
             project, rec_c, out_dir=out,
-            theme={"paper": str((rules or {}).get("tokens", {}).get("paper") or "")})
+            discipline=str(getattr(ctx, "lead_id", "") or ""),
+            theme={k: str(v) for k, v in
+                   ((rules or {}).get("tokens") or {}).items() if v})
         proposal_info = {
             "html": html_path,
             "pptx": pptx_info.get("path", ""),
@@ -290,6 +293,8 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
                          "count": cur.get("count", 0),
                          "reason": cur.get("reason", "")},
             "motion": motion_info.get("path", ""),
+            "motion_skipped": motion_info.get("skipped", ""),
+            "discipline": motion_info.get("discipline", ""),
             "judgment": judgment,
         }
         prop_mod.release()          # 交出浏览器：同进程可能还要截图/出别的文档

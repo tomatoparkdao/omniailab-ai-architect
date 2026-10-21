@@ -1,7 +1,7 @@
 ---
 name: omniailab-index
 description: 知识库索引（INDEX） —— 本索引供程序做渐进式加载：先读本文件确定需要哪个领域，再按需加载对应知识文档，避免一次性加载全部内容。索引本身只做路由，不承载领域判据。
-version: 1.14.0
+version: 1.15.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

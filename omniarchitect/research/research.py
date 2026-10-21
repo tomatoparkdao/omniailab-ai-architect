@@ -120,7 +120,8 @@ def run(project: Any, out_dir: Optional[str] = None,
             continue
         found = case_mod.search(d.discipline, d.idea, limit=n,
                                 fetch_fn=fetch_fn,
-                                verify_pages=verify_pages, log=log)
+                                verify_pages=verify_pages, log=log,
+                                aspect=getattr(d, "aspect", "") or "")
         for c in found:
             c.fits = _fits(c, brief)
         result.cases.extend(found)
