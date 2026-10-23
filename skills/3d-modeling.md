@@ -3,7 +3,7 @@ name: omniailab-3d-modeling
 description: 3D 空间建模 —— 把已确认的统一空间模型翻译成可编辑的三维场景与构件，供表现与校核使用
 capability: 3d-modeling
 stages: [S5]
-version: 1.15.0
+version: 1.16.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

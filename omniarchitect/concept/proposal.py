@@ -123,12 +123,18 @@ def _clip(text: Any, n: int) -> str:
     """
     t = " ".join(str(text or "").split())
     if len(t) <= n:
-        return t
-    for sep in ("。", "；", "，", "、"):
+        return t                      # 已经够短就原样返回（含它自带的省略号）
+    for sep in ("。", "；"):
         head = t.split(sep)[0]
         if 10 <= len(head) <= n:
             return head
-    return t[: n - 1] + "…"
+    # 退一步：在 n 之内最后一个逗号处断，宁可短一点也不留半句
+    cut = t[: n + 1]
+    for sep in ("，", "、", "；"):
+        i = cut.rfind(sep)
+        if i >= max(10, int(n * 0.6)):
+            return cut[:i]
+    return t[: n - 1].rstrip("，、；…") + "…"
 
 
 def _as_list(v: Any) -> List[str]:
@@ -403,6 +409,12 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
     th = theme_from(rules)
     pages: List[Page] = []
     lead = str(getattr(ctx, "lead_id", "") or "")
+    try:
+        from ..sector import brief as _sector_brief
+
+        sector = _sector_brief.from_project(project).sector
+    except Exception:                     # noqa: BLE001  非行业项目就是普通项目
+        sector = ""
     shots = list((curation or {}).get("shots") or [])
     # 景观项目：参考页只留"讲院子"的图。素材库索引里混着别墅外观，
     # 拿它当庭院意向，客户一眼就知道没看懂委托范围。
@@ -425,17 +437,17 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
     # 同一张图缩放使用会让标注小到看不清。
     cover_svg = plate_mod.write(rec, out / "concept-plates", heading=False,
                                 footer=False, annotate=False, discipline=lead,
-                                width=800, height=452,
+                                sector=sector, width=800, height=452,
                                 stem="plate-" + cid + "-cover")
     plate_svg = plate_mod.write(rec, out / "concept-plates", heading=False,
-                                footer=False, discipline=lead,
+                                footer=False, discipline=lead, sector=sector,
                                 width=1200, height=496,
                                 stem="plate-" + cid)
     plate_png = _png(plate_svg, cache) if plate_svg else ""
     cover_plate_png = _png(cover_svg, cache) if cover_svg else plate_png
     if cover_fig is None:
         cover_fig = _figure(cover_plate_png,
-                            caption="概念体块（自有图解·非按比例）",
+                            caption="概念图解（自有图解·非按比例）",
                             credit="OmniAiLab 自有图解", role="diagram", kind="hero")
     pages.append(Page(
         kind="cover",
@@ -541,8 +553,11 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
     # 任务书没有明确矛盾时不硬凑三条：这一页就不出，定位页已经把功能说清楚了。
 
     # 5 主推方向：一张大图（自有主图版），三条短句
-    rec_plate = _figure(plate_png,
-                        caption="主推方向 · 体块关系（自有图解·非按比例）",
+    plate_caption = {"architecture": "主推方向 · 体块关系（自有图解·非按比例）",
+                     "interior": "主推方向 · 功能与流线（自有图解·非按比例）",
+                     "landscape": "主推方向 · 场地与游线（自有图解·非按比例）"}.get(
+        lead, "主推方向 · 空间关系（自有图解·非按比例）")
+    rec_plate = _figure(plate_png, caption=plate_caption,
                         credit="OmniAiLab 自有图解", role="diagram", kind="hero")
     if rec_plate is None:                  # 没有 Playwright 时退回分析图
         rec_plate = _figure(_png(_diagram(diagrams, rec["concept_id"], "axon",
@@ -553,7 +568,10 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
         kind="concept", kicker=f"04 / 主推方向 · {rec['concept_id']}",
         title=rec["concept_name"], lead=_clip(rec["concept_statement"], 44),
         figures=[rec_plate] if rec_plate else [],
-        foot="体块关系示意，平面尺寸与轮廓须在 S3 按实测复核。",
+        foot={"architecture": "体块关系示意，平面尺寸与轮廓须在 S3 按实测复核。",
+              "interior": "功能与流线示意，房间尺寸与净高须在 S3 按实测复核。",
+              "landscape": "场地与游线示意，面积与高差须在 S3 按实测复核。"}.get(
+            lead, "空间关系示意，尺寸须在 S3 按实测复核。"),
         notes="；".join(_as_list(rec.get("evidence")))[:300],
     ))
 
@@ -572,11 +590,11 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
 
     # 6 概念推敲：按专业推（建筑体块／室内序列／景观场地），不套同一套动画。
     # 概念数据不足以支撑推敲时，不出图也不出动画，只把四条判断写清楚。
-    evo = evo_mod.plan(rec, lead)
+    evo = evo_mod.plan(rec, lead, sector=sector)
     evo_png = ""
     if evo.ok:
         evo_svg = evo_mod.strip(rec, lead, width=700, height=470,
-                                theme={k: v for k, v in _theme_tokens(th).items()})
+                                theme=dict(_theme_tokens(th)), sector=sector)
         if evo_svg:
             path = out / "concept-plates" / ("steps-" + rec["concept_id"].lower() + ".svg")
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -648,7 +666,7 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
         ap = alt.get("spatial_prototype") or {}
         alt_svg = plate_mod.write(alt, out / "concept-plates", heading=False,
                                   footer=False, annotate=False, discipline=lead,
-                                  width=940, height=448,
+                                  sector=sector, width=940, height=448,
                                   stem="plate-" + alt["concept_id"].lower())
         alt_fig = _figure(_png(alt_svg, cache) if alt_svg else "",
                           caption=f"备选 · {alt['concept_name']}（自有图解·非按比例）",

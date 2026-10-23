@@ -279,6 +279,7 @@ def generate_bundle(project: Project, out_dir: str | Path, *,
         motion_info = anim_mod.build(
             project, rec_c, out_dir=out,
             discipline=str(getattr(ctx, "lead_id", "") or ""),
+            sector=_sector,
             theme={k: str(v) for k, v in
                    ((rules or {}).get("tokens") or {}).items() if v})
         proposal_info = {

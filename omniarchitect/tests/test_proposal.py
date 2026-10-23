@@ -22,6 +22,7 @@ from types import SimpleNamespace
 from omniarchitect.concept import anim as anim_mod
 from omniarchitect.concept import curation as cur_mod
 from omniarchitect.concept import plate as plate_mod
+from omniarchitect.concept import diagrams as dia
 from omniarchitect.concept import proposal as prop
 from omniarchitect.concept import quick as quick_mod
 
@@ -230,11 +231,15 @@ def test_plate_follows_the_discipline_it_is_drawn_for() -> None:
     """
     land = plate_mod.write(_concept(), tmp_path, discipline="landscape",
                            width=800, height=452, annotate=False)
-    assert "水面" in Path(land).read_text(encoding="utf-8")
+    land_text = Path(land).read_text(encoding="utf-8")
+    # 这个概念没声明水面：图版就不能给他一个池子（备选方案最容易被画错的地方）
+    assert "茶座" in land_text and "水景" not in land_text, land_text[:400]
     inner = plate_mod.write(_concept(), tmp_path, discipline="interior",
                             width=800, height=452, annotate=False)
     text = Path(inner).read_text(encoding="utf-8")
-    assert "客房带" in text and "公共核" in text
+    # 没有声明平面组织方式的室内，按工装三段式画：教学／连廊／办公，
+    # 绝不套客房图版（客房是酒店标准层的事）
+    assert "连廊" in text and "客房" not in text
     arch = plate_mod.write(_concept(), tmp_path, discipline="architecture",
                            width=800, height=452, annotate=False)
     assert "入口" in Path(arch).read_text(encoding="utf-8")
@@ -273,3 +278,146 @@ def test_style_shortlist_follows_the_project_type() -> None:
     assert labels, a
     assert "包豪斯" in "".join(labels) or "亲自然" in "".join(labels), labels
     assert "非洲当代" not in labels and "美式古典" not in labels, labels
+
+
+# --------------------------------------------------------------------------
+# 图版与推敲图必须同源：一套几何，两处渲染
+# --------------------------------------------------------------------------
+def _hotel() -> dict:
+    return {"concept_id": "C-A", "concept_name": "公共核心 · 后场独立",
+            "concept_statement": "大堂、餐饮与会议集中在首层与二层形成一个公共核，后场用独立通道与货梯上下",
+            "spatial_prototype": {"family": "cluster", "plan_layout": "public_core",
+                                  "zoning": "裙房 2 层做公共核，塔楼做客房",
+                                  "circulation": "客人：大堂→电梯；服务：后场货梯→各层服务间",
+                                  "daylight": "大堂与餐厅需要自然光"},
+            "experience_sequence": ["落客区 → 大堂 → 前台 → 客餐厅"],
+            "advantages": ["公共核与后场分离"], "tradeoffs": ["公共核占两层"]}
+
+
+def _garden(kind: str = "pond") -> dict:
+    return {"concept_id": "C-A", "concept_name": "一池静水 · 环形游线",
+            "concept_statement": "院子中心放一块静水，园路绕水一圈；茶座在水远岸，回望房子",
+            "spatial_prototype": {"family": "courtyard", "massing_kind": kind,
+                                  "prototype_id": "DLB-LAN-POND",
+                                  "zoning": "以水面为心，园路成环",
+                                  "circulation": "环形主路从入口绕水一周回到入口",
+                                  "daylight": "水面把光反射进室内"},
+            "experience_sequence": ["进入 → 绕行 → 停留"],
+            "advantages": ["回应了业主的同一个问题"], "tradeoffs": ["水面维护是长期成本"]}
+
+
+def test_plate_and_steps_share_one_geometry() -> None:
+    """主推图与四步图必须用同一份几何，否则大堂在两张图上会跑到不同位置。"""
+    for concept, disc in ((_hotel(), "interior"), (_garden(), "landscape")):
+        p = prop.evo_mod.plan(concept, disc, sector="hospitality")
+        same = prop.evo_mod.layout_mod.frames(concept, disc, sector="hospitality")
+        assert p.frames == same, disc
+        assert p.frames, disc
+
+
+def test_public_core_is_two_frames_and_keeps_the_lobby_off_the_guest_floor() -> None:
+    """酒店公共核：公共层与标准层分两幅画，大堂不许出现在客房层里。"""
+    frs = prop.evo_mod.layout_mod.frames(_hotel(), "interior", sector="hospitality")
+    assert [f.title for f in frs] == ["裙房公共层", "客房标准层"], frs
+    public, floor = frs
+    pub_labels = {r.label for r in public.regions}
+    floor_labels = {r.label for r in floor.regions}
+    for need in ("大堂", "前台", "客梯厅", "后场"):
+        assert need in pub_labels, pub_labels
+    assert "大堂" not in floor_labels and "公共核" not in floor_labels, floor_labels
+    for need in ("客房", "走廊", "客梯厅", "服务核"):
+        assert need in floor_labels, floor_labels
+    assert any("布草" in r.sub for r in floor.regions), "布草与服务梯要写清楚"
+
+
+def test_guest_flow_and_service_flow_never_cross() -> None:
+    """客流在右半、服务流在左半：两条线不许交叉，这是"后场独立"的全部意思。"""
+    public = prop.evo_mod.layout_mod.frames(_hotel(), "interior",
+                                            sector="hospitality")[0]
+    guest = next(l for l in public.links if l.key == "guest_flow")
+    svc = next(l for l in public.links if l.key == "service_flow")
+    assert min(p[0] for p in guest.pts) > max(p[0] for p in svc.pts)
+
+
+def test_landscape_tea_seat_sits_across_the_water_from_the_gate() -> None:
+    """茶座在远岸：它必须在水面的另一侧，而且看房子的视线要真的穿过水面。"""
+    fr = prop.evo_mod.layout_mod.frames(_garden(), "landscape")[0]
+    water = next(r for r in fr.regions if r.kind == "water")
+    seat = next(n for n in fr.nodes if n.key == "seat")
+    gate = next(n for n in fr.nodes if n.key == "gate")
+    wx, wy, ww, wh = water.box
+    wcx, wcy = wx + ww / 2, wy + wh / 2
+    # 与入口分处水面两侧
+    assert (seat.y - wcy) * (gate.y - wcy) < 0, (seat.y, gate.y, wcy)
+    # 视线穿水
+    sight = next(l for l in fr.links if l.key == "sight_back")
+    (ax, ay), (bx, by) = sight.pts[0], sight.pts[-1]
+    mid_y = (ay + by) / 2
+    assert wy < mid_y < wy + wh, (mid_y, wy, wh)
+    assert ax < wcx < bx or bx < wcx < ax
+
+
+def test_entry_path_touches_the_ring_and_never_crosses_the_water() -> None:
+    """入口必须接上环路；环在内圈、水在外圈，路不许从水面上走。"""
+    fr = prop.evo_mod.layout_mod.frames(_garden(), "landscape")[0]
+    ring = fr.rings[0]
+    entry = next(l for l in fr.links if l.key == "entry")
+    x, y = entry.pts[-1]
+    # 落在环的椭圆上（容差 2%）
+    v = ((x - ring.cx) / ring.rx) ** 2 + ((y - ring.cy) / ring.ry) ** 2
+    assert abs(v - 1.0) < 0.05, v
+    water = next(r for r in fr.regions if r.kind == "water")
+    wx, wy, ww, wh = water.box
+    for lk in fr.links:
+        if lk.kind != "path":
+            continue
+        for px, py in lk.pts:
+            inside = (wx < px < wx + ww) and (wy < py < wy + wh)
+            assert not inside, (lk.key, px, py)
+    assert ring.rx > ww / 2 and ring.ry > wh / 2
+
+
+def test_dry_stream_alternative_draws_no_water_at_all() -> None:
+    """备选是"不做池子"：图里不能出现任何水面，必须有旱溪与台地。"""
+    fr = prop.evo_mod.layout_mod.frames(_garden("terraces"), "landscape")[0]
+    kinds = {r.kind for r in fr.regions}
+    assert "water" not in kinds, kinds
+    labels = {r.label for r in fr.regions}
+    assert {"高台地", "低台地", "旱溪", "茶座"} <= labels, labels
+    svg = plate_mod.plan_plate(_garden("terraces"), discipline="landscape",
+                               width=940, height=448, annotate=False)
+    assert "#DDE7EE" not in svg, "旱溪方案里出现了水面填充色"
+
+
+def test_every_landscape_variant_has_its_own_layout_and_a_fixed_house() -> None:
+    """三套景观概念要画出三种不同的场地结构；房子是场地条件，位置不许变。"""
+    shapes, houses = [], []
+    for kind in ("pond", "terraces", "grove"):
+        fr = prop.evo_mod.layout_mod.frames(_garden(kind), "landscape")[0]
+        shapes.append(tuple(sorted(r.key for r in fr.regions)))
+        houses.append(next(r.box for r in fr.regions if r.key == "house"))
+    assert len(set(shapes)) == 3, shapes
+    assert len(set(houses)) == 1, houses
+
+
+def test_labels_stay_in_the_frame_and_never_overlap() -> None:
+    """标签位置由几何算出：不许出界、不许互相遮挡。"""
+    cases = ((_hotel(), "interior", (56.0, 120.0, 529.0, 260.0)),
+             (_garden(), "landscape", (56.0, 96.0, 422.0, 330.0)),
+             (_garden("terraces"), "landscape", (56.0, 96.0, 422.0, 330.0)))
+    for concept, disc, area in cases:
+        for fr in prop.evo_mod.layout_mod.frames(concept, disc, sector="hospitality"):
+            s = dia.Svg(1200, 560)
+            labels = prop.evo_mod.layout_mod.draw(s, fr, area,
+                                                  prop.evo_mod._pal(None))  # noqa: SLF001
+            assert labels, fr.title
+            x0, y0, w, h = area
+            for i, a in enumerate(labels):
+                ax, ay, aw, ah = a["rect"]
+                assert x0 - 4 <= ax and ax + aw <= x0 + w + 4, (a["text"], a["rect"])
+                assert y0 - 4 <= ay and ay + ah <= y0 + h + 34, (a["text"], a["rect"])
+                for b in labels[i + 1:]:
+                    bx, by, bw, bh = b["rect"]
+                    overlap = not (ax + aw <= bx or bx + bw <= ax
+                                   or ay + ah <= by or by + bh <= ay)
+                    assert not overlap, (a["text"], b["text"])

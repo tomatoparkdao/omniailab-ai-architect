@@ -5,7 +5,7 @@ description: 空间规划 —— 把功能意向落成房间、面积与动线�
 stage_affinity: [S3, S4, S5]
 loads_when: 当任务涉及房间划分、面积指标、动线组织、功能气泡图或平面优化时加载
 load_cost: heavy
-version: 1.15.0
+version: 1.16.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

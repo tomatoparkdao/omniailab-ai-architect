@@ -3,7 +3,7 @@ name: omniailab-design-review
 description: 设计审核 —— 把各阶段设计成果按可判定清单逐项初筛，输出通过/有条件通过/退回与待专业复核项
 capability: design-review
 stages: [S6, S7]
-version: 1.15.0
+version: 1.16.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -29,6 +29,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from . import diagrams as dia
 from . import iso as iso_mod
+from . import layout as layout_mod
 from .iso import Iso, draw_box, draw_ground, draw_shadow, tree
 
 #: 专业 → 推敲主线。名字不是装饰：它决定画什么、讲解什么。
@@ -39,13 +40,6 @@ DISCIPLINE_STEPS: Dict[str, Tuple[str, ...]] = {
 }
 
 DISCIPLINE_CN = {"architecture": "建筑", "interior": "室内", "landscape": "景观"}
-
-#: 室内/景观的"家族 → 版面原型"。只决定示意图的几何关系，不声称尺寸。
-PLAN_KIND = {
-    "cluster": "bands", "linear": "bands", "layered": "bands",
-    "courtyard": "ring", "radial": "ring", "hall": "ring", "grid": "bands",
-}
-
 
 @dataclass
 class Step:
@@ -65,6 +59,9 @@ class Plan:
     reason: str = ""
     family: str = "cluster"
     labels: List[str] = field(default_factory=list)
+    #: 室内/景观的几何（`concept/layout.py`）。主图与四步图共用这一份，
+    #: 所以两张图上的大堂、走廊、茶座必然在同一位置。建筑为空。
+    frames: List[layout_mod.Frame] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {"discipline": self.discipline, "ok": self.ok, "reason": self.reason,
@@ -106,6 +103,7 @@ def _clauses(text: Any, n: int = 3, width: int = 34) -> List[str]:
 
 
 def _short(text: str, n: int = 20) -> str:
+    """切短句：优先在句读处断，断不开才加省略号，且只加一个。"""
     t = " ".join(str(text or "").split())
     if len(t) <= n:
         return t
@@ -113,7 +111,12 @@ def _short(text: str, n: int = 20) -> str:
         head = t.split(sep)[0]
         if 6 <= len(head) <= n:
             return head
-    return t[: n - 1] + "…"
+    cut = t[: n + 1]
+    for sep in ("，", "、", "；"):
+        i = cut.rfind(sep)
+        if i >= max(6, int(n * 0.6)):
+            return cut[:i]
+    return t[: n - 1].rstrip("，、；…") + "…"
 
 
 def _proto(concept: Dict[str, Any]) -> Dict[str, Any]:
@@ -152,7 +155,7 @@ def plan(concept: Dict[str, Any], discipline: str = "architecture", *,
     zoning = _clauses(proto.get("zoning") or proto.get("spatial_logic"), 3, 26)
     circ = _sequence(concept)
     light = _clauses(proto.get("daylight"), 2, 24)
-    core = _clauses(concept.get("concept_statement"), 1, 30)
+    core = _clauses(concept.get("concept_statement"), 1, 44)
     merits = _clauses("；".join(str(x) for x in (concept.get("advantages") or [])), 2, 26)
 
     used: List[str] = []
@@ -168,6 +171,8 @@ def plan(concept: Dict[str, Any], discipline: str = "architecture", *,
 
     out = Plan(discipline=disc, family=family,
                labels=zoning or circ or core)
+    if disc in ("interior", "landscape"):
+        out.frames = layout_mod.frames(concept, disc, sector=sector)
 
     # 建筑：体块是主线，至少要有一条分区与一条"为什么"的说法
     if disc == "architecture":
@@ -196,6 +201,8 @@ def plan(concept: Dict[str, Any], discipline: str = "architecture", *,
             miss.append("功能分区")
         if not circ:
             miss.append("空间序列（人怎么走）")
+        if not out.frames:
+            miss.append("平面组织方式")
         if miss:
             out.reason = "概念里没有" + "、".join(miss) + "，无法做室内推敲"
             return out
@@ -218,6 +225,8 @@ def plan(concept: Dict[str, Any], discipline: str = "architecture", *,
         miss.append("场地与分区")
     if not (circ or proto.get("daylight")):
         miss.append("游线或视线")
+    if not out.frames:
+        miss.append("场地组织方式")
     if miss:
         out.reason = "概念里没有" + "、".join(miss) + "，无法做景观推敲"
         return out
@@ -256,12 +265,22 @@ def _canvas(w: int, h: int) -> "dia.Svg":
 def _scene_body(step: Step, plan_obj: Plan, pal: Pal, w: int, h: int,
                 concept: Optional[Dict[str, Any]] = None) -> str:
     """返回一段 SVG 内容（不含 <svg> 外壳），供静态四联与动画共用。"""
-    disc = plan_obj.discipline
-    if disc == "architecture":
+    if plan_obj.discipline == "architecture" or not plan_obj.frames:
         return _arch_body(step, plan_obj, pal, w, h)
-    if disc == "interior":
-        return _interior_body(step, plan_obj, pal, w, h, concept or {})
-    return _land_body(step, plan_obj, pal, w, h)
+    s = _canvas(w, h)
+    frame = plan_obj.frames[0]
+    # 与主推图同一段代码、同一份几何，只是按步显形。四步不动任何已定区域。
+    # 下方留 22 px：入口标签在框外，不留就会被 viewBox 裁掉。
+    layout_mod.draw(s, frame, (3.0, 3.0, float(w) - 6.0, float(h) - 25.0), pal,
+                    step=STEP_INDEX.get(step.scene, 0),
+                    label_size=12.0 if w >= 380 else 10.0, detail=False)
+    return "".join(s.body)
+
+
+#: 场景 → 第几步（0 起）。布局里的 appear 用这个序号。
+STEP_INDEX = {"site": 0, "zones": 0, "split": 1, "sequence": 1, "layers": 1,
+              "add": 2, "threshold": 2, "paths": 2, "done": 3, "core": 3,
+              "water": 3}
 
 
 def _frame(s: Any, w: int, h: int, pal: Pal, *, pad: float = 18.0) -> Tuple[float, float, float, float]:
@@ -332,170 +351,15 @@ def _arch_boxes(family: str) -> Dict[str, Tuple[float, float, float, float, floa
     return table.get(family) or table["cluster"]
 
 
-# ---------------- 室内：标准层示意 ----------------
-def _band_labels(concept: Dict[str, Any], p: Plan) -> Tuple[str, str, str]:
-    """三条带的短标签：按概念自己声明的排布方式取，不凭空造房间名。"""
-    proto = _proto(concept)
-    layout = str(proto.get("plan_layout") or proto.get("plan_strategy") or "")
-    table = {
-        "public_core": ("公共核", "客房走廊", "后场与客房"),
-        "guest_wing": ("客房", "走廊", "客房"),
-        "tech_core": ("门诊与候诊", "走廊", "医技"),
-        "dual_corridor": ("洁净区", "走廊", "污染区"),
-        "medical_street": ("门诊", "医疗街", "医技"),
-        "cluster_atrium": ("教学", "共享", "专用/办公"),
-        "linear_corridor": ("教学", "连廊", "办公/后勤"),
-        "process_line": ("生产", "通道", "仓储"),
-        "stacked_module": ("生产", "通道", "仓储"),
-    }
-    for key, val in table.items():
-        if key in layout:
-            return val
-    if p.family in ("courtyard", "radial"):
-        return ("使用空间", "院/核", "使用空间")
-    got = p.labels[:3]
-    got += ["交通", "辅助"][: max(0, 3 - len(got))]
-    return (got[0][:9], got[1][:9], got[2][:9])
-
-
-def _interior_body(step: Step, p: Plan, pal: Pal, w: int, h: int,
-                   concept: Optional[Dict[str, Any]] = None) -> str:
-    """室内标准层示意：三条带 + 每一步该看的那一件事。
-
-    这不是平面图，是"关系图"：带的名字来自概念自己声明的排布方式，
-    几何只用来表达"谁挨着谁"，不声称尺寸。
-    """
-    s = _canvas(w, h)
-    x0, y0, bw, bh = _frame(s, w, h, pal, pad=14)
-    ink = pal.get("ink", "#1E2328")
-    line = pal.get("line", "#D6D2C6")
-    accent = pal.get("accent", "#2F5D45")
-    mass, mass2 = pal.get("mass", "#E7EDE6"), pal.get("mass2", "#C9DCC8")
-    top, mid, bot = _band_labels(concept or {}, p)
-
-    # 三条带：公共／交通／私密。高度比只表达"主次"，不是尺寸。
-    bh_top, bh_mid = bh * 0.34, bh * 0.12
-    y_top = y0 + bh * 0.06
-    y_mid = y_top + bh_top + bh * 0.03
-    y_bot = y_mid + bh_mid + bh * 0.03
-    s.rect(x0 + bw * 0.05, y_top, bw * 0.90, bh_top, fill=mass, stroke=ink, sw=1.0)
-    s.rect(x0 + bw * 0.05, y_mid, bw * 0.90, bh_mid, fill="#FBFAF5", stroke=line,
-           sw=1.0)
-    s.rect(x0 + bw * 0.05, y_bot, bw * 0.90, bh_top, fill=mass, stroke=ink, sw=1.0)
-    _label(s, x0 + bw * 0.07, y_top + 22, top, size=10.0, color=ink)
-    _label(s, x0 + bw * 0.07, y_mid + bh_mid * 0.74, mid, size=9.5, color=ink)
-    _label(s, x0 + bw * 0.07, y_bot + 22, bot, size=10.0, color=ink)
-
-    if step.scene == "zones":
-        # 竖向分隔：让"重新分组"这件事看得见
-        for i in range(1, 3):
-            cx = x0 + bw * (0.05 + 0.90 * i / 3)
-            s.line(cx, y_top, cx, y_top + bh_top, stroke=line, sw=1.0, dash="5 4")
-            s.line(cx, y_bot, cx, y_bot + bh_top, stroke=line, sw=1.0, dash="5 4")
-    elif step.scene == "sequence":
-        pts = [(x0 + bw * 0.10, y0 + bh * 0.96), (x0 + bw * 0.26, y_mid + bh_mid / 2),
-               (x0 + bw * 0.58, y_mid + bh_mid / 2), (x0 + bw * 0.84, y_top + 26)]
-        s.polyline(pts, stroke=accent, sw=2.0, arrow=True)
-        for i, pt in enumerate(pts):
-            s.circle(pt[0], pt[1], 3.0, fill=accent)
-            s.text(pt[0] + 6, pt[1] - 8, f"{i + 1}", size=9.5, color=accent)
-        s.text(x0 + bw * 0.10, y0 + bh * 0.96 + 12, "入口", size=9.5, color=accent)
-    elif step.scene == "threshold":
-        # 界面开窗：画在带的外侧，不压在文字上
-        for i in range(4):
-            fx = x0 + bw * (0.52 + i * 0.11)
-            s.line(fx, y_top, fx, y_top - 9, stroke=accent, sw=2.6)
-        s.text(x0 + bw * 0.05, y_top + bh_top - 8, "界面开窗 / 进深采光", size=9.0,
-               color=accent)
-    elif step.scene == "core":
-        # 核心空间：指"公共核"那一条，而不是走廊
-        s.rect(x0 + bw * 0.05, y_top, bw * 0.90, bh_top, fill="none", stroke=accent,
-               sw=2.2)
-        s.text(x0 + bw * 0.90, y_top + bh_top - 8, "核心：{}".format(top), size=9.0,
-               color=accent, anchor="end")
-    return "".join(s.body)
-
-
-def _land_body(step: Step, p: Plan, pal: Pal, w: int, h: int) -> str:
-    """景观总平面示意：场地、层次、游线、水与种植，一步步叠上去。"""
-    s = _canvas(w, h)
-    x0, y0, bw, bh = _frame(s, w, h, pal, pad=14)
-    ink = pal.get("ink", "#1E2328")
-    line = pal.get("line", "#D6D2C6")
-    accent = pal.get("accent", "#2F5D45")
-    labels = (p.labels + ["", "", ""])[:3]
-
-    # 建筑边界：院子必须有房子作参照，否则看不懂朝向与尺度
-    s.rect(x0 + bw * 0.06, y0 + bh * 0.05, bw * 0.26, bh * 0.15,
-           fill=pal.get("mass", "#E9E4D6"), stroke=ink, sw=1.0)
-    _label(s, x0 + bw * 0.06 + 8, y0 + bh * 0.05 + 17, "建筑", size=9.5, color=ink)
-
-    # 主入口始终画：入口方向是景观的第一条约束
-    s.line(x0 + bw * 0.62, y0 + bh * 1.0, x0 + bw * 0.62, y0 + bh * 0.90,
-           stroke=accent, sw=1.8, arrow=True)
-    _label(s, x0 + bw * 0.62 + 12, y0 + bh * 0.93, "主入口", size=9.0, color=accent)
-
-    if step.scene == "site":
-        s.rect(x0 + bw * 0.04, y0 + bh * 0.03, bw * 0.92, bh * 0.94, fill="none",
-               stroke=accent, sw=1.2, dash="7 5")
-        _label(s, x0 + bw * 0.34, y0 + bh * 0.10, labels[0] or "场地边界",
-               size=10.5, color=ink)
-        return "".join(s.body)
-
-    # 空间层次：三条带，越靠房子越"前"
-    band_y = (0.24, 0.44, 0.64)
-    names = ("前院", "中景", "背景种植")
-    for i, ry in enumerate(band_y):
-        s.rect(x0 + bw * 0.05, y0 + bh * ry, bw * 0.90, bh * 0.18,
-               fill=pal.get("mass", "#E7EDE6"), stroke="none", sw=0,
-               opacity=0.22 + i * 0.08)
-        _label(s, x0 + bw * 0.06, y0 + bh * ry + 14, names[i], size=9.0, color=ink)
-    _label(s, x0 + bw * 0.34, y0 + bh * 0.10, labels[0], size=10.0, color=ink)
-
-    if step.scene == "layers":
-        s.line(x0 + bw * 0.32, y0 + bh * 0.22, x0 + bw * 0.88, y0 + bh * 0.72,
-               stroke=accent, sw=1.1, dash="6 5", arrow=True)
-        _label(s, x0 + bw * 0.60, y0 + bh * 0.40, "视线", size=9.5, color=accent)
-        if len(labels) > 1 and labels[1]:
-            _label(s, x0 + bw * 0.06, y0 + bh * 0.88, labels[1], size=9.0, color=ink)
-
-    if step.scene in ("paths", "water"):
-        if PLAN_KIND.get(p.family) == "ring":
-            cx, cy = x0 + bw * 0.58, y0 + bh * 0.58
-            pts = [(cx + bw * 0.24 * math.cos(2 * math.pi * i / 30),
-                    cy + bh * 0.22 * math.sin(2 * math.pi * i / 30)) for i in range(30)]
-            s.polygon(pts, fill="none", stroke="#CDC2A8", sw=5.0)
-            s.polygon(pts, fill="none", stroke="#B3A88D", sw=0.9, dash="9 7")
-        else:
-            s.polyline([(x0 + bw * 0.12, y0 + bh * 0.90), (x0 + bw * 0.44, y0 + bh * 0.60),
-                        (x0 + bw * 0.72, y0 + bh * 0.62), (x0 + bw * 0.90, y0 + bh * 0.36)],
-                       stroke="#CDC2A8", sw=5.0, arrow=False)
-        if step.scene == "water" and len(labels) > 1 and labels[1]:
-            _label(s, x0 + bw * 0.06, y0 + bh * 0.88, labels[1], size=9.0, color=ink)
-
-    if step.scene == "water":
-        cx, cy = x0 + bw * 0.58, y0 + bh * 0.56
-        s.polygon([(cx + bw * 0.13 * math.cos(2 * math.pi * i / 18),
-                    cy + bh * 0.10 * math.sin(2 * math.pi * i / 18)) for i in range(18)],
-                  fill="#DDE7EE", stroke="#9FB3BF", sw=1.0)
-        _label(s, cx, cy + 4, "水面", size=9.5, color="#5E7484", anchor="middle")
-        for tx, ty, tr in ((x0 + bw * 0.16, y0 + bh * 0.70, 0.042),
-                           (x0 + bw * 0.88, y0 + bh * 0.26, 0.038),
-                           (x0 + bw * 0.42, y0 + bh * 0.86, 0.034),
-                           (x0 + bw * 0.74, y0 + bh * 0.84, 0.032)):
-            s.circle(tx, ty, min(w, h) * tr, fill=pal.get("green", "#DCE6D3"),
-                     stroke="#8FA684", sw=0.9)
-    return "".join(s.body)
-
-
 # --------------------------------------------------------------------------
 # 两种交付形态：静态四联 / 动画分镜
 # --------------------------------------------------------------------------
 def strip(concept: Dict[str, Any], discipline: str = "architecture", *,
           width: int = 700, height: int = 460,
-          theme: Optional[Dict[str, str]] = None) -> str:
+          theme: Optional[Dict[str, str]] = None,
+          sector: str = "") -> str:
     """四步静态图版：一页看完整条推敲，适合放进提案。"""
-    p = plan(concept, discipline)
+    p = plan(concept, discipline, sector=sector)
     if not p.ok:
         return ""
     pal = _pal(theme)
@@ -524,9 +388,10 @@ def strip(concept: Dict[str, Any], discipline: str = "architecture", *,
 
 def scenes(concept: Dict[str, Any], discipline: str = "architecture", *,
            width: int = 720, height: int = 500,
-           theme: Optional[Dict[str, str]] = None) -> List[str]:
+           theme: Optional[Dict[str, str]] = None,
+           sector: str = "") -> List[str]:
     """每一步一张独立 SVG，给动画用。"""
-    p = plan(concept, discipline)
+    p = plan(concept, discipline, sector=sector)
     if not p.ok:
         return []
     pal = _pal(theme)
@@ -540,15 +405,17 @@ def scenes(concept: Dict[str, Any], discipline: str = "architecture", *,
 
 
 def _pal(theme: Optional[Dict[str, str]] = None) -> Pal:
-    pal = {"paper": "#FAF8F3", "ink": "#1E2328", "muted": "#6E736A",
-           "line": "#D6D2C6", "accent": "#2F5D45", "mass": "#E4EDE3",
-           "mass2": "#C9DCC8", "ground": "#F2F0E8", "court": "#EFE3D2",
-           "green": "#C6D6BE"}
+    """图版配色：以 `layout.PAL` 为底，页面主题覆盖同名 key。
+
+    与 main plate 共用同一张色表，图里不会出现主图没有的颜色。
+    """
+    pal: Pal = dict(layout_mod.PAL)
+    pal.update({"mass": "#E4EDE3", "court": "#EFE3D2", "green": "#DCE6D3"})
     for k, v in (theme or {}).items():
         if k in pal and isinstance(v, str) and v.startswith("#"):
             pal[k] = v
     return pal
 
 
-__all__ = ["DISCIPLINE_CN", "DISCIPLINE_STEPS", "PLAN_KIND", "Plan", "Step",
+__all__ = ["DISCIPLINE_CN", "DISCIPLINE_STEPS", "Plan", "Step", "STEP_INDEX",
            "applicable", "plan", "scenes", "strip"]

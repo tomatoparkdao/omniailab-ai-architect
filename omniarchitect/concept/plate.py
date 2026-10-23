@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from . import diagrams as dia
 from . import iso as iso_mod
+from . import layout as layout_mod
 from .iso import Iso, draw_box, draw_ground, draw_shadow, tree
 
 W, H = 1280, 560
@@ -136,8 +137,13 @@ def hero_plate(concept: Dict[str, Any], *, title: str = "",
 
 
 def _annotations(s: Any, proto: Dict[str, Any], *, x0: float = 902.0,
-                 y0: float = 148.0, step: float = 108.0) -> None:
-    """右栏三条大字：分区／动线／采光。三种图版共用同一套标注。"""
+                 y0: float = 148.0, step: float = 108.0,
+                 scale: float = 1.0, width: float = 240.0) -> None:
+    """右栏三条大字：分区／动线／采光。三种图版共用同一套标注。
+
+    大字的第二行只写**另一句**。原文只有一句时，第二行不写——
+    否则同一句会上下各印一遍（酒店那版"裙房 2 层做公共核"就是这样重复的）。
+    """
     items = [("分区", proto.get("zoning")),
              ("动线", proto.get("circulation")),
              ("采光", proto.get("daylight"))]
@@ -145,12 +151,14 @@ def _annotations(s: Any, proto: Dict[str, Any], *, x0: float = 902.0,
         yy = y0 + i * step
         s.line(x0 - 66, yy - 5, x0 - 10, yy - 5, stroke=dia.C_RULE, sw=1.0)
         s.circle(x0 - 66, yy - 5, 2.0, fill=dia.C_RULE, stroke="none")
-        s.text(x0, yy, f"{i + 1:02d}  {label}", size=11.5, color=dia.C_ACCENT,
-               weight="600")
-        s.text(x0, yy + 26, _short(text, 13), size=18, weight="500")
-        rest = str(text or "").split("；")
-        s.text(x0, yy + 50, _short(rest[-1] if len(rest) > 1 else text, 22), size=11.5,
-               color=dia.C_MUTED)
+        s.text(x0, yy, f"{i + 1:02d}  {label}", size=11.5 * scale,
+               color=dia.C_ACCENT, weight="600")
+        head = _short(text, int(13 * width / 240.0))
+        s.text(x0, yy + 26 * scale, head, size=18 * scale, weight="500")
+        rest = [x for x in str(text or "").split("；") if x.strip()]
+        tail = _short(rest[-1], int(20 * width / 240.0)) if len(rest) > 1 else ""
+        if tail and tail != head and len(tail) > len(head):
+            s.text(x0, yy + 50 * scale, tail, size=11.5 * scale, color=dia.C_MUTED)
 
 
 #: 景观图版的三种游线（家族 → 环形 / 折线 / 直进）
@@ -161,93 +169,61 @@ LOOP = {"courtyard": "ring", "layered": "terrace", "cluster": "grove",
 def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
                width: int = 1200, height: int = 496, annotate: bool = True,
                heading: bool = False, footer: bool = True,
+               sector: str = "",
                note: str = "自有图解 · 空间关系示意，非按比例") -> str:
     """景观／室内的**平面图版**：从上往下看，不是体块。
 
-    景观项目画房子、室内项目画总平面，是这类汇报最容易犯的错：
-    客户看到的图必须是他委托的那件事——院子就是院子，标准层就是标准层。
+    几何全部来自 `concept/layout.py`——四步推敲图用的是同一份数据，
+    所以主推图上的大堂、走廊、茶座在两张图里必然在同一个位置。
+
+    两幅图（裙房公共层 / 客房标准层）时不放右栏大字：图比字重要，
+    而且两幅并排后右栏会把每幅压到 340 px，标签就看不清了。
     """
-    proto = concept.get("spatial_prototype") or {}
-    fam = str(proto.get("family") or "cluster")
+    frs = layout_mod.frames(concept, discipline, sector=sector)
+    if not frs:
+        return ""
+    two = len(frs) > 1 and width >= 900
+    if not two:
+        frs = frs[:1]
+    if two:
+        annotate = False
+    compact = width < 900
+    pal = dict(layout_mod.PAL)
     s = dia.Svg(width, height, title=f"{concept.get('concept_name', '')} · 平面关系")
 
-    x0, y0 = 56.0, 96.0
-    w = (width - 400.0) if annotate else (width - 112.0)
-    h = height - 210.0
-    # 场地/楼板：一张纸就够了，不画多余的边框
-    s.rect(x0, y0, w, h, fill="#F1EFE7", stroke=dia.C_RULE, sw=1.0)
-
-    if discipline == "interior":
-        # 标准层：两排客房 + 中间走廊 + 一端公共核 + 一端后场
-        bh = h * 0.30
-        s.rect(x0, y0, w * 0.80, bh, fill="#E7EDE6", stroke=dia.C_INK, sw=1.0)
-        s.rect(x0, y0 + h - bh, w * 0.80, bh, fill="#E7EDE6", stroke=dia.C_INK, sw=1.0)
-        s.rect(x0, y0 + h / 2 - 14, w * 0.80, 28, fill="#FBFAF5",
-               stroke=dia.C_RULE, sw=1.0)
-        # 端部一分为二：上半公共核（电梯厅/服务台），下半后场（布草/后勤）
-        nx = x0 + w * 0.80
-        nw = w * 0.20
-        s.rect(nx, y0 + h * 0.46, nw, h * 0.54, fill="#E3DED1",
-               stroke=dia.C_INK, sw=1.0)
-        s.rect(nx, y0, nw, h * 0.46, fill="#EAE6DC", stroke=dia.C_INK, sw=1.0)
-        s.text(x0 + 14, y0 + bh / 2 + 5, "客房带", size=12, color=dia.C_MUTED)
-        s.text(x0 + 14, y0 + h - bh / 2 + 5, "客房带", size=12, color=dia.C_MUTED)
-        s.text(x0 + w * 0.34, y0 + h / 2 + 4, "客房走廊", size=11, color=dia.C_MUTED)
-        s.text(nx + 12, y0 + 26, "公共核", size=12, color=dia.C_MUTED)
-        s.text(nx + 12, y0 + 48, "电梯厅 / 服务台", size=10, color=dia.C_MUTED)
-        s.text(nx + 12, y0 + h * 0.46 + 26, "后场", size=12, color=dia.C_MUTED)
-        s.text(nx + 12, y0 + h * 0.46 + 48, "布草 / 后勤通道", size=10, color=dia.C_MUTED)
-        # 后场独立成块，客人走廊不穿进去（两块之间就是后勤通道的边界）
-        s.line(x0 - 26, y0 + h / 2, x0 - 4, y0 + h / 2, stroke=dia.C_ACCENT,
-               sw=2.0, arrow=True)
-        s.text(x0 - 28, y0 + h / 2 + 18, "入口", size=11, color=dia.C_ACCENT)
+    x0 = 56.0
+    # 图面比例跟着专业走：庭院是近方形的场地，楼层是长条。
+    # 把庭院塞进 800×270 的横条里，环路会被压成一条扁椭圆，"环形游线"就不成立。
+    if two:
+        y0, h = 120.0, height - 236.0
+        w = width - 112.0
+        gap = 30.0
+        fw = (w - gap) / 2.0
+        boxes = [(x0 + i * (fw + gap), y0, fw, h) for i in range(2)]
+        for fr, bx in zip(frs, boxes):
+            s.text(bx[0] + 1, bx[1] - 9, fr.title, size=10.5, color=dia.C_MUTED,
+                   weight="600")
+    elif annotate:
+        y0, h = 96.0, min(330.0, height - 176.0)
+        boxes = [(x0, y0, h * 1.28, h)]
     else:
-        # 景观：水面 + 环路 + 种植 + 节点
-        loop = LOOP.get(fam, "ring")
-        # 建筑边界：院子必须有房子作参照，否则看不出朝向与尺度
-        s.rect(x0 + w * 0.06, y0 + h * 0.02, w * 0.20, h * 0.14,
-               fill="#E9E4D6", stroke=dia.C_INK, sw=1.0)
-        s.text(x0 + w * 0.06 + 8, y0 + h * 0.02 + 18, "建筑", size=10.5,
-               color=dia.C_MUTED)
-        cx, cy = x0 + w * 0.56, y0 + h * 0.52
-        rw, rh = w * 0.17, h * 0.24
-        s.polygon([[cx + rw * _cos(i, 14), cy + rh * _sin(i, 14)] for i in range(14)],
-                  fill="#DDE7EE", stroke="#9FB3BF", sw=1.0)
-        s.text(cx, cy + 4, "水面", size=12, color="#5E7484", anchor="middle")
-        if loop == "ring":
-            ring = [[cx + rw * 1.55 * _cos(i, 28), cy + rh * 1.5 * _sin(i, 28)]
-                    for i in range(28)]
-            s.polygon(ring, fill="none", stroke="#D3C9B2", sw=7.0)
-            s.polygon(ring, fill="none", stroke="#B3A88D", sw=1.0, dash="10 8")
-        elif loop == "terrace":
-            for i in range(3):
-                s.line(x0 + 24, y0 + h * (0.28 + i * 0.18),
-                       x0 + w * 0.36, y0 + h * (0.28 + i * 0.18),
-                       stroke="#B9AE95", sw=8.0)
-        else:
-            s.line(x0 + 26, y0 + h * 0.80, cx, cy, stroke="#B9AE95", sw=9.0)
-            s.line(cx, cy, x0 + w - 26, y0 + h * 0.22, stroke="#B9AE95", sw=9.0)
-        for tx, ty, tr in ((x0 + w * 0.30, y0 + h * 0.86, 20.0),
-                           (x0 + w * 0.09, y0 + h * 0.52, 24.0),
-                           (x0 + w * 0.88, y0 + h * 0.20, 22.0),
-                           (x0 + w * 0.92, y0 + h * 0.80, 19.0),
-                           (cx + rw * 1.95, cy + rh * 0.45, 17.0)):
-            s.circle(tx, ty, tr, fill="#DCE6D3", stroke="#8FA684", sw=1.0)
-        s.rect(x0 + w * 0.30, y0 + h * 0.06, w * 0.16, h * 0.10,
-               fill="#E6DFCE", stroke="none", sw=0)
-        s.text(x0 + w * 0.30 + 8, y0 + h * 0.06 + 20, "茶座 / 节点", size=11,
-               color=dia.C_MUTED)
-        s.line(x0 + w * 0.5, y0 + h + 26, x0 + w * 0.5, y0 + h + 4,
-               stroke=dia.C_ACCENT, sw=2.0, arrow=True)
-        s.text(x0 + w * 0.5, y0 + h + 44, "主入口", size=11, color=dia.C_ACCENT,
-               anchor="middle")
+        y0, h = 100.0, height - 226.0
+        boxes = [(x0, y0, width - 112.0, h)]
+
+    for fr, bx in zip(frs, boxes):
+        layout_mod.draw(s, fr, bx, pal, label_size=9.5 if compact else 10.5,
+                        detail=not compact)
 
     if annotate:
-        _annotations(s, proto, x0=x0 + w + 44.0, y0=150.0, step=104.0)
+        bx = boxes[0]
+        _annotations(s, concept.get("spatial_prototype") or {},
+                     x0=bx[0] + bx[2] + 58.0, y0=y0 + 48.0, step=104.0,
+                     scale=1.12, width=width - (bx[0] + bx[2] + 58.0) - 60.0)
     if heading:
         s.text(44, 44, str(concept.get("concept_name") or ""), size=22, weight="600")
-    iso_mod.north_arrow(s, x0 + 6, height - 96, size=16, color=dia.C_MUTED)
-    iso_mod.scale_bar(s, x0 + 44, height - 66, 104, unit="m", seg_m=5.0, segments=2,
+    ny = boxes[0][1] + boxes[0][3] + 34.0
+    iso_mod.north_arrow(s, x0 + 6, ny + 16, size=16, color=dia.C_MUTED)
+    iso_mod.scale_bar(s, x0 + 44, ny + 26, 104, unit="m", seg_m=5.0, segments=2,
                       color=dia.C_MUTED, note="示意")
     if footer:
         s.text(40, height - 16, note, size=9, color=dia.C_MUTED)
@@ -324,10 +300,18 @@ def steps_plate(concept: Dict[str, Any], *, family: str = "", width: int = 700,
     return s.render()
 
 
+#: 各专业的图注。图是"体块"还是"平面"不能写错——庭院的主图不会画体块。
+NOTE_BY_DISCIPLINE = {
+    "interior": "自有图解 · 功能与流线示意，非按比例",
+    "landscape": "自有图解 · 场地与游线示意，非按比例",
+    "architecture": "自有图解 · 体块关系示意，非按比例",
+}
+
+
 def write(concept: Dict[str, Any], out_dir: str | Any, *, family: str = "",
           stem: str = "", heading: bool = True, footer: bool = True,
           annotate: bool = True, width: int = W, height: int = H,
-          discipline: str = "architecture") -> str:
+          discipline: str = "architecture", sector: str = "") -> str:
     """落盘一张主图版。
 
     `width/height` 必须**等于版面上要放的像素尺寸**：图里的字是固定 px 的，
@@ -341,7 +325,9 @@ def write(concept: Dict[str, Any], out_dir: str | Any, *, family: str = "",
     path = out / f"{name}.svg"
     if discipline in ("interior", "landscape"):
         svg = plan_plate(concept, discipline=discipline, width=width, height=height,
-                         annotate=annotate, heading=False, footer=footer)
+                         annotate=annotate, heading=False, footer=footer,
+                         sector=sector,
+                         note=NOTE_BY_DISCIPLINE.get(discipline, ""))
     else:
         svg = hero_plate(concept, family=family, heading=heading, footer=footer,
                          annotate=annotate, width=width, height=height,

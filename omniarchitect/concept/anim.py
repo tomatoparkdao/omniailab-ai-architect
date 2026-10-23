@@ -33,7 +33,7 @@ def build(project: Any = None, concept: Optional[Dict[str, Any]] = None, *,
           out_dir: str | Path = ".", title: str = "",
           steps: Optional[Sequence[Dict[str, Any]]] = None,
           theme: Optional[Dict[str, str]] = None,
-          discipline: str = "") -> Dict[str, Any]:
+          discipline: str = "", sector: str = "") -> Dict[str, Any]:
     """Write the standalone animation, or say why this project gets none.
 
     返回 ``{"path": "", "skipped": 原因}`` 是正常结果：没有演变逻辑时，
@@ -48,10 +48,11 @@ def build(project: Any = None, concept: Optional[Dict[str, Any]] = None, *,
     if steps is None:
         if not concept:
             return {"path": "", "steps": 0, "skipped": "没有概念数据，不出动画"}
-        plan = evo.plan(concept, disc)
+        plan = evo.plan(concept, disc, sector=sector)
         if not plan.ok:
             return {"path": "", "steps": 0, "skipped": plan.reason}
-        images = evo.scenes(concept, disc, width=720, height=500, theme=theme)
+        images = evo.scenes(concept, disc, width=720, height=500, theme=theme,
+                            sector=sector)
         items = [{"n": s.n, "name": s.name, "note": s.note} for s in plan.steps]
         lead = (list(plan.labels) or [""])[0]
     else:
