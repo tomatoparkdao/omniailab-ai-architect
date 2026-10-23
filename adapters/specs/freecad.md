@@ -1,7 +1,7 @@
 ---
 name: omniailab-adapters-specs-freecad
 description: FREECAD adapter —— Purpose: Parametric mechanical and CAD geometry.
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

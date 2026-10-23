@@ -5,7 +5,7 @@ description: 设计汇报方法论 —— 把专业成果转译为不同受众�
 stage_affinity: [S2, S4, S6, S8]
 loads_when: 当任务涉及方案表达、图册组织、汇报结构、术语统一或向业主/评审方沟通时加载
 load_cost: light
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

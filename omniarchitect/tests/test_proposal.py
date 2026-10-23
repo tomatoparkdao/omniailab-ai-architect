@@ -561,3 +561,24 @@ def test_conflicting_water_claims_are_resolved_in_favour_of_the_statement() -> N
     fr = lay.frames(bad, "landscape")[0]
     assert "water" not in {r.kind for r in fr.regions}
     assert "静水" in fr.note
+
+
+def test_plate_legend_lists_only_what_is_drawn() -> None:
+    """图例只列图上真画了的种类：无水方案不能出现"水面"。
+
+    客户是拿图例当索引看图的。图例里有水面、图上找不到，比不印图例更糟。
+    """
+    lay = prop.evo_mod.layout_mod
+    pond, _ = plate_mod.legend_items(lay.frames(_garden("pond"), "landscape")[0])
+    dry, _ = plate_mod.legend_items(lay.frames(_garden("terraces"), "landscape")[0])
+    assert "水面" in pond and "水面" not in dry
+    assert "旱溪" in dry and "旱溪" not in pond
+
+
+def test_deck_scale_reserves_room_for_the_bottom_bar() -> None:
+    """播放器底部信息栏固定在视口上：缩放必须同时按高度算。
+
+    只按宽度算时，页面最后一行的图注正好落在信息栏下面，客户看到的是半行字。
+    """
+    assert "innerHeight" in prop._JS  # noqa: SLF001
+    assert "%(h)d" in prop._JS        # noqa: SLF001

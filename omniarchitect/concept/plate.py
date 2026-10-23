@@ -161,6 +161,70 @@ def _annotations(s: Any, proto: Dict[str, Any], *, x0: float = 902.0,
             s.text(x0, yy + 50 * scale, tail, size=11.5 * scale, color=dia.C_MUTED)
 
 
+#: 图例：图上真正画了什么就只列什么。没画的东西不进图例——
+#: 客户照着图例找水面，图上却没有，比不写图例更糟。
+LEGEND_REGION: Dict[str, Tuple[str, str]] = {
+    "water": ("水面", "water"), "creek": ("旱溪", "creek"),
+    "terrace": ("台地", "terrace"), "green": ("种植", "green"),
+    "paving": ("铺装", "paving"), "stone": ("整石", "paving"),
+    "building": ("建筑", "building"), "mass": ("房间", "mass"),
+    "private": ("私密区", "mass"), "mass2": ("公共区", "mass2"),
+    "public": ("公共区", "mass2"), "service": ("后场", "service"),
+    "core": ("核心", "core"), "circulation": ("通道", "paving"),
+    "counter": ("服务台", "paper"),
+}
+
+LEGEND_LINK: Dict[str, Tuple[str, str]] = {
+    "path": ("园路", "path"), "flow": ("客流", "accent"),
+    "service": ("服务流", "muted"), "sight": ("视线", "line"),
+}
+
+
+def legend_items(frame: Any) -> Tuple[List[str], List[str]]:
+    """图例条目：（功能块, 线型），按图里实际出现的种类给，不补不猜。"""
+    kinds: List[str] = []
+    for r in frame.regions:
+        if r.kind in LEGEND_REGION and r.kind not in kinds:
+            kinds.append(r.kind)
+    links: List[str] = []
+    for lk in frame.links:
+        if lk.kind in LEGEND_LINK and lk.kind not in links:
+            links.append(lk.kind)
+    return ([LEGEND_REGION[k][0] for k in kinds],
+            [LEGEND_LINK[k][0] for k in links])
+
+
+def _legend(s: Any, frame: Any, *, x0: float, y0: float, width: float,
+            row: float = 26.0) -> None:
+    """图例：一行功能块、一行线型。"""
+    kinds: List[str] = []
+    for r in frame.regions:
+        if r.kind in LEGEND_REGION and r.kind not in kinds:
+            kinds.append(r.kind)
+    links: List[str] = []
+    for lk in frame.links:
+        if lk.kind in LEGEND_LINK and lk.kind not in links:
+            links.append(lk.kind)
+
+    for i, (keys, table) in enumerate(((kinds, LEGEND_REGION), (links, LEGEND_LINK))):
+        x = x0
+        yy = y0 + i * row
+        for k in keys[:6]:
+            text, pal_key = table[k]
+            cw = 18.0
+            if i == 0:
+                s.rect(x, yy - 8, cw, 10, fill=layout_mod.PAL[pal_key],
+                       stroke=layout_mod.PAL["line"], sw=0.8)
+            else:
+                s.line(x, yy - 3, x + cw, yy - 3,
+                       stroke=layout_mod.PAL[pal_key], sw=1.4,
+                       dash=(3, 3) if k == "sight" else ())
+            s.text(x + cw + 7, yy, text, size=9.5, color=dia.C_MUTED)
+            x += cw + 7 + layout_mod._tw(text, 9.5) + 20
+            if x > x0 + width - 60:
+                break
+
+
 #: 景观图版的三种游线（家族 → 环形 / 折线 / 直进）
 LOOP = {"courtyard": "ring", "layered": "terrace", "cluster": "grove",
         "linear": "axis", "radial": "ring", "hall": "ring", "grid": "axis"}
@@ -201,8 +265,13 @@ def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
         fw = (w - gap) / 2.0
         boxes = [(x0 + i * (fw + gap), y0, fw, h) for i in range(2)]
     elif annotate:
-        y0, h = 96.0, min(330.0, height - 176.0)
-        boxes = [(x0, y0, h * 1.28, h)]
+        y0, h = 96.0, min(330.0, height - 166.0)
+        # 单幅平面 + 右栏：整块居中。贴左边放，1200 px 的板子右边会剩一大条空白，
+        # 看着像画到一半停了。居中之后左右留白对等，是版面的呼吸，不是没排完。
+        fig_w = h * 1.28
+        rail_w = 340.0
+        x0 = max(x0, (width - (fig_w + 54.0 + rail_w)) / 2.0)
+        boxes = [(x0, y0, fig_w, h)]
     else:
         y0, h = 100.0, height - 226.0
         boxes = [(x0, y0, width - 112.0, h)]
@@ -228,9 +297,20 @@ def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
 
     if annotate:
         bx = boxes[0]
+        ax = bx[0] + bx[2] + 54.0
+        aw = rail_w
+        # 一道竖线把右栏绑成一条 rail：没有它，图右上就是一块空白，
+        # 客户会以为排版没做完。
+        rail_top = y0 + 30.0
+        rail_bot = y0 + 44.0 + 3 * 96.0 + 30.0
+        s.line(ax - 26.0, rail_top, ax - 26.0, rail_bot, stroke=dia.C_RULE, sw=1.0)
         _annotations(s, concept.get("spatial_prototype") or {},
-                     x0=bx[0] + bx[2] + 58.0, y0=y0 + 48.0, step=104.0,
-                     scale=1.12, width=width - (bx[0] + bx[2] + 58.0) - 60.0)
+                     x0=ax, y0=y0 + 44.0, step=96.0,
+                     scale=1.24, width=aw)
+        # 右栏如果只有三行短句，1200 px 的板子右边会空掉一大块，看着像没排完。
+        # 补一条图例：它本来就该有（客户分不清水面与铺装是常事），
+        # 而且只列图上真画了的东西。
+        _legend(s, frs[0], x0=ax, y0=y0 + 44.0 + 3 * 96.0 + 4.0, width=aw)
     if heading:
         s.text(44, 44, str(concept.get("concept_name") or ""), size=22, weight="600")
 
@@ -384,5 +464,5 @@ def write_steps(concept: Dict[str, Any], out_dir: str | Any, *, family: str = ""
     return str(path)
 
 
-__all__ = ["FAMILY_CN", "LOOP", "MASSING", "STEP_TITLES", "hero_plate", "plan_plate",
+__all__ = ["legend_items", "FAMILY_CN", "LOOP", "MASSING", "STEP_TITLES", "hero_plate", "plan_plate",
            "steps_plate", "write", "write_steps"]

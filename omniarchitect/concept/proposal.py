@@ -874,8 +874,8 @@ def layout(page: Page, th: Theme) -> List[Dict[str, Any]]:
 
     if k == "concept":
         if page.figures:
-            e.append(_img(page.figures[0], 30, 172, 1200, 496))
-            e.append(_t(36, 674, 700, 14,
+            e.append(_img(page.figures[0], 30, 164, 1200, 496))
+            e.append(_t(36, 668, 700, 14,
                         f"{page.figures[0].caption}　{page.figures[0].credit}",
                         size=9, color=th.muted))
         return e
@@ -915,7 +915,9 @@ def layout(page: Page, th: Theme) -> List[Dict[str, Any]]:
 
     if k == "evolution":
         if page.figures:
-            fw, fh = 700.0, 486.0
+            # 图版是 700×470 生成的，按原比例放：拉成 486 会把圆压成椭圆、
+            # 四步之间的间距也不再等分，看着像画歪了。
+            fw, fh = 700.0, 470.0
             e.append(_img(page.figures[0], M, 180, fw, fh))
             e.append(_t(M, 180 + fh + 8, fw, 16,
                         f"{page.figures[0].caption}　{page.figures[0].credit}",
@@ -1094,7 +1096,10 @@ _JS = """
   const pages=[...document.querySelectorAll('.page')];
   let i=0;
   function fit(){
-    const s=Math.min(1,(window.innerWidth-48)/%(w)d);
+    // 底部那条固定信息栏高 34 px，压在视口上。缩放只按宽度算时，
+    // 页面最后一行（图注、脚注）正好落在它下面，客户看到的是半行字。
+    // 所以同时按可视高度留出信息栏＋上下留白。
+    const s=Math.min(1,(window.innerWidth-48)/%(w)d,(window.innerHeight-76)/%(h)d);
     pages.forEach(p=>p.style.transform='scale('+s+')');
     document.getElementById('deck').style.gap=(24*s)+'px';
   }
@@ -1172,7 +1177,7 @@ def write_html(model: Dict[str, Any], out_dir: str | Path, *, title: str = "") -
 <div id="bar">← → 翻页　｜　{_esc(title)}　｜　<b>{len(pages)}</b> 页 ·
 概念方向表达，不作尺寸依据</div>
 <div id="nav"><button id="prev">◀</button><button id="next">▶</button></div>
-<script>{_JS % {"w": PAGE_W}}</script></body></html>"""
+<script>{_JS % {"w": PAGE_W, "h": PAGE_H}}</script></body></html>"""
     path = out / FILE_HTML
     path.write_text(html, encoding="utf-8")
     return str(path)

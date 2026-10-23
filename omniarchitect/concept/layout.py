@@ -627,14 +627,14 @@ def _pond_frame(concept: Dict[str, Any]) -> Frame:
         # 茶座在远岸、环路**外侧**的岸上，不是坐在通道中间：
         # 摆在 (0.27,0.33) 时它正好压在环路上（环在 x=0.27 处过 y=0.330）。
         # 位置也决定视线：从这里望向房子，线正好斜穿整块水面。
-        Node("seat", "茶座", 0.27, 0.245, "seat", appear=3),
+        Node("seat", "茶座", 0.255, 0.255, "seat", appear=3),
     ]
     rings = [Ring(0.45, 0.50, 0.255, 0.24, appear=2)]
     links = [
         # 入口到环：垂直接到环的下缘，不断在半空
         Link("entry", ((0.46, 0.985), (0.46, 0.742)), "path", False, appear=2),
         # 茶座回望房子：这条线穿过水面才有倒影
-        Link("sight_back", ((0.29, 0.27), (0.80, 0.50)), "sight", True, appear=3),
+        Link("sight_back", ((0.272, 0.272), (0.80, 0.50)), "sight", True, appear=3),
     ]
     trees = [
         Tree(0.09, 0.14, 0.052, 1, "乔木"), Tree(0.20, 0.09, 0.042, 1),
@@ -919,9 +919,10 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
             continue
         sw = 1.0
         if now(r.appear) or now(r.emphasis):
+            # 这一步讲到的块：只换边线，不铺底色。
+            # 铺一层深绿（哪怕 5%）在米色大块上，看起来像"这块被屏蔽了"，
+            # 而不是"这一步讲这里"；四步图里连成一片就成了灰版。
             stroke, sw = pal["accent"], 1.9
-            s.rect(bx, by, bw, bh, fill=pal["accent"], stroke="none", sw=0,
-                   rx=2.0, opacity=0.10)
         s.rect(bx, by, bw, bh, fill=fill, stroke=stroke, sw=sw, rx=2.0)
         for i in range(1, max(0, r.ticks) + 1):
             tx = bx + bw * i / (r.ticks + 1)
@@ -1084,6 +1085,10 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
             continue
         if step is not None and not now(tr.appear):
             continue
+        # 小图（四步推敲的格子、缩印图版）不标乔木：那是最不重要的一条，
+        # 却正好压在茶座、水景旁边，挤掉的都是要讲的东西。
+        if not detail:
+            continue
         jobs.append((2, "tree", tr))
     jobs.sort(key=lambda j: j[0])          # 稳定排序：同类保持声明顺序
 
@@ -1099,14 +1104,21 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
         if kind == "node":
             cx, cy = P(obj.x, obj.y)
             if obj.kind == "seat":
-                # 茶座本身就是一个画出来的小方块，字写在自己格子里最稳；
-                # 写到外面就会压到环路（第四步那张小图上尤其明显）。
-                own = (cx - 0.045 * w, cy - 0.038 * h, 0.09 * w, 0.076 * h)
-                put(obj.label, own, size=label_size, color=pal["accent"],
-                    avoid=bands + crowns, prefer_in=True, weight="500",
-                    out_order=("r", "l", "t", "b"), role="node",
-                    box=(area[0] - 30.0, area[1] - 6.0, area[2] + 30.0,
-                         area[3] + 40.0))
+                # 茶座这类"看图说话"的锚点，交给自动避让会反复挑到坏位置：
+                # 右下方正是环路岸线与水面。这里按比例固定在方块正上方，
+                # 并把占位登记进避让表，别的标签就不会挤过来。
+                sx = cx
+                sy = cy - 0.062 * h
+                tw = _tw(obj.label, label_size)
+                rect = _trect(sx, sy, tw, label_size * 1.15, "middle")
+                if _inside(rect, area, pad=-2.0):
+                    placed.append(rect)
+                    s.text(sx, sy, obj.label, size=label_size, color=pal["accent"],
+                           anchor="middle", weight="500")
+                    out.append({"text": obj.label, "rect": rect, "mode": "in",
+                                "size": label_size, "role": "node"})
+                else:
+                    missing.append(obj.label)
                 continue
             # 入口的箭头从点上往下伸 0.04h：标签框也跟着长到那儿，
             # 否则"入户"会被箭杆穿过去，看着像加了下划线。
@@ -1133,10 +1145,10 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
                 box=(area[0] - left, area[1] - 6.0, area[2] + left, area[3] + 40.0),
                 role="node")
             continue
-        # 区域标签：四步图里**这一步新增的**最多三个，其余留给正文。
+        # 区域标签：四步图里**这一步新增的**最多四个，其余留给正文。
         # 计数只算非锚点标签——锚点（大堂、入口、水景）本来就该在，
         # 用它们去占配额，会让这一步真正要讲的功能一个都标不出来。
-        if step is not None and obj.key not in frame.keep and extra >= 3:
+        if step is not None and obj.key not in frame.keep and extra >= 4:
             continue
         own = R(obj.box)
         # 包着自己的那块（盒外之于盒子、草坪之于茶席）不算障碍：

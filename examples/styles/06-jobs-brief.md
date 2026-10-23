@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-jobs-brief
 description: 创作任务包说明 —— 逐任务 `awaiting_platform` 状态、第三方回退禁用声明、每条任务的完整提示词与产出后校核清单。
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

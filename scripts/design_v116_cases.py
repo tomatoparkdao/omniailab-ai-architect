@@ -147,6 +147,10 @@ def _shots(html: Path, out: Path, limit: int = 12) -> list[str]:
             pg = b.new_page(viewport={"width": 1360, "height": 800})
             pg.goto(html.resolve().as_uri(), wait_until="load")
             pg.wait_for_timeout(1200)
+            # 底部的翻页条与左右按钮是查看器自己的控件，属于浏览器壳，不属于版面。
+            # 不关掉，元素截图会把它们一起框进来，看着像图注被裁掉了。
+            pg.add_style_tag(content="#bar,#nav{display:none!important}")
+            pg.wait_for_timeout(120)
             for i, el in enumerate(pg.query_selector_all(".page")[:limit], 1):
                 p = out / f"p{i:02d}.png"
                 el.screenshot(path=str(p), timeout=30000)

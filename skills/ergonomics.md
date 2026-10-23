@@ -3,7 +3,7 @@ name: omniailab-ergonomics
 description: 人体工学与尺度 —— 把"够不够、顺不顺"翻译成可校核的净宽、间距与操作高度数值
 capability: ergonomics
 stages: [S3, S4]
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

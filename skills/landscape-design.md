@@ -3,7 +3,7 @@ name: omniailab-landscape-design
 description: 景观设计 —— 用竖向、分区、游线、水景与植物把室外空间组织成可使用的场所（景观项目启用，纯室内项目不启用）
 capability: landscape-design
 stages: [S1, S2, S3, S4]
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-s2-concept
 description: S2 概念方案设计 —— 从已确认任务书生成 2–3 套空间策略不同的方向、条件化审美判据、确定性概念图解、真实意向板、OmniAiLab 概念视觉、方案比较与 G2 基准及 S3 交接
-version: 1.17.0
+version: 1.17.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
