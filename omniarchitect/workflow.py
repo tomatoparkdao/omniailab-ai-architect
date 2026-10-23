@@ -1365,6 +1365,30 @@ class StageRunner:
             (d / f"scheme-{v}.json").write_text(
                 json.dumps(s.report(), ensure_ascii=False, indent=2), encoding="utf-8"
             )
+            # 客户不一定打开 CAD：方案深度必须有能直接看的图，
+            # 与 DXF 同源（同一个 SchemeResult），不是另画一张。
+            try:
+                from .sector import plandraw as _pd
+
+                svg = _pd.plan_svg(
+                    s, title=f"{self.project.name or self.project.project_id} · 方案{v}",
+                    base_walls=self.project.by_type("wall"))
+                (d / f"plan-{v}.svg").write_text(svg, encoding="utf-8")
+                arts.append(str(d / f"plan-{v}.svg"))
+            except Exception as exc:  # noqa: BLE001  画不出图不该拖垮平面阶段
+                self.schemes[v].warnings.append(f"平面预览未生成：{type(exc).__name__}")
+            # 客户不一定打开 CAD：方案深度必须有能直接看的图，
+            # 与 DXF 同源（同一个 SchemeResult），不是另画一张。
+            try:
+                from .sector import plandraw as _pd
+
+                svg = _pd.plan_svg(
+                    s, title=f"{self.project.name or self.project.project_id} · 方案{v}",
+                    base_walls=self.project.by_type("wall"))
+                (d / f"plan-{v}.svg").write_text(svg, encoding="utf-8")
+                arts.append(str(d / f"plan-{v}.svg"))
+            except Exception as exc:  # noqa: BLE001  画不出图不该拖垮平面阶段
+                self.schemes[v].warnings.append(f"平面预览未生成：{type(exc).__name__}")
 
         baseline = self.project.fork()
         _install_scheme(baseline, s=self.schemes[self.scheme_variant])
