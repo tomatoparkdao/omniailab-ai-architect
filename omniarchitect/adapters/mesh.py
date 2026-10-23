@@ -29,6 +29,18 @@ MATERIALS: Dict[str, Tuple[float, float, float]] = {
     "furniture_soft": (0.55, 0.56, 0.58),
     "furniture_wood": (0.62, 0.48, 0.34),
     "furniture_white": (0.92, 0.92, 0.91),
+    "landscape_planting": (0.27, 0.46, 0.25),
+    "landscape_water": (0.24, 0.55, 0.68),
+    "landscape_paving": (0.64, 0.61, 0.53),
+    "landscape_path": (0.73, 0.68, 0.55),
+    "landscape_trunk": (0.32, 0.24, 0.16),
+    "landscape_canopy": (0.22, 0.39, 0.20),
+    "landscape_lawn": (0.46, 0.66, 0.39),
+    "landscape_gravel": (0.70, 0.64, 0.51),
+    "site_ground": (0.64, 0.71, 0.59),
+    "site_building": (0.79, 0.74, 0.64),
+    "site_sport": (0.47, 0.65, 0.48),
+    "site_forecourt": (0.68, 0.66, 0.60),
 }
 
 SOFT = {"sofa", "bed_king", "bed_queen", "coffee_table"}
@@ -68,6 +80,54 @@ class MeshAdapter(Adapter):
             operations=["export_obj", "export_gltf_json", "read_back"],
             notes=["pure-python; no DCC tool required"],
         )
+
+    def export_multilevel_obj(self, project: Project, out_dir: str | Path,
+                              stem: str = "model") -> AdapterResult:
+        """Combine real level geometry at its canonical Z elevation.
+
+        Per-level OBJs remain available for editing; the combined OBJ is a
+        whole-building view, never a first-floor model labelled as eight floors.
+        """
+        out = Path(out_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        vertices: List[Tuple[float, float, float]] = []
+        faces: List[Tuple[str, List[int]]] = []
+        artifacts: List[str] = []
+        for level in project.levels:
+            if not project.spaces_on(level.id):
+                continue
+            part = self.export_obj(project, out / "levels", level_id=level.id,
+                                   stem=f"{stem}-{level.id}")
+            artifacts.extend(part.artifacts)
+            if not part.ok:
+                return AdapterResult(adapter=self.name, ok=False,
+                                     revision=project.revision, artifacts=artifacts,
+                                     errors=[f"{level.id} OBJ read-back failed"])
+            offset = len(vertices)
+            xy_offset = (project.meta.get("site_level_offsets_mm") or {}).get(level.id, [0, 0])
+            material = "floor"
+            for line in Path(part.artifacts[0]).read_text(encoding="utf-8").splitlines():
+                if line.startswith("v "):
+                    _, x, y, z = line.split()[:4]
+                    vertices.append((float(x) + float(xy_offset[0]),
+                                     float(y) + float(xy_offset[1]),
+                                     float(z) + level.elevation_mm))
+                elif line.startswith("usemtl "):
+                    material = line.split(maxsplit=1)[1]
+                elif line.startswith("f "):
+                    faces.append((material, [int(i) + offset for i in line.split()[1:]]))
+        if not vertices or not faces:
+            return AdapterResult(adapter=self.name, ok=False,
+                                 revision=project.revision, errors=["no level geometry"])
+        obj_path = out / f"{stem}.obj"
+        mtl_path = out / f"{stem}.mtl"
+        self._write_obj(obj_path, mtl_path, stem, vertices, faces)
+        audit = self.read_back(obj_path)
+        return AdapterResult(adapter=self.name, ok=bool(audit.get("ok")),
+                             revision=project.revision,
+                             artifacts=[str(obj_path), str(mtl_path), *artifacts],
+                             validation={**audit, "levels": len(project.levels)},
+                             errors=list(audit.get("errors") or []))
 
     # ------------------------------------------------------------------
     def export_obj(
@@ -111,10 +171,59 @@ class MeshAdapter(Adapter):
                 faces.append((mat, [bottom[i], bottom[j], top[j], top[i]]))
 
         spaces = [s for s in project.spaces_on(lid) if s.use != "envelope"]
+        landscape_mats = {"planting": "landscape_planting",
+                          "water": "landscape_water", "paving": "landscape_paving",
+                          "circulation": "landscape_path",
+                          "site_ground": "site_ground", "site_building": "site_building",
+                          "sport": "site_sport", "forecourt": "site_forecourt"}
         for s in spaces:
-            add_box(s.boundary_mm2d, -slab_h, 0.0, "floor")
+            mat = landscape_mats.get(s.use, "floor") if lid == "L-SITE" else "floor"
+            if lid == "L-SITE" and s.properties.get("infill_kind") in ("lawn", "gravel"):
+                mat = "landscape_" + s.properties["infill_kind"]
+            top = (float(s.properties.get("design_z_mm", 0.0))
+                   if lid == "L-SITE" else 0.0)
+            add_box(s.boundary_mm2d, top - slab_h, top, mat)
             if include_ceiling:
                 add_box(s.boundary_mm2d, wall_h, wall_h + slab_h, "ceiling")
+
+        if lid == "L-SITE":
+            zone_z = {s.id: float(s.properties.get("design_z_mm", 0.0))
+                      for s in spaces}
+            for tree in project.by_type("other"):
+                if tree.level_id != lid or tree.properties.get("landscape_kind") != "tree":
+                    continue
+                center = tree.geometry.get("center") or []
+                if len(center) != 2:
+                    continue
+                cx, cy = float(center[0]), float(center[1])
+                radius = float(tree.geometry.get("crown_radius_mm") or 1100)
+                trunk = float(tree.geometry.get("trunk_radius_mm") or 130)
+                height = float(tree.geometry.get("height_mm") or 3200)
+                base_z = zone_z.get(str(tree.properties.get("host_zone") or ""), 0.0)
+                ring = lambda r: [(cx + r * math.cos(2 * math.pi * i / 8),
+                                   cy + r * math.sin(2 * math.pi * i / 8))
+                                  for i in range(8)]
+                add_box(ring(trunk), base_z, base_z + height * 0.72, "landscape_trunk")
+                add_box(ring(radius), base_z + height * 0.50, base_z + height,
+                        "landscape_canopy")
+            for node in project.by_type("other"):
+                if node.level_id != lid or node.properties.get("landscape_kind") != "view_node":
+                    continue
+                center = node.geometry.get("center") or []
+                if len(center) != 2:
+                    continue
+                cx, cy = float(center[0]), float(center[1])
+                radius = float(node.geometry.get("radius_mm") or 350)
+                pad = [(cx + radius*math.cos(2*math.pi*i/12),
+                        cy + radius*math.sin(2*math.pi*i/12)) for i in range(12)]
+                add_box(pad, 0, 45, "landscape_paving")
+            for mass in project.by_type("other"):
+                if mass.level_id != lid or mass.properties.get("site_kind") != "massing":
+                    continue
+                footprint = mass.geometry.get("footprint_mm2d") or []
+                height = float(mass.geometry.get("height_mm") or 0)
+                if len(footprint) >= 3 and height > 0:
+                    add_box(footprint, 0, height, "site_building")
 
         walls = [e for e in project.by_type("wall") if e.level_id == lid]
         openings_by_wall: Dict[str, List[Element]] = {}

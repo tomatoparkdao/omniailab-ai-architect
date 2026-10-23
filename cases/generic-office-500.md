@@ -56,7 +56,7 @@ generic: true
 source: original
 name: omniailab-generic-office-500
 description: 通用案例：约 500 m² 办公室（办公类） —— 以下为常见工程惯例区间，非当地法定强制值，须以项目所在地现行规范与专业复核为准。
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

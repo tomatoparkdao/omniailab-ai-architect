@@ -22,7 +22,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from . import changes, compliance, finishes, quantities
 from .adapters import (
@@ -34,7 +34,7 @@ from .adapters import (
     doctor,
     resolve_host_axes,
 )
-from .errors import GateBlocked, OmniArchitectError, ValidationError
+from .errors import GateBlocked, ModelError, OmniArchitectError, ValidationError
 from .model import Project, summary, validate_all, validate_semantics, validate_schema
 from .paths import relpath
 from .registry import SIGNATURE
@@ -268,7 +268,13 @@ class StageRunner:
         project_dir: Optional[str | Path] = None,
     ) -> None:
         self.project = project
-        self.project_dir = Path(project_dir) if project_dir else None
+        # 允许 `--project <目录>` 与 `--project <目录>/project.json` 两种写法：
+        # 传文件时把它的父目录当项目目录，否则保存时会去建
+        # "project.json/project.json" 这种荒唐路径（WinError 183）。
+        _pd = Path(project_dir) if project_dir else None
+        if _pd is not None and _pd.is_file():
+            _pd = _pd.parent
+        self.project_dir = _pd
         self.level_id = level_id or (project.levels[0].id if project.levels else "L1")
         self.scheme_variant = scheme_variant
         self.assume_approval = assume_approval
@@ -286,6 +292,55 @@ class StageRunner:
         d = self.out / f"{st.code}-{STAGE_SLUG.get(stage_id, st.id)}"
         d.mkdir(parents=True, exist_ok=True)
         return d
+
+    # ------------------------------------------------------------------
+    def _space_labels(self) -> List[Tuple[float, float, float, str]]:
+        """房间名 + 投影用标高：轴测图上要能认出哪间是哪间。"""
+        out: List[Tuple[float, float, float, str]] = []
+        elev = {lv.id: float(lv.elevation_mm or 0.0) for lv in self.project.levels}
+        for sp in self.project.spaces:
+            if sp.use == "envelope" or not str(sp.name or "").strip():
+                continue
+            pts = [p for p in (sp.boundary_mm2d or []) if len(p) >= 2]
+            if len(pts) < 3:
+                continue
+            try:
+                x0, y0, x1, y1 = sp.bbox()
+            except Exception:  # noqa: BLE001
+                continue
+            area = abs((x1 - x0) * (y1 - y0)) / 1e6
+            if area < 4.0:                      # 太小的房间标了也是糊的
+                continue
+            out.append(((x0 + x1) / 2.0, (y0 + y1) / 2.0,
+                        elev.get(sp.level_id, 0.0) + 1400.0, sp.name))
+        return out
+
+    # ------------------------------------------------------------------
+    def _import_conditions(self) -> str:
+        """项目目录里有 existing-conditions.json 就导入，返回一句人话。
+
+        只读业主给的资料，不生成几何：没有文件就什么都不做，
+        文件不成立就如实说出来（而不是当成没有资料继续往下跑）。
+        """
+        self._conditions_note = ""
+        if not self.project_dir:
+            return ""
+        from . import existing as _ex
+
+        path = _ex.discover(self.project_dir)
+        if path is None:
+            return ""
+        if _ex.has_geometry(self.project):
+            self._conditions_note = "原始条件未重复导入：项目已有几何"
+            return self._conditions_note
+        try:
+            got = _ex.import_file(self.project, path)
+            self._conditions_note = (
+                f"原始条件已导入：{got['envelope_area_m2']} m² / "
+                f"{got['walls']} 道墙（来源 {got['source']}）")
+        except _ex.ConditionsError as exc:
+            self._conditions_note = f"原始条件没读进来：{exc}"
+        return self._conditions_note
 
     # ------------------------------------------------------------------
     def run_stage(self, stage_id: str, confirm: Optional[bool] = None) -> StageOutcome:
@@ -322,6 +377,10 @@ class StageRunner:
                 out = StageOutcome(stage_id, f"{st.code} {st.name}",
                                    skills_for_stage(stage_id), status="failed",
                                    error=f"{type(exc).__name__}: {exc}")
+        _cond = getattr(self, "_conditions_note", "")
+        if _cond:
+            out.notes.insert(0, _cond)
+            self._conditions_note = ""          # 只报一次，别在每个阶段重复同一句
         out.skills = out.skills or skills_for_stage(stage_id)
         out.stage_name = out.stage_name or f"{st.code} {st.name}"
         out.seconds = time.time() - t0
@@ -389,6 +448,11 @@ class StageRunner:
                 rec = handler(stage_id=stage_id, **kwargs)
                 rec.setdefault("stage", stage_id)
                 out.append(rec)
+            except ModelError as exc:
+                # 没有轮廓/墙就没有平面可依据——这是"不适用"，不是崩溃。
+                out.append({"capability": slug, "stage": stage_id, "ran": False,
+                            "skipped": True,
+                            "reason": f"该成果需要平面几何，本项目当前没有：{exc}"})
             except Exception as exc:
                 out.append({"capability": slug, "stage": stage_id, "ran": False,
                             "reason": f"{type(exc).__name__}: {exc}"})
@@ -501,7 +565,20 @@ class StageRunner:
 
     def run_all(self, confirm_all: bool = True,
                 stages: Optional[Sequence[str]] = None) -> RunManifest:
+        """跑到 S8。已确认的阶段跳过，不重跑。
+
+        重跑已确认阶段只会得到"已确认；如需修改请走变更影响分析"——那是给
+        改设计的提示，不是给"继续往下做"的报错。所以要改设计应该走
+        `omniarchitect change`，而不是 `run --all`。
+        """
         for sid in (stages or STAGE_ORDER):
+            st = get_state(self.project, sid)
+            if st.status == CONFIRMED:
+                out = StageOutcome(sid, f"{STAGE_BY_ID[sid].code} {STAGE_BY_ID[sid].name}",
+                                   skills_for_stage(sid), status="skipped",
+                                   notes=["已确认，本轮跳过（改设计请走 change）"])
+                self.manifest.add(out)
+                continue
             out = self.run_stage(sid, confirm=confirm_all)
             if out.status in ("blocked", "failed"):
                 break
@@ -580,6 +657,18 @@ class StageRunner:
 
         st_confirmed = confirm_stage(self.project, stage_id, by=by or (
             "业主" if source == "owner" else "演示流程"), note=note)
+        if stage_id == "S6" and source == "owner":
+            self.project.meta["frozen_revision"] = self.project.revision
+            self.project.meta["scheme"] = {
+                **dict(self.project.meta.get("scheme") or {}),
+                "frozen_at_revision": self.project.revision,
+            }
+            record_change(self.project, "freeze", f"G6 设计锁定（r{self.project.revision}）",
+                          targets=["S6"])
+        if stage_id == "S8" and source == "owner":
+            for artifact in self.project.artifacts:
+                if artifact.id == "art-delivery":
+                    artifact.status = "issued"
         record_change(self.project, "gate",
                       f"{stage_name(stage_id)} 确认通过（{source}）", targets=[stage_id])
         actions = self.run_post_gate(stage_id)
@@ -1093,6 +1182,20 @@ class StageRunner:
         _scope = _disc.ensure(self.project)
         _active = set(_scope.active())
 
+        # 业主给了实测资料就先读进来。S3 不能靠"按面积反算一个轮廓"排平面——
+        # 那是编数据；但把业主量好的轮廓当成文字需求放着不读，也是失职。
+        self._import_conditions()
+        # 住宅这类非行业项目：S1 只留下需求原话，S3 需要的是房间任务表。
+        # 有实测面积就按住宅配比翻译一份，并记下来源；没有面积就不编。
+        if not self.project.program and "interior" in _active:
+            from . import program as _prog
+
+            _rows = _prog.ensure(self.project)
+            if _rows:
+                self._conditions_note = (self._conditions_note + "；" if
+                                         getattr(self, "_conditions_note", "") else "") + \
+                    f"房间任务表按套内面积推导（{len(_rows)} 间）"
+
         # ---- 行业分支：学校 / 医院 / 厂房 / 酒店 / 景观 ----
         # 走各行业自己的任务书与排布（sector.stage），但仍是同一个 S3：
         # 同一入口、同一 G3、同一空间模型与 DXF 适配器。
@@ -1148,8 +1251,9 @@ class StageRunner:
                 status="blocked",
                 error=("没有可用的平面几何：目前只有文字需求，无法生成可核对的方案。"
                        "这不是系统故障。"),
-                next_action=("请提供原始户型图，或现场实测（墙、门窗、梁柱位置与尺寸）；"
-                             "补齐后重跑 S3 即可"),
+                next_action=("请提供原始户型图，或现场实测（墙、门窗、梁柱位置与尺寸），"
+                             "写成 existing-conditions.json 放到项目目录后重跑 S3；"
+                             "格式见 `omniarchitect conditions --help`"),
                 notes=["概念与任务书仍然有效，补图后不需要重做 S1/S2"],
             )
         from .concept.gate import concept_digest
@@ -1340,16 +1444,25 @@ class StageRunner:
     # ==================================================================
     def stage_S4(self) -> StageOutcome:
         d = self._dir("S4")
+        from .concept.handoff import plan_record
+        if plan_record(self.project).get("sector") == "landscape":
+            from .sector.landscape_delivery import run
+            return run(self, "S4", d)
+        if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
+            from .sector.deepening import run
+            return run(self, "S4", d)
         chosen = self._ensure_scheme_installed()
         style = finishes.style_label(self.project)
         profile = finishes.profile_label(self.project)
+        g3_label = ("G3 已确认" if get_state(self.project, "S3").status == CONFIRMED
+                    else "G3 未确认 · 探索性预览")
 
         # --- 顶墙地 + 材料体系 ---
         # 每张表都由"这个项目自己的空间 + 已确认概念的材料方向"推导，不再用
         # 住宅默认值。办公项目里出现"主卧"是硬错误，测试守着这条。
         lines = [
             f"# 初步设计 — 方案{chosen}", "",
-            f"风格：{style}　　项目类型：{profile}　　（S3 已确认方案{chosen}）", "",
+            f"风格：{style}　　项目类型：{profile}　　（方案{chosen}，{g3_label}）", "",
             "## 顶面", "",
             "| 区域 | 做法 | 标高 | 灯槽 |", "|---|---|---|---|",
         ]
@@ -1381,7 +1494,7 @@ class StageRunner:
             f"| 消防 | {profile}项目的消防要求按当地规范 | **须专业确认** |",
             "", "## 这一步的交付深度说明", "",
             "本阶段输出**方案深度**图纸：可用于与业主沟通做法与造价，**不得用于施工**。",
-            "正式施工图在 S7 出，深度区别是 construction，而不是有没有图纸（R2）。",
+            "S7 需要在门禁确认与专项深化后提交施工图；当前图纸仍为方案/待审查深度（R2）。",
             "", "---", "",
             "> 做法、材料与灯光的判断口径为本系统自有标准；"
             "机电口径为空间影响速查，具体设计须专业工程师完成。",
@@ -1432,6 +1545,10 @@ class StageRunner:
             register_artifact(self.project, f"art-prelim-{chosen}", "drawing",
                               [e.id for e in self.project.by_type("wall")],
                               "cad-drafting", relpath(r.artifacts[0]), "draft")
+            if r.ok:
+                from .interior_surfaces import export as export_surfaces
+                arts.extend(export_surfaces(self.project, d, self.level_id))
+                depth_note += "；顶面/地面分区 CAD 与预览已生成（待审查）"
         est = quantities.takeoff(self.project, self.level_id)
         return StageOutcome(
             "S4", artifacts=arts, adapter="dxf",
@@ -1445,13 +1562,24 @@ class StageRunner:
     # ==================================================================
     def stage_S5(self) -> StageOutcome:
         d = self._dir("S5")
+        from .concept.handoff import plan_record
+        if plan_record(self.project).get("sector") == "landscape":
+            from .sector.landscape_delivery import run
+            return run(self, "S5", d)
+        if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
+            from .sector.deepening import run
+            return run(self, "S5", d)
         chosen = self._ensure_scheme_installed()
         arts: List[str] = []
         notes: List[str] = []
         status = "ok"
 
         mesh = MeshAdapter()
-        m = mesh.export_obj(self.project, d, level_id=self.level_id, stem=f"S5-model-{chosen}")
+        if (self.project.meta.get("sector_levels") or {}).get("floors", 1) > 1:
+            m = mesh.export_multilevel_obj(self.project, d, stem=f"S5-model-{chosen}")
+        else:
+            m = mesh.export_obj(self.project, d, level_id=self.level_id,
+                                stem=f"S5-model-{chosen}")
         arts.extend(m.artifacts)
         if m.ok:
             notes.append(
@@ -1460,6 +1588,27 @@ class StageRunner:
             )
         else:
             status = "failed"
+
+        # 有几何就该有能看的图：用 OBJ 的顶点与面直接投影轴测图，
+        # 不依赖 Blender/渲染器，也不冒充效果图。
+        obj_path = next((a for a in m.artifacts
+                         if str(a).lower().endswith(".obj")), "")
+        if obj_path:
+            try:
+                from .sector.model_preview import export as preview_model
+
+                labels = self._space_labels()
+                views = (("axon-main", 42.0), ("axon-alt", 138.0), ("axon-rear", 262.0))
+                for name, az in views:
+                    out_svg = d / f"S5-{name}.svg"
+                    preview_model(obj_path, out_svg,
+                                  title=f"{self.project.name or self.project.project_id}"
+                                        f" · 模型检视（{name}）",
+                                  azimuth_deg=az, elevation_deg=26.0, labels=labels)
+                    arts.append(str(out_svg))
+                notes.append("模型检视图 3 张（由 OBJ 顶点/面直接投影；非效果图，不作尺寸依据）")
+            except Exception as exc:  # noqa: BLE001  预览失败不影响模型本身
+                notes.append(f"模型检视图未生成：{type(exc).__name__}: {exc}")
 
         bl = BlenderAdapter()
         b = bl.build(self.project, d / "blender", level_id=self.level_id, render=False)
@@ -1521,6 +1670,13 @@ class StageRunner:
     # ==================================================================
     def stage_S6(self) -> StageOutcome:
         d = self._dir("S6")
+        from .concept.handoff import plan_record
+        if plan_record(self.project).get("sector") == "landscape":
+            from .sector.landscape_delivery import run
+            return run(self, "S6", d)
+        if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
+            from .sector.deepening import run
+            return run(self, "S6", d)
         chosen = self._ensure_scheme_installed()
         rep = compliance.check(self.project, self.level_id)
         (d / "design-review.json").write_text(
@@ -1554,8 +1710,8 @@ class StageRunner:
                     else "估算下沿已超预算，须在标准或面积上取舍"
                 )
             )
-        coord += ["", "## 设计锁定", "",
-                  "以下内容锁定为深化依据，锁定后任何修改走变更影响分析：",
+        coord += ["", "## 拟锁定范围（待 G6 确认）", "",
+                  "以下内容拟作为深化依据；只有真实 G6 确认后才能声明锁定：",
                   "- 平面几何（墙体、门位、房间边界）与统一空间模型；",
                   "- 顶墙地做法与材料色彩体系；",
                   "- 主要建材与灯具档位。",
@@ -1567,23 +1723,16 @@ class StageRunner:
                   "> 修订基线：r{}".format(self.project.revision)]
         (d / "coordination.md").write_text("\n".join(coord), encoding="utf-8")
 
-        record_change(self.project, "freeze", f"设计锁定（方案{chosen}，r{self.project.revision}）",
-                      targets=[f"scheme:{chosen}"])
-        self.project.meta["frozen_revision"] = self.project.revision
-        self.project.meta["scheme"] = {
-            **dict(self.project.meta.get("scheme") or {}),
-            "variant": chosen, "frozen_at_revision": self.project.revision,
-        }
         register_artifact(self.project, "art-freeze", "report",
                           [e.id for e in self.project.by_type("wall")],
-                          "design-review", relpath(d / "coordination.md"), "validated")
+                          "design-review", relpath(d / "coordination.md"), "needs_review")
         return StageOutcome(
             "S6", adapter="",
             artifacts=[str(d / "design-review.md"), str(d / "design-review.json"),
                        str(d / "coordination.md")],
             status="ok" if rep.summary["pass"] else "degraded",
             notes=[f"校核：阻断 {rep.summary['blockers']} / 提示 {rep.summary['warnings']}",
-                   "设计与造价基线已锁定", "结构/消防/给排水带未闭环项进入施工图阶段"],
+                   "拟锁定设计与造价基线，等待 G6 确认", "结构/消防/给排水仍未闭环"],
         )
 
     # ==================================================================
@@ -1591,21 +1740,28 @@ class StageRunner:
     # ==================================================================
     def stage_S7(self) -> StageOutcome:
         d = self._dir("S7")
+        from .concept.handoff import plan_record
+        if plan_record(self.project).get("sector") == "landscape":
+            from .sector.landscape_delivery import run
+            return run(self, "S7", d)
+        if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
+            from .sector.deepening import run
+            return run(self, "S7", d)
         chosen = self._ensure_scheme_installed()
         dxf = DxfAdapter()
         arts: List[str] = []
         notes: List[str] = []
-        status = "ok"
+        status = "degraded"  # 节点、回路及立面尚未完成，不能视为完整施工图
 
         if dxf.preflight().available:
             for sheet, kw in (
-                ("A-01-plan", {"title": "平面布置图（施工图深度）", "include_furniture": True}),
-                ("A-02-rooms", {"title": "房间与面积图", "include_furniture": False}),
-                ("A-03-furniture", {"title": "家具定位图", "include_furniture": True}),
+                ("A-01-plan", {"title": "平面布置图（待审查）", "include_furniture": True}),
+                ("A-02-rooms", {"title": "房间与面积图（待审查）", "include_furniture": False}),
+                ("A-03-furniture", {"title": "家具定位图（待审查）", "include_furniture": True}),
             ):
                 r = dxf.draw_plan(
                     self.project, d / f"{sheet}.dxf", level_id=self.level_id,
-                    scheme=chosen, **kw,
+                    scheme=chosen, depth="review_only", **kw,
                 )
                 arts.extend(r.artifacts)
                 if not r.ok:
@@ -1617,6 +1773,10 @@ class StageRunner:
                         f"{sheet}：{st.get('entities','?')} 实体 / "
                         f"{len(st.get('layers',[]))} 图层，审计通过"
                     )
+            if status != "failed":
+                from .interior_surfaces import export as export_surfaces
+                arts.extend(export_surfaces(self.project, d, self.level_id))
+                notes.append("I-04 顶面分区、I-05 地面饰面分区：CAD 已读回，待材料与机电深化")
         else:
             status = "degraded"
             notes.append("ezdxf 不可用，未生成施工图 DXF")
@@ -1631,11 +1791,11 @@ class StageRunner:
             "# 施工图深化说明（S7）", "",
             "## 图纸清单", "",
             "| 图号 | 图名 | 深度 |", "|---|---|---|",
-            "| A-01 | 平面布置图 | construction |",
-            "| A-02 | 房间与面积图 | construction |",
-            "| A-03 | 家具定位图 | construction |",
-            "| A-04 | 顶面/吊顶图 | 待深化 |",
-            "| A-05 | 地面铺装图 | 待深化 |",
+            "| A-01 | 平面布置图 | 待审查 |",
+            "| A-02 | 房间与面积图 | 待审查 |",
+            "| A-03 | 家具定位图 | 待审查 |",
+            "| I-04 | 顶面分区图 | 已出方案分区 DXF，灯具/机电待深化 |",
+            "| I-05 | 地面饰面分区图 | 已出方案分区 DXF，排版/收边待深化 |",
             "| A-06 | 灯具定位与回路 | 待深化（由 lighting-design 负责） |",
             "| A-07 | 立面图（4 面） | 待深化 |",
             "| A-08 | 节点详图（3–5 个） | 待深化 |",
@@ -1672,6 +1832,13 @@ class StageRunner:
     # ==================================================================
     def stage_S8(self) -> StageOutcome:
         d = self._dir("S8")
+        from .concept.handoff import plan_record
+        if plan_record(self.project).get("sector") == "landscape":
+            from .sector.landscape_delivery import run
+            return run(self, "S8", d)
+        if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
+            from .sector.deepening import run
+            return run(self, "S8", d)
         chosen = self._ensure_scheme_installed()
         t = quantities.takeoff(self.project, self.level_id)
         (d / "takeoff.json").write_text(
@@ -1684,7 +1851,7 @@ class StageRunner:
             "door_count": "樘", "window_count": "樘", "glazing_area_m2": "m²",
             "joinery_area_m2": "m²", "furniture_count": "件",
         }
-        md = ["# 工程量与成本清单（S8 · 正式）", "", "## 工程量", "",
+        md = ["# 工程量与成本清单（S8 · 待审查）", "", "## 工程量", "",
               "| 项目 | 数量 | 单位 |", "|---|---|---|"]
         for k, v in t.quantities.items():
             md.append(f"| {k} | {v:.2f} | {unit.get(k,'')} |")
@@ -1745,6 +1912,7 @@ class StageRunner:
             "artifacts": [a.to_dict() for a in self.project.artifacts],
             "change_log": [c.to_dict() for c in self.project.change_log],
             "stale_artifacts": [a.id for a in self.project.artifacts if a.status == "stale"],
+            "release_status": "pending_G8",
             "open_items": ["结构承重构件确认", "消防与当地规范符合性", "机电容量校核"],
         }
         (d / "delivery-manifest.json").write_text(
@@ -1755,10 +1923,13 @@ class StageRunner:
             f"- 项目：{self.project.name or self.project.project_id}（r{self.project.revision}）",
             f"- 方案：{self.project.meta.get('scheme', {}).get('title', chosen)}",
             f"- 运行编号：`{self.run_id}`",
-            f"- 阶段进度：{progress(self.project)['percent']}%", "",
+            # S8 的包是在自己确认之前生成的，直接写 percent 会得到 87.5%，
+            # 读起来像"还没跑完"。按"本包覆盖到 S8"表述，不带会误导的百分数。
+            f"- 覆盖阶段：S1–S8（本包在 G8 确认前生成，属待审查交付预览）", "",
             "## 文件清单", ""]
         readme += [f"- `{f}`" for f in files if not f.startswith("08-")]
         readme += ["", "## 使用限制", "",
+                   "0. 当前为 G8 待验收包，不等于已签发的施工/采购文件；",
                    "1. 未经持证专业人员复核签署的图纸不得用于施工；",
                    "2. 结构安全、消防、无障碍、机电与当地法规符合性不在本系统结论范围内；",
                    "3. 表现类图片为示意，不构成尺寸依据；",
@@ -1779,7 +1950,7 @@ class StageRunner:
                           relpath(d / "material-schedule.md"), "validated")
         register_artifact(self.project, "art-delivery", "document",
                           ["art-quantities", "art-materials"], "delivery",
-                          relpath(d / "delivery-manifest.json"), "issued")
+                          relpath(d / "delivery-manifest.json"), "needs_review")
         return StageOutcome(
             "S8",
             artifacts=[str(d / "takeoff.md"), str(d / "takeoff.json"),

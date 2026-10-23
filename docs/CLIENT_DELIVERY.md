@@ -1,7 +1,7 @@
 ---
 name: omniailab-CLIENT_DELIVERY
 description: CLIENT_DELIVERY —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

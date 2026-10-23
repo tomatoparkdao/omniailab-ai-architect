@@ -3,7 +3,7 @@ name: omniailab-site-analysis
 description: 场地与建筑条件分析 —— 把原始建筑条件、朝向采光、动线与限制读成可核对的约束清单，并标注不确定性
 capability: site-analysis
 stages: [S1]
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

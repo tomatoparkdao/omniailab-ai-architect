@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional, Sequence
 from ..errors import AdapterUnavailable, ModelError
 from ..model import Project
 from .base import Adapter, AdapterResult, Capability
-from .drawing import LAYERS, build_primitives, resolve_host_axes  # noqa: F401
+from .drawing import LAYERS, Prim, build_primitives, resolve_host_axes  # noqa: F401
 from .dxf_r12 import read_r12, write_r12
 
 
@@ -112,6 +112,111 @@ class DxfAdapter(Adapter):
         )
         return res
 
+    def draw_landscape(self, project: Project, out_path: str | Path,
+                       title: str = "景观总平面（方案深度）") -> AdapterResult:
+        """Draw the actual L-SITE polygons; no room or wall geometry is invented."""
+        spaces = [s for s in project.spaces_on("L-SITE")
+                  if s.use in ("water", "planting", "paving", "circulation")
+                  and len(s.boundary_mm2d) >= 3]
+        if not spaces:
+            raise ModelError("no landscape polygons on L-SITE")
+        layer = {"water": "L-ZONE-WATER", "planting": "L-ZONE-PLANT",
+                 "paving": "L-ZONE-PAVE", "circulation": "L-ZONE-PATH"}
+        prims = []
+        path_labelled = False
+        for space in spaces:
+            if space.properties.get("infill_kind"):
+                continue
+            points = [(float(x), float(y)) for x, y in space.boundary_mm2d]
+            prims.append(Prim("polyline", layer[space.use], points, closed=True))
+            show_label = space.use != "circulation" or not path_labelled
+            if show_label:
+                prims.append(Prim("text", "L-ANNO",
+                                  text="环形游线（分段建模）" if space.use == "circulation" else space.name,
+                                  center=space.centroid, height=180))
+                if space.use == "circulation":
+                    path_labelled = True
+            if show_label and "design_z_mm" in space.properties:
+                cx, cy = space.centroid
+                z = float(space.properties["design_z_mm"]) / 1000.0
+                prims.append(Prim("text", "L-ANNO", text=f"建议相对标高 {z:+.2f}m",
+                                  center=(cx, cy - 350), height=110))
+        infill = [s for s in spaces if s.properties.get("infill_kind")]
+        if infill:
+            from shapely.geometry import Polygon
+            from shapely.ops import unary_union
+
+            for kind, label, target_layer in (
+                ("lawn", "中央草坪与地被", "L-ZONE-LAWN"),
+                ("gravel", "透水砂砾活动地面", "L-ZONE-GRAVEL"),
+            ):
+                selected = [Polygon(s.boundary_mm2d) for s in infill
+                            if s.properties.get("infill_kind") == kind]
+                if not selected:
+                    continue
+                merged = unary_union(selected)
+                polygons = [merged] if merged.geom_type == "Polygon" else list(merged.geoms)
+                for polygon in polygons:
+                    for ring in [polygon.exterior, *polygon.interiors]:
+                        prims.append(Prim("polyline", target_layer,
+                                          [(float(x), float(y)) for x, y in list(ring.coords)[:-1]],
+                                          closed=True))
+                pt = merged.representative_point()
+                prims.append(Prim("text", "L-ANNO", text=label,
+                                  center=(pt.x, pt.y), height=160))
+        for tree in project.by_type("other"):
+            if tree.level_id != "L-SITE" or tree.properties.get("landscape_kind") != "tree":
+                continue
+            center = tree.geometry.get("center") or []
+            if len(center) != 2:
+                continue
+            point = (float(center[0]), float(center[1]))
+            prims.append(Prim("circle", "L-TREE", center=point,
+                              radius=float(tree.geometry.get("crown_radius_mm") or 1100)))
+            prims.append(Prim("circle", "L-TREE", center=point, radius=130))
+        for node in project.by_type("other"):
+            if node.level_id != "L-SITE" or node.properties.get("landscape_kind") != "view_node":
+                continue
+            center = node.geometry.get("center") or []
+            if len(center) != 2:
+                continue
+            point = (float(center[0]), float(center[1]))
+            prims.append(Prim("circle", "L-NODE", center=point,
+                              radius=float(node.geometry.get("radius_mm") or 350)))
+            prims.append(Prim("text", "L-ANNO", text=str(node.properties.get("name") or "停留点"),
+                              center=(point[0], point[1]-600), height=120))
+        points = [p for s in spaces for p in s.boundary_mm2d]
+        x0, y0 = min(p[0] for p in points), min(p[1] for p in points)
+        x1, y1 = max(p[0] for p in points), max(p[1] for p in points)
+        prims.append(Prim("text", "L-ANNO", text=title,
+                          center=((x0 + x1) / 2, y0 - 1200), height=250))
+        path = Path(out_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if self.backend == "ezdxf":
+            self._write_ezdxf(prims, path)
+        else:
+            write_r12(prims, path)
+        audit = self.audit(path, required_layer_prefix="L-ZONE")
+        return AdapterResult(adapter=self.name, ok=bool(audit.get("ok")),
+                             artifacts=[str(path)], revision=project.revision,
+                             validation=audit, errors=list(audit.get("errors") or []))
+
+    def draw_primitives(self, primitives: Sequence[Prim], out_path: str | Path,
+                        required_layer_prefix: str, revision: int = 1) -> AdapterResult:
+        """Write a specialist sheet with the existing DXF backends and audit."""
+        if not primitives:
+            raise ModelError("empty drawing")
+        path = Path(out_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if self.backend == "ezdxf":
+            self._write_ezdxf(primitives, path)
+        else:
+            write_r12(primitives, path)
+        audit = self.audit(path, required_layer_prefix=required_layer_prefix)
+        return AdapterResult(adapter=self.name, ok=bool(audit.get("ok")),
+                             revision=revision, artifacts=[str(path)],
+                             validation=audit, errors=list(audit.get("errors") or []))
+
     # ------------------------------------------------------------------
     @staticmethod
     def _write_ezdxf(prims, path: Path) -> None:
@@ -142,14 +247,15 @@ class DxfAdapter(Adapter):
         doc.saveas(str(path))
 
     # ------------------------------------------------------------------
-    def audit(self, path: str | Path) -> Dict[str, Any]:
+    def audit(self, path: str | Path,
+              required_layer_prefix: str = "A-WALL") -> Dict[str, Any]:
         """Re-open and audit. Uses ezdxf's recoverer when present, otherwise the
         native reader — either way a backend never audits itself."""
         p = Path(path)
         try:
             import ezdxf
         except Exception:
-            out = read_r12(p)
+            out = read_r12(p, required_layer_prefix=required_layer_prefix)
             out["auditor"] = "native-r12"
             return out
 
@@ -170,7 +276,7 @@ class DxfAdapter(Adapter):
             for e in msp:
                 kinds[e.dxftype()] = kinds.get(e.dxftype(), 0) + 1
             layers = sorted({e.dxf.layer for e in msp if e.dxf.hasattr("layer")})
-            native = read_r12(p)
+            native = read_r12(p, required_layer_prefix=required_layer_prefix)
             labels = []
             for e in msp:
                 if e.dxftype() in ("TEXT", "MTEXT"):
@@ -195,13 +301,13 @@ class DxfAdapter(Adapter):
             result["ok"] = (
                 not result["errors"]
                 and sum(kinds.values()) > 0
-                and any(l.startswith("A-WALL") for l in layers)
+                and any(l.startswith(required_layer_prefix) for l in layers)
             )
             if not result["ok"] and not result["errors"]:
-                result["errors"].append("audit failed: missing walls or zero entities")
+                result["errors"].append("audit failed: missing required geometry or zero entities")
         except Exception as exc:
             result["errors"].append(f"recovery failed: {exc}")
-            native = read_r12(p)
+            native = read_r12(p, required_layer_prefix=required_layer_prefix)
             result["native"] = native
             result["ok"] = bool(native.get("ok"))
         return result

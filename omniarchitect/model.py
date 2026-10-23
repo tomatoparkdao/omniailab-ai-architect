@@ -592,11 +592,13 @@ def validate_semantics(project: Project) -> None:
 
 def _walls_touching_space(project: Project, space: Space) -> set[str]:
     """Walls whose midpoint is within 5mm of the space boundary (cheap, robust)."""
-    from .geometry import point_in_polygon, distance_to_boundary, polygon_to_shapely
+    from .geometry import distance_to_boundary, polygon_to_shapely
 
     poly = polygon_to_shapely(space.boundary_mm2d)
     hits: set[str] = set()
     for w in project.by_type("wall"):
+        if w.level_id != space.level_id:
+            continue
         axis = w.wall_axis()
         if not axis:
             continue
@@ -605,8 +607,15 @@ def _walls_touching_space(project: Project, space: Space) -> set[str]:
         if poly is not None:
             if distance_to_boundary(poly, (mx, my)) <= 5.0:
                 hits.add(w.id)
-        elif point_in_polygon((mx, my), space.boundary_mm2d):
-            hits.add(w.id)
+        else:
+            for i, a in enumerate(space.boundary_mm2d):
+                b = space.boundary_mm2d[(i + 1) % len(space.boundary_mm2d)]
+                dx, dy = b[0] - a[0], b[1] - a[1]
+                t = max(0.0, min(1.0,
+                    ((mx - a[0]) * dx + (my - a[1]) * dy) / max(dx*dx + dy*dy, 1e-9)))
+                if math.hypot(mx - a[0] - t*dx, my - a[1] - t*dy) <= 5.0:
+                    hits.add(w.id)
+                    break
     return hits
 
 

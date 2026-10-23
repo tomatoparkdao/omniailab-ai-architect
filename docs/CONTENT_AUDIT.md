@@ -2,7 +2,7 @@
 name: omniailab-content-audit
 description: 内容合规自检报告（自动生成）：署名 / 隐私 / 外链 / 许可四类检查的扫描结果与待处理清单。
 scope: 自动生成 · 每次 audit 覆盖
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

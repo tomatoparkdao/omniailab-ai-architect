@@ -164,14 +164,39 @@ def run(runner: Any, d: Path, brief: SectorBrief,
         lay.install_landscape_spaces(runner.project, program, brief, kind=kind)
         data = lay.landscape_data(program, brief)
         site_basis = lay.site_geometry_basis(runner.project, brief)
-        svg, evidence = site.landscape_svg(program, brief, title=title, kind=kind,
-                                           project=runner.project)
-        (d / "landscape-plan.svg").write_text(svg, encoding="utf-8")
+        from .landscape_delivery import _preview, _zones
+        zones = _zones(runner.project)
+        trees = [e for e in runner.project.by_type("other")
+                 if e.level_id == "L-SITE" and e.properties.get("landscape_kind") == "tree"]
+        nodes = [e for e in runner.project.by_type("other")
+                 if e.level_id == "L-SITE" and e.properties.get("landscape_kind") == "view_node"]
+        _preview(zones, trees, d / "landscape-plan.svg", nodes)
+        from ..adapters.dxf import DxfAdapter
+        cad = DxfAdapter().draw_landscape(runner.project, d / "landscape-plan.dxf",
+                                          title="景观 S3 总平面（方案深度）")
+        if not cad.ok:
+            raise ValueError(f"景观 S3 CAD 审计失败：{cad.errors}")
+        concept_svg, _ = site.landscape_svg(program, brief,
+                            title=f"{title} · 组织意向（非几何依据）", kind=kind,
+                            project=runner.project)
+        (d / "concept-organization.svg").write_text(concept_svg, encoding="utf-8")
+        evidence = {
+            "water_single": {"ok": sum(s.use == "water" for s in zones) == 1,
+                             "detail": "按 L-SITE 实际水面多边形检查"},
+            "path_loop": {"ok": sum(s.use == "circulation" for s in zones) >= 8,
+                          "detail": "L-SITE 连续分段环路；与入口连接尚待核"},
+            "shore_nodes": {"ok": len(nodes) >= 2,
+                            "detail": f"统一模型内 {len(nodes)} 个拟议停留点；岸线安全未核"},
+            "planting_layers": {
+                "ok": bool(trees and any(s.properties.get("infill_kind") == "lawn"
+                                         for s in zones)),
+                "detail": "边界乔木与中央草坪/地被均在模型；灌木品种和株距尚未确定"},
+        } if kind == "water_loop" else {}
         struct = parti_mod.inspect(parti, None, evidence=evidence)
         rows = ["# 景观方案（S3）", "",
                 f"## {title}", "",
-                f"- 场地 {data['site_area_m2']:,.0f} m²；绿地率 {data['green_ratio']}；"
-                f"水面 {data['water_ratio']}",
+                f"- 场地 {data['site_area_m2']:,.0f} m²；任务书目标绿地占比 "
+                f"{data['green_ratio']}；目标水面占比 {data['water_ratio']}",
                 f"- 几何依据：**{site_basis['label']}**——{site_basis['note']}",
                 ""]
         rows += parti_mod.markdown(parti, struct)
@@ -179,7 +204,25 @@ def run(runner: Any, d: Path, brief: SectorBrief,
                  "| 分区 | 面积 m² | 占比 | 做法 |", "|---|---|---|---|"]
         rows += [f"| {z['name']} | {z['area_m2']:,.0f} | {z['share']} | {z['note']} |"
                  for z in data["zones"]]
-        rows += ["", "> 占比是任务书分区的核算，总平面是构图：两者不能互相替代。"]
+        rows += ["", "## 当前模型与任务书面积差异（不得当成已达标）", "",
+                 "| 分区 | 目标 m² | 模型实绘毛面积 m² | 差值 m² |",
+                 "|---|---:|---:|---:|"]
+        for item in data["zones"]:
+            use = "circulation" if item["kind"] == "path" else item["kind"]
+            actual = sum(z.area_m2 for z in zones if z.use == use)
+            rows.append(f"| {item['name']} | {item['area_m2']:.1f} | "
+                        f"{actual:.1f} | {actual-item['area_m2']:+.1f} |")
+        gross = sum(z.area_m2 for z in zones)
+        gap = data["site_area_m2"]-gross
+        if abs(gap) > 1.0:
+            rows.append(f"\n- 模型各区毛面积合计 {gross:.1f} m²；与场地估算面积差 "
+                        f"{gap:+.1f} m²。须对未分区与可能交叠地面补图。")
+        else:
+            rows.append(f"\n- 模型各区毛面积合计 {gross:.1f} m²，与 "
+                        f"{data['site_area_m2']:.0f}㎡级场地估算值"
+                        "在毛面积上相符；仍须核对多边形交叠、实测边界与专业做法。")
+        rows += ["", "> 占比是任务书分区目标；主图及 CAD 来自 L-SITE 实际方案多边形，"
+                 "并以模型面积表为准。concept-organization.svg 仅为非尺寸的概念组织意向。"]
         rows += ["", "## 关键参数来源", ""] + _params_table(brief)
         rows += ["", "## 设计矛盾（本方案要处理的）", ""]
         rows += [f"- {t}" for t in brief.tensions] or ["- 尚无由数据推出的矛盾"]
@@ -214,10 +257,13 @@ def run(runner: Any, d: Path, brief: SectorBrief,
             "at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         })
         return {
-            "artifacts": [str(d / "landscape-plan.md"), str(d / "landscape-plan.svg")],
+            "artifacts": [str(d / "landscape-plan.md"), str(d / "landscape-plan.svg"),
+                          str(d / "landscape-plan.dxf"),
+                          str(d / "concept-organization.svg")],
             "notes": [f"景观 {parti.label or '环水游线'}：分区 {len(data['zones'])} 项，"
                       f"场地 {data['site_area_m2']:,.0f} m²",
-                      f"概念结构 {'全部成立' if struct['implemented'] else '有未落实项'}",
+                      f"概念核心结构 {'成立' if struct['implemented'] else '有未落实项'}；"
+                      "入口连接与苗木规格仍待深化",
                       f"几何依据：{site_basis['label']}"],
         }
 
@@ -295,6 +341,22 @@ def run(runner: Any, d: Path, brief: SectorBrief,
     # 也要能看见真实的走廊与水景——只装在 fork 里，门禁看到的还是空模型。
     from ..workflow import _install_scheme
     _install_scheme(runner.project, s=schemes["A"])
+    from . import levels as sector_levels
+    floor_state = sector_levels.install(runner.project, program, brief, parti,
+                                        env, schemes["A"])
+    campus_state = {}
+    if brief.sector == "education" and program.blocks:
+        from .site_delivery import install_school
+        try:
+            campus_state = install_school(runner.project, program, brief)
+        except ValueError as exc:
+            # 总平面放不下不是程序故障，是缺资料/规模与用地不匹配。
+            # 用 blocked + 下一步说清楚，别把 ValueError 抛给客户。
+            return {"status": "blocked", "error": str(exc),
+                    "next_action": ("补实测用地红线（边界、退界、临路方位），"
+                                    "或调整层数与建设规模后重跑 S3"),
+                    "notes": ["教学楼、食堂、体育馆面积来自任务书估算；"
+                              "场地放不下须业主/规划确认，不能压缩到图上凑数"]}
     baseline = runner.project
 
     note_dxf = "未生成 DXF"
@@ -309,19 +371,47 @@ def run(runner: Any, d: Path, brief: SectorBrief,
         note_dxf = ("方案深度 DXF 已生成并审计通过"
                     f"（{r.validation.get('stats', {}).get('entities', '?')} 实体）"
                     if r.ok else f"DXF 审计未通过：{r.errors[:2]}")
+        for lid in floor_state.get("generated_ids", []):
+            upper = dxf.draw_plan(baseline, d / f"S3-schematic-A-{lid}.dxf",
+                                  level_id=lid, scheme="A",
+                                  title=f"{title} {lid} 平面方案（方案深度）",
+                                  include_furniture=True)
+            arts.extend(upper.artifacts)
+            if not upper.ok:
+                note_dxf += f"；{lid} 审计未通过：{upper.errors[:1]}"
+            from ..planner import SchemeResult
+            level_scheme = SchemeResult(
+                variant="A", title=f"方案A · {lid}", strategy=schemes["A"].strategy,
+                spaces=[s for s in baseline.spaces_on(lid) if s.use != "envelope"],
+                elements=[e for e in baseline.elements if e.level_id == lid],
+                metrics={"parti_label": parti.label,
+                         "window_count": sum(e.type == "window" for e in baseline.elements
+                                             if e.level_id == lid)})
+            upper_svg = d / f"plan-A-{lid}.svg"
+            upper_svg.write_text(plandraw.plan_svg(
+                level_scheme, title=f"{title} · {lid} 方案A", unit=program.unit),
+                encoding="utf-8")
+            arts.append(str(upper_svg))
     else:
         note_dxf = "ezdxf 不可用，未生成方案深度 DXF"
 
     site_line = ""
     if program.blocks:
-        svg = site.plan_svg(program, brief, title=f"{title} · 总平面关系",
-                            project=runner.project)
-        (d / "site-plan.svg").write_text(svg, encoding="utf-8")
-        arts.append(str(d / "site-plan.svg"))
-        m = site.metrics(program, brief)
-        pl = site.plot(runner.project, brief)
-        site_line = (f"总平面：容积率 {m['far']:.2f}、建筑密度 {m['coverage']:.0%}"
-                     f"（{m['site_m2']:,.0f} m² 用地，入口{pl['entrance_note']}）")
+        if campus_state:
+            from .site_delivery import export as export_site
+            arts.extend(export_site(runner.project, d, stem="site-plan"))
+            site_line = (f"总平面：{campus_state['plot_m2']:,.0f} m² 建议场地，"
+                         "教学楼/食堂/体育馆/运动场已按模型定位；"
+                         "退界、运动场跑道与消防仍未专项校核")
+        else:
+            svg = site.plan_svg(program, brief, title=f"{title} · 总平面关系",
+                                project=runner.project)
+            (d / "site-plan.svg").write_text(svg, encoding="utf-8")
+            arts.append(str(d / "site-plan.svg"))
+            m = site.metrics(program, brief)
+            pl = site.plot(runner.project, brief)
+            site_line = (f"总平面：容积率 {m['far']:.2f}、建筑密度 {m['coverage']:.0%}"
+                         f"（{m['site_m2']:,.0f} m² 用地，入口{pl['entrance_note']}）")
 
     struct = (concept_check or {}).get("structure") or {}
     implements = bool(struct.get("implemented")) if struct else False
@@ -346,6 +436,8 @@ def run(runner: Any, d: Path, brief: SectorBrief,
             "params": list(brief.params),
             "categories": _categories(schemes["A"]),
             "envelope": env.to_dict(),
+            "modeled_floors": floor_state.get("floors", 1),
+            "modeled_floor_counts": floor_state.get("counts", []),
             "proposed_envelope": proposed,
             "geometry_basis": basis["kind"],
             "geometry_note": basis["note"],
@@ -383,6 +475,10 @@ def run(runner: Any, d: Path, brief: SectorBrief,
                                      else "未落实 " + "、".join(bad[:3])))
     if site_line:
         notes.append(site_line)
+    if floor_state.get("floors", 1) > 1:
+        notes.append(f"模型已生成 {floor_state['floors']} 层，"
+                     f"每层 {floor_state['counts']} {('班' if brief.sector == 'education' else '间客房')}；"
+                     "竖向交通与结构/消防待专业深化")
     if brief.missing:
         notes.append("缺输入：" + brief.missing[0])
     if capability.get("level") in ("concept_only", "specialist"):

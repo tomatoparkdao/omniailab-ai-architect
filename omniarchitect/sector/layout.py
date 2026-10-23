@@ -280,7 +280,8 @@ def install_envelope(project: Project, env: Envelope) -> None:
 
 def build_schemes(project: Project, program: SectorProgram, sector: str,
                   env: Envelope, *, parti: Optional[parti_mod.Parti] = None,
-                  corridor: float = 0.0) -> Dict[str, SchemeResult]:
+                  corridor: float = 0.0,
+                  level_id: Optional[str] = None) -> Dict[str, SchemeResult]:
     """两套方案：A = S2 选定的组织方式，B = 另一种组织逻辑。
 
     有 parti 时按 `plans.build()` 排：教室带夹中庭、房间夹双廊、原料到成品
@@ -290,7 +291,8 @@ def build_schemes(project: Project, program: SectorProgram, sector: str,
     没有可执行的 parti 时回落到通用 `zone_bands`（A 正序 / B 反序），
     记录里会写明 `concept_implemented=False`。
     """
-    gen = PlanGenerator(project, project.levels[0].id if project.levels else "L1")
+    gen = PlanGenerator(project, level_id or
+                        (project.levels[0].id if project.levels else "L1"))
     corr = corridor or env.corridor_mm
     if parti is not None and parti.kind in plans.BUILDERS:
         a = plans.build(parti.kind, gen, SchemeOptions(
@@ -329,9 +331,8 @@ def install_landscape_spaces(project: Project, program: SectorProgram,
                              brief: SectorBrief, *, kind: str = "water_loop") -> int:
     """把景观分区落成场地空间：让模型里"真的有这块地"。
 
-    不是把场地切成几条竖带（那是占比图的画法，不是总平面）：
-    水面成一块、种植沿边界、铺装贴入口、园路成环。图仍由 `site.landscape_svg`
-    按同一套组织方式画，两者读同一份分区面积。
+    水面成一块、种植沿边界、铺装贴入口、园路成环。主图、CAD、
+    OBJ 与提量均读取这些 L-SITE 空间；没有几何库时保留未分区面积警告。
     """
     site = brief.get("site_area") or sum(r.area_m2 for r in program.rows) or 100.0
     w, d = _site_extent(site)
@@ -341,18 +342,21 @@ def install_landscape_spaces(project: Project, program: SectorProgram,
                                     height_mm=0.0))
     project.spaces = [s for s in project.spaces
                       if not str(s.source).startswith("sector_site")]
+    project.elements = [e for e in project.elements
+                        if not str(e.source).startswith("sector_site")]
     rows = {r.zone: r for r in program.rows}
     count = 0
 
     def put(key: str, name: str, use: str, ring: List[List[float]], area: float,
-            note: str) -> None:
+            note: str, design_z_mm: float = 0.0) -> None:
         nonlocal count
         project.spaces.append(Space(
             id=f"S-LZ-{key}", level_id=level_id, name=name, use=use,
             boundary_mm2d=ring, source="sector_site", confidence=0.4,
             properties={"precision": "schematic", "proposed": True,
                         "area_m2_target": round(area, 1),
-                        "landscape_kind": kind, "note": note}))
+                        "landscape_kind": kind, "note": note,
+                        "design_z_mm": design_z_mm}))
         count += 1
 
     planting = rows.get("planting")
@@ -364,46 +368,135 @@ def install_landscape_spaces(project: Project, program: SectorProgram,
         # 水面成一块：放在入口对侧偏一侧，直径按面积反算。
         # 台地/林下方案里水景让位于地形与围合，只留一处小水面（跌水/水钵）。
         area = water.area_m2 if kind == "water_loop" else max(6.0, site * 0.008)
-        r = math.sqrt(area * 1e6 / (math.pi * 1.45))
-        cx, cy = w * 0.62, d * 0.60
+        # 12 边椭圆多边形的实面积，而非连续圆的近似面积。
+        r = math.sqrt(area * 1e6 / (6 * math.sin(math.pi / 6) * 1.22 * 0.82))
+        cx, cy = w * 0.58, d * 0.55
         ring = [[cx + r * 1.22 * math.cos(2 * math.pi * i / 12),
                  cy + r * 0.82 * math.sin(2 * math.pi * i / 12)] for i in range(12)]
         put("WATER", "水面" if kind == "water_loop" else "小水面（跌水 / 水钵）",
             "water", ring, area,
-            "静水面：形状为拓扑示意，岸线与水深须实测与专项设计")
+            "静水面：形状为拓扑示意，岸线与水深须实测与专项设计",
+            design_z_mm=-120.0)
 
     if planting:
         edge = max(1500.0, min(w, d) * 0.10)
         strip_area = planting.area_m2 / 4.0
         bands = [
-            ("N", [[0.0, d - edge], [w, d - edge], [w, d], [0.0, d]]),
-            ("S", [[0.0, 0.0], [w, 0.0], [w, edge], [0.0, edge]]),
-            ("W", [[0.0, edge], [edge, edge], [edge, d - edge], [0.0, d - edge]]),
-            ("E", [[w - edge, edge], [w, edge], [w, d - edge], [w - edge, d - edge]]),
+            ("N", [[0, d], [w, d], [w, d-edge], [w*.75, d-edge*1.12],
+                   [w*.5, d-edge*.94], [w*.25, d-edge*1.10], [0, d-edge]]),
+            ("S", [[0, 0], [w, 0], [w, edge], [w*.75, edge*1.10],
+                   [w*.5, edge*.92], [w*.25, edge*1.12], [0, edge]]),
+            ("W", [[0, edge*1.15], [edge, edge*1.15], [edge*1.08, d*.32],
+                   [edge*.90, d*.68], [edge, d-edge*1.15], [0, d-edge*1.15]]),
+            ("E", [[w-edge, edge*1.15], [w, edge*1.15], [w, d-edge*1.15],
+                   [w-edge, d-edge*1.15], [w-edge*1.10, d*.68],
+                   [w-edge*.91, d*.32]]),
         ]
         for tag, ring in bands:
             put(f"PLANT-{tag}", f"{planting.name}（{tag} 侧）", "planting", ring,
-                strip_area, "边界种植带：乔木与灌木分层，位置须避让管线")
+                strip_area, "折线边界种植台地：+0.18m 为方案建议，须复核土层、排水与管线",
+                design_z_mm=180.0)
 
     if paving:
-        pw, pd = w * 0.30, d * 0.24
-        ring = [[w * 0.12, d * 0.08], [w * 0.12 + pw, d * 0.08],
-                [w * 0.12 + pw, d * 0.08 + pd], [w * 0.12, d * 0.08 + pd]]
+        pw, pd = w * 0.30, d * 0.15
+        ring = [[w*.18, d*.13], [w*.18+pw*.75, d*.13],
+                [w*.18+pw, d*.18], [w*.18+pw*.9, d*.13+pd*.62],
+                [w*.18+pw*.2, d*.13+pd*.72], [w*.18, d*.21]]
         put("PAVE", paving.name, "paving", ring, paving.area_m2,
-            "铺装与活动场地：贴入口，具体铺法待定")
+            "入口活动平台：折线边界，材料、基层及坡向待确认")
 
     if path:
-        t = max(1200.0, min(w, d) * 0.06)
-        cx0, cy0, cx1, cy1 = w * 0.18, d * 0.18, w * 0.82, d * 0.82
-        segs = [
-            ("S", [[cx0, cy0], [cx1, cy0], [cx1, cy0 + t], [cx0, cy0 + t]]),
-            ("N", [[cx0, cy1 - t], [cx1, cy1 - t], [cx1, cy1], [cx0, cy1]]),
-            ("W", [[cx0, cy0], [cx0 + t, cy0], [cx0 + t, cy1], [cx0, cy1]]),
-            ("E", [[cx1 - t, cy0], [cx1, cy0], [cx1, cy1], [cx1 - t, cy1]]),
-        ]
-        for tag, ring in segs:
-            put(f"PATH-{tag}", f"{path.name}（{tag} 段）", "circulation", ring,
-                path.area_m2 / 4.0, "主园路 1.2 m，支路 0.9 m；成环")
+        # 由相邻内外折线构成闭合环路，每段是独立多边形；不再以四条矩形带
+        # 冒充园路。半径留出中央水景与入口平台，宽度只作方案建议。
+        t = max(1200.0, min(w, d) * 0.065)
+        cx, cy = w*.52, d*.55
+        rx, ry = w*.29, d*.27
+        n = 16
+        inner = [[cx+(rx-t/2)*math.cos(2*math.pi*i/n),
+                  cy+(ry-t/2)*math.sin(2*math.pi*i/n)] for i in range(n)]
+        outer = [[cx+(rx+t/2)*math.cos(2*math.pi*i/n),
+                  cy+(ry+t/2)*math.sin(2*math.pi*i/n)] for i in range(n)]
+        for i in range(n):
+            j = (i+1) % n
+            put(f"PATH-{i+1:02d}", f"{path.name}（环路 {i+1:02d}）", "circulation",
+                [outer[i], outer[j], inner[j], inner[i]], path.area_m2/n,
+                "闭合游线；路宽及与水景/平台交接须复核")
+    if water and path and kind == "water_loop":
+        for i, (angle, name) in enumerate(((0.0, "临水观景点"),
+                                            (math.pi, "水景观察点")), 1):
+            project.elements.append(Element(
+                id=f"L-NODE-{i:02d}", type="other", level_id=level_id,
+                geometry={"center": [w*.52 + (w*.29-t/2-700)*math.cos(angle),
+                                     d*.55 + (d*.27-t/2-700)*math.sin(angle)],
+                          "radius_mm": 350.0},
+                source="sector_site_node", confidence=0.35, uncertain=True,
+                properties={"landscape_kind": "view_node", "name": name,
+                            "note": "方案停留节点；与岸线的安全距离和构造未确认"}))
+    # 草坪与透水地被是实际空间而非图上的底色。利用已登记的几何可选依赖
+    # 对场地扣除水景、铺装与园路，并把中央环内留作草坪，其余作待选型透水地被。
+    # 无 Shapely 时保留原分区及明确的面积缺口，不假装已覆盖全场。
+    from ..geometry import HAS_SHAPELY
+    if HAS_SHAPELY and path:
+        from shapely.geometry import Polygon
+        from shapely.ops import triangulate, unary_union
+
+        occupied = [Polygon(s.boundary_mm2d) for s in project.spaces_on(level_id)
+                    if s.source == "sector_site" and s.use in
+                    ("planting", "water", "paving", "circulation")]
+        site_shape = Polygon([(0, 0), (w, 0), (w, d), (0, d)])
+        residual = site_shape.difference(unary_union(occupied))
+        center_shape = Polygon(inner)
+        infill = (("LAWN", "中央草坪与地被", "planting",
+                   residual.intersection(center_shape)),
+                  ("GRAVEL", "透水砂砾活动地面", "paving",
+                   residual.difference(center_shape)))
+
+        def leaf_polygons(shape: Any, depth: int = 0) -> List[Any]:
+            if shape.is_empty:
+                return []
+            if shape.geom_type != "Polygon":
+                return [part for g in getattr(shape, "geoms", [])
+                        for part in leaf_polygons(g, depth)]
+            if shape.area < 1000:
+                return []
+            if not shape.interiors:
+                return [shape]
+            if depth >= 3:
+                raise ValueError("景观剩余区域无法拆成无洞多边形，未写入不准确面积")
+            return [part for tri in triangulate(shape)
+                    for part in leaf_polygons(tri.intersection(shape), depth + 1)]
+
+        for tag, name, use, shape in infill:
+            for i, polygon in enumerate(leaf_polygons(shape), 1):
+                ring = [[float(x), float(y)] for x, y in polygon.exterior.coords[:-1]]
+                put(f"{tag}-{i:03d}", name, use, ring,
+                    polygon.area / 1e6,
+                    "方案地表分区；基层、排水、土层和材料待专项确认")
+                project.spaces[-1].properties["infill_kind"] = tag.lower()
+    # 概念级乔木位置跟随种植带的真实多边形；不是单独画在 SVG 上的装饰图标。
+    # 苗木品种、冠幅和最终株距均需苗源/管线复核。
+    plant_zones = [s for s in project.spaces_on(level_id)
+                   if s.source == "sector_site" and s.use == "planting"
+                   and not s.properties.get("infill_kind")]
+    tree_no = 0
+    for zone in plant_zones:
+        x0, y0, x1, y1 = zone.bbox()
+        horizontal = x1 - x0 >= y1 - y0
+        span = (x1 - x0) if horizontal else (y1 - y0)
+        tree_count = max(1, int(span // 5500))
+        for i in range(tree_count):
+            fraction = (i + 0.5) / tree_count
+            x = x0 + span * fraction if horizontal else (x0 + x1) / 2
+            y = (y0 + y1) / 2 if horizontal else y0 + span * fraction
+            tree_no += 1
+            project.elements.append(Element(
+                id=f"TREE-{tree_no:03d}", type="other", level_id=level_id,
+                geometry={"center": [x, y], "crown_radius_mm": 1100.0,
+                          "trunk_radius_mm": 130.0, "height_mm": 3200.0},
+                source="sector_site_tree", confidence=0.35, uncertain=True,
+                properties={"landscape_kind": "tree", "species": "待选型",
+                            "host_zone": zone.id,
+                            "note": "方案建议点位，须避让管线并按苗木冠幅复核"}))
     return count
 
 

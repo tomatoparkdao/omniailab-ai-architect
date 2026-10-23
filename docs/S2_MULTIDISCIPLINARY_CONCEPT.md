@@ -1,7 +1,7 @@
 ---
 name: S2 多专业概念设计
 description: 一套概念如何同时包含建筑、结构、机电、室内与景观的立场——各专业方向从同一套空间主张推导，G2 逐专业锁定同一个 concept_id
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

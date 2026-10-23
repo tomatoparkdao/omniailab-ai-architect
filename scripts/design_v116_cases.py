@@ -77,6 +77,20 @@ CASES = {
             "base.commission": "只做室内，建筑与结构不动",
         },
     },
+    "school": {
+        "name": "24 班小学新建",
+        "discipline": "architecture",
+        "constraints": {"project_type": "小学教学楼", "location": "杭州",
+                        "budget_cny": 120_000_000},
+        "answers": {
+            "base.project_type": "24 班完全小学新建，含教学楼、食堂与体育馆",
+            "base.needs": ("24 个班，每年级 4 个班。教学楼要能独立管理，家长接送不进教学区；"
+                           "食堂要能分两批错峰就餐；体育馆放学后对社区开放，需要单独出入口。"
+                           "用地北侧是城市干道，噪音要注意。"),
+            "base.site_conditions": "新征用地约 2.4 公顷，场地基本平整，北侧临城市干道",
+            "base.commission": "建筑方案到施工图配合",
+        },
+    },
     "garden": {
         "name": "800 m² 私家庭院",
         "discipline": "landscape",

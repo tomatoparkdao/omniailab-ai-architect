@@ -87,7 +87,8 @@ PATTERNS: Tuple[Tuple[str, str], ...] = (
     ("keys", _NUM + r"\s*(?:间)?\s*客房"),
     ("rooms", _NUM + r"\s*(?:间)?\s*(?:房间|包间|诊室)"),
     ("seats", _NUM + r"\s*(?:个)?\s*(?:座位|餐位)"),
-    ("site_area", r"用地\s*" + _NUM + r"\s*(?:亩|平方米|平米|㎡|m2)"),
+    ("site_area", r"用地\s*约?\s*" + _NUM +
+     r"\s*(?:亩|平方米|平米|㎡|m2|公顷|hectares?|ha)"),
     ("area", _NUM + r"\s*(?:平方米|平米|㎡|m2|㎡)"),
     ("floors", _NUM + r"\s*层"),
     ("shifts", _NUM + r"\s*(?:班|批)\s*(?:制|供餐)"),
@@ -210,6 +211,18 @@ def _first(text: str, key: str) -> Optional[float]:
         mu = MU_RE.search(text)
         if mu:
             return float(mu.group(1)) * 666.67
+        # 公顷/亩/平方米要换算成 m²：混着读会把 2.4 公顷当成 2.4 m²，
+        # 或者读不到就退回 6000 m² 的默认值，总平面直接放不下。
+        m = re.search(r"用地\s*约?\s*" + _NUM +
+                      r"\s*(平方米|平米|㎡|m2|亩|公顷|hectares?|ha)", text)
+        if m:
+            value = float(m.group(1))
+            unit = m.group(2)
+            if unit == "亩":
+                return value * 666.67
+            if unit in ("公顷", "hectare", "hectares", "ha"):
+                return value * 10000.0
+            return value
     if key == "grid":
         g = GRID_RE.search(text)
         return None

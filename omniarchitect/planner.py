@@ -836,6 +836,7 @@ class PlanGenerator:
                         "scheme": opts.variant,
                         "scheme_key": key,
                         "recipe": recipe,
+                        "zone": spec.zone if spec else ("entry" if key == "corridor" else "service"),
                         "target_area_m2": spec.target_area_m2 if spec else None,
                         "daylight_required": bool(spec.daylight) if spec else False,
                         "open_plan": (spec.recipe in OPEN_PLAN_RECIPES) if spec else True,

@@ -28,7 +28,9 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -129,7 +131,14 @@ def _latest_run(case_dir: Path) -> Path:
 
 def _basis_of(p: Project) -> str:
     from omniarchitect.sector import layout as lay
+    from omniarchitect.concept.handoff import plan_record
 
+    record = plan_record(p)
+    if record.get("sector") == "landscape":
+        kind = (record.get("design_data") or {}).get("geometry_basis")
+        return {"surveyed": "实测边界", "drawing": "已有图纸边界",
+                "client": "业主估算边界", "assumed": "系统矩形假设",
+                "proposed": "系统建议边界"}.get(kind, "景观边界未核")
     return str(lay.geometry_basis(p).get("label") or "")
 
 
@@ -139,10 +148,30 @@ def _shot(svg_path: Path, png_path: Path, width: int = 1280) -> bool:
     整页截图会等字体加载后按页面高度重排，扁平 SVG 页容易在 30 s 超时；
     截 `svg` 元素既快又只含图本身。
     """
+    def chrome_fallback() -> bool:
+        browser = Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
+        if not browser.is_file():
+            return False
+        started = time.time_ns()
+        try:
+            subprocess.run([str(browser), "--headless", "--disable-gpu", "--no-sandbox",
+                            "--hide-scrollbars", f"--window-size={width},900",
+                            f"--screenshot={png_path.resolve()}",
+                            svg_path.resolve().as_uri()], check=False, timeout=20,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            for _ in range(30):
+                if (png_path.is_file() and png_path.stat().st_size > 0
+                        and png_path.stat().st_mtime_ns >= started - 1_000_000_000):
+                    return True
+                time.sleep(0.1)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        return False
+
     try:
         from playwright.sync_api import sync_playwright
     except Exception:                       # noqa: BLE001
-        return False
+        return chrome_fallback()
     try:
         with sync_playwright() as pw:
             b = pw.chromium.launch(channel="chrome", headless=True)
@@ -157,7 +186,7 @@ def _shot(svg_path: Path, png_path: Path, width: int = 1280) -> bool:
             b.close()
         return True
     except Exception:                       # noqa: BLE001
-        return False
+        return chrome_fallback()
 
 
 def _install_actual_boundary(p: Project, g: dict) -> None:
@@ -251,6 +280,43 @@ def run_case(key: str, cfg: dict) -> dict:
     except Exception as exc:                # noqa: BLE001
         g3 = {"status": "error", "error": f"{type(exc).__name__}: {exc}"}
     assess = assess_plan_gate(p)
+    # S3 的统一模型留档：后续图纸/模型以它为依据，不从示意图反推。
+    s3_model = out / "project-s3.json"
+    p.save(s3_model)
+
+    # 未签 G3 的案例仅生成探索性预览，不推进阶段状态/不冒充正式 S4–S8。
+    exploratory = []
+    preview_screenshots = []
+    if key in ("garden", "school", "hotel"):
+        if key == "garden":
+            from omniarchitect.sector.landscape_delivery import run as preview_run
+        else:
+            from omniarchitect.sector.deepening import run as preview_run
+        preview_root = out / f"pre-G3-{key}-preview"
+        for stage in ("S4", "S5", "S6", "S7", "S8"):
+            result = preview_run(runner, stage, preview_root / stage)
+            exploratory.append({"stage": stage, "status": result.status,
+                                "artifacts": result.artifacts,
+                                "notes": result.notes, "error": result.error})
+        (preview_root / "review-status.json").write_text(
+            json.dumps({"gate": "G3 pending", "formal_delivery": False,
+                        "reason": "仅有建议/估算边界，待实测与正式确认",
+                        "previews": exploratory}, ensure_ascii=False, indent=2),
+            encoding="utf-8")
+        preview_views = ({
+            "garden": [preview_root / "S4" / "landscape-model-plan.svg",
+                       preview_root / "S5" / "isometric-ne.svg"],
+            "school": [preview_root / "S4" / "A-立面-南.svg",
+                       preview_root / "S5" / "L1-model-plan.svg",
+                       preview_root / "S5" / "isometric-ne.svg"],
+            "hotel": [preview_root / "S4" / "L1" / "I-04-ceiling.svg",
+                      preview_root / "S5" / "L1-model-plan.svg",
+                      preview_root / "S5" / "isometric-ne.svg"],
+        })[key]
+        for svg in preview_views:
+            png = svg.with_suffix(".png")
+            if svg.is_file() and _shot(svg, png, width=1200):
+                preview_screenshots.append(str(png))
 
     # 客户提案（复用 presentation/html.py）
     shortlist = next(iter(sorted(run_dir.rglob("reference-shortlist.json"))), None)
@@ -279,11 +345,17 @@ def run_case(key: str, cfg: dict) -> dict:
         "g3_critical": [c["id"] for c in assess.get("critical") or []],
         "g3_conditions": [c["id"] for c in assess.get("conditions") or []],
         "geometry_basis": _basis_of(p),
+        "sector_levels": dict(p.meta.get("sector_levels") or {}),
+        "modeled_teaching_rooms": sum(1 for s in p.spaces if s.use == "teaching"),
+        "modeled_guest_rooms": sum(1 for s in p.spaces if s.use == "guest"),
         "codes": (payload.get("taxonomy") or {}).get("codes"),
         "concepts": [{"id": c.get("concept_id"), "name": c.get("concept_name")}
                      for c in concepts],
         "proposal": str(page),
+        "s3_model": str(s3_model),
         "pngs": pngs,
+        "exploratory_delivery": exploratory,
+        "preview_screenshots": preview_screenshots,
     }
 
 

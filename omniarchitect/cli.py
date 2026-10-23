@@ -418,6 +418,61 @@ def cmd_route(args) -> int:
     return 0
 
 
+def cmd_conditions(args) -> int:
+    """原始条件：查看 / 导入业主给的实测轮廓与墙。"""
+    from . import existing as ex
+
+    project = _load(args)
+    base = Path(args.project)
+    if base.is_file():
+        base = base.parent
+    path = Path(args.file) if getattr(args, "file", None) else ex.discover(base)
+    payload = {"status": "ok", "geometry": ex.has_geometry(project),
+               "imported": False, "path": str(path) if path else "",
+               "report": ex.report(project)}
+    if path is None:
+        payload["status"] = "no_file"
+        payload["next_action"] = (
+            f"把业主提供的实测数据写成 {ex.FILE_NAME} 放到项目目录；"
+            "字段：envelope（mm 坐标点）、walls（起终点/厚度/是否不确定）")
+        (_print_json(payload) if args.json else print("\n".join(
+            ["# 原始条件", "", *ex.report(project), "",
+             payload["next_action"]])))
+        return 0
+    if getattr(args, "check", False):
+        try:
+            data = ex.validate(ex.load(path))
+            payload["valid"] = True
+            payload["area_m2"] = ex.area_m2(data)
+            payload["walls"] = len(data["walls"])
+        except ex.ConditionsError as exc:
+            payload["status"] = "invalid"
+            payload["error"] = str(exc)
+            _print_json(payload) if args.json else print(f"资料不成立：{exc}")
+            return 1
+        _print_json(payload) if args.json else print(
+            f"资料成立：{payload['area_m2']} m² / {payload['walls']} 道墙")
+        return 0
+    try:
+        got = ex.import_file(project, path, replace=bool(getattr(args, "replace", False)))
+    except ex.ConditionsError as exc:
+        payload["status"] = "failed"
+        payload["error"] = str(exc)
+        _print_json(payload) if args.json else print(f"导入失败：{exc}")
+        return 1
+    project.save(base / "project.json")
+    payload.update({"imported": True, "summary": got, "geometry": True})
+    if args.json:
+        _print_json(payload)
+    else:
+        print(f"已导入：{got['envelope_area_m2']} m² 轮廓 / {got['walls']} 道墙"
+              f"（{got['source']}）")
+        if got.get("uncertain_walls"):
+            print(f"  其中 {got['uncertain_walls']} 道标为不确定，须现场复核")
+        print(f"  已写入 {base / 'project.json'}")
+    return 0
+
+
 def cmd_verify(args) -> int:
     project = _load(args)
     issues: List[str] = []
@@ -650,6 +705,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     sp = add_project(sub.add_parser("status", help="阶段推进状态"))
     sp.set_defaults(func=cmd_status)
+
+    sp = add_project(sub.add_parser(
+        "conditions", help="原始条件：查看 / 导入业主给的实测轮廓与墙"))
+    sp.add_argument("--file", default=None, help="资料文件（默认找项目目录下的 existing-conditions.json）")
+    sp.add_argument("--check", action="store_true", help="只校验，不写入模型")
+    sp.add_argument("--replace", action="store_true", help="替换已有轮廓（属几何变更，慎用）")
+    sp.set_defaults(func=cmd_conditions)
 
     sp = add_project(sub.add_parser("verify", help="模型校验"))
     sp.set_defaults(func=cmd_verify)

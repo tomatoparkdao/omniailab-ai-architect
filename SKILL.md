@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.17.1
+version: 1.18.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -212,6 +212,7 @@ python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大
 python -m omniarchitect concept --project <dir> --action generate   # S2 概念
 python -m omniarchitect status  --project <dir>
 python -m omniarchitect route   --project <dir> "帮我出施工图"
+python -m omniarchitect conditions --project <dir>          # 读业主实测轮廓
 python -m omniarchitect run     --project <dir> --all --assume-approval
 python -m omniarchitect confirm --project <dir> --stage S3 --by 业主
 python -m omniarchitect change  --project <dir> "把厨房和餐厅之间的墙往外移300mm"
@@ -225,6 +226,7 @@ python -m omniarchitect present --list-kinds
 python -m omniarchitect concept-render --project <dir> --scheme A --views 5
 python -m omniarchitect concept-render --project <dir> --submit --authorize   # L3 联网，需授权
 ```
+
 
 ### 环境与合规
 
@@ -318,7 +320,7 @@ python -m omniarchitect providers            # 创作独占状态与待执行任
 - [参考图素材库（Luxora AI）](https://tomatopark.notion.site/Luxora-AI-3c3a28d2e37880ffa75bd3a809ebb8aa)：只作方向调研，能带走结论、**原图不进交付物**。见 `docs/REFERENCE_SOURCES.md`。
 - [导演技能](https://github.com/tomatoparkdao/omniailab-ai-director)：只出分镜与运镜脚本，**不承担生成**（主体仍是 `omniailab`）。见 `docs/VIDEO_PRODUCTION.md`。
 
-**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，其余按可达性补充；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`，打不开标「未核验」。第三方图只给链接，S2 每套概念挂 1–2 例答四问。交付层出图文提案与双载体导入包（`presentation/html.py`、`presentation/online_doc.py`），**无授权连接不建线上文档、不给假链接**（`docs/CLIENT_DELIVERY.md`）。
+**案例研究属于 S1**：识别出项目类型就开始，不等问完、不等 G1。首选 Luxora AI，不足再补；每次 5–8 个可打开案例，出 `reference-shortlist.md/.json`，打不开标「未核验」。第三方图只给链接，S2 每套概念挂 1–2 例答四问。交付层出图文提案与双载体导入包，**无授权连接不建线上文档、不给假链接**（`docs/CLIENT_DELIVERY.md`）。
 
 ## 7d. 概念怎么推敲出来（S2 核心）
 

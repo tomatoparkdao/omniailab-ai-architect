@@ -126,7 +126,7 @@ def _unescape(text: str) -> str:
 
 
 # --------------------------------------------------------------------------
-def read_r12(path: str | Path) -> Dict[str, Any]:
+def read_r12(path: str | Path, required_layer_prefix: str = "A-WALL") -> Dict[str, Any]:
     """Independent re-parse of a DXF file. Never trust the writer."""
     p = Path(path)
     out: Dict[str, Any] = {"ok": False, "file": str(p), "errors": [], "stats": {}}
@@ -180,7 +180,7 @@ def read_r12(path: str | Path) -> Dict[str, Any]:
         elif code == 2 and sections and sections[-1] == "":
             sections[-1] = val
             in_entities = sections[-1] == "ENTITIES"
-        elif code == 8:
+        elif code == 8 and in_entities:
             layers.add(val)
 
     total = sum(v for k, v in entities.items() if k not in ("VERTEX", "SEQEND"))
@@ -196,8 +196,8 @@ def read_r12(path: str | Path) -> Dict[str, Any]:
         out["errors"].append("no ENTITIES section")
     if total == 0:
         out["errors"].append("ENTITIES section contains no drawable entities")
-    if not any(l.startswith("A-WALL") for l in layers):
-        out["errors"].append("no wall geometry on A-WALL layers")
+    if not any(l.startswith(required_layer_prefix) for l in layers):
+        out["errors"].append(f"no geometry on {required_layer_prefix} layers")
     if "AC1009" not in raw:
         out["errors"].append("missing AC1009 version header")
     labels = [_unescape(v) for c, v in codes if c == 1]
