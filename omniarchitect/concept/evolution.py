@@ -39,6 +39,14 @@ DISCIPLINE_STEPS: Dict[str, Tuple[str, ...]] = {
     "landscape": ("场地与边界", "空间层次", "园路与节点", "水景与种植"),
 }
 
+#: 景观第四步按**方案真实内容**命名，不能三个方向共用一个"水景与种植"。
+#: 旱溪方案没有水景，写"水景与种植"就等于图与标题对不上——客户会当场看出来。
+LANDSCAPE_LAST_STEP: Dict[str, str] = {
+    "pond": "水景与种植",
+    "terraces": "旱溪与种植",
+    "grove": "林下与茶席",
+}
+
 DISCIPLINE_CN = {"architecture": "建筑", "interior": "室内", "landscape": "景观"}
 
 @dataclass
@@ -144,13 +152,23 @@ def _sequence(concept: Dict[str, Any]) -> List[str]:
     return []
 
 
+def _names_for(concept: Dict[str, Any], disc: str) -> Tuple[str, ...]:
+    """四步名。景观第四步跟着方案走（静水／旱溪／林下），不套通用说法。"""
+    names = DISCIPLINE_STEPS[disc]
+    if disc == "landscape":
+        last = LANDSCAPE_LAST_STEP.get(layout_mod.landscape_kind(concept))
+        if last:
+            return names[:3] + (last,)
+    return names
+
+
 def plan(concept: Dict[str, Any], discipline: str = "architecture", *,
          sector: str = "") -> Plan:
     """推导这套概念的推敲步骤。数据不够时明确说缺什么，不硬编故事。"""
     disc = discipline if discipline in DISCIPLINE_STEPS else "architecture"
     proto = _proto(concept)
     family = str(proto.get("family") or "cluster")
-    names = DISCIPLINE_STEPS[disc]
+    names = _names_for(concept, disc)
 
     zoning = _clauses(proto.get("zoning") or proto.get("spatial_logic"), 3, 26)
     circ = _sequence(concept)
@@ -273,7 +291,8 @@ def _scene_body(step: Step, plan_obj: Plan, pal: Pal, w: int, h: int,
     # 下方留 22 px：入口标签在框外，不留就会被 viewBox 裁掉。
     layout_mod.draw(s, frame, (3.0, 3.0, float(w) - 6.0, float(h) - 25.0), pal,
                     step=STEP_INDEX.get(step.scene, 0),
-                    label_size=12.0 if w >= 380 else 10.0, detail=False)
+                    label_size=12.0 if w >= 380 else 10.0, detail=False,
+                    report={})          # 四步图只标这一步，缺失不另作图注
     return "".join(s.body)
 
 
@@ -417,5 +436,5 @@ def _pal(theme: Optional[Dict[str, str]] = None) -> Pal:
     return pal
 
 
-__all__ = ["DISCIPLINE_CN", "DISCIPLINE_STEPS", "Plan", "Step", "STEP_INDEX",
-           "applicable", "plan", "scenes", "strip"]
+__all__ = ["DISCIPLINE_CN", "DISCIPLINE_STEPS", "LANDSCAPE_LAST_STEP", "Plan", "Step",
+           "STEP_INDEX", "applicable", "plan", "scenes", "strip"]

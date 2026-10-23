@@ -1,0 +1,66 @@
+---
+name: omniailab-ACCEPTANCE_ROUND9
+description: ACCEPTANCE_ROUND9 —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
+version: 1.17.0
+author: OmniAiLab
+developer: Mochiball
+agent_created: true
+开源仓库: https://github.com/tomatoparkdao/omniailab-ai-architect
+操作手册: https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd
+---
+
+# 验收 · 第九轮：图要对得上话
+
+> 本轮只修三处准确性：不套错模板、锚点标签不许消失、第四步按方案命名。
+> 保留 v1.16 的共同几何与两幅公共层，不加分类、不加门禁、不重构。
+
+## 一、为什么改
+
+v1.16 解决了"同一份几何"，但客户看图时还会撞上三件事：
+
+1. 普通家装的图上写着"教学／专用教室"——因为没声明 `plan_layout` 时默认套了教育三段式；
+2. 标签自动避让找不到位置就返回 `None`，入口、公共核可能一篇都不标；
+3. 旱溪方案的第四步仍叫"水景与种植"，图上没有一滴水。
+
+## 二、改了什么
+
+| 问题 | 做法 | 守在哪 |
+|---|---|---|
+| 住宅套教学模板 | `plan_layout` 只有行业方向才填；无声明时按类型给中性分区（住宅＝公共区／通道／私密区），并按 `family` 换形状（线性三段／组团四点块／环形中心核） | `test_unknown_layout_never_borrows_another_sectors_rooms` |
+| 住宅策略没落图 | `spine`／`loop`／`darklight`／`inner_box` 四种室内组织方式各出一幅，标签用策略自己的词（服务脊／中心体块／明暗两段／盒中之盒） | 本轮验收图版 |
+| 非酒店出现客房层 | `public_core` 但不是酒店时只画公共层，并标"未识别为酒店项目"；酒店判定看 `sector` 与概念用词 | `test_public_core_outside_hospitality_cannot_draw_a_guest_floor` |
+| 锚点标签被吞 | `keep` 先排 → 放宽避让 → 允许压线加引线 → 字号降 0.86 倍 → 仍不行写 `report["missing"]`，页脚印「未放置标注」 | `test_anchor_labels_are_never_silently_dropped`、`test_unplaceable_label_is_reported_not_silently_skipped` |
+| 第四步名不精确 | `LANDSCAPE_LAST_STEP`：静水「水景与种植」、旱溪「旱溪与种植」、林下「林下与茶席」；提案引导语同步 | `test_landscape_step_names_follow_the_scheme` |
+| 图与主张矛盾 | `landscape_kind()` 允许文字否定图形，矛盾写进图注；无水方案去掉"浅渠"这类水色元素 | `test_conflicting_water_claims_are_resolved_in_favour_of_the_statement` |
+
+顺带修掉几处图面问题：铺装排在草地／旱溪之前导致茶席与整石被盖住；比例尺数字落到
+画布外并与页脚重叠；茶座压在环路上；入口箭头穿过自己的标签。
+
+## 三、四个项目实跑
+
+全部从一句客户需求走真实 S1 → G1 → S2，不预置几何与风格。产物在 `out/v116/<case>/`。
+
+| 项目 | 委托 | 页数 | 方向与图版 | 缺标注 |
+|---|---|---|---|---|
+| A | 150 m² 住宅家装 | 11 | 盒中之盒／中心体块回游／一条服务脊，三种组织形状各不相同 | 无 |
+| B | 500 m² 企业办公室 | 11 | 服务前置／活动带／邻里组团，按 `family` 分线性与组团两种形状 | 无 |
+| C | 120 间客房酒店 | 11 | 公共核出两幅（裙房公共层＋客房标准层）；另两套为客房翼 | 无 |
+| D | 800 m² 私家庭院 | 10 | 一池静水／旱溪台地／林下茶席，第四步分别叫水景与种植、旱溪与种植、林下与茶席 | 无 |
+
+核对过的四件事：
+
+- 图版均符合真实委托类型：住宅图上是公共区／私密区／开间／服务脊／盒子，没有教学；
+- 核心标签全部可见：入口、公共核、大堂、后场、水景、旱溪、茶座、服务核，360 px 图幅下也不丢；
+- 同一功能在主图与四步图同一坐标：两处调同一个 `draw()`，四步只逐项显形；
+- 图与文字一致：旱溪页主张"不做池子"，图上无水面；静水页第四步"水景与种植"，图上有水景。
+
+## 四、仍然不是
+
+* 这是 S2 的概念表现几何，不是 S3 的真实项目几何模型；
+* 办公的三个方向里有两个组织形状相同（都是三段带），差别在分区顺序与文字，
+  要真正分成三种形状需要办公自己的策略库，本轮没做；
+* 概念意象仍等平台（`awaiting_platform`），0 张生成图；
+* 图为关系示意，不按比例，不作尺寸依据。
+
+---
+> © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -200,9 +200,6 @@ def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
         gap = 30.0
         fw = (w - gap) / 2.0
         boxes = [(x0 + i * (fw + gap), y0, fw, h) for i in range(2)]
-        for fr, bx in zip(frs, boxes):
-            s.text(bx[0] + 1, bx[1] - 9, fr.title, size=10.5, color=dia.C_MUTED,
-                   weight="600")
     elif annotate:
         y0, h = 96.0, min(330.0, height - 176.0)
         boxes = [(x0, y0, h * 1.28, h)]
@@ -210,9 +207,24 @@ def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
         y0, h = 100.0, height - 226.0
         boxes = [(x0, y0, width - 112.0, h)]
 
+    reports: List[Tuple[Any, Dict[str, Any]]] = []
     for fr, bx in zip(frs, boxes):
+        rep: Dict[str, Any] = {}
         layout_mod.draw(s, fr, bx, pal, label_size=9.5 if compact else 10.5,
-                        detail=not compact)
+                        detail=not compact, report=rep)
+        reports.append((fr, rep))
+
+    # 图题与图注：图注只在"这不是排房图"或"数据自相矛盾"时出现。
+    # 每张图都印一句免责声明等于没说，反而把真问题埋掉。
+    for fr, bx in zip(frs, boxes):
+        if fr.note:
+            if fr.title:
+                s.text(bx[0] + 1, bx[1] - 24, fr.title, size=10.5, color=dia.C_MUTED,
+                       weight="600")
+            s.text(bx[0] + 1, bx[1] - 9, fr.note, size=9.5, color=dia.C_MUTED)
+        elif fr.title:
+            s.text(bx[0] + 1, bx[1] - 9, fr.title, size=10.5, color=dia.C_MUTED,
+                   weight="600")
 
     if annotate:
         bx = boxes[0]
@@ -221,14 +233,32 @@ def plan_plate(concept: Dict[str, Any], *, discipline: str = "landscape",
                      scale=1.12, width=width - (bx[0] + bx[2] + 58.0) - 60.0)
     if heading:
         s.text(44, 44, str(concept.get("concept_name") or ""), size=22, weight="600")
-    ny = boxes[0][1] + boxes[0][3] + 34.0
-    iso_mod.north_arrow(s, x0 + 6, ny + 16, size=16, color=dia.C_MUTED)
-    iso_mod.scale_bar(s, x0 + 44, ny + 26, 104, unit="m", seg_m=5.0, segments=2,
+
+    # 放不下的标注必须留痕：图可以少一个标注，但不能假装画全了。
+    lost: List[str] = []
+    for _, rep in reports:
+        for t in rep.get("missing") or []:
+            if t not in lost:
+                lost.append(t)
+
+    # 底部只留一条基线：比例尺（含数字）压在页脚之上，谁也不许压到谁。
+    # 上一版把比例尺固定在框下 34 px，496 高的图里比例尺数字掉到画布外、
+    # 和页脚叠在一起——图上看着像印刷事故。
+    bar_y = height - 50.0
+    iso_mod.north_arrow(s, x0 + 6, bar_y - 8, size=14, color=dia.C_MUTED)
+    iso_mod.scale_bar(s, x0 + 44, bar_y, 104, unit="m", seg_m=5.0, segments=2,
                       color=dia.C_MUTED, note="示意")
     if footer:
-        s.text(40, height - 16, note, size=9, color=dia.C_MUTED)
+        # 放不下的标注与图注同一行，不另起一行抢位置——但必须写出来。
+        tail = str(note or "")
+        if lost:
+            tail += ("　｜　" if tail else "") + "未放置标注：" + "、".join(lost)
+        s.text(40, height - 16, tail, size=9, color=dia.C_MUTED)
         s.text(width - 40, height - 16, "OmniAiLab 自有图解", size=9,
                color=dia.C_MUTED, anchor="end")
+    elif lost:
+        s.text(40, height - 16, "未放置标注：" + "、".join(lost), size=9,
+               color=dia.C_MUTED)
     return s.render()
 
 

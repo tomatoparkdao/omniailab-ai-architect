@@ -1,7 +1,7 @@
 ---
 name: omniailab-acceptance-round1
 description: 执行闭环验收第一轮 —— 图纸派生参考图、任务生命周期与恢复、两个真实项目的客户首用测试；逐项标注 已验证 / 仅 Mock 验证 / 尚未连接 / 存在阻断
-version: 1.16.0
+version: 1.17.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

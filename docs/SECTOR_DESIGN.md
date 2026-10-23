@@ -1,7 +1,7 @@
 ---
 name: omniailab-SECTOR_DESIGN
 description: SECTOR_DESIGN —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
-version: 1.16.0
+version: 1.17.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

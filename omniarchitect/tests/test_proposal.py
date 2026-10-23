@@ -237,9 +237,10 @@ def test_plate_follows_the_discipline_it_is_drawn_for() -> None:
     inner = plate_mod.write(_concept(), tmp_path, discipline="interior",
                             width=800, height=452, annotate=False)
     text = Path(inner).read_text(encoding="utf-8")
-    # 没有声明平面组织方式的室内，按工装三段式画：教学／连廊／办公，
-    # 绝不套客房图版（客房是酒店标准层的事）
-    assert "连廊" in text and "客房" not in text
+    # 没有声明平面组织方式的室内：给中性分区并写明"不是排房图"。
+    # 绝不套教学（"专用教室"），也绝不套客房标准层（那是酒店公共核的事）。
+    assert "走廊" in text and "专用教室" not in text and "教学" not in text, text[:400]
+    assert "客房标准层" not in text and "功能关系示意" in text, text[:400]
     arch = plate_mod.write(_concept(), tmp_path, discipline="architecture",
                            width=800, height=452, annotate=False)
     assert "入口" in Path(arch).read_text(encoding="utf-8")
@@ -349,11 +350,20 @@ def test_landscape_tea_seat_sits_across_the_water_from_the_gate() -> None:
     wcx, wcy = wx + ww / 2, wy + wh / 2
     # 与入口分处水面两侧
     assert (seat.y - wcy) * (gate.y - wcy) < 0, (seat.y, gate.y, wcy)
-    # 视线穿水
+    # 茶座不许压在环路上：坐在通道正中不成立
+    ring = fr.rings[0]
+    v = ((seat.x - ring.cx) / ring.rx) ** 2 + ((seat.y - ring.cy) / ring.ry) ** 2
+    assert abs(v - 1.0) > 0.08, ("茶座落在环路上", v)
+    # 视线必须**穿过水面**（与水面矩形真的相交），不能只是横过水面旁边
     sight = next(l for l in fr.links if l.key == "sight_back")
     (ax, ay), (bx, by) = sight.pts[0], sight.pts[-1]
-    mid_y = (ay + by) / 2
-    assert wy < mid_y < wy + wh, (mid_y, wy, wh)
+    hits = 0
+    for i in range(1, 41):
+        t = i / 40.0
+        px, py = ax + (bx - ax) * t, ay + (by - ay) * t
+        if wx < px < wx + ww and wy < py < wy + wh:
+            hits += 1
+    assert hits >= 8, ("视线没有穿过水面", hits)
     assert ax < wcx < bx or bx < wcx < ax
 
 
@@ -414,10 +424,140 @@ def test_labels_stay_in_the_frame_and_never_overlap() -> None:
             x0, y0, w, h = area
             for i, a in enumerate(labels):
                 ax, ay, aw, ah = a["rect"]
-                assert x0 - 4 <= ax and ax + aw <= x0 + w + 4, (a["text"], a["rect"])
+                # 入口落在边界上时，标签放到左侧留白里（有引线）：允许 32 px
+                left = 34.0 if a.get("role") == "node" else 4.0
+                assert x0 - left <= ax and ax + aw <= x0 + w + 4, (a["text"], a["rect"])
                 assert y0 - 4 <= ay and ay + ah <= y0 + h + 34, (a["text"], a["rect"])
                 for b in labels[i + 1:]:
                     bx, by, bw, bh = b["rect"]
                     overlap = not (ax + aw <= bx or bx + bw <= ax
                                    or ay + ah <= by or by + bh <= ay)
                     assert not overlap, (a["text"], b["text"])
+
+
+# --------------------------------------------------------------------------
+# v1.16 局部修正：不套错模板 / 锚点标签不许消失 / 图与主张一致
+# --------------------------------------------------------------------------
+def _home() -> dict:
+    return {"concept_id": "C-R", "concept_name": "起居朝南 · 卧室退北",
+            "concept_statement": "把公共区放在南侧，卧室退到北侧，一条走道串起来",
+            "spatial_prototype": {"family": "linear",
+                                  "zoning": "南侧起居餐厨，北侧卧室",
+                                  "circulation": "门厅 → 起居 → 卧室",
+                                  "daylight": "南向开大窗"},
+            "experience_sequence": ["进门 → 起居 → 卧室"]}
+
+
+def _office() -> dict:
+    return {"concept_id": "C-O", "concept_name": "工位成组 · 会议沿边",
+            "concept_statement": "工位成组布置，会议与接待贴外墙，中间留通道",
+            "spatial_prototype": {"family": "cluster",
+                                  "zoning": "中部工位，两侧会议与接待",
+                                  "circulation": "门厅 → 工位 → 会议室",
+                                  "daylight": "两侧采光"},
+            "experience_sequence": ["进门 → 工位 → 会议"]}
+
+
+def test_unknown_layout_never_borrows_another_sectors_rooms() -> None:
+    """住宅不许出现教学，办公不许出现客房：没有平面组织方式就给中性分区。"""
+    lay = prop.evo_mod.layout_mod
+    home = lay.frames(_home(), "interior", sector="housing")[0]
+    office = lay.frames(_office(), "interior", sector="office")[0]
+    for fr in (home, office):
+        labels = " ".join(r.label for r in fr.regions)
+        for bad in ("教学", "专用教室", "客房", "后场布草"):
+            assert bad not in labels, (fr.note, labels)
+        assert fr.note, "中性回退必须在图注里说明这不是排房图"
+    assert "私密区" in " ".join(r.label for r in home.regions)
+    assert "工位区" in " ".join(r.label for r in office.regions)
+
+
+def test_public_core_outside_hospitality_cannot_draw_a_guest_floor() -> None:
+    """非酒店项目命中 public_core：只出公共层，绝不带出客房标准层。"""
+    lay = prop.evo_mod.layout_mod
+    cultural = {"concept_id": "C-X", "concept_name": "公共核心 · 展陈在外",
+                "concept_statement": "把公共功能收进一个核，后场独立",
+                "spatial_prototype": {"family": "cluster", "plan_layout": "public_core",
+                                      "zoning": "公共核在首层",
+                                      "circulation": "入口 → 公共核 → 展陈",
+                                      "daylight": "公共核需要自然光"}}
+    frs = lay.frames(cultural, "interior", sector="culture")
+    assert len(frs) == 1, [f.title for f in frs]
+    labels = " ".join(r.label for r in frs[0].regions)
+    assert "客房" not in labels and "大堂" not in labels, labels
+    # 真酒店仍然两幅，且客房层里没有大堂
+    hotel = lay.frames(_hotel(), "interior", sector="hospitality")
+    assert [f.title for f in hotel] == ["裙房公共层", "客房标准层"]
+
+
+def test_anchor_labels_are_never_silently_dropped() -> None:
+    """入口、公共核、水景、茶座这些锚点标签，缩小图幅也得在。
+
+    放不下可以缩一档字、可以引线到框外，但不能"因为没位置就不画"——
+    客户拿到一张认不出入口的图，等于没画。
+    """
+    lay = prop.evo_mod.layout_mod
+    cases = ((_hotel(), "interior", "hospitality"),
+             (_garden(), "landscape", ""),
+             (_garden("terraces"), "landscape", ""),
+             (_home(), "interior", "housing"))
+    for concept, disc, sector in cases:
+        for w, h in ((1200, 496), (800, 452), (520, 300), (360, 220)):
+            for fr in lay.frames(concept, disc, sector=sector):
+                rep: dict = {}
+                lay.draw(dia.Svg(w, h), fr, (6.0, 6.0, w - 12.0, h - 12.0),
+                         prop.evo_mod._pal(None), label_size=10.5, report=rep)  # noqa: SLF001
+                anchors = [r.label for r in fr.regions if r.key in fr.keep]
+                anchors += [n.label for n in fr.nodes if n.key in fr.keep]
+                for text in anchors:
+                    assert text not in rep["missing"], (concept["concept_id"], w, text)
+
+
+def test_unplaceable_label_is_reported_not_silently_skipped() -> None:
+    """真放不下时必须留痕：report 里有 missing，图注会写"未放置标注"。"""
+    lay = prop.evo_mod.layout_mod
+    fr = lay.Frame("t", regions=[lay.Region("a", "一段很长很长的标注文字根本放不下",
+                                            (0.1, 0.1, 0.2, 0.2))], keep=("a",))
+    rep: dict = {}
+    lay.draw(dia.Svg(160, 90), fr, (2.0, 2.0, 156.0, 86.0), lay.PAL, report=rep)
+    assert rep["missing"] == ["一段很长很长的标注文字根本放不下"], rep
+    svg = plate_mod.plan_plate(
+        {"concept_id": "C-T", "concept_name": "x",
+         "spatial_prototype": {"family": "cluster"}},
+        discipline="landscape", width=900, height=460, annotate=False)
+    assert "未放置标注" not in svg, "正常图纸不该出现缺失提示"
+
+
+def test_landscape_step_names_follow_the_scheme() -> None:
+    """旱溪方案第四步不能叫"水景与种植"；静水方案必须有水景空间。"""
+    evo = prop.evo_mod
+    pond = evo.plan(_garden("pond"), "landscape")
+    dry = evo.plan(_garden("terraces"), "landscape")
+    grove = evo.plan(_garden("grove"), "landscape")
+    assert pond.steps[-1].name == "水景与种植"
+    assert dry.steps[-1].name == "旱溪与种植"
+    assert grove.steps[-1].name == "林下与茶席"
+    lay = prop.evo_mod.layout_mod
+    assert any(r.kind == "water" for r in lay.frames(_garden("pond"), "landscape")[0].regions)
+
+
+def test_no_water_scheme_has_no_water_region_and_no_greenfield_pond() -> None:
+    """无水方案（旱溪／林下）在图里不能有任何水面，哪怕名字叫"浅渠"。"""
+    lay = prop.evo_mod.layout_mod
+    for kind in ("terraces", "grove"):
+        fr = lay.frames(_garden(kind), "landscape")[0]
+        assert "water" not in {r.kind for r in fr.regions}, (kind, fr.regions)
+
+
+def test_conflicting_water_claims_are_resolved_in_favour_of_the_statement() -> None:
+    """原型写静水、主张写不做池子：图按无水画，并把矛盾写进图注。"""
+    lay = prop.evo_mod.layout_mod
+    bad = {"concept_id": "C-F", "concept_name": "一池静水",
+           "concept_statement": "院子中心放一块静水，但这次不做水池，改用旱溪",
+           "spatial_prototype": {"family": "courtyard", "massing_kind": "pond",
+                                 "zoning": "以水面为心"}}
+    assert lay.landscape_kind(bad) == "terraces"
+    assert lay.consistency(bad), "矛盾必须被说出来"
+    fr = lay.frames(bad, "landscape")[0]
+    assert "water" not in {r.kind for r in fr.regions}
+    assert "静水" in fr.note

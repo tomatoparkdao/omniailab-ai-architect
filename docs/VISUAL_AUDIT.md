@@ -1,7 +1,7 @@
 ---
 name: omniailab-visual-audit
 description: 视觉能力盘点与复用清单 —— 记录总设计师原有的审美、图解与排版能力各自被谁调用、本轮哪些是重新接上的、哪些是新增的，以及为什么新增是最小必要
-version: 1.16.0
+version: 1.17.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

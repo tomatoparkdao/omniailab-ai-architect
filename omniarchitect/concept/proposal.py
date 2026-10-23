@@ -606,9 +606,13 @@ def build(project: Any, ctx: Any, concept_set: Dict[str, Any],
     evo_title = {"architecture": "这个形态是怎么长出来的",
                  "interior": "这套空间是怎么排出来的",
                  "landscape": "这个院子是怎么组织起来的"}.get(lead, "这套方案是怎么成立的")
+    # 引导语用这套方案自己的四步名：旱溪方案的第四步不是"水景"，
+    # 页面上写"推到水景种植"而图上没有水，等于自证不成立。
+    _first = evo.steps[0].name if evo.steps else ""
+    _last = evo.steps[-1].name if evo.steps else ""
     evo_lead = {"architecture": "四步推演：从场地限界推到最终形态，每一步都对应一条约束。",
                 "interior": "四步推演：从功能重组推到核心空间体验，每一步都改变人的走法。",
-                "landscape": "四步推演：从场地边界推到水景种植，每一步都改变人在院子里的感受。"}.get(
+                "landscape": f"四步推演：从{_first}推到{_last}，每一步都改变人在院子里的感受。"}.get(
         lead, "四步推演：每一步都对应一条设计约束。")
     if evo.ok and evo_png:
         evo_fig = _figure(evo_png, caption=evo_caption,

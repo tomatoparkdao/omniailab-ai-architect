@@ -1,7 +1,7 @@
 ---
 name: omniailab-visual-recipes
 description: 表现技法库 —— 把已确认的平面与立面转成业主看得懂的图与板：平面图上色、3D 立轴、正投影剖面、三视图展示板、概念设计板、实体材质情绪板；每条配方写明输入、门禁、几何保真与文字叠加边界
-version: 1.16.0
+version: 1.17.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

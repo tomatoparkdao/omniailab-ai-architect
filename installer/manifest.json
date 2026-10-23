@@ -4,7 +4,7 @@
   "skill": {
     "name": "omniailab-ai-architect",
     "description": "AI 建筑与室内设计总设计师。八个业务阶段 + 30 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。",
-    "version": "1.16.0",
+    "version": "1.17.0",
     "license": "MIT（OmniAiLab）—— 见 LICENSE",
     "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
     "frontmatter": {
@@ -14,7 +14,7 @@
       "platform": "OmniAiLab",
       "homepage_cn": "https://www.omniailabx.com",
       "homepage_intl": "https://omniailab.cn",
-      "version": "1.16.0",
+      "version": "1.17.0",
       "author": "OmniAiLab",
       "developer": "Mochiball",
       "agent_created": "true",
