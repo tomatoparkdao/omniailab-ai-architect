@@ -727,9 +727,11 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
     for r in frame.regions:
         if not str(r.label or "").strip():
             continue
-        # 四步图里只标"这一步新增/点亮的"，其余留给页面正文，避免糊成一团
+        # 四步图里只标"这一步新增/点亮的"，其余留给页面正文，避免糊成一团。
+        # keep 只保它本来就有的东西（入口、水面），不能把第三步才出现的茶座
+        # 提前标到空地上——那正是"标签指错地方"。
         if step is not None and not (now(r.appear) or now(r.emphasis)
-                                     or r.key in frame.keep):
+                                     or (r.key in frame.keep and r.appear == 0)):
             continue
         if step is not None and r.key not in frame.keep and len(out) >= 3:
             continue
@@ -768,7 +770,8 @@ def draw(s: Any, frame: Frame, area: Box, pal: Dict[str, str], *,
     for nd in frame.nodes:
         if not str(nd.label or "").strip():
             continue
-        if step is not None and not (now(nd.appear) or nd.key in frame.keep):
+        if step is not None and not (now(nd.appear)
+                                     or (nd.key in frame.keep and nd.appear == 0)):
             continue
         cx, cy = P(nd.x, nd.y)
         own = (cx - 0.02 * w, cy - 0.02 * h, 0.04 * w, 0.04 * h)
