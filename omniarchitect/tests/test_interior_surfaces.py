@@ -21,9 +21,11 @@ def test_residential_surface_cad_and_schedule_use_model_rooms() -> None:
     assert {s.properties.get("zone") for s in project.spaces if s.use != "envelope"} >= {
         "day", "night", "service"}
     artifacts = export(project, root / "sheets", "L1")
-    assert len(artifacts) == 6
+    assert len(artifacts) == 10
     for stem, layer in (("I-04-ceiling", "I-CEILING"),
-                        ("I-05-floor-finish", "I-FLOOR")):
+                        ("I-05-floor-finish", "I-FLOOR"),
+                        ("I-06-lighting-proposal", "I-LIGHT"),
+                        ("I-07-typical-wall-elevations", "I-ELEV")):
         audit = DxfAdapter().audit(root / "sheets" / f"{stem}.dxf",
                                    required_layer_prefix=layer)
         assert audit["ok"], audit["errors"]
@@ -34,3 +36,6 @@ def test_residential_surface_cad_and_schedule_use_model_rooms() -> None:
     assert len(data["rooms"]) == len(rooms)
     assert all(row["gross_area_m2"] == round(rooms[row["space_id"]].area_m2, 2)
                for row in data["rooms"])
+    assert all(point["space_id"] in rooms for point in data["lighting_points"])
+    assert data["typical_wall_elevation"]["status"] == "representative_review_only"
+    assert data["typical_wall_elevation"]["edges_mm"]

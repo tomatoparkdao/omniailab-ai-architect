@@ -375,7 +375,8 @@ class ScenarioRunner:
 
     # ------------------------------------------------------------------
     def _scenario_b(self, rep, project, runner, out: Path, pdir: Path) -> None:
-        dxfs = sorted(out.rglob("*.dxf"))
+        current_run = Path(runner.out)
+        dxfs = sorted(current_run.rglob("*.dxf"))
         rep.add("DXF：数量", bool(dxfs), f"{len(dxfs)} 个：" +
                 ", ".join(_rel(p, out) for p in dxfs[:4]))
         def _depth_rank(p: Path) -> int:
@@ -410,7 +411,7 @@ class ScenarioRunner:
                 else:
                     rep.add("DXF：可重复运行", False, "DXF 适配器不可用")
 
-        objs = sorted(out.rglob("*.obj"))
+        objs = sorted(current_run.rglob("*.obj"))
         rep.add("三维空间模型：OBJ 存在", bool(objs),
                 ", ".join(_rel(p, out) for p in objs[:2]) or "未生成 OBJ")
         if objs:
@@ -421,7 +422,8 @@ class ScenarioRunner:
                     v.get("is_parametric_bim") is False,
                     v.get("honest_label", ""))
 
-        jobs = sorted(out.rglob("*render*")) + sorted(out.rglob("*shot*"))
+        visual_dir = current_run / "05-visual"
+        jobs = sorted(visual_dir.rglob("*render*")) + sorted(visual_dir.rglob("*shot*"))
         jobs = [p for p in jobs if p.suffix == ".json"]
         rep.add("效果图任务包：存在", bool(jobs),
                 ", ".join(_rel(p, out) for p in jobs[:2]) or "未生成任务包")

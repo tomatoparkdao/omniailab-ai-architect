@@ -21,6 +21,7 @@ COLORS = {
     "landscape_planting": "#93ae86", "landscape_lawn": "#9ebc88",
     "landscape_water": "#82b5c8", "landscape_paving": "#cabda2",
     "landscape_gravel": "#c3baaa", "landscape_path": "#ad9d80",
+    "landscape_canopy": "#55784d", "landscape_trunk": "#806b54",
 }
 
 
@@ -76,7 +77,9 @@ def export(obj_path: str | Path, target: str | Path, *, title: str,
         visible.append((depth, mat, points))
     if not visible:
         raise ValueError(f"OBJ 没有面向该视角的面：{source}")
-    visible.sort(key=lambda row: row[0])
+    # A site-wide ground polygon has a misleading centroid depth: sorting it
+    # with individual blocks can paint over half the campus. It is a substrate.
+    visible.sort(key=lambda row: (row[1] != "site_ground", row[0]))
     rows = ['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" '
             'viewBox="0 0 1200 760">',
             '<rect width="1200" height="760" fill="#f6f6f3"/>',
@@ -84,8 +87,12 @@ def export(obj_path: str | Path, target: str | Path, *, title: str,
             '<text x="70" y="69" font-size="13" fill="#56676a">'
             '从交付 OBJ 几何读回投影 · 模型轴测示意，非写实渲染/施工依据</text>']
     for _depth, mat, points in visible:
+        stroke = 'stroke="none"' if mat in (
+            "landscape_planting", "landscape_lawn", "landscape_water",
+            "landscape_paving", "landscape_gravel", "landscape_path") else (
+            'stroke="#485558" stroke-opacity=".22" stroke-width=".55"')
         rows.append(f'<polygon points="{points}" fill="{COLORS.get(mat, "#c4c6bf")}" '
-                    'stroke="#485558" stroke-opacity=".22" stroke-width=".55"/>')
+                    f'{stroke}/>')
     # 房间名直接标在投影后的中心点：轴测图没有名字，客户认不出哪间是哪间。
     # 白描边保证压在墙线上也读得清。
     for x, y, z, text in labels:

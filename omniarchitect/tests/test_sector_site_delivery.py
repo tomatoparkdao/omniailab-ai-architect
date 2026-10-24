@@ -11,6 +11,7 @@ from types import SimpleNamespace
 from omniarchitect.adapters import DxfAdapter, MeshAdapter
 from omniarchitect.sector import brief, program
 from omniarchitect.sector.site_delivery import export, install_school
+from omniarchitect.sector.model_preview import COLORS, export as export_model_preview
 from omniarchitect.tests.test_sector_levels import _project
 from omniarchitect.workflow import StageRunner
 
@@ -48,6 +49,11 @@ def test_school_campus_cad_obj_and_takeoff_share_footprints() -> None:
     obj_text = Path(mesh.artifacts[0]).read_text(encoding="utf-8")
     assert "usemtl site_building" in obj_text
     assert "usemtl site_sport" in obj_text
+    view = root / "campus-isometric.svg"
+    export_model_preview(mesh.artifacts[0], view, title="校园模型检视")
+    svg = view.read_text(encoding="utf-8")
+    assert f'fill="{COLORS["site_sport"]}"' in svg
+    assert f'fill="{COLORS["site_forecourt"]}"' in svg
 
     runner = StageRunner(project, root / "delivery")
     outcome = runner.stage_S8()

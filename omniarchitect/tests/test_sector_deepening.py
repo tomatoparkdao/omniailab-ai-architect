@@ -37,6 +37,20 @@ def _check(sector: str, text: str, code: str, expected: int, floors: int) -> Non
     assert takeoff["modeled_primary_rooms"] == expected
     assert len(takeoff["by_floor"]) == floors
     assert takeoff["status"] == "review_only"
+    if sector == "hospitality":
+        lighting = takeoff["lighting_proposal"]
+        assert lighting["status"] == "proposed_points_only"
+        assert lighting["total_points"] > expected
+        for lid in ("L1", f"L{floors}"):
+            sheet = runner.out / "07-documents" / lid / "I-06-lighting-proposal.dxf"
+            assert DxfAdapter().audit(sheet, "I-LIGHT")["ok"]
+            schedule = json.loads((sheet.parent / "interior-surface-areas.json")
+                                  .read_text(encoding="utf-8"))
+            assert len(schedule["lighting_points"]) == lighting["by_floor"][lid]
+            assert sum("走廊" in p["name"] for p in schedule["lighting_points"]) >= 11
+            wall_sheet = sheet.parent / "I-07-typical-wall-elevations.dxf"
+            assert DxfAdapter().audit(wall_sheet, "I-ELEV")["ok"]
+            assert schedule["typical_wall_elevation"]["openings"]
 
 
 def test_school_four_levels_and_24_classes() -> None:

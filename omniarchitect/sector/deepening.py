@@ -264,7 +264,8 @@ def run(runner: Any, stage: str, directory: Path) -> Any:
         else:
             rows += ["", "## 酒店工装待深化", "",
                      "- 客房标准层及末层已分别建模；大堂、餐饮、宴会厅与后场仍待实测平面。",
-                     "- 客房楼各层顶面与地面功能分区已出 CAD/预览；材料、防火、隔声和构造未定。",
+                     "- 客房楼各层顶面、地面、灯位建议及代表客房墙面展开已出 CAD/预览；"
+                     "材料、防火、隔声和构造未定。",
                      "- 顶墙地材料、灯具回路、客房样板间、机电末端与消防接口须专项确认。",
                      "- 后场与客流分离仍需现场流线核实，不能凭示意图宣称完成。"]
         mats = finishes.concept_materials(project)
@@ -276,7 +277,8 @@ def run(runner: Any, stage: str, directory: Path) -> Any:
         report.write_text("\n".join(rows), encoding="utf-8")
         arts.append(str(report))
         return StageOutcome(stage, status="degraded", adapter="dxf",
-                            artifacts=arts, notes=notes + ["平面已读回；立面/节点尚未完成。"])
+                            artifacts=arts, notes=notes + [
+                                "平面与已列立面已读回；其他空间立面及节点尚未完成。"])
 
     if stage == "S6":
         issues = (["食堂、体育馆、运动场的独立体量与疏散", "教学楼竖向交通和消防核算",
@@ -304,6 +306,14 @@ def run(runner: Any, stage: str, directory: Path) -> Any:
                      "basis": "各楼层统一模型净使用面积/构件几何；非总建筑面积"})
         if sector == "education" and project.meta.get("campus_site"):
             data["campus_site"] = _campus_takeoff(project)
+        if sector == "hospitality":
+            from ..interior_surfaces import proposed_lighting
+            per_floor = {lid: proposed_lighting(project, lid) for lid in floor_ids}
+            data["lighting_proposal"] = {
+                "status": "proposed_points_only",
+                "by_floor": {lid: len(points) for lid, points in per_floor.items()},
+                "total_points": sum(len(points) for points in per_floor.values()),
+                "basis": "客房及公区中心与模型床头柜坐标；非灯具采购数/回路图"}
         path = directory / "sector-takeoff.json"
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
         q = data["totals"]
@@ -321,6 +331,13 @@ def run(runner: Any, stage: str, directory: Path) -> Any:
                         "按样板与专业图纸确认 |")
         rows += ["", "## 概念材料（不等于采购规格）", ""]
         rows += [f"- {m['name']}：{m['application']}" for m in mats] or ["- 尚未确认材料品种。"]
+        if "lighting_proposal" in data:
+            lights = data["lighting_proposal"]
+            rows += ["", "## 照明建议点位（非采购数量）", "",
+                     f"- 客房楼逐层方案点位合计 {lights['total_points']} 处；"
+                     "环境灯与床头任务灯位置来自模型房间及床头柜。",
+                     "- 灯具型号、照度、色温、开关回路及消防应急照明"
+                     "未做专业设计，不能据此采购或施工。"]
         if "campus_site" in data:
             campus = data["campus_site"]
             rows += ["", "## 校园总平面模型量（仅为方案体量）", "",
