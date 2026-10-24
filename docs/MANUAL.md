@@ -1,7 +1,7 @@
 ---
 name: omniailab-ai-architect-manual
 description: 建筑与室内设计 Skill 完整操作手册 —— 八阶段逐段操作、八道门禁怎么过、命令速查、工具与权限分级、平台接入与创作能力独占、避坑总表与常见问题。
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -103,9 +103,11 @@ python installer/install.py --target ~/.codex/skills --mode copy
 python installer/verify_install.py --check-python     # 校验安装与解释器
 ```
 
-**指针安装 vs 复制安装**：`pointer`（默认）只在技能目录放 `SKILL.md` + 指向原仓库的指针，升级只需 `git pull`；`copy` 整包复制，适合搬移或离线分发。
+**指针安装 vs 复制安装**：`pointer`（默认）只在技能目录放 `SKILL.md` + 指回原仓库的 `omniailab-home.txt`，升级只需 `git pull`；`copy` 走**白名单**，只复制能力（技能定义 / 代码 / 知识 / 风格 / Schema / 文档 / 安装器），**不带项目、测试、开发脚本与缓存**，装出来 5 MB 级，适合搬移和离线分发。
 
 > **必须整个文件夹一起复制，不能只拷 SKILL.md。** 31 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、15 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
+>
+> **也别把成果写进这个文件夹。** 设计成果一律落在独立的运行工作区，见第 16 章 —— 技能包只放能力，才能一直保持可打包、可审阅、可比对版本。
 
 ### 2.3 怎么跟它对话
 
@@ -213,18 +215,23 @@ OmniAiLab 平台侧选择，可选模型以平台在架为准。
 # 0) 体检：本机有什么工具
 python -m omniarchitect doctor
 
-# 1) 从需求开始（或先跑示例）
-python -m omniarchitect demo --out out
+# 1) 先确认成果会写到哪（技能目录之外）
+python -m omniarchitect workspace
 
-# 2) 问它「我现在该干什么」
-python -m omniarchitect route --project projects/demo-120 "帮我出施工图"
+# 2) 从需求开始（或先跑示例；示例项目建在工作区，不建在技能目录）
+python -m omniarchitect demo
 
-# 3) 跑到指定阶段（自动补齐前置阶段）
-python -m omniarchitect run --project projects/demo-120 --from-stage S3
+# 3) 问它「我现在该干什么」
+python -m omniarchitect route --project demo-120 "帮我出施工图"
 
-# 4) 看进度
-python -m omniarchitect status --project projects/demo-120
+# 4) 跑到指定阶段（自动补齐前置阶段）
+python -m omniarchitect run --project demo-120 --from-stage S3
+
+# 5) 看进度
+python -m omniarchitect status --project demo-120
 ```
+
+`--project` 先按路径找，找不到就到工作区 `projects/` 里按名字找；两种写法都能用：`--project demo-120` 或 `--project projects/demo-120`。
 
 ### 4.3 启动前必须想清楚的三件事
 
@@ -806,11 +813,60 @@ python -m omniarchitect verify --project <项目目录>
 
 **每一项都能被独立复核**：DXF / OBJ / PPTX 写完必须用**独立实现**重新解析一遍，不通过即视为失败。
 
+**这些文件存在哪？** 不在技能目录里，全部落在独立的运行工作区 —— 见下一章。
+
 ---
 
-## 15. 版本同步与更新
+## 15. 设计成果存在哪：运行工作区
 
-**本手册与 Skill 版本严格同步（当前 v1.3.0）。** Skill 每次更新后，
+技能包只放**能力**（技能定义、代码、知识库、风格数据、Schema、安装器）。客户项目、图纸、模型、效果图、PPT、交付清单、测试截图，一律写进独立的**运行工作区**。
+
+| 平台 | 默认工作区根 |
+|---|---|
+| Windows | `E:\OmniAiLab-Workspace\Architect`（没有 `E:` 时用 `%USERPROFILE%\OmniAiLab-Workspace\Architect`） |
+| macOS | `~/Library/Application Support/OmniAiLab/Architect` |
+| Linux | `${XDG_DATA_HOME:-~/.local/share}/omniailab/architect` |
+
+工作区分五格，各管一类东西：
+
+| 分区 | 放什么 | 能不能删 |
+|---|---|---|
+| `projects/` | 真实客户项目：`project.json`（唯一几何权威）与版本记录 | 不能，请自行备份 |
+| `outputs/` | CAD、三维模型、效果图、汇报 PPT、工程量清单、交付文件 | 删了要按项目重算 |
+| `tests/` | 测试与演示产物、截图、验收报告 | 可随时删 |
+| `cache/` | 栅格化、下载、场景构建等中间缓存 | 可随时清空 |
+| `archive/` | 历史运行资料与旧验收产物留档 | 保留即可 |
+
+**换位置不用改代码**，设环境变量即可（优先级从低到高）：
+
+| 变量 | 作用 |
+|---|---|
+| `OMNIAILAB_WORKSPACE` | 工作区根，一改五格整体搬家 |
+| `OMNIAILAB_PROJECTS_DIR` / `OMNIAILAB_OUTPUTS_DIR` / `OMNIAILAB_TESTS_DIR` / `OMNIAILAB_CACHE_DIR` / `OMNIAILAB_ARCHIVE_DIR` | 单独改某一格 |
+| `OMNI_TEST_OUTPUT` | 旧变量，等价于 `OMNIAILAB_TESTS_DIR`（继续有效） |
+
+`--out` 这类**显式**路径原样使用，不会被重定向。查看实际位置：
+
+```bash
+python -m omniarchitect workspace          # 五个分区路径 + 技能目录体积
+python -m omniarchitect workspace --json   # 给脚本用
+```
+
+**为什么这么分**：技能目录曾经堆到 1.34 GB / 3 万个文件，连"这个技能到底发布了什么"都看不出来。分开之后，技能目录永远是一份可以打包、可以审阅、可以比对版本的能力清单；跑一百个项目也不会变胖。
+
+**分发包怎么保证干净**：
+
+```bash
+python -m omniarchitect package            # 白名单清单 + 夹带检查，违规时退出码非 0
+```
+
+它查八项：包总大小、单文件 1 MB 上限、禁止分发的扩展名、是否混入项目/测试/缓存、`installer/manifest.json` 与包内容是否逐条一致、非文档文件里是否写死本机绝对路径、是否像凭据、顶层目录分布。`copy` 安装 = 白名单复制，所以"装出去的东西"和"审计过的东西"是同一份。
+
+---
+
+## 16. 版本同步与更新
+
+**本手册与 Skill 版本严格同步（当前 v1.21.1）。** Skill 每次更新后，
 本手册（飞书 + Notion + `docs/MANUAL.md` 三处）与两份 README 会同步更新，版本号保持一致——
 手册永远对应当前最新版 Skill。
 
@@ -818,7 +874,8 @@ python -m omniarchitect verify --project <项目目录>
 
 ```bash
 python scripts/run_tests.py        # 全量测试（全部模块，零外部依赖）
-python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统 + 表格规范
+python scripts/verify_all.py       # 目录 + 自检 + 工具链 + 闭环 + 测试 + 子系统 + 资产 + 表格 + 分发包
+python -m omniarchitect package    # 分发包审计：白名单之外的东西一件都不许带上
 python -m omniarchitect audit --write docs && python -m omniarchitect policy --write docs
 ```
 
@@ -828,7 +885,8 @@ python -m omniarchitect audit --write docs && python -m omniarchitect policy --w
 2. 表格用 `|---|---|` 写法（不补空格）；**中英文 README 的每张表总显示宽度必须 ≥ 140 单位**，
    否则在 GitHub 上撑不满正文区、右边界会缩进——完整规则与换算依据见 [TABLES.md](TABLES.md)，
    由 `python scripts/check_tables.py --check` 守住；
-3. 版本号在 `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README 之间保持一致。
+3. 版本号在 `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README
+   之间保持一致，各篇 `.md` 的 front-matter `version:` 同步跟进（历史变更记录里的旧版本号不动）。
 
 **获取帮助**：与文档或 Skill 本体有关的问题，欢迎在
 [开源仓库](https://github.com/tomatoparkdao/omniailab-ai-architect)提 issue——留在仓库里最不容易丢。

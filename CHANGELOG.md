@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,41 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.21.1 · 文档与镜像对齐：把"已发布的能力"写进用户看得见的地方
+
+v1.21.0 把代码改成了"能力留在包里、成果住在工作区"，但 README 与手册没跟上——
+用户看到的还是旧口径（"整包复制"、"`--out out`"、`projects/demo-120`），
+而且飞书 / Notion 上的手册停在 v1.4.0，落后十七个版本。
+
+**署名与格式复核（全仓）**
+- 116 份 `.md` 逐份核对：结尾署名 100% 一致（`README_EN.md` 用英文署名），
+  front-matter 八项键序与取值（`author` / `developer` / `agent_created` / `version`）
+  全部对齐，正文中间无夹带署名，`开源仓库` / `操作手册` 均为有效链接。
+- 两份 README 保持无 front-matter、中英镜像（各 22 节）。
+
+**README（中英同步）**
+- 新增"设计成果存在哪（运行工作区）"整节：默认根按平台给出，五分区逐条写明
+  "放什么 / 什么时候写 / 能不能删 / 覆盖变量"，并说明 `--out` 显式路径不重定向。
+- 安装段说清两种模式：`pointer` 三个文件，`copy` 走白名单（不含项目/测试/脚本/缓存，5 MB 级）。
+- 命令行示例改为 `workspace` / `package`，`demo` 不再带 `--out out`（旧写法会把产物写回当前目录）。
+- 目录树补 `workspace.py` / `packaging.py`；`--project` 改为 `demo-120`（工作区按名解析）。
+
+**操作手册（`docs/MANUAL.md` → 飞书）**
+- 新增第 15 章"设计成果存在哪：运行工作区"，第 16 章"版本同步与更新"顺延；
+  `manual.py` 主题表同步登记 `workspace` / `output` / `where` / `package` 四个别名。
+- §2.2 补"别把成果写进这个文件夹"；§4.2 命令加 `workspace`，示例路径改工作区写法。
+- §16 自检清单补 `package` 审计；版本号声明由 v1.3.0（实际已停在 v1.4.0）改为跟随 `VERSION`。
+- **飞书手册按本文件全文重建**：17 节 → 19 节（含此前缺失的 7b），表格 36 张、代码块 21 个
+  与本地逐项核对一致；文档标题与链接不变（`K1IWwPuBDiQXufkS76Yc3EMPnTd`）。
+
+**口径纠偏**
+- 知识域 13 → **15**（`knowledge/` 实有 15 个域，README 与 AGENTS 原写作 13）。
+- 能力说明 30 → **31**（`skills/` 与 `CAPABILITIES` 均为 31 份）。
+
+**未完成（如实记录）**
+- Notion 连接器处于未授权状态，本轮未能写入；`Skill-3fba28d2e37880ac9be5dd199c99677d`
+  仍停在旧版本，待授权后按同一份 `docs/MANUAL.md` 覆盖即可，链接不变。
 
 ## v1.21.0 · 彻底瘦身：能力留在包里，成果住在工作区
 

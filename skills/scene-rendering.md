@@ -3,7 +3,7 @@ name: omniailab-scene-rendering
 description: 场景渲染 —— 把已建模的空间按机位、材质与光影批量出图，多视角一致；图像一律非权威
 capability: scene-rendering
 stages: [S5]
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

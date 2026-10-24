@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.21.0-1f6feb?style=flat-square" alt="版本 1.21.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.21.1-1f6feb?style=flat-square" alt="版本 1.21.1"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="许可 MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="平台 OmniAiLab"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-%E5%BB%BA%E7%AD%91_%7C_%E5%AE%A4%E5%86%85_%7C_%E6%99%AF%E8%A7%82-0e8a16?style=flat-square" alt="领域 建筑 | 室内 | 景观">
@@ -30,7 +30,7 @@
 | 项目分类 | 36 类 / 575 子类 | 建筑 15 类、室内 12 类、景观 9 类；用途可多选，另有项目性质与委托范围两个独立维度（`docs/PROJECT_TAXONOMY.md`） |
 | Skill 调用名（唯一标识） | `omniailab-ai-architect` | 全小写连字符写法；支持 skill 的工具直接用它调起，不支持的工具用自然语言描述也能触发 |
 | 显示名 | OmniAiLab AI 建筑与室内设计总设计师 | 仓库页面与文档里显示的名字，不是调用名 |
-| 版本 | v1.21.0 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
+| 版本 | v1.21.1 | 与 `VERSION`、`pyproject.toml`、`SKILL.md`、`installer/manifest.json`、`openai.yaml` 及两份 README 保持一致 |
 | 出品 / 开发者 | OmniAiLab ／ Mochiball | — |
 | 许可 | MIT（见 [LICENSE](LICENSE)） | 使用与二次分发以该文件为准 |
 | 配套操作手册 | [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) ／ [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) ／ `docs/MANUAL.md` | 如何调用、三步启动、逐阶段操作细则、能力速查、避坑总表、常见问题、交付物清单 |
@@ -178,6 +178,8 @@ python installer/verify_install.py --check-python
 
 > 安装与卸载**都不删除内容**：目标已存在时先移动到 `_backup/`。
 
+两种模式的区别值得说清：`pointer`（默认）只放 3 个文件——`SKILL.md` + 指回真实仓库的 `omniailab-home.txt` + 清单，升级只需 `git pull`；`copy` 走**白名单**，只带能力（技能定义 / 代码 / 知识 / 风格 / Schema / 文档 / 安装器），**不含项目、测试、开发脚本、缓存**，离线分发用它可以做到 5 MB 级。
+
 ### 二、资料从哪来（三选一）
 
 1. **你直接上传原始图纸 / 设计任务书** —— 它读取后按 `existing-drawing-analysis` 解析，直接进入 S1。
@@ -202,20 +204,22 @@ $omniailab-ai-architect 开始
 ```bash
 export PYTHONPATH=<你的路径>/omniailab-ai-architect
 python -m omniarchitect doctor                 # 本机工具链体检
+python -m omniarchitect workspace              # 设计成果会写到哪（技能目录之外）
 python -m omniarchitect stages                 # 八阶段与门禁
-python -m omniarchitect demo --out out         # 示例项目跑通全部八阶段
+python -m omniarchitect demo                   # 示例项目跑通全部八阶段
 python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
+python -m omniarchitect package                # 分发包审计（白名单有无夹带）
 ```
 
-推进一个真实项目：
+推进一个真实项目（`--project` 先按路径找，找不到就到工作区 `projects/` 里按名字找）：
 
 ```bash
-python -m omniarchitect status  --project projects/demo-120
-python -m omniarchitect route   --project projects/demo-120 "想做成现代意式极简，先给我两套平面方案"
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by 业主
-python -m omniarchitect change  --project projects/demo-120 "把厨房和餐厅之间的墙往外移300mm"
-python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect status  --project demo-120
+python -m omniarchitect route   --project demo-120 "想做成现代意式极简，先给我两套平面方案"
+python -m omniarchitect run     --project demo-120 --from-stage S3
+python -m omniarchitect confirm --project demo-120 --stage S3 --by 业主
+python -m omniarchitect change  --project demo-120 "把厨房和餐厅之间的墙往外移300mm"
+python -m omniarchitect present --project demo-120 --kind plan-comparison
 ```
 
 `route` 会把一句话变成明确的阶段计划：跑哪些阶段、谁负责、门禁是谁、此刻哪些动作被拦下。
@@ -386,6 +390,38 @@ python -m omniarchitect canvas-models                                         # 
 
 ---
 
+## 设计成果存在哪（运行工作区）
+
+这个 Skill 装在你机器上只占十几 MB，因为**技能包只放能力，不放成果**。客户项目、图纸、模型、效果图、PPT、交付清单、测试截图，全部写进一个独立的运行工作区。默认位置按平台自动选，不用你配置：
+
+```text
+Windows   E:\OmniAiLab-Workspace\Architect
+          （没有 E: 盘时退回 %USERPROFILE%\OmniAiLab-Workspace\Architect）
+macOS     ~/Library/Application Support/OmniAiLab/Architect
+Linux     ${XDG_DATA_HOME:-~/.local/share}/omniailab/architect
+```
+
+工作区分五格，各管一类东西，能不能删也一并写清楚：
+
+| 分区 | 放什么（典型内容） | 什么时候被写入 | 能不能删 | 单独覆盖的变量 |
+|---|---|---|---|---|
+| `projects/` | 客户项目本体：`project.json`（唯一几何权威）、变更日志、业主确认记录 | S1 建项目时写入，此后每次确认与变更追加 | 不能删，请自行备份 | `OMNIAILAB_PROJECTS_DIR` |
+| `outputs/` | CAD 图纸、三维模型、效果图、汇报 PPT、工程量清单、交付文件 | 每个阶段跑完写入，S8 汇总成交付包 | 删了要按项目重算 | `OMNIAILAB_OUTPUTS_DIR` |
+| `tests/` | 测试与演示产物、界面截图、验收报告、Scenario 跑批结果 | 跑测试或演示时写入，`--keep` 才保留 | 可随时删 | `OMNIAILAB_TESTS_DIR` |
+| `cache/` | 栅格化中间件、参考图下载、场景构建缓存 | 需要时临时写入，用完即可丢 | 可随时清空 | `OMNIAILAB_CACHE_DIR` |
+| `archive/` | 历史运行资料、旧验收产物、迁移前的旧目录留档 | 迁移或归档时写入，平时不动 | 建议保留 | `OMNIAILAB_ARCHIVE_DIR` |
+
+想整体换位置只改一个变量 `OMNIAILAB_WORKSPACE`；要换某一格就用上表最后一列的变量。`--out` 这类**显式**路径原样使用，不会被重定向。
+
+```bash
+python -m omniarchitect workspace          # 打印五个分区的实际位置与技能目录体积
+python -m omniarchitect workspace --json   # 给脚本用
+```
+
+> **这样做的好处是可交付性**：技能目录永远是"能力清单"，可以随时打包给同事、审阅、比对版本；跑一百个项目也不会让它变胖。旧版本把成果写在技能目录里，一度堆到 1.34 GB / 3 万个文件，连"这个技能到底发布了什么"都看不出来。
+
+---
+
 ## 目录结构
 
 ```
@@ -408,12 +444,14 @@ omniailab-ai-architect/          ← Skill 根（本仓库）
 │   ├── providers/               OmniAiLab 适配器、自有确定性 provider、画布工作流
 │   ├── tools/                   工具注册表 + L1–L4 权限 + 产物独立校验
 │   ├── presentation/            汇报 → PPTX / MD / HTML / PDF
-│   ├── integration/ installer/  Agent Skills 校验与安装
+│   ├── integration/ installer/  Agent Skills 校验与安装（copy 走白名单）
+│   ├── workspace.py             ★ 运行工作区：项目 / 产物 / 测试 / 缓存 / 归档的唯一落点
+│   ├── packaging.py             ★ 分发白名单与安装包审计（技能里绝不夹带产物）
 │   ├── brand_policy.py          品牌与供应商策略 + 创作能力独占裁决
 │   ├── style/                   设计风格系统（47 种风格 / 推荐 / 提示词编译 / 八阶段挂钩）
 │   ├── design/                  设计能力：空间体验手法与序列、业主感受匹配、结构机电实现路径
 │   └── tests/                   测试模块（全量回归）
-├── knowledge/                   13 个原创设计知识域（渐进式加载）
+├── knowledge/                   15 个原创设计知识域（渐进式加载）
 │   └── styles/                  47 种设计风格的结构化数据 + catalog.json 索引
 ├── skills/                      31 项专业能力说明（文件名 = 能力名，可直接按名加载）
 ├── cases/                       通用项目类型案例判据
@@ -567,7 +605,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 
 | 想了解 | 看这里 | 里面有什么 |
 |---|---|---|
-| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 共 15 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
+| **完整操作手册** | [docs/MANUAL.md](docs/MANUAL.md) · [飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 共 16 章：安装、命令、报错、术语与常见问题；第 12 节避坑总表最省时间 |
 | 八阶段与门禁怎么运作 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | 八个阶段各自的门禁、产出、退回规则与门禁后置动作 |
 | **S1 项目启动怎么做（一句话也能开工）** | [docs/S1_INTAKE.md](docs/S1_INTAKE.md) | 三种启动情形、按项目类型的访谈、五态置信度、五类可行性、设计机会与 G1 基准 |
 | **S2 概念方案怎么做（2–3 套方向怎么比）** | [docs/S2_CONCEPT.md](docs/S2_CONCEPT.md) | 空间原型库、按证据选方向、条件化审美判据、确定性图解、真实色板、G2 基准与 S3 交接 |
@@ -581,11 +619,11 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | 品牌与供应商策略 | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | 九条规则、四类命中与创作能力独占的判定依据 |
 | 第三方许可证与署名 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | 可选依赖与本地宿主软件的许可证逐项登记与来源 |
 | 工具与权限 | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 权限分级、工具注册表与文件数据流向 |
-| 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) | 各宿主放哪、如何验证、离线怎么跑通完整闭环 |
+| 怎么安装与独立运行 | [docs/INSTALL.md](docs/INSTALL.md) | 各宿主放哪、两种安装模式、工作区在哪、如何审计分发包 |
 | 汇报与 PPT 怎么出 | [docs/PRESENTATION.md](docs/PRESENTATION.md) | 10 种汇报类型、版式规则与品牌模板用法 |
 | 内容合规自检 | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) | 署名 / 隐私 / 外链 / 许可四类扫描结果与待处理项 |
 | 表格为什么必须左右对齐、怎么改 | [docs/TABLES.md](docs/TABLES.md) | 宽度换算、五条硬规则、正误做法与检查器用法 |
-| 设计判据与知识（13 域） | [knowledge/INDEX.md](knowledge/INDEX.md) | 13 个原创知识域、渐进加载机制与检索入口 |
+| 设计判据与知识（15 域） | [knowledge/INDEX.md](knowledge/INDEX.md) | 15 个原创知识域、渐进加载机制与检索入口 |
 | 项目类型化案例 | [cases/](cases/) | 住宅 / 办公 / 商业三类通用任务书样本 |
 | 开发约定（面向编码 Agent） | [AGENTS.md](AGENTS.md) | 协作规则、禁区、必跑命令与交付纪律 |
 | 版本变更 | [CHANGELOG.md](CHANGELOG.md) | 每个版本的改动、原因与验证结论 |
@@ -599,7 +637,7 @@ Blender / FreeCAD / AutoCAD / IfcOpenShell 等**执行层工具**可继续调用
 | 方向 | 具体内容 | 提交位置 |
 |---|---|---|
 | 新增设计知识 | 原创的设计判据与数值区间，写成可判定的句子（如「暖材 ≤40%」），并注明是工程惯例而非法定值 | `knowledge/`，并在 `knowledge/INDEX.md` 索引 |
-| 新增能力说明 | 一项专业能力的职责、输入、门禁与产物，结构对齐现有 30 份 | `skills/`，并在 `stages.py: CAPABILITIES` 登记 |
+| 新增能力说明 | 一项专业能力的职责、输入、门禁与产物，结构对齐现有 31 份 | `skills/`，并在 `stages.py: CAPABILITIES` 登记 |
 | 新增案例判据 | 通用项目类型的判据，不含客户资料、商业案例与第三方事务所作品 | `cases/` |
 | 修正与补全 | 错字、过时口径、断链、计数不一致、表格在 GitHub 上未撑满、中英文不同步 | 直接提 PR 或 issue |
 | 新增知识域/依赖 | 先做许可证核查并在 `THIRD_PARTY_NOTICES.md` 登记，缺登记不与合并 | 见 [AGENTS.md](AGENTS.md) 第 6 节 |
@@ -635,7 +673,7 @@ python scripts/check_tables.py --check          # 表格规范：列数 / 空格
 
 - 出品与维护：**OmniAiLab**（[omniailabx.com](https://www.omniailabx.com/)）
 - 开发者：**Mochiball**
-- 设计知识（`knowledge/` 13 域）、项目类型案例（`cases/`）、专业能力说明（`skills/`）与设计判据（[docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)）均由本项目**独立撰写**，来源为通用设计原理与公开工程惯例；不复制、不改写任何外部文档。
+- 设计知识（`knowledge/` 15 域）、项目类型案例（`cases/`）、专业能力说明（`skills/`）与设计判据（[docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)）均由本项目**独立撰写**，来源为通用设计原理与公开工程惯例；不复制、不改写任何外部文档。
 - 本 Skill 的原生平台为 **OmniAiLab**；对 Blender / FreeCAD / AutoCAD / IfcOpenShell 等外部工具只做**适配声明与降级路径**，不附带其代码，也不依赖其存在。
 - 操作手册同步发布：[飞书](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d)。
 

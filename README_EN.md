@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.21.0-1f6feb?style=flat-square" alt="Version 1.21.0"></a>
+  <a href="https://github.com/tomatoparkdao/omniailab-ai-architect"><img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-1.21.1-1f6feb?style=flat-square" alt="Version 1.21.1"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-2ea043?style=flat-square" alt="License MIT"></a>
   <a href="https://www.omniailabx.com/"><img src="https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-OmniAiLab-8957e5?style=flat-square" alt="Platform OmniAiLab"></a>
   <img src="https://img.shields.io/badge/%E9%A2%86%E5%9F%9F-Architecture_%7C_Interior_%7C_Landscape-0e8a16?style=flat-square" alt="Domain Architecture | Interior | Landscape">
@@ -29,7 +29,7 @@ Not just producing renderings — AI taking part in the whole architecture and i
 |---|---|---|
 | Skill invocation name (unique ID) | `omniailab-ai-architect` | All-lowercase with hyphens; tools that support skills invoke it directly, and tools that do not still trigger it from a natural-language description |
 | Display name | OmniAiLab AI Architect for Architecture & Interior Design | The name shown on the repository page and in the docs — not the invocation name |
-| Version | v1.21.0 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
+| Version | v1.21.1 | Kept identical across `VERSION`, `pyproject.toml`, `SKILL.md`, `installer/manifest.json`, `openai.yaml` and both READMEs |
 | Project taxonomy | 36 types / 575 subtypes | 15 architectural, 12 interior, 9 landscape; multiple uses allowed, with project nature and commissioned scope as separate dimensions (`docs/PROJECT_TAXONOMY.md`) |
 | Publisher / Developer | OmniAiLab / Mochiball | — |
 | License | MIT (see [LICENSE](LICENSE)) | Use and redistribution are governed by that file |
@@ -85,7 +85,7 @@ Hand it one requirement — even just a floor plan plus a line like "make it Ita
 
 | Layer | What it gives you |
 |---|---|
-| **① Stages and capabilities kept apart** | Eight **business stages** set the pace and gates; 30 **professional capabilities** (brief, site analysis, concept, space planning, ergonomics, interiors, materials, lighting, MEP coordination, CAD drafting, BIM, 3D, rendering, walkthrough, construction detailing, quantities, review, presentation, delivery…) carry the professional method. Capabilities are reused across stages and never nailed to a single step. |
+| **① Stages and capabilities kept apart** | Eight **business stages** set the pace and gates; 31 **professional capabilities** (brief, site analysis, concept, space planning, ergonomics, interiors, materials, lighting, MEP coordination, CAD drafting, BIM, 3D, rendering, walkthrough, construction detailing, quantities, review, presentation, delivery…) carry the professional method. Capabilities are reused across stages and never nailed to a single step. |
 | **② One geometric authority** | The Canonical Spatial Model is the single geometric source for every deliverable. Move a wall 300 mm outward and the system recomputes plans, elevations, ceilings, lighting positions, furniture clearances, quantities and drawings by dependency — **already-confirmed parts that are unaffected stay valid**, with no blanket re-run. |
 | **③ Changes go through impact analysis, not local hand-editing** | Every modification is first diagnosed (11 change domains) → its blast radius located (including the boundary elements of the affected rooms) → a rework-stage list and the gates to reopen. A material change does not invalidate the model; a dimension change invalidates everything downstream — the program decides this, not your memory. |
 | **④ Judgements have a source** | Nine **design-criteria** sets: aesthetic control baseline, concept-diagram language, moodboard iteration loop, MEP spatial impact, annotation ledger, proposal layout, project fit, cost-quantity separation, tool safety tiers. Each is written as a decidable statement ("warm surfaces ≤40%", "black 3–8%", "one dominant line for the whole space") — not an adjective. |
@@ -175,6 +175,8 @@ python installer/verify_install.py --check-python
 
 > Installation and uninstallation **never delete content**: if the target already exists it is first moved to `_backup/`.
 
+The difference between the two modes matters: `pointer` (default) writes just three files — `SKILL.md` + an `omniailab-home.txt` pointing back at the real checkout + a manifest — so upgrading is a `git pull`; `copy` follows a **whitelist** and carries only capability (skill definition / code / knowledge / styles / schemas / docs / installer), **never projects, tests, dev scripts or caches** — which keeps an offline distribution in the 5 MB range.
+
 ### 2. Where the material comes from (pick one of three)
 
 1. **You upload the original drawings / design brief directly** — it reads them, parses them with `existing-drawing-analysis`, and goes straight into S1.
@@ -199,20 +201,22 @@ Command line works too (it all runs locally; no platform and no key needed):
 ```bash
 export PYTHONPATH=<your path>/omniailab-ai-architect
 python -m omniarchitect doctor                 # local toolchain health check
+python -m omniarchitect workspace              # where deliverables go (outside the skill folder)
 python -m omniarchitect stages                 # the eight stages and gates
-python -m omniarchitect demo --out out         # sample project through all eight stages
+python -m omniarchitect demo                   # sample project through all eight stages
 python -m omniarchitect scenario --name all    # acceptance: Scenario A/B/C
+python -m omniarchitect package                # distribution audit (whitelist, no strays)
 ```
 
-Driving a real project:
+Driving a real project (`--project` tries the path first, then looks up the name under the workspace `projects/`):
 
 ```bash
-python -m omniarchitect status  --project projects/demo-120
-python -m omniarchitect route   --project projects/demo-120 "make it modern Italian minimalist, give me two layouts first"
-python -m omniarchitect run     --project projects/demo-120 --from-stage S3
-python -m omniarchitect confirm --project projects/demo-120 --stage S3 --by client
-python -m omniarchitect change  --project projects/demo-120 "move the wall between the kitchen and the dining room 300mm outward"
-python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
+python -m omniarchitect status  --project demo-120
+python -m omniarchitect route   --project demo-120 "make it modern Italian minimalist, give me two layouts first"
+python -m omniarchitect run     --project demo-120 --from-stage S3
+python -m omniarchitect confirm --project demo-120 --stage S3 --by client
+python -m omniarchitect change  --project demo-120 "move the wall between the kitchen and the dining room 300mm outward"
+python -m omniarchitect present --project demo-120 --kind plan-comparison
 ```
 
 `route` turns one sentence into an explicit stage plan: which stages run, who owns them, who confirms at the gate, and which actions are blocked right now.
@@ -383,6 +387,38 @@ The full version is in section 12 of the operation manual. Criteria for the spat
 
 ---
 
+## Where deliverables live (runtime workspace)
+
+This Skill occupies a dozen MB on your machine because **the package holds capability, not output**. Client projects, drawings, models, renderings, decks, delivery schedules and test screenshots are all written to a separate runtime workspace. The default location is chosen per platform — nothing to configure:
+
+```text
+Windows   E:\OmniAiLab-Workspace\Architect
+          (falls back to %USERPROFILE%\OmniAiLab-Workspace\Architect when there is no E:)
+macOS     ~/Library/Application Support/OmniAiLab/Architect
+Linux     ${XDG_DATA_HOME:-~/.local/share}/omniailab/architect
+```
+
+Inside the workspace there are five partitions — what each holds, when it is written, and whether it can be thrown away:
+
+| Partition | What goes in (typical contents) | When it is written | Disposable | Override variable |
+|---|---|---|---|---|
+| `projects/` | The project itself: `project.json` (single geometry authority), change log, client sign-offs | Created at S1; appended on every confirmation and change | No — back it up | `OMNIAILAB_PROJECTS_DIR` |
+| `outputs/` | CAD drawings, 3D models, renderings, presentation decks, quantity take-offs, delivery files | Written at the end of each stage; collected into a delivery package at S8 | Recomputable from the project | `OMNIAILAB_OUTPUTS_DIR` |
+| `tests/` | Test and demo artefacts, UI screenshots, acceptance reports, Scenario runs | Written when tests or demos run; kept only with `--keep` | Yes, any time | `OMNIAILAB_TESTS_DIR` |
+| `cache/` | Rasterisation intermediates, reference-image downloads, scene-build caches | Written on demand, discardable right after | Yes, any time | `OMNIAILAB_CACHE_DIR` |
+| `archive/` | Historical runs, old acceptance output, pre-migration folders kept for the record | Written on migration or archiving, idle otherwise | Recommended to keep | `OMNIAILAB_ARCHIVE_DIR` |
+
+To move the whole workspace, change one variable — `OMNIAILAB_WORKSPACE`; to move a single partition, use the variable in the last column. An **explicit** path such as `--out` is honoured as given and never redirected.
+
+```bash
+python -m omniarchitect workspace          # print the five partitions and the skill folder size
+python -m omniarchitect workspace --json   # for scripts
+```
+
+> **Why this matters for delivery**: the skill folder stays a readable capability list — you can hand it to a colleague, review it, diff a version. Run a hundred projects and it does not grow. Earlier versions wrote output inside the skill folder; it once reached 1.34 GB / 30,000 files, at which point "what does this skill actually ship" was impossible to answer.
+
+---
+
 ## Directory structure
 
 ```
@@ -404,12 +440,14 @@ omniailab-ai-architect/          ← Skill root (this repository)
 │   ├── providers/               OmniAiLab adapter, own deterministic provider, canvas workflow
 │   ├── tools/                   Tool registry + L1–L4 permissions + independent artefact verification
 │   ├── presentation/            Presentation → PPTX / MD / HTML / PDF
-│   ├── integration/ installer/  Agent Skills verification and installation
+│   ├── integration/ installer/  Agent Skills verification and installation (copy follows a whitelist)
+│   ├── workspace.py             ★ Runtime workspace: the only home for projects / outputs / tests / cache / archive
+│   ├── packaging.py             ★ Distribution whitelist and package audit (artefacts never ride along)
 │   ├── brand_policy.py          Brand and vendor policy + creative-capability exclusivity ruling
 │   ├── style/                   Design style system (library / recommendation / prompt compiler / stage hooks)
 │   ├── design/                  Design capability: spatial devices and sequences, client-feeling fit, structure/MEP paths
 │   └── tests/                   test modules (full regression)
-├── knowledge/                   13 original design knowledge domains (progressive loading)
+├── knowledge/                   15 original design knowledge domains (progressive loading)
 │   └── styles/                  47 design styles, structured + catalog.json index
 ├── skills/                      31 professional capability briefs (filename = capability name, loadable by name)
 ├── cases/                       Case criteria for generic project types
@@ -563,7 +601,7 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 
 | To learn about | Read | What's inside |
 |---|---|---|
-| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 15 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
+| **Full operation manual** | [docs/MANUAL.md](docs/MANUAL.md) · [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d) | 16 chapters: install, commands, errors, glossary; §12 pitfall table saves the most time |
 | How the eight stages and gates work | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Each stage's gate, deliverables, return rules and post-gate actions |
 | **How S1 starts (one sentence is enough)** | [docs/S1_INTAKE.md](docs/S1_INTAKE.md) | Three entry situations, per-type interview, five confidence states, five feasibility checks, design opportunities and the G1 baseline |
 | **How S2 concepts are produced and compared** | [docs/S2_CONCEPT.md](docs/S2_CONCEPT.md) | Spatial prototype library, evidence-driven direction picking, conditional aesthetic rules, deterministic diagrams, real colour boards, the G2 baseline and the S3 handoff |
@@ -577,11 +615,11 @@ Hit a problem, want to report a bug or suggest a feature — this order saves th
 | Brand and vendor policy | [docs/BRAND_POLICY.md](docs/BRAND_POLICY.md) | Nine rules, four hit classes and the creative-exclusivity verdict |
 | Third-party licences and attribution | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Optional dependencies and host software registered item by item |
 | Tools and permissions | [docs/MCP_TOOLS.md](docs/MCP_TOOLS.md) | L1–L4 permission tiers, tool registry and file data flows |
-| How to install and run standalone | [docs/INSTALL.md](docs/INSTALL.md) | Where to place it per host, how to verify, how to stay offline |
+| How to install and run standalone | [docs/INSTALL.md](docs/INSTALL.md) | Where to place it per host, both install modes, where the workspace is, how to audit the package |
 | How presentations and PPTX are produced | [docs/PRESENTATION.md](docs/PRESENTATION.md) | Ten presentation types, layout rules and the brand template |
 | Content compliance self-check | [docs/CONTENT_AUDIT.md](docs/CONTENT_AUDIT.md) | Scan results for attribution / privacy / links / licences |
 | Why tables must be left-right aligned | [docs/TABLES.md](docs/TABLES.md) | Width maths, five hard rules, correct fixes and checker usage |
-| Design criteria and knowledge (13 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) | Thirteen original domains, progressive loading and lookup |
+| Design criteria and knowledge (15 domains) | [knowledge/INDEX.md](knowledge/INDEX.md) | Fifteen original domains, progressive loading and lookup |
 | Project-type cases | [cases/](cases/) | Three generic brief samples: apartment, office, restaurant |
 | Development conventions (for coding agents) | [AGENTS.md](AGENTS.md) | Collaboration rules, forbidden zones and mandatory commands |
 | Version history | [CHANGELOG.md](CHANGELOG.md) | What changed in each version, why, and the verification result |
@@ -630,7 +668,7 @@ python scripts/normalize_attribution.py --check # repository-wide head/tail form
 
 - Publisher and maintainer: **OmniAiLab** ([omniailabx.com](https://www.omniailabx.com/))
 - Developer: **Mochiball**
-- The design knowledge (`knowledge/`, 13 domains), project-type cases (`cases/`), professional capability briefs (`skills/`) and design criteria ([docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)) are all **written independently** for this project, drawing on general design principles and public engineering practice; nothing is copied from or paraphrased out of any external document.
+- The design knowledge (`knowledge/`, 15 domains), project-type cases (`cases/`), professional capability briefs (`skills/`) and design criteria ([docs/DESIGN_CRITERIA.md](docs/DESIGN_CRITERIA.md)) are all **written independently** for this project, drawing on general design principles and public engineering practice; nothing is copied from or paraphrased out of any external document.
 - The native platform of this Skill is **OmniAiLab**; external tools such as Blender / FreeCAD / AutoCAD / IfcOpenShell receive only **adapter declarations and degraded paths** — no code from them is bundled and none of them is required.
 - The operation manual is published in sync: [Feishu](https://zcn03zgas1zl.feishu.cn/wiki/K1IWwPuBDiQXufkS76Yc3EMPnTd) · [Notion](https://tomatopark.notion.site/Skill-3fba28d2e37880ac9be5dd199c99677d).
 

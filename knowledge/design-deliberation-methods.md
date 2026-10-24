@@ -5,7 +5,7 @@ description: 设计推敲方法 —— 从场地与诉求推出组织逻辑：pa
 stage_affinity: [S1, S2]
 loads_when: 当需要从零推敲空间或形态策略、比较几套组织逻辑、或判断一套概念是否只是换风格时加载
 load_cost: medium
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

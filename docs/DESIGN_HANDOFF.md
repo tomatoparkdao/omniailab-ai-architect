@@ -1,7 +1,7 @@
 ---
 name: design-handoff
 description: 设计交接层 —— CAD MCP / SketchUp MCP / 图像平台的真实连接状态、交接包内容与验收口径
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

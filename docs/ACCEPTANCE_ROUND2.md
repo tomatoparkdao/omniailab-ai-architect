@@ -1,7 +1,7 @@
 ---
 name: omniailab-acceptance-round2
 description: 第二轮验收 —— 参考图真实进入请求、面积与容量可行性前置、办公平面策略落地；逐项标注 已验证 / 仅 Mock 验证 / 尚未连接 / 存在阻断
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

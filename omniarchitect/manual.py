@@ -59,7 +59,11 @@ SECTIONS: Dict[str, str] = {
     "pitfalls": "12. 避坑总表",
     "faq": "13. 常见问题",
     "deliverables": "14. 交付物清单",
-    "version": "15. 版本同步与更新",
+    "workspace": "15. 设计成果存在哪：运行工作区",
+    "output": "15. 设计成果存在哪：运行工作区",
+    "where": "15. 设计成果存在哪：运行工作区",
+    "package": "15. 设计成果存在哪：运行工作区",
+    "version": "16. 版本同步与更新",
 }
 
 

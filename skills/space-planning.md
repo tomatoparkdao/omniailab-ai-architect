@@ -3,7 +3,7 @@ name: omniailab-space-planning
 description: 空间规划 —— 把功能任务书与概念方向翻译成房间划分、面积配比与流线，输出可校核的平面方案
 capability: space-planning
 stages: [S3]
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

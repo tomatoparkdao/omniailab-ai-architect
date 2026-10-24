@@ -3,7 +3,7 @@ name: omniailab-construction-detailing
 description: 施工深化与节点 —— 把设计意图深化到可施工的构造层次、收口与节点大样，区分方案与施工两个深度
 capability: construction-detailing
 stages: [S7]
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -81,7 +81,7 @@ python -m omniarchitect doctor
 | `knowledge/` | **原创** 15 个知识域 + INDEX | 只增不改语义；不得引入外部文案或链接 |
 | `knowledge/styles/` | **原创** 47 种设计风格结构化数据 + `catalog.json` 索引 | schema 为 `additionalProperties: false`，不得增添字段；索引与数据分离 |
 | `cases/` | 通用项目类型案例模板 | 只能原创或经授权的用户项目 |
-| `skills/` | 30 份专业能力说明（**文件名 = 能力名**，可直接按名加载；能力 ≠ 流程步骤） | 只增不改语义；文件名必须等于能力 slug |
+| `skills/` | 31 份专业能力说明（**文件名 = 能力名**，可直接按名加载；能力 ≠ 流程步骤） | 只增不改语义；文件名必须等于能力 slug |
 | `adapters/specs/` | MCP 适配规范 | 文档 |
 | `schemas/` | 空间模型 / 案例 / 工具能力 / 汇报 Schema | 只允许**向后兼容**的新增 |
 | `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
@@ -229,7 +229,7 @@ cd /d E:\SKILL\建筑室内设计skill\omniailab-ai-architect
 
 python -m omniarchitect doctor               :: 工具链体检
 python -m omniarchitect stages               :: 打印八阶段模型
-python -m omniarchitect registry             :: 能力目录 + 30 份技能→阶段映射
+python -m omniarchitect registry             :: 能力目录 + 31 份技能→阶段映射
 python -m omniarchitect concept-render      :: 平面确认后的概念效果图（画布）
 python -m omniarchitect canvas-models       :: 画布模型声明与选择规则
 python -m omniarchitect criteria            :: 设计判据体系（自有口径）
@@ -255,7 +255,7 @@ python -m omniarchitect verify  --project projects/demo-120
 python -m omniarchitect providers            :: OmniAiLab / 本地 provider 状态
 python -m omniarchitect tools                :: 工具注册表 + L1–L4 权限
 python -m omniarchitect honesty              :: 不得声称的能力清单
-python -m omniarchitect knowledge            :: 13 个原创知识域
+python -m omniarchitect knowledge            :: 15 个原创知识域
 python -m omniarchitect present --project projects/demo-120 --kind plan-comparison
 python -m omniarchitect scenario --name all  :: Scenario A/B/C 验收
 python -m omniarchitect compat               :: Agent Skills 兼容性

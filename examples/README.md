@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-readme
 description: 示例库索引 —— 可整段照抄的成品层：起手话术、交付清单与需求样例。
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -3,7 +3,7 @@ name: omniailab-existing-drawing-analysis
 description: 原始图纸解析 —— 识别图层、墙体、尺寸与门窗，区分可置信信息与推断信息并标注待现场核对项
 capability: existing-drawing-analysis
 stages: [S1]
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

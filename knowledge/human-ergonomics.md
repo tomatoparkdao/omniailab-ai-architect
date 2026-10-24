@@ -5,7 +5,7 @@ description: 人体工学与尺度 —— 可被直接引用的尺寸判据：�
 stage_affinity: [S3, S4, S7]
 loads_when: 当任务涉及家具尺寸、通行宽度、洁具间距、操作台高度或任何人体活动尺度校核时加载
 load_cost: medium
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

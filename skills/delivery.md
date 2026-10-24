@@ -3,7 +3,7 @@ name: omniailab-delivery
 description: 版本管理与交付 —— 用修订号追踪变更、失效重算、交付包索引与未闭环项清单，完成版本冻结
 capability: delivery
 stages: [S8]
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-examples-demo-brief
 description: Example design request —— 120 m² 公寓的示例设计请求（英文原文）
-version: 1.21.0
+version: 1.21.1
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
