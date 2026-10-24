@@ -1854,15 +1854,123 @@ class StageRunner:
     # ==================================================================
     # 08 物料清单与交付
     # ==================================================================
+    # ------------------------------------------------------------------
+    def _sector_delivery(self, outcome: StageOutcome, d: Path, label: str) -> StageOutcome:
+        """Add the package index that a specialist sector stage does not write.
+
+        The sector S8 writes quantities and materials — that is data, not a
+        delivery. A client handed 22 DXFs and one JSON cannot tell which is a
+        drawing, which is a model, and which still needs an engineer. This index
+        answers exactly those three questions and nothing else.
+        """
+        groups = (("图纸（可编辑 CAD）", (".dxf",), "待审查，不得直接用于施工"),
+                  ("图面预览", (".svg",), "由同一份矢量数据渲染"),
+                  ("三维模型与工程文件", (".obj", ".mtl", ".ifc", ".blend", ".py"),
+                   "可编辑；本机未渲染的以工程文件交付"),
+                  ("工程量与数据", (".json",), "按模型统计，非采购清单"),
+                  ("说明文档", (".md",), "口径与限制写在文内"))
+        skip = {"run-manifest.json", "project.json", "project-final.json",
+                "project-s3.json", "stage-state.md", "run-report.md"}
+        root = Path(self.out)
+        # Stages are often run on different days. Scanning only this run would
+        # hand the client a package listing nothing but S8's own two files.
+        # Walk runs newest-first and take the first version of each relative
+        # path, so the newest drawing wins and nothing stale comes back.
+        runs = sorted([p for p in root.parent.glob("run-*") if p.is_dir()],
+                      key=lambda p: p.name, reverse=True)
+        if root not in runs:
+            runs.insert(0, root)
+        seen: Dict[str, Dict[str, Any]] = {}
+        for run in runs:
+            for path in sorted(run.rglob("*")):
+                if not path.is_file() or path.name in skip:
+                    continue
+                rel = path.relative_to(run).as_posix()
+                if rel in ("08-delivery/delivery-manifest.json",
+                           "08-delivery/README.md"):
+                    continue          # an older package index must not list itself
+                if rel in seen:
+                    continue
+                suffix = path.suffix.lower()
+                kind = next((k for k, exts, _ in groups if suffix in exts), "其他")
+                if kind == "其他":
+                    continue
+                seen[rel] = {"path": rel, "kind": kind,
+                             "bytes": path.stat().st_size,
+                             "run": run.name}
+        files: List[Dict[str, Any]] = [seen[k] for k in sorted(
+            seen, key=lambda r: (0 if r.startswith("07-documents/") else 1, r))]
+
+        pkg = {
+            "project_id": self.project.project_id,
+            "name": self.project.name or "",
+            "revision": self.project.revision,
+            "run_id": self.run_id,
+            "sector": label,
+            "release_status": "pending_review",
+            "release_note": "G8 确认前生成，属待审查交付预览包；不是已签发施工文件",
+            "counts": {k: sum(1 for f in files if f["kind"] == k) for k, _, _ in groups},
+            "files": files,
+            "open_items": [str(n) for n in (outcome.notes or [])][:12],
+        }
+        (d / "delivery-manifest.json").write_text(
+            json.dumps(pkg, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        lines = [f"# 交付说明 · {self.project.name or self.project.project_id}", "",
+                 f"- 专业：{label}",
+                 f"- 版本：r{self.project.revision}　运行编号：`{self.run_id}`",
+                 "- 覆盖阶段：S1–S8（本包在 G8 确认前生成，属**待审查交付预览**）", "",
+                 "## 一、这次交付里有什么", "",
+                 "| 类别 | 数量 | 说明 |", "|---|---:|---|"]
+        for key, _exts, caveat in groups:
+            lines.append(f"| {key} | {pkg['counts'][key]} | {caveat} |")
+        for key, _exts, _caveat in groups:
+            subset = [f for f in files if f["kind"] == key]
+            if not subset:
+                continue
+            lines += ["", f"### {key}", ""]
+            listed: set[str] = set()
+            for f in subset:
+                # S4 and S7 both draw an elevation. The list should name the
+                # drawing once — the construction-stage version — instead of
+                # showing the client two copies and no explanation.
+                name = Path(f["path"]).name
+                if name in listed:
+                    continue
+                listed.add(name)
+                lines.append(f"- `{f['path']}`")
+        lines += ["", "## 二、使用限制", "",
+                  "0. 这是待审查预览包，不等于已签发的施工或采购文件；",
+                  "1. 未经持证专业人员复核签署的图纸不得用于施工；",
+                  "2. 结构安全、消防、无障碍、机电负荷与当地法规符合性不在本系统结论范围内；",
+                  "3. 生成式图像只作意向表达，不构成尺寸依据；",
+                  "4. 工程量按模型统计，为区间估算，不是结算依据。", "",
+                  "## 三、这一轮没能闭环的", ""]
+        items = [str(n) for n in (outcome.notes or [])]
+        lines += [f"- {i}" for i in items] or ["- 无记录"]
+        lines += ["", "---", "", SIGNATURE]
+        (d / "README.md").write_text("\n".join(lines), encoding="utf-8")
+
+        outcome.artifacts = list(outcome.artifacts or []) + [
+            str(d / "delivery-manifest.json"), str(d / "README.md")]
+        outcome.notes = list(outcome.notes or []) + [
+            f"交付清单：{len(files)} 个文件，"
+            f"{pkg['counts']['图纸（可编辑 CAD）']} 张可编辑图纸、"
+            f"{pkg['counts']['三维模型与工程文件']} 个模型/工程文件"]
+        return outcome
+
+    # ------------------------------------------------------------------
     def stage_S8(self) -> StageOutcome:
         d = self._dir("S8")
         from .concept.handoff import plan_record
         if plan_record(self.project).get("sector") == "landscape":
             from .sector.landscape_delivery import run
-            return run(self, "S8", d)
+            return self._sector_delivery(run(self, "S8", d), d, "景观")
         if (self.project.meta.get("sector_levels") or {}).get("sector") in ("education", "hospitality"):
             from .sector.deepening import run
-            return run(self, "S8", d)
+            label = ("建筑" if (self.project.meta.get("sector_levels") or {}).get("sector")
+                     == "education" else "室内（酒店）")
+            return self._sector_delivery(run(self, "S8", d), d, label)
         chosen = self._ensure_scheme_installed()
         t = quantities.takeoff(self.project, self.level_id)
         (d / "takeoff.json").write_text(

@@ -2,7 +2,7 @@
 name: omniailab-table-spec
 description: Markdown 表格规范 —— 落地页每张表必须撑满正文区、左右边界对齐；给出宽度换算、五条硬规则、补内容的正误做法与检查器用法。
 scope: 文档格式规范（表格）
-version: 1.18.0
+version: 1.19.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

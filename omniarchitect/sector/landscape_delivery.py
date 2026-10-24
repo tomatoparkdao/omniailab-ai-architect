@@ -151,8 +151,18 @@ def run(runner: Any, stage: str, directory: Path) -> Any:
         report = directory / "landscape-review.md"
         report.write_text("\n".join(lines), encoding="utf-8")
         arts.append(str(report))
+        # 专项图：一张彩色总平面替代不了铺装、种植、竖向、节点四张图。
+        # 铺装承包商、苗木供应商、排水分包看的是三份不同的图。
+        from .landscape_sheets import run as sheets_run
+
+        sheets = sheets_run(runner, stage, directory)
+        arts.extend(sheets.artifacts or [])
+        notes.extend(sheets.notes or [])
+        if sheets.status == "failed":
+            notes.append(f"专项图有未通过项：{sheets.error}")
         return StageOutcome(stage, adapter="dxf", status="degraded", artifacts=arts,
-                            notes=notes + ["可编辑景观 DXF 已通过独立读回；专项节点仍待深化。"])
+                            notes=notes + ["可编辑景观 DXF 已通过独立读回；"
+                                           "L-02～L-05 专项图同期出图，规格与构造仍待深化。"])
     if stage == "S5":
         result = MeshAdapter().export_obj(runner.project, directory,
                                           level_id="L-SITE", stem="landscape-model")

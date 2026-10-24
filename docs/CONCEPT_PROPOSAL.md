@@ -1,7 +1,7 @@
 ---
 name: omniailab-CONCEPT_PROPOSAL
 description: CONCEPT_PROPOSAL —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
-version: 1.18.0
+version: 1.19.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

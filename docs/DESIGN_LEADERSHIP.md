@@ -1,7 +1,7 @@
 ---
 name: 设计主导权与设计意图保护
 description: 谁定美学、谁研究怎么实现——五种主导模式、设计意图基准、技术冲突的六级处理顺序，以及三条不可突破的底线
-version: 1.18.0
+version: 1.19.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

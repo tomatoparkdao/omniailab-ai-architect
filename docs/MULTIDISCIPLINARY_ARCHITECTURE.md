@@ -1,7 +1,7 @@
 ---
 name: 多专业总设计师架构
 description: OmniAiLab AI Architect 的多专业组织方式——一个总设计师、一个项目主模型、一条阶段工作流、一套可追溯成果，以及每项能力到底真到哪一步
-version: 1.18.0
+version: 1.19.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
