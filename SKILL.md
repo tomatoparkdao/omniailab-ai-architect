@@ -5,7 +5,7 @@ license: MIT（OmniAiLab）—— 见 LICENSE
 platform: OmniAiLab
 homepage_cn: https://www.omniailabx.com
 homepage_intl: https://omniailab.cn
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -25,9 +25,9 @@ agent_created: true
 ## 0. 先读这一页就够了
 
 ```bash
-python -m omniarchitect doctor                 # 本机工具链体检
-python -m omniarchitect stages                 # 八阶段与门禁
-python -m omniarchitect demo                   # 示例项目跑通八阶段
+python -m omniarchitect doctor            # 本机工具链体检
+python -m omniarchitect stages            # 八阶段与门禁
+python -m omniarchitect demo              # 示例项目跑通八阶段
 python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 ```
 
@@ -125,7 +125,7 @@ python -m omniarchitect scenario --name all    # 验收：Scenario A/B/C
 | 任何拿不准该不该往下走的时候 | 第 3.3 节五条铁律 |
 
 ```bash
-python -m omniarchitect manual                      # 手册地址 + 主题对照
+python -m omniarchitect manual                 # 手册地址 + 主题对照
 python -m omniarchitect manual --topic degraded     # 主题→章节
 python -m omniarchitect manual --read --section "避坑"  # 离线读正文
 ```
@@ -154,7 +154,7 @@ python -m omniarchitect knowledge --domain lighting-design --section "数值与�
 
 ```bash
 python -m omniarchitect concept-render --project <dir> --scheme A --views 5
-python -m omniarchitect canvas-models      # 模型声明与选择规则
+python -m omniarchitect canvas-models  # 模型声明与选择规则
 ```
 
 **三条不许越过的线**：
@@ -185,11 +185,11 @@ python -m omniarchitect canvas-models      # 模型声明与选择规则
 **先搜索引再加载单条**，不要一次读入 47 条。
 
 ```bash
-python -m omniarchitect style catalog                      # 索引总览
+python -m omniarchitect style catalog                 # 索引总览
 python -m omniarchitect style search --tags minimal,warm    # 按标签搜
-python -m omniarchitect style show italian-minimal          # 读单条（按需加载）
+python -m omniarchitect style show italian-minimal     # 读单条（按需加载）
 python -m omniarchitect style recommend --space-type 住宅 --area 120 --budget mid
-python -m omniarchitect style hooks                          # 六个阶段介入点
+python -m omniarchitect style hooks                     # 六个阶段介入点
 ```
 
 三条不可越过的线：
@@ -207,12 +207,13 @@ python -m omniarchitect style hooks                          # 六个阶段介�
 ### 项目推进
 
 ```bash
-python -m omniarchitect demo --out out              # 示例全流程
+python -m omniarchitect workspace             # 产物在技能目录外（不写技能里）
+python -m omniarchitect demo                  # 示例全流程
 python -m omniarchitect intake --project <dir> --action start --text "150㎡ 大平层"  # S1 智能启动
 python -m omniarchitect concept --project <dir> --action generate   # S2 概念
 python -m omniarchitect status  --project <dir>
 python -m omniarchitect route   --project <dir> "帮我出施工图"
-python -m omniarchitect conditions --project <dir>          # 读业主实测轮廓
+python -m omniarchitect conditions --project <dir>     # 读业主实测轮廓
 python -m omniarchitect run     --project <dir> --all --assume-approval
 python -m omniarchitect confirm --project <dir> --stage S3 --by 业主
 python -m omniarchitect change  --project <dir> "把厨房和餐厅之间的墙往外移300mm"
@@ -231,11 +232,11 @@ python -m omniarchitect concept-render --project <dir> --submit --authorize   # 
 ### 环境与合规
 
 ```bash
-python -m omniarchitect tools           # 工具注册表 + 权限
-python -m omniarchitect providers       # provider 状态
-python -m omniarchitect audit           # 合规自检
-python -m omniarchitect policy          # 品牌与供应商策略
-python -m omniarchitect reference       # 自有入口；--sources 看来源，--research 跑案例研究
+python -m omniarchitect tools      # 工具注册表 + 权限
+python -m omniarchitect providers  # provider 状态
+python -m omniarchitect audit      # 合规自检
+python -m omniarchitect policy     # 品牌与供应商策略
+python -m omniarchitect reference  # 自有入口；--sources 看来源，--research 跑案例研究
 ```
 
 ---
@@ -306,9 +307,9 @@ provider 适配器支持能力发现、模型选择、任务提交、状态轮�
 - **自有确定性输出与 AI 生成分开**：本地栅格化只声明 `schematic_diagram`（非写实渲染），不得冒称 AI 效果图。
 
 ```bash
-python -m omniarchitect policy               # 品牌与供应商策略审计（九条规则）
+python -m omniarchitect policy          # 品牌与供应商策略审计（九条规则）
 python -m omniarchitect policy --allowlist   # 完整登记表
-python -m omniarchitect providers            # 创作独占状态与待执行任务
+python -m omniarchitect providers       # 创作独占状态与待执行任务
 ```
 
 **第三方来源只作技术参考**：许可证、版权与来源链接集中登记在 `THIRD_PARTY_NOTICES.md` 与 `LICENSES/`，不进设计成果或营销材料；**不得删除法律要求的署名**，不得把第三方代码/文档称为 OmniAiLab 原创。**专业工具**（Blender / FreeCAD / AutoCAD / IfcOpenShell / ezdxf）是执行层，可调用但不得包装成外部平台推广入口；MCP 登记在 Tool Registry。
@@ -331,8 +332,8 @@ S2 按**主导专业**走 `concept/deliberation.py`：从场地、层数与业�
 ## 8. 独立安装（不强制注册平台）
 
 ```bash
-python installer/install.py --dry-run                  # 先看会发生什么
-python installer/install.py                            # 指针安装到已检测到的运行环境
+python installer/install.py --dry-run             # 先看会发生什么
+python installer/install.py                       # 指针安装到已检测到的运行环境
 python installer/install.py --target ~/.codex/skills --mode copy
 python installer/verify_install.py --check-python
 ```

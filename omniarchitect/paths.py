@@ -3,12 +3,16 @@
 Everything is resolved relative to this package so the project can be moved or
 cloned without editing constants.
 
+**技能目录里只放能力。** 客户项目、图纸、模型、效果图、汇报、缓存一律落在
+`omniarchitect.workspace` 描述的外部工作区 —— 见该模块顶部的分区表。
+
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
 
 from pathlib import Path
-import os
+
+from . import workspace as _ws
 
 ROOT = Path(__file__).resolve().parent.parent  # project root (package sits inside it)
 SCHEMAS = ROOT / "schemas"
@@ -17,12 +21,15 @@ WORKFLOWS = ROOT / "workflows"
 ADAPTER_SPECS = ROOT / "adapters" / "specs"
 DOCS = ROOT / "docs"
 EXAMPLES = ROOT / "examples"
-PROJECTS = ROOT / "projects"
 KNOWLEDGE = ROOT / "knowledge"
 CASES = ROOT / "cases"
 TEMPLATES = ROOT / "templates"
 INSTALLER = ROOT / "installer"
 COMPATIBILITY = ROOT / "compatibility"
+
+# 注意：**没有** `PROJECTS = ROOT / "projects"`。
+# 项目数据不在技能目录里。要拿项目根用 `projects_root()`（工作区），
+# 迁移前的老代码若仍引用 `PROJECTS`，会在导入时就炸掉 —— 这正是想要的效果。
 
 # --------------------------------------------------------------------------
 # 官方地址（唯一来源）。front-matter 的「开源仓库 / 操作手册」、CLI 的 manual 命令、
@@ -62,30 +69,44 @@ ARCHITECT_SKILL_RAW_URL = (
 EXTERNAL_STANDARDS_SKILL_URL = ARCHITECT_SKILL_URL
 
 
+def projects_root() -> Path:
+    """真实客户项目根 —— 在工作区里，不在技能目录。"""
+    return _ws.path("projects")
+
+
+def outputs_root() -> Path:
+    """交付产物根（CAD / 模型 / 效果图 / PPT / 工程量）。"""
+    return _ws.path("outputs")
+
+
 def test_output_root() -> Path:
-    """Where test and demo artefacts go — **never inside the skill folder**.
+    """测试与演示产物的根 —— **永远不在技能目录里**。
 
-    A skill directory has to stay reviewable: 1.3 GB of render output, 66 run
-    directories and a nested checkout of somebody else's project makes it
-    impossible to see what is actually shipped. So every generated file goes to
-    a sibling folder next to the skill, not under it.
+    历史代价：技能目录里曾堆了 1.3 GB / 66 个 run 目录的渲染产物，
+    "这个技能到底发布了什么"完全看不出来。现在默认落到工作区的 `tests/`。
 
-    Default: `<parent of skill root>/缓存测试文件`. Override with
-    `OMNI_TEST_OUTPUT` when the layout differs (CI, another drive).
+    覆盖顺序：`OMNIAILAB_TESTS_DIR` → 旧变量 `OMNI_TEST_OUTPUT` →
+    `OMNIAILAB_WORKSPACE/tests` → 平台默认工作区。详见 `omniarchitect.workspace`。
     """
-    override = os.environ.get("OMNI_TEST_OUTPUT")
-    if override:
-        return Path(override)
-    return ROOT.parent / "缓存测试文件"
+    return _ws.path("tests")
 
 
-def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:
+def ensure_output_dir(path: str | Path | None = None,
+                      default: str = "out") -> Path:
     """Create and return an output directory, outside the skill folder.
 
-    An explicit `path` is honoured as given — the caller may have a reason
-    (a temp dir, a client folder). Only the *default* is redirected.
+    不传路径时落到工作区 `outputs/`：`default` 为空或 `"out"` 就直接用 `outputs/`
+    本身（避免出现 `outputs/out/` 这种套娃），其余按 `outputs/<default>` 分目录
+    （比如 S1 / S2 的草稿）。
+
+    显式 `path` 原样尊重 —— 调用方可能有理由（临时目录、客户盘符）。
     """
-    p = Path(path) if path else (test_output_root() / default)
+    if path:
+        p = Path(path)
+    elif default in ("", "out", "."):
+        p = _ws.path("outputs")
+    else:
+        p = _ws.path("outputs") / default
     p.mkdir(parents=True, exist_ok=True)
     return p
 

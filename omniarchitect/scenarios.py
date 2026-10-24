@@ -206,12 +206,12 @@ class ScenarioRunner:
     def __init__(self, out_root: str | Path | None = None,
                  project_dir: str | Path | None = None) -> None:
         # 默认落在技能目录之外：验收跑一轮就几百个文件，塞进技能里
-        # 会让"到底发布了什么"看不清楚。
+        # 会让"到底发布了什么"看不清楚。验收属于测试，落 `tests/scenarios`。
         if out_root:
             self.out_root = Path(out_root)
         else:
-            from .paths import ensure_output_dir
-            self.out_root = ensure_output_dir(None, "scenarios")
+            from . import workspace
+            self.out_root = workspace.ensure("tests", "scenarios")
         self.project_dir = Path(project_dir) if project_dir else None
         self.tools = tool_registry()
 

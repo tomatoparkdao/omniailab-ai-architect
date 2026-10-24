@@ -25,7 +25,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
-from ..paths import PROJECTS, REFERENCE_LIBRARY_URL
+from ..paths import REFERENCE_LIBRARY_URL, projects_root
 from . import extract as ex
 from . import sources as src
 
@@ -64,7 +64,7 @@ def path_for(project: Any, project_dir: str | Path | None = None) -> Path:
     if project_dir:
         return Path(project_dir) / FILENAME
     pid = str(getattr(project, "project_id", "") or "")
-    return PROJECTS / (pid or "_unknown") / FILENAME
+    return projects_root() / (pid or "_unknown") / FILENAME
 
 
 def exists(project: Any, project_dir: str | Path | None = None) -> bool:

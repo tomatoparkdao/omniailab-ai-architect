@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,52 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.21.0 · 彻底瘦身：能力留在包里，成果住在工作区
+
+上一轮把链路接起来了。这一轮处理的是链路留下的**体积债**：
+技能目录（连同同级缓存目录）到过 1.34 GB / 30111 个文件，
+`installer/manifest.json` 甚至把某次演示的 PPTX（101 KB）、PNG（141 KB）
+和运行记录当成"分发包内容"登记了 —— 因为安装器用的是**黑名单**，
+新长出来的东西默认在包里。
+
+**运行工作区（新增 `workspace.py`）**
+- 五个固定分区：`projects` / `outputs` / `tests` / `cache` / `archive`，
+  默认根 Windows 为 `E:\OmniAiLab-Workspace\Architect`，macOS / Linux 用各自数据目录。
+- 覆盖链：显式路径 → 分区变量（`OMNIAILAB_OUTPUT_DIR` 等）→ `OMNIAILAB_WORKSPACE`
+  → 平台默认；旧变量 `OMNI_TEST_OUTPUT` 继续有效。
+- 显式路径原样尊重，只有**默认值**被重定向 —— 不搞"偷偷搬家"。
+- `resolve_project()`：`--project demo-120` 与 `--project projects/demo-120`
+  都能在工作区里找到，找不到时报错说清**找过哪些位置**。
+- `paths.PROJECTS` 已删除：项目数据不在技能目录里，老写法在导入时就炸，
+  这比留一个指向空目录的常量诚实。
+
+**分发白名单（新增 `packaging.py`）**
+- 判据从"排除什么"改成"**声明发什么**"：`DIST_DIRS` / `DIST_ROOT_FILES`。
+  `projects/`、`omniarchitect/tests/`、`scripts/`、`docs/ACCEPTANCE_*.md` 不进包。
+- `installer/manifest.json` 的文件列表现在**等于**白名单；`root` 改为 `"."`，
+  不再把开发机的绝对路径推到公开仓库。
+- 八项包审计（CLI `package`）：总大小、单文件 1 MB、禁止扩展名、
+  项目/测试/缓存污染、manifest 逐条一致、本机绝对路径、凭据特征、目录分布。
+- 新规则 `stray-artefact`：技能目录里出现 DXF/PNG/PPTX 这类生成物，
+  审计直接失败 —— 膨胀在第一天就被看见，而不是长到 1 GB 才发现。
+- `installer.verify()` 加了第二道：装完之后再查一遍安装目录里有没有生成物，
+  copy 模式还要求清单与目录逐条对齐。
+
+**清理与迁移**
+- `缓存测试文件/` 1.34 GB / 30111 个文件 → `archive/legacy-runs-2026-10-24/`（只移不删）。
+- `projects/`（含 `concept-render` 的 PPTX/PNG）→ `archive/legacy-projects-2026-10-24/`，
+  并从 Git 索引移除；`demo` 命令改为在工作区生成示例项目。
+- 技能目录 1.34 GB → **14 MB**（其中 `.git` 6 MB）；正式分发包 333 文件 / 5.03 MB。
+
+**测试自动清理**
+- `run_tests.py` 默认在系统临时目录跑，跑完即删；失败时**保留**并打印路径。
+- `--keep` 写进工作区 `tests/`，`--artifacts <目录>` 指定落点。
+- `verify_all.py` 新增第 10 段：真的装一份 copy 包，检查装出来的东西干不干净。
+
+**文档**
+- `AGENTS.md` §0 的旧规则（"所有产物落在项目目录内部"）改写为工作区分区表；
+  `docs/INSTALL.md` 补第 7 节（工作区）与第 8 节（分发审计）。
 
 ## v1.20.0 · 设计交接层：把 CAD、效果图、SketchUp 真正接成一条链
 

@@ -1,19 +1,57 @@
-# runtime output — always regenerable from the canonical model
+# ---------------------------------------------------------------------------
+# runtime output — 一律可再生产
+#
+# 本仓库只放能力。设计成果（CAD / 模型 / 效果图 / PPT / 工程量 / 交付清单）
+# 写到外部运行工作区，见 omniarchitect/workspace.py：
+#   projects/ outputs/ tests/ cache/ archive/
+# 这里列出的都是"跑一次就长出来"的东西，进来一个都算错。
+# ---------------------------------------------------------------------------
 out/
+outputs/
+run-*/
+scenarios/
 *.pyc
+*.pyo
 __pycache__/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.egg-info/
 build/
 dist/
+.venv/
+venv/
+env/
+node_modules/
+
+# 运行缓存与临时件
+.cache/
+cache/
+*.log
+*.tmp
+*.bak
+*.swp
+*.orig
+*.rej
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本机工作区配置（含本机绝对路径，不入库）
+.omniailab-workspace
+workspace.local.json
 
 # local project data that must never be committed
+#
+# 项目数据整体不在本仓库：`projects/` 已迁到外部工作区。这里保留规则作为
+# 第二道防线 —— 即使有人手滑把项目复制回来，也进不了 Git。
+projects/
 projects/*/renders/
 projects/*/concept-render/
 projects/*/private/
-# 临时验证项目（跑测试/验收脚本留下的），只有 demo-120 是随仓库分发的示例
+projects/*/studio/
 projects/test-*/
-projects/*/out/
 
 
 # local platform credentials — never committed
@@ -111,3 +149,53 @@ providers/omniailab.api.json
 *.dmg
 *.iso
 *.bin
+
+# ---------------------------------------------------------------------------
+# CAD / 三维 / 图纸 —— 生成物，不是源码
+#
+# DXF 是交付件（由 Canonical Spatial Model 重算得出），OBJ/IFC/GLB 是导出件。
+# 它们可以重算，且二进制/大文本一进历史就再也拿不掉，所以永不入库。
+# 需要留证时：把文件放到工作区 outputs/，在 JSON 里记外部位置 + 摘要。
+# ---------------------------------------------------------------------------
+*.dxf
+*.dwg
+*.dwf
+*.dws
+*.dwt
+*.bak.dwg
+*.sv$
+*.skb
+*.skp
+*.skm
+*.obj
+*.mtl
+*.stl
+*.fbx
+*.glb
+*.gltf
+*.blend
+*.blend1
+*.blend2
+*.ifc
+*.ifczip
+*.3dm
+*.rvt
+*.rfa
+*.pln
+*.pla
+
+# Blender / SketchUp / CAD 的自动保存与渲染缓存
+blender-cache/
+*.blend@
+*.skb*
+render*/
+renders/
+concept-render/
+shots/
+png/
+*.svg
+
+# 生成式平台的任务记录与回执（含密钥前缀，不入库）
+canvas-jobs.json
+canvas-payload.json
+RUN-STATUS.md

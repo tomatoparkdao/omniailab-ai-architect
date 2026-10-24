@@ -1,7 +1,7 @@
 ---
 name: 设计能力：空间体验与技术实现
 description: 让方案像一个建筑师做的——空间体验词表与序列、业主感受的匹配判断、结构与机电的实现路径，以及为什么它们不再被当成审批口
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

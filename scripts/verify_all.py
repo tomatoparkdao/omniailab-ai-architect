@@ -28,6 +28,8 @@ REQUIRED_PATHS = [
     PACKAGE + "/routing.py", PACKAGE + "/quantities.py", PACKAGE + "/compliance.py",
     PACKAGE + "/registry.py", PACKAGE + "/brand_policy.py",
     PACKAGE + "/manual.py",
+    # v1.20 → v1.21：运行工作区与分发白名单
+    PACKAGE + "/workspace.py", PACKAGE + "/packaging.py",
     "docs/MANUAL.md",
     # v1.1 additions
     PACKAGE + "/providers/omniailab.py", PACKAGE + "/providers/base.py",
@@ -489,16 +491,65 @@ def check_tables() -> int:
     return 0
 
 
+def check_distribution() -> int:
+    """第 10 段：分发包审计 —— 查的是**真要发出去的那一堆文件**。
+
+    和资产段（第 8 段）的区别：那个扫 Git 里的文件，这个扫白名单产物，
+    并且真的装一份出来看看装出来的东西干不干净。
+    """
+    section("10. 分发包审计（白名单 / 夹带 / 清单一致性）")
+    from omniarchitect import packaging
+    from omniarchitect.integration import installer as ins
+
+    fails = 0
+    rep = packaging.audit(ROOT)
+    print(f"  白名单 {rep['file_count']} 个文件 / "
+          f"{rep['total_mb']} MB（预算 {packaging.MAX_TOTAL_BYTES // 1024 // 1024} MB）"
+          f"／最大 {rep['largest'][0]} {rep['largest'][1] // 1024} KB")
+    if rep["violations"]:
+        fails += len(rep["violations"])
+        for v in rep["violations"][:10]:
+            print(f"  FAIL  [{v['rule']}] {v['detail']}")
+    else:
+        print("  ok  白名单内无生成物、无绝对路径、无凭据、manifest 与包内容一致")
+
+    # 真的装一份 copy 包，再查一遍装出来的东西
+    with tempfile.TemporaryDirectory(prefix="omniailab-dist-") as td:
+        result = ins.install(target=Path(td) / "skills", mode=ins.MODE_COPY)
+        if not result.get("ok"):
+            fails += 1
+            print(f"  FAIL  copy 安装失败：{(result.get('errors') or ['-'])[0]}")
+        else:
+            dest = Path(result["target"])
+            tree = packaging.audit_tree(dest)
+            got = sum(1 for p in dest.rglob("*") if p.is_file())
+            print(f"  ok  copy 包安装成功：{got} 个文件 / {tree['total_mb']} MB，"
+                  "verify 通过（清单逐条对齐 + 无生成物）")
+            if not tree["ok"]:
+                fails += len(tree["violations"])
+                for v in tree["violations"][:5]:
+                    print(f"  FAIL  {v['detail']}")
+        # pointer 也要能用
+        ptr = ins.install(target=Path(td) / "ptr", mode=ins.MODE_POINTER)
+        if ptr.get("ok"):
+            print("  ok  pointer 包安装成功（SKILL.md + 指针 + 清单）")
+        else:
+            fails += 1
+            print(f"  FAIL  pointer 安装失败：{(ptr.get('errors') or ['-'])[0]}")
+    return fails
+
+
 def main() -> int:
     print("OmniArchitect 完整性验证")
     print(f"项目根目录：{ROOT}")
     total = (check_paths() + check_catalogue() + check_doctor() + check_smoke()
              + check_tests() + check_v11() + check_style() + check_assets()
-             + check_tables())
+             + check_tables() + check_distribution())
     section("结论")
     if total == 0:
         print("  全部通过：目录完整、目录自检通过、闭环成立、测试全绿、"
-              "v1.1 子系统正常、风格系统就绪、资产体积达标、表格规范达标")
+              "v1.1 子系统正常、风格系统就绪、资产体积达标、表格规范达标、"
+              "分发包干净")
         return 0
     print(f"  {total} 项问题，需处理")
     return 1

@@ -53,7 +53,7 @@ generic: true
 source: original
 name: omniailab-generic-apartment-120
 description: 通用案例：约 120 m² 公寓（住宅类） —— 以下为常见工程惯例区间，非当地法定强制值，须以项目所在地现行规范与专业复核为准。
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -1,7 +1,7 @@
 ---
 name: omniailab-install
 description: 安装与独立运行 —— OmniArchitect 支持独立安装：不强制注册 OmniAiLab，不读取任何平台密钥，
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -36,8 +36,11 @@ python -m pip install ezdxf shapely jsonschema pyyaml Pillow python-pptx pytest
 ```bash
 cd "E:\SKILL\建筑室内设计skill\omniailab-ai-architect"
 python -m omniarchitect doctor
-python -m omniarchitect demo --out out
+python -m omniarchitect workspace        # 先看产物会写去哪
+python -m omniarchitect demo             # 示例项目跑通八阶段（结果写工作区，不写技能目录）
 ```
+
+产物默认落在**外部运行工作区**，不在技能目录里 —— 见第 7 节。
 
 ## 3. 安装到 Agent 运行环境
 
@@ -56,7 +59,7 @@ python installer/install.py --dry-run --target ~/.codex/skills
 | 模式 | 内容 | 适用 |
 |---|---|---|
 | `pointer`（默认） | `SKILL.md` + `omniailab-home.txt` + `manifest.json` | 开发中；升级只需 `git pull`，不产生知识库副本 |
-| `copy` | 整包复制（排除 `out/`、`.git/`） | 离线分发或整体搬移 |
+| `copy` | **白名单复制**：只发能力（技能定义 / 代码 / 知识 / 风格 / Schema / 文档 / 安装器），不含项目、测试、开发脚本、缓存 | 离线分发或整体搬移 |
 
 ```bash
 python installer/install.py                              # 自动选已检测到的运行环境
@@ -121,6 +124,64 @@ python -m omniarchitect scenario --name all   # Scenario A/B/C 验收
 验收口径：文件真实存在、格式经独立解析有效、内容与项目关联、可追溯版本、
 可重复运行、**未以 Mock 通过宣称生产功能可用**。
 缺少真实 MCP / API 的功能在报告中记为**跳过**，不记为通过。
+
+---
+
+## 7. 运行工作区（设计成果不放技能目录）
+
+技能包是**能力定义**：技能描述、代码、知识库、风格库、Schema、MCP 适配器、安装脚本。
+房子不该盖在工具箱里 —— 客户项目、图纸、模型、效果图、视频、PPT、交付文件、
+测试产物、缓存，全部写进**外部运行工作区**。
+
+| 分区 | 内容 | 可再生 |
+|---|---|---|
+| `projects/` | 真实客户项目（`project.json` 与版本记录） | 否，需备份 |
+| `outputs/` | CAD / 模型 / 效果图 / PPT / HTML / 工程量 / 交付文件 | 由项目重算 |
+| `tests/` | 测试与演示产物、截图、验收报告 | 是 |
+| `cache/` | 中间缓存（栅格化、下载、场景） | 是 |
+| `archive/` | 历史运行资料与旧验收产物留档 | 否 |
+
+默认根目录：
+
+| 平台 | 默认路径 |
+|---|---|
+| Windows | `E:\OmniAiLab-Workspace\Architect`（`E:` 不存在时用 `%USERPROFILE%\OmniAiLab-Workspace\Architect`） |
+| macOS | `~/Library/Application Support/OmniAiLab/Architect` |
+| Linux | `${XDG_DATA_HOME:-~/.local/share}/omniailab/architect` |
+
+覆盖方式（优先级从低到高）：
+
+```bash
+OMNIAILAB_WORKSPACE          # 工作区根，改这个五个分区整体搬家
+OMNIAILAB_PROJECTS_DIR       # 单分区覆盖
+OMNIAILAB_OUTPUT_DIR
+OMNIAILAB_TESTS_DIR
+OMNIAILAB_CACHE_DIR
+OMNIAILAB_ARCHIVE_DIR
+OMNI_TEST_OUTPUT             # 兼容旧变量，等价于 OMNIAILAB_TESTS_DIR
+```
+
+`--out` 之类**显式**给出的路径原样使用，不会被重定向。
+
+```bash
+python -m omniarchitect workspace          # 打印五个分区与技能目录体积
+python -m omniarchitect workspace --json
+```
+
+## 8. 分发审计（装之前先看包里有什么）
+
+```bash
+python -m omniarchitect package            # 白名单清单 + 夹带检查
+python -m omniarchitect package --json
+```
+
+八项检查：包总大小、单文件大小（1 MB 上限）、禁止分发的扩展名、
+是否混入项目/测试/缓存、`manifest.json` 与包内容是否逐条一致、
+非文档文件里是否写死本机绝对路径、是否像凭据、顶层目录分布。
+违规时退出码非 0，安装前就能拦住 —— 而不是装完了才发现带了一堆效果图。
+
+`installer/manifest.json` 由 `python -m omniarchitect manifest` 重建，
+文件列表等于白名单，多一个少一个都会被审计判为过期。
 
 ---
 > © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。

@@ -1,20 +1,20 @@
 {
   "$comment": "© OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。",
-  "generated_from": "omniarchitect v1.12.0",
+  "generated_from": "omniarchitect v1.21.0",
   "skill": {
     "name": "omniailab-ai-architect",
-    "description": "AI 建筑与室内设计总设计师。八个业务阶段 + 30 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。",
-    "version": "1.20.0",
+    "description": "AI 建筑与室内设计总设计师。八个业务阶段 + 31 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 提案。可独立运行，检测到平台配置时接入 OmniAiLab 原生创作能力。覆盖 36 类用途的任务书、概念推敲、平面比选、初步设计、表现与交付。",
+    "version": "1.21.0",
     "license": "MIT（OmniAiLab）—— 见 LICENSE",
-    "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
+    "root": ".",
     "frontmatter": {
       "name": "omniailab-ai-architect",
-      "description": "AI 建筑与室内设计总设计师。八个业务阶段 + 30 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 设计提案。支持独立运行（不需要注册任何平台），在检测到平台配置或 API 契约时接入 OmniAiLab 原生创作能力。用于住宅/办公/商业/酒店/展厅等项目的设计任务书、概念方案、平面方案比选、初步设计、三维与表现、设计定稿、施工图深化、物料清单与设计汇报。",
+      "description": "AI 建筑与室内设计总设计师。八个业务阶段 + 31 项岗位能力，以统一空间模型（Canonical Spatial Model）为唯一几何权威，可产出可编辑 DXF、三维模型、工程量清单、平面确认后的 AI 概念效果图与可编辑 PPTX 提案。可独立运行，检测到平台配置时接入 OmniAiLab 原生创作能力。覆盖 36 类用途的任务书、概念推敲、平面比选、初步设计、表现与交付。",
       "license": "MIT（OmniAiLab）—— 见 LICENSE",
       "platform": "OmniAiLab",
       "homepage_cn": "https://www.omniailabx.com",
       "homepage_intl": "https://omniailab.cn",
-      "version": "1.20.0",
+      "version": "1.21.0",
       "author": "OmniAiLab",
       "developer": "Mochiball",
       "agent_created": "true",
@@ -23,8 +23,9 @@
     },
     "references": [],
     "soft_references": [
-      ".md",
+      "/blob/main/SKILL.md",
       "RUN-STATUS.md",
+      "SKILL.md",
       "THIRD_PARTY_NOTICES.md",
       "adapters/specs",
       "build_freecad.py",
@@ -32,17 +33,28 @@
       "canvas-brief.md",
       "canvas-jobs.json",
       "compatibility/agent-skills.md",
+      "concept/deliberation.py",
+      "docs/CLIENT_DELIVERY.md",
       "docs/CONCEPT_RENDER.md",
       "docs/CONTENT_AUDIT.md",
+      "docs/DESIGN_CAPABILITY.md",
+      "docs/DESIGN_LEADERSHIP.md",
       "docs/DESIGN_STYLES.md",
+      "docs/DISCIPLINE_SCOPE_AND_ROUTING.md",
+      "docs/INTENT_ENFORCEMENT.md",
       "docs/MANUAL.md",
       "docs/MCP_TOOLS.md",
+      "docs/MULTIDISCIPLINARY_ACCEPTANCE.md",
+      "docs/MULTIDISCIPLINARY_ARCHITECTURE.md",
       "docs/OMNIAILAB_INTEGRATION.md",
+      "docs/PROJECT_TAXONOMY.md",
       "docs/REFERENCE_SOURCES.md",
       "docs/S1_INTAKE.md",
       "docs/S2_CONCEPT.md",
+      "docs/S2_MULTIDISCIPLINARY_CONCEPT.md",
       "docs/STYLE_INTEGRATION.md",
       "docs/VIDEO_PRODUCTION.md",
+      "docs/VISUAL_RECIPES.md",
       "docs/WORKFLOW.md",
       "knowledge/INDEX.md",
       "knowledge/ai-concept-visualization.md",
@@ -53,6 +65,7 @@
       "omniarchitect/style",
       "providers/README.md",
       "providers/omniailab.api.example.json",
+      "reference-shortlist.md/.json",
       "schemas/project.schema.json",
       "style-comparison.json",
       "style-construction-spec.md",
@@ -62,214 +75,294 @@
       "style-recommendation.md",
       "style-space-check.md"
     ],
-    "lines": 399,
-    "bytes": 22199,
+    "lines": 379,
+    "bytes": 23998,
     "issues": []
   },
   "issues": [],
-  "root": "E:\\SKILL\\建筑室内设计skill\\omniailab-ai-architect",
-  "file_count": 293,
-  "total_bytes": 3883689,
+  "root": ".",
+  "file_count": 333,
+  "total_bytes": 5257767,
   "files": [
     {
       "path": ".gitignore",
-      "size": 1783,
-      "sha256_16": "32b572d827fe463d"
+      "size": 3801,
+      "sha256_16": "119f87f5af419577"
     },
     {
       "path": "adapters/specs/autocad.md",
-      "size": 1157,
-      "sha256_16": "ebfdb6d37157845d"
+      "size": 1140,
+      "sha256_16": "fcc38c26dd02a9ce"
     },
     {
       "path": "adapters/specs/blender.md",
-      "size": 1144,
-      "sha256_16": "24d3d50c58d460f3"
+      "size": 1127,
+      "sha256_16": "5aad79ea76dec96f"
     },
     {
       "path": "adapters/specs/freecad.md",
-      "size": 1120,
-      "sha256_16": "f2ef3664b9447dd0"
+      "size": 1103,
+      "sha256_16": "7ef4f8579e63311f"
     },
     {
       "path": "adapters/specs/ifc.md",
-      "size": 1119,
-      "sha256_16": "54ba5528434cb0cd"
+      "size": 1102,
+      "sha256_16": "29d912ec67dff2ad"
     },
     {
       "path": "adapters/specs/README.md",
-      "size": 2643,
-      "sha256_16": "1c18d01ae0b2f570"
+      "size": 2601,
+      "sha256_16": "1a77122341fd74ec"
     },
     {
       "path": "AGENTS.md",
-      "size": 23339,
-      "sha256_16": "0045d020149db7ad"
+      "size": 25418,
+      "sha256_16": "cfa11efd1d0372d8"
     },
     {
       "path": "cases/generic-apartment-120.md",
-      "size": 10355,
-      "sha256_16": "4e78787af19d63d2"
+      "size": 10201,
+      "sha256_16": "e9f6a6e3f53cc701"
     },
     {
       "path": "cases/generic-office-500.md",
-      "size": 10217,
-      "sha256_16": "38575b8fec3ee5bf"
+      "size": 10062,
+      "sha256_16": "b2722b8e5d68a278"
     },
     {
       "path": "cases/generic-restaurant-200.md",
-      "size": 10115,
-      "sha256_16": "d8f7e453f7665f1c"
+      "size": 9959,
+      "sha256_16": "87b34f45e18d9865"
     },
     {
       "path": "CHANGELOG.md",
-      "size": 66460,
-      "sha256_16": "d2d04c2ffc0f07df"
+      "size": 142700,
+      "sha256_16": "72d19e8634fee561"
     },
     {
       "path": "compatibility/agent-skills.md",
-      "size": 5091,
-      "sha256_16": "3bc80dd9b0ec6533"
+      "size": 4986,
+      "sha256_16": "415c52e0596e3b22"
     },
     {
       "path": "compatibility/codex.md",
-      "size": 3343,
-      "sha256_16": "0e05832233d5ee01"
+      "size": 3262,
+      "sha256_16": "faf101cfca47a764"
     },
     {
       "path": "compatibility/mcp.servers.example.json.md",
-      "size": 2556,
-      "sha256_16": "38fcfc348d0fb035"
+      "size": 2486,
+      "sha256_16": "f3921196f8cd92de"
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "size": 9868,
-      "sha256_16": "e7fc135b5086e665"
+      "size": 9710,
+      "sha256_16": "48036618e70df914"
     },
     {
       "path": "docs/brand-policy.json",
-      "size": 41456,
-      "sha256_16": "9a7c3b2247f2303a"
+      "size": 44531,
+      "sha256_16": "809aeade7b61df3b"
     },
     {
       "path": "docs/BRAND_POLICY.md",
-      "size": 20811,
-      "sha256_16": "e3c6ce4e811ead67"
+      "size": 20596,
+      "sha256_16": "3dd9e009d7ac41b9"
+    },
+    {
+      "path": "docs/CLIENT_DELIVERY.md",
+      "size": 8856,
+      "sha256_16": "9e82ef13c0980a7d"
+    },
+    {
+      "path": "docs/CONCEPT_PROPOSAL.md",
+      "size": 16814,
+      "sha256_16": "674902439e1b0776"
     },
     {
       "path": "docs/CONCEPT_RENDER.md",
-      "size": 9262,
-      "sha256_16": "3e34a9deddc125d3"
+      "size": 9089,
+      "sha256_16": "eb42af1279dcf92f"
     },
     {
       "path": "docs/content-audit.json",
       "size": 1491,
-      "sha256_16": "2f337bc659f28d80"
+      "sha256_16": "0da3d330b1ee8cee"
     },
     {
       "path": "docs/CONTENT_AUDIT.md",
-      "size": 2163,
-      "sha256_16": "5ff8fd7d686ec786"
+      "size": 2114,
+      "sha256_16": "d1c13d54ca47f4c3"
+    },
+    {
+      "path": "docs/DESIGN_CAPABILITY.md",
+      "size": 7759,
+      "sha256_16": "b833f6cac68d74c2"
     },
     {
       "path": "docs/DESIGN_CRITERIA.md",
-      "size": 6577,
-      "sha256_16": "b3d6cb00d4a6c45d"
+      "size": 6435,
+      "sha256_16": "13a52088e09da519"
+    },
+    {
+      "path": "docs/DESIGN_HANDOFF.md",
+      "size": 5977,
+      "sha256_16": "e5bc26b368505492"
+    },
+    {
+      "path": "docs/DESIGN_LEADERSHIP.md",
+      "size": 8991,
+      "sha256_16": "a262ee22a90c8413"
     },
     {
       "path": "docs/DESIGN_STYLES.md",
-      "size": 6314,
-      "sha256_16": "9d6353d8da6e8420"
+      "size": 6220,
+      "sha256_16": "13f1f1ed75e63617"
+    },
+    {
+      "path": "docs/DISCIPLINE_SCOPE_AND_ROUTING.md",
+      "size": 7237,
+      "sha256_16": "acba5925168bbf83"
     },
     {
       "path": "docs/INSTALL.md",
-      "size": 4346,
-      "sha256_16": "3b5d781f9b4f558f"
+      "size": 6970,
+      "sha256_16": "e98207e103b19866"
+    },
+    {
+      "path": "docs/INTENT_ENFORCEMENT.md",
+      "size": 8672,
+      "sha256_16": "f4f80db643f12653"
     },
     {
       "path": "docs/MANUAL.md",
-      "size": 41226,
-      "sha256_16": "55bb4f60881ab063"
+      "size": 48323,
+      "sha256_16": "96cc486a3e970120"
     },
     {
       "path": "docs/MCP_TOOLS.md",
-      "size": 6316,
-      "sha256_16": "3db3f6f2c9fb30d6"
+      "size": 6194,
+      "sha256_16": "f80754123989d0d6"
+    },
+    {
+      "path": "docs/MULTIDISCIPLINARY_ACCEPTANCE.md",
+      "size": 6919,
+      "sha256_16": "2b4432331c04a953"
+    },
+    {
+      "path": "docs/MULTIDISCIPLINARY_ARCHITECTURE.md",
+      "size": 6638,
+      "sha256_16": "8352301fa2a52540"
     },
     {
       "path": "docs/OMNIAILAB_INTEGRATION.md",
-      "size": 11002,
-      "sha256_16": "6d56a3774acb7e00"
+      "size": 10752,
+      "sha256_16": "0881ccc77db2fe14"
     },
     {
       "path": "docs/PRESENTATION.md",
-      "size": 5619,
-      "sha256_16": "589f54beecb62742"
+      "size": 5510,
+      "sha256_16": "1a9edb81bef84caf"
+    },
+    {
+      "path": "docs/PROJECT_TAXONOMY.md",
+      "size": 8220,
+      "sha256_16": "e7493d9ae56a70d0"
     },
     {
       "path": "docs/REFERENCE_SOURCES.md",
-      "size": 5916,
-      "sha256_16": "5730171174901d9f"
+      "size": 18294,
+      "sha256_16": "4937a8160ace42aa"
     },
     {
       "path": "docs/S1_INTAKE.md",
-      "size": 16341,
-      "sha256_16": "b678467b3149aeb6"
+      "size": 16060,
+      "sha256_16": "fcba507ea66bede2"
     },
     {
       "path": "docs/S2_CONCEPT.md",
-      "size": 12118,
-      "sha256_16": "37baed6dc5ebb6f1"
+      "size": 19898,
+      "sha256_16": "09706c984440a1f1"
+    },
+    {
+      "path": "docs/S2_MULTIDISCIPLINARY_CONCEPT.md",
+      "size": 7009,
+      "sha256_16": "0840453731dba92d"
+    },
+    {
+      "path": "docs/S3_S8_STATUS.md",
+      "size": 8486,
+      "sha256_16": "9d092b4e25f7edfb"
+    },
+    {
+      "path": "docs/SECTOR_DESIGN.md",
+      "size": 11345,
+      "sha256_16": "439a60c03f923496"
     },
     {
       "path": "docs/STYLE_INTEGRATION.md",
-      "size": 6313,
-      "sha256_16": "617a9612ef78622a"
+      "size": 6205,
+      "sha256_16": "fdec1e490ab38a38"
     },
     {
       "path": "docs/TABLES.md",
-      "size": 8863,
-      "sha256_16": "d9295296ca58f886"
+      "size": 8687,
+      "sha256_16": "f3aecc747e3ab2c4"
     },
     {
       "path": "docs/VIDEO_PRODUCTION.md",
-      "size": 6465,
-      "sha256_16": "183b09f12da6eb0e"
+      "size": 6466,
+      "sha256_16": "23f53ef3677b1f05"
+    },
+    {
+      "path": "docs/VISUAL_AUDIT.md",
+      "size": 6584,
+      "sha256_16": "823565d806b4df74"
+    },
+    {
+      "path": "docs/VISUAL_BRIEF.md",
+      "size": 8483,
+      "sha256_16": "c26376dcddf9b099"
+    },
+    {
+      "path": "docs/VISUAL_RECIPES.md",
+      "size": 6509,
+      "sha256_16": "00bd77d5e12076af"
     },
     {
       "path": "docs/WORKFLOW.md",
-      "size": 10497,
-      "sha256_16": "209158cf07ba5873"
+      "size": 10340,
+      "sha256_16": "97c71a3c4272520c"
     },
     {
       "path": "examples/cold-start-prompts.md",
-      "size": 4439,
-      "sha256_16": "5860ce403a40e924"
+      "size": 4365,
+      "sha256_16": "a5dfd5413e7b69bb"
     },
     {
       "path": "examples/deliverable-checklist.md",
-      "size": 2798,
-      "sha256_16": "3463cc3fca714266"
+      "size": 2751,
+      "sha256_16": "6de7fedec1014079"
     },
     {
       "path": "examples/demo-brief.md",
-      "size": 1986,
-      "sha256_16": "063eb1693c16b792"
+      "size": 1956,
+      "sha256_16": "ae09caf56e806587"
     },
     {
       "path": "examples/README.md",
-      "size": 1733,
-      "sha256_16": "08c8bebd9e6a2ccc"
+      "size": 1709,
+      "sha256_16": "f9fd8837c46d37cd"
     },
     {
       "path": "examples/styles/01-recommendation-three-options.md",
-      "size": 6240,
-      "sha256_16": "059eb2241a7f78f2"
+      "size": 6134,
+      "sha256_16": "5c888b58249fe91b"
     },
     {
       "path": "examples/styles/02-italian-minimal-living-room-prompt.md",
-      "size": 6283,
-      "sha256_16": "af519d052e49fb4c"
+      "size": 6181,
+      "sha256_16": "a4d4c0dbfe6f2881"
     },
     {
       "path": "examples/styles/03-five-rooms-consistency.json",
@@ -278,23 +371,23 @@
     },
     {
       "path": "examples/styles/03-five-rooms-consistency.md",
-      "size": 1946,
-      "sha256_16": "19240e291dfd15b1"
+      "size": 1919,
+      "sha256_16": "2e04814e22ed503c"
     },
     {
       "path": "examples/styles/04-partial-renovation-prompt.md",
-      "size": 6469,
-      "sha256_16": "86a524a98f11f6f3"
+      "size": 6364,
+      "sha256_16": "c8a205501b342346"
     },
     {
       "path": "examples/styles/05-three-styles-comparison.md",
-      "size": 2139,
-      "sha256_16": "f0da7dd96e75a8f3"
+      "size": 2116,
+      "sha256_16": "4ce1f4fd92c0f577"
     },
     {
       "path": "examples/styles/06-jobs-brief.md",
-      "size": 12967,
-      "sha256_16": "71619b52e0da6244"
+      "size": 12736,
+      "sha256_16": "b8233a34e1deb5f9"
     },
     {
       "path": "examples/styles/06-jobs-package.json",
@@ -303,8 +396,8 @@
     },
     {
       "path": "examples/styles/README.md",
-      "size": 3163,
-      "sha256_16": "6912b2fecfcf5280"
+      "size": 3107,
+      "sha256_16": "6b755f586741f0fb"
     },
     {
       "path": "installer/install.py",
@@ -313,8 +406,8 @@
     },
     {
       "path": "installer/manifest.json",
-      "size": 40845,
-      "sha256_16": "ec20201c4fec1df3"
+      "size": 45536,
+      "sha256_16": "dbf9c4029180f8a5"
     },
     {
       "path": "installer/verify_install.py",
@@ -323,73 +416,88 @@
     },
     {
       "path": "knowledge/ai-concept-visualization.md",
-      "size": 8569,
-      "sha256_16": "3e2eda5a2c57ec1e"
+      "size": 8570,
+      "sha256_16": "a10ce5be5a40a8a5"
     },
     {
       "path": "knowledge/architectural-design-principles.md",
-      "size": 14686,
-      "sha256_16": "f6f3e23d13dd14d8"
+      "size": 14482,
+      "sha256_16": "3a2b2bfbdf6a36dc"
     },
     {
       "path": "knowledge/bim-modeling-principles.md",
-      "size": 9432,
-      "sha256_16": "50edcf82550622b7"
+      "size": 9230,
+      "sha256_16": "f38bc2b9aa5e7c69"
     },
     {
       "path": "knowledge/building-systems-coordination.md",
-      "size": 10684,
-      "sha256_16": "4410e1b10aded0f1"
+      "size": 10477,
+      "sha256_16": "88ad1bd02a4d52a3"
     },
     {
       "path": "knowledge/cad-drawing-standards.md",
-      "size": 9808,
-      "sha256_16": "6304e8c211cd48ec"
+      "size": 9605,
+      "sha256_16": "317208bdcdbce2c8"
     },
     {
       "path": "knowledge/construction-detailing.md",
-      "size": 10122,
-      "sha256_16": "271b630427cf602b"
+      "size": 9916,
+      "sha256_16": "8e18a262b39253e2"
+    },
+    {
+      "path": "knowledge/design-deliberation-methods.md",
+      "size": 9767,
+      "sha256_16": "2cd74d134b48e7c6"
     },
     {
       "path": "knowledge/design-presentation-methodology.md",
-      "size": 9605,
-      "sha256_16": "509f361891565cfa"
+      "size": 9397,
+      "sha256_16": "fc5a8175e07276b0"
     },
     {
       "path": "knowledge/design-review-checklists.md",
-      "size": 9787,
-      "sha256_16": "3edef90ce607943f"
+      "size": 9583,
+      "sha256_16": "4dddd843170cf5e9"
     },
     {
       "path": "knowledge/human-ergonomics.md",
-      "size": 10678,
-      "sha256_16": "3c98692686562c57"
+      "size": 10480,
+      "sha256_16": "85ae84a1319cc8a9"
     },
     {
       "path": "knowledge/INDEX.md",
-      "size": 14171,
-      "sha256_16": "c6f8bb23f343d738"
+      "size": 14573,
+      "sha256_16": "c6fe4e3e58e345cc"
     },
     {
       "path": "knowledge/interior-design-methodology.md",
-      "size": 12541,
-      "sha256_16": "a478387f998f40a6"
+      "size": 12335,
+      "sha256_16": "c8807947b74855ff"
+    },
+    {
+      "path": "knowledge/landscape-design-methodology.md",
+      "size": 9891,
+      "sha256_16": "772853fdb64617af"
+    },
+    {
+      "path": "knowledge/library/catalog.json",
+      "size": 62429,
+      "sha256_16": "c7032a92a04b70ee"
     },
     {
       "path": "knowledge/lighting-design.md",
-      "size": 10512,
-      "sha256_16": "67053de6704357fd"
+      "size": 10305,
+      "sha256_16": "1f5cf160bf9ddb54"
     },
     {
       "path": "knowledge/material-and-finish-selection.md",
-      "size": 10358,
-      "sha256_16": "4931009fcb7d0ca0"
+      "size": 10160,
+      "sha256_16": "829067031a71989b"
     },
     {
       "path": "knowledge/spatial-planning.md",
-      "size": 11426,
-      "sha256_16": "3834861c36dbaf17"
+      "size": 11226,
+      "sha256_16": "4538c01169dcc000"
     },
     {
       "path": "knowledge/styles/african-contemporary.json",
@@ -428,8 +536,8 @@
     },
     {
       "path": "knowledge/styles/catalog.json",
-      "size": 80062,
-      "sha256_16": "1695a442ce7d5114"
+      "size": 80063,
+      "sha256_16": "9ae843e08ced6a12"
     },
     {
       "path": "knowledge/styles/chinese-neo-classical.json",
@@ -638,8 +746,13 @@
     },
     {
       "path": "LICENSES/README.md",
-      "size": 2782,
-      "sha256_16": "f1bac195b4c09536"
+      "size": 2729,
+      "sha256_16": "f8628f16d58ad34e"
+    },
+    {
+      "path": "mcp.json.example",
+      "size": 1764,
+      "sha256_16": "827a7d3f706aa4bc"
     },
     {
       "path": "omniarchitect/__init__.py",
@@ -668,18 +781,18 @@
     },
     {
       "path": "omniarchitect/adapters/drawing.py",
-      "size": 11984,
-      "sha256_16": "e4a5317a4fe9cec5"
+      "size": 13307,
+      "sha256_16": "4fd3506abc8e763c"
     },
     {
       "path": "omniarchitect/adapters/dxf.py",
-      "size": 8735,
-      "sha256_16": "3f1b50fb0bc821ab"
+      "size": 14985,
+      "sha256_16": "dbd76cf2ea8952b5"
     },
     {
       "path": "omniarchitect/adapters/dxf_r12.py",
-      "size": 7844,
-      "sha256_16": "64e03634704cb5e9"
+      "size": 7925,
+      "sha256_16": "a238c36012a083ba"
     },
     {
       "path": "omniarchitect/adapters/freecad.py",
@@ -693,33 +806,33 @@
     },
     {
       "path": "omniarchitect/adapters/mesh.py",
-      "size": 11717,
-      "sha256_16": "c8e8474d0351708f"
+      "size": 18022,
+      "sha256_16": "282ec5d68c7875a2"
     },
     {
       "path": "omniarchitect/adapters/render.py",
-      "size": 12533,
-      "sha256_16": "752957e07b3a8114"
+      "size": 13972,
+      "sha256_16": "4538e9d448b11b20"
     },
     {
       "path": "omniarchitect/brand_policy.py",
-      "size": 61054,
-      "sha256_16": "698903cc8c6c24dc"
+      "size": 66614,
+      "sha256_16": "7eb1f42b4bb9cbac"
     },
     {
       "path": "omniarchitect/changes.py",
-      "size": 29120,
-      "sha256_16": "678dd781a3b8444b"
+      "size": 59289,
+      "sha256_16": "1074e4c10dad98b6"
     },
     {
       "path": "omniarchitect/cli.py",
-      "size": 21581,
-      "sha256_16": "901c13f1f75577d7"
+      "size": 43726,
+      "sha256_16": "4b4c1a39b94c750e"
     },
     {
       "path": "omniarchitect/cli_v11.py",
-      "size": 24754,
-      "sha256_16": "e41cd9a373b489f7"
+      "size": 24743,
+      "sha256_16": "ce98729ae7a927fb"
     },
     {
       "path": "omniarchitect/compliance.py",
@@ -728,58 +841,93 @@
     },
     {
       "path": "omniarchitect/compliance_audit.py",
-      "size": 17227,
-      "sha256_16": "84d0896591e7284a"
+      "size": 18075,
+      "sha256_16": "7aa23eab3c8558f4"
     },
     {
       "path": "omniarchitect/concept/__init__.py",
-      "size": 13714,
-      "sha256_16": "76866f214e8084bf"
+      "size": 20690,
+      "sha256_16": "56feaa636e47bf11"
+    },
+    {
+      "path": "omniarchitect/concept/anim.py",
+      "size": 9739,
+      "sha256_16": "1ec5822c30cf98f4"
     },
     {
       "path": "omniarchitect/concept/cli.py",
-      "size": 10502,
-      "sha256_16": "3b6d21da10a7a20a"
+      "size": 11652,
+      "sha256_16": "a2ab39e7bde7cad5"
     },
     {
       "path": "omniarchitect/concept/compare.py",
-      "size": 13627,
-      "sha256_16": "3fdc010d2f4eb4c0"
+      "size": 22460,
+      "sha256_16": "c1a1d3d97cfc14e1"
     },
     {
       "path": "omniarchitect/concept/context.py",
-      "size": 19907,
-      "sha256_16": "954e32480e3c5bae"
+      "size": 23941,
+      "sha256_16": "b1a0d501cce9a32c"
+    },
+    {
+      "path": "omniarchitect/concept/curation.py",
+      "size": 14414,
+      "sha256_16": "b4fc81aeb620a03e"
     },
     {
       "path": "omniarchitect/concept/deck.py",
-      "size": 11165,
-      "sha256_16": "241744d70e9b81c2"
+      "size": 13277,
+      "sha256_16": "f64a6b618dd6ee57"
+    },
+    {
+      "path": "omniarchitect/concept/deliberation.py",
+      "size": 82752,
+      "sha256_16": "bab38c04c6f2fbd2"
     },
     {
       "path": "omniarchitect/concept/diagrams.py",
-      "size": 36208,
-      "sha256_16": "89a54a07d572b5e5"
+      "size": 80094,
+      "sha256_16": "574dda01c99fc800"
     },
     {
       "path": "omniarchitect/concept/directions.py",
-      "size": 25905,
-      "sha256_16": "cb738fb84edf7610"
+      "size": 44117,
+      "sha256_16": "9c9f6d331003b491"
+    },
+    {
+      "path": "omniarchitect/concept/disciplines.py",
+      "size": 20058,
+      "sha256_16": "0453e23096f1c971"
+    },
+    {
+      "path": "omniarchitect/concept/evolution.py",
+      "size": 19761,
+      "sha256_16": "d381e332c2bd8afa"
     },
     {
       "path": "omniarchitect/concept/gate.py",
-      "size": 19022,
-      "sha256_16": "b17ff039be7f0c76"
+      "size": 43587,
+      "sha256_16": "d60ac075ca246904"
     },
     {
       "path": "omniarchitect/concept/handoff.py",
-      "size": 18086,
-      "sha256_16": "15c9e4d78460cbb3"
+      "size": 36227,
+      "sha256_16": "3ab46b3a6274f1a0"
+    },
+    {
+      "path": "omniarchitect/concept/iso.py",
+      "size": 10989,
+      "sha256_16": "34b4ab7624fcd933"
+    },
+    {
+      "path": "omniarchitect/concept/layout.py",
+      "size": 57644,
+      "sha256_16": "a660313723723374"
     },
     {
       "path": "omniarchitect/concept/moodboard.py",
-      "size": 12180,
-      "sha256_16": "fd51b7b212d91752"
+      "size": 14890,
+      "sha256_16": "61f45514c0d7933c"
     },
     {
       "path": "omniarchitect/concept/palette.py",
@@ -787,14 +935,44 @@
       "sha256_16": "d17907489b33c9f4"
     },
     {
+      "path": "omniarchitect/concept/plate.py",
+      "size": 22379,
+      "sha256_16": "216894afca6091dc"
+    },
+    {
+      "path": "omniarchitect/concept/proposal.py",
+      "size": 65680,
+      "sha256_16": "a27e9ecc61156e11"
+    },
+    {
       "path": "omniarchitect/concept/prototypes.py",
-      "size": 37164,
-      "sha256_16": "f5b279c641c66bc3"
+      "size": 37273,
+      "sha256_16": "f195410d927a8c93"
+    },
+    {
+      "path": "omniarchitect/concept/quick.py",
+      "size": 14007,
+      "sha256_16": "5d496276e4a277e1"
+    },
+    {
+      "path": "omniarchitect/concept/references.py",
+      "size": 21921,
+      "sha256_16": "b15abc65f344c863"
     },
     {
       "path": "omniarchitect/concept/visual.py",
-      "size": 14271,
-      "sha256_16": "21d9cdb0c261fde9"
+      "size": 45469,
+      "sha256_16": "a40faf63fba09f7e"
+    },
+    {
+      "path": "omniarchitect/conformance.py",
+      "size": 19640,
+      "sha256_16": "c6dca97c03f78725"
+    },
+    {
+      "path": "omniarchitect/consistency.py",
+      "size": 7052,
+      "sha256_16": "b8d7212a97026110"
     },
     {
       "path": "omniarchitect/demo.py",
@@ -802,9 +980,39 @@
       "sha256_16": "c8ad71c59b534bb1"
     },
     {
+      "path": "omniarchitect/design/__init__.py",
+      "size": 1813,
+      "sha256_16": "0441e50bbc977284"
+    },
+    {
+      "path": "omniarchitect/design/enabling.py",
+      "size": 22294,
+      "sha256_16": "7328799a7cfceca1"
+    },
+    {
+      "path": "omniarchitect/design/vocabulary.py",
+      "size": 32464,
+      "sha256_16": "ed10035c17a9c178"
+    },
+    {
+      "path": "omniarchitect/disciplines.py",
+      "size": 39567,
+      "sha256_16": "251871b07a4d176e"
+    },
+    {
       "path": "omniarchitect/errors.py",
       "size": 2015,
       "sha256_16": "a0955da0e37539ab"
+    },
+    {
+      "path": "omniarchitect/existing.py",
+      "size": 9064,
+      "sha256_16": "a623f93414001f4a"
+    },
+    {
+      "path": "omniarchitect/finishes.py",
+      "size": 15195,
+      "sha256_16": "7b72c1581614740e"
     },
     {
       "path": "omniarchitect/geometry.py",
@@ -812,14 +1020,19 @@
       "sha256_16": "be9ef9f1da1690ba"
     },
     {
+      "path": "omniarchitect/hardgate.py",
+      "size": 12399,
+      "sha256_16": "9780aa02ae0b5109"
+    },
+    {
       "path": "omniarchitect/intake/__init__.py",
-      "size": 3140,
-      "sha256_16": "6d29e667a743a43e"
+      "size": 3321,
+      "sha256_16": "0895e13d4940d011"
     },
     {
       "path": "omniarchitect/intake/cli.py",
-      "size": 14459,
-      "sha256_16": "a97d2b29cdd79c25"
+      "size": 14497,
+      "sha256_16": "3aaf0e10e23094c8"
     },
     {
       "path": "omniarchitect/intake/diligence.py",
@@ -828,13 +1041,13 @@
     },
     {
       "path": "omniarchitect/intake/feasibility.py",
-      "size": 25324,
-      "sha256_16": "78b61fb9a689dbf9"
+      "size": 32806,
+      "sha256_16": "9500188f16bb817a"
     },
     {
       "path": "omniarchitect/intake/gate.py",
-      "size": 23642,
-      "sha256_16": "55509d479b731da6"
+      "size": 27060,
+      "sha256_16": "5f3edf8918710602"
     },
     {
       "path": "omniarchitect/intake/guard.py",
@@ -843,8 +1056,8 @@
     },
     {
       "path": "omniarchitect/intake/interview.py",
-      "size": 25839,
-      "sha256_16": "19d47ce55ca686ca"
+      "size": 30795,
+      "sha256_16": "4ba08aa2f7fd6014"
     },
     {
       "path": "omniarchitect/intake/needs.py",
@@ -858,13 +1071,13 @@
     },
     {
       "path": "omniarchitect/intake/profiles.py",
-      "size": 36731,
-      "sha256_16": "aa26dc6e9a81487d"
+      "size": 42739,
+      "sha256_16": "6e028d87e86129d1"
     },
     {
       "path": "omniarchitect/intake/report.py",
-      "size": 16886,
-      "sha256_16": "5d2cd909857f115a"
+      "size": 23701,
+      "sha256_16": "cd5ec1309c8820a5"
     },
     {
       "path": "omniarchitect/integration/__init__.py",
@@ -873,13 +1086,23 @@
     },
     {
       "path": "omniarchitect/integration/agent_skills.py",
-      "size": 12602,
-      "sha256_16": "cb3c24893046f4eb"
+      "size": 13019,
+      "sha256_16": "b915ead05a25d52f"
     },
     {
       "path": "omniarchitect/integration/installer.py",
-      "size": 12300,
-      "sha256_16": "2598a915b98fbe23"
+      "size": 14205,
+      "sha256_16": "329e6a7f551c0c15"
+    },
+    {
+      "path": "omniarchitect/intent.py",
+      "size": 22750,
+      "sha256_16": "0a395b04bc26026b"
+    },
+    {
+      "path": "omniarchitect/interior_surfaces.py",
+      "size": 17552,
+      "sha256_16": "6f1ce06e2519ec83"
     },
     {
       "path": "omniarchitect/knowledge/__init__.py",
@@ -892,29 +1115,39 @@
       "sha256_16": "d10c5ed63dcfeead"
     },
     {
+      "path": "omniarchitect/leadership.py",
+      "size": 20587,
+      "sha256_16": "7865975bedeb9df2"
+    },
+    {
       "path": "omniarchitect/manual.py",
-      "size": 4062,
-      "sha256_16": "1242d639c44e57d4"
+      "size": 4479,
+      "sha256_16": "2df0c0c9200bb32d"
     },
     {
       "path": "omniarchitect/model.py",
-      "size": 24070,
-      "sha256_16": "88e44ac454ea232a"
+      "size": 24490,
+      "sha256_16": "84abb78f375cc9e1"
+    },
+    {
+      "path": "omniarchitect/packaging.py",
+      "size": 17373,
+      "sha256_16": "6377dd1fa47a5b87"
     },
     {
       "path": "omniarchitect/paths.py",
-      "size": 3089,
-      "sha256_16": "94eace2004933323"
+      "size": 6299,
+      "sha256_16": "82501c9595512b8e"
     },
     {
       "path": "omniarchitect/planner.py",
-      "size": 43803,
-      "sha256_16": "d2af555444e25186"
+      "size": 58490,
+      "sha256_16": "7a8ddebc391aa70a"
     },
     {
       "path": "omniarchitect/presentation/__init__.py",
-      "size": 3064,
-      "sha256_16": "78c9bebaa366f9ba"
+      "size": 3132,
+      "sha256_16": "bf32cf6aee4dfb52"
     },
     {
       "path": "omniarchitect/presentation/deck.py",
@@ -922,9 +1155,19 @@
       "sha256_16": "32da263e8a6ac16d"
     },
     {
+      "path": "omniarchitect/presentation/html.py",
+      "size": 44717,
+      "sha256_16": "a4908f343f65a467"
+    },
+    {
       "path": "omniarchitect/presentation/layouts.py",
       "size": 10748,
       "sha256_16": "19c592719d8b1b52"
+    },
+    {
+      "path": "omniarchitect/presentation/online_doc.py",
+      "size": 22514,
+      "sha256_16": "45f42fa0c3729d26"
     },
     {
       "path": "omniarchitect/presentation/pptx_writer.py",
@@ -932,19 +1175,24 @@
       "sha256_16": "63a9c0f22e84b5bc"
     },
     {
+      "path": "omniarchitect/program.py",
+      "size": 7373,
+      "sha256_16": "da6d224fafd7fd7a"
+    },
+    {
       "path": "omniarchitect/providers/__init__.py",
-      "size": 13301,
-      "sha256_16": "ffe2e23b0da00943"
+      "size": 13353,
+      "sha256_16": "8752affdadd68f4b"
     },
     {
       "path": "omniarchitect/providers/base.py",
-      "size": 13890,
-      "sha256_16": "86732c22444543bd"
+      "size": 19021,
+      "sha256_16": "b0f03ae2a704ae1c"
     },
     {
       "path": "omniarchitect/providers/canvas.py",
-      "size": 46108,
-      "sha256_16": "581bd021fd83db23"
+      "size": 46492,
+      "sha256_16": "962a67ecb798a0f3"
     },
     {
       "path": "omniarchitect/providers/local.py",
@@ -958,8 +1206,8 @@
     },
     {
       "path": "omniarchitect/providers/omniailab.py",
-      "size": 22183,
-      "sha256_16": "55048e14aa56c46e"
+      "size": 32720,
+      "sha256_16": "6c2e500375ab2350"
     },
     {
       "path": "omniarchitect/quantities.py",
@@ -972,9 +1220,54 @@
       "sha256_16": "b52190937d93dc37"
     },
     {
+      "path": "omniarchitect/reference_plan.py",
+      "size": 12704,
+      "sha256_16": "63a5738191989056"
+    },
+    {
       "path": "omniarchitect/registry.py",
       "size": 13099,
       "sha256_16": "f945ec62b03d1335"
+    },
+    {
+      "path": "omniarchitect/research/__init__.py",
+      "size": 2592,
+      "sha256_16": "1dbfa6a745cb96d6"
+    },
+    {
+      "path": "omniarchitect/research/brief.py",
+      "size": 24791,
+      "sha256_16": "7b8ac269b783e0c6"
+    },
+    {
+      "path": "omniarchitect/research/cases.py",
+      "size": 31650,
+      "sha256_16": "76244ef1f57cca81"
+    },
+    {
+      "path": "omniarchitect/research/library.py",
+      "size": 16196,
+      "sha256_16": "7323e2a8c953c77a"
+    },
+    {
+      "path": "omniarchitect/research/preview.py",
+      "size": 23036,
+      "sha256_16": "5f81ee755f2d9b49"
+    },
+    {
+      "path": "omniarchitect/research/report.py",
+      "size": 14059,
+      "sha256_16": "155925c0cdd3e081"
+    },
+    {
+      "path": "omniarchitect/research/research.py",
+      "size": 7943,
+      "sha256_16": "c09d2d6e9c5eb44e"
+    },
+    {
+      "path": "omniarchitect/research/sources.py",
+      "size": 19257,
+      "sha256_16": "d100ec662bbe74d7"
     },
     {
       "path": "omniarchitect/revisions.py",
@@ -988,23 +1281,118 @@
     },
     {
       "path": "omniarchitect/scenarios.py",
-      "size": 32402,
-      "sha256_16": "1d06d074ff7aeaff"
+      "size": 32853,
+      "sha256_16": "2b90f30ef9bd035c"
+    },
+    {
+      "path": "omniarchitect/sector/__init__.py",
+      "size": 1105,
+      "sha256_16": "b9509606f06e2661"
+    },
+    {
+      "path": "omniarchitect/sector/brief.py",
+      "size": 30949,
+      "sha256_16": "380b08d2b98c3c39"
+    },
+    {
+      "path": "omniarchitect/sector/check.py",
+      "size": 11120,
+      "sha256_16": "a94b4c6509d7ec5e"
+    },
+    {
+      "path": "omniarchitect/sector/deepening.py",
+      "size": 29095,
+      "sha256_16": "53cae9e2dbade46b"
+    },
+    {
+      "path": "omniarchitect/sector/landscape_delivery.py",
+      "size": 15230,
+      "sha256_16": "326c1c8ffe3f69bf"
+    },
+    {
+      "path": "omniarchitect/sector/landscape_sheets.py",
+      "size": 20576,
+      "sha256_16": "5dba386f2060a7f3"
+    },
+    {
+      "path": "omniarchitect/sector/layout.py",
+      "size": 27210,
+      "sha256_16": "b65a602b3d318e81"
+    },
+    {
+      "path": "omniarchitect/sector/levels.py",
+      "size": 5680,
+      "sha256_16": "e74fdd845a8c5a1f"
+    },
+    {
+      "path": "omniarchitect/sector/model_preview.py",
+      "size": 5958,
+      "sha256_16": "379d4565f1ed8015"
+    },
+    {
+      "path": "omniarchitect/sector/moves.py",
+      "size": 36186,
+      "sha256_16": "d738936e2b774390"
+    },
+    {
+      "path": "omniarchitect/sector/parti.py",
+      "size": 38921,
+      "sha256_16": "d5afd533663b29ea"
+    },
+    {
+      "path": "omniarchitect/sector/plandraw.py",
+      "size": 15010,
+      "sha256_16": "dc910904fb20ce8a"
+    },
+    {
+      "path": "omniarchitect/sector/plans.py",
+      "size": 38920,
+      "sha256_16": "0a18b362b93a9971"
+    },
+    {
+      "path": "omniarchitect/sector/program.py",
+      "size": 18157,
+      "sha256_16": "424ed448601bbb5c"
+    },
+    {
+      "path": "omniarchitect/sector/site.py",
+      "size": 28272,
+      "sha256_16": "d085ea15ed1978cb"
+    },
+    {
+      "path": "omniarchitect/sector/site_delivery.py",
+      "size": 15297,
+      "sha256_16": "61f2610a1aa23a44"
+    },
+    {
+      "path": "omniarchitect/sector/stage.py",
+      "size": 26869,
+      "sha256_16": "c35ab6f47c476679"
+    },
+    {
+      "path": "omniarchitect/sketchup.py",
+      "size": 20957,
+      "sha256_16": "e7baa515372f2e2f"
     },
     {
       "path": "omniarchitect/stage_state.py",
-      "size": 9103,
-      "sha256_16": "64f2e3a4357ea68d"
+      "size": 10039,
+      "sha256_16": "44480050db42823f"
     },
     {
       "path": "omniarchitect/stages.py",
-      "size": 26136,
-      "sha256_16": "343e2c8ec19d1f02"
+      "size": 26454,
+      "sha256_16": "585341b3aed813df"
+    },
+    {
+      "path": "omniarchitect/studio.py",
+      "size": 11729,
+      "sha256_16": "8e8cebd53b7832a1"
     },
     {
       "path": "omniarchitect/style/__init__.py",
-      "size": 3198,
-      "sha256_16": "ed2e9ccd1563e032"
+      "size": 3572,
+      "sha256_16": "50ed9388e8d93ab7"
     },
     {
       "path": "omniarchitect/style/catalog.py",
@@ -1013,33 +1401,38 @@
     },
     {
       "path": "omniarchitect/style/cli.py",
-      "size": 29527,
-      "sha256_16": "b66ae475e49b22e2"
+      "size": 30343,
+      "sha256_16": "eeae24120e0e01f0"
     },
     {
       "path": "omniarchitect/style/compiler.py",
-      "size": 27396,
-      "sha256_16": "20c55e06a3185971"
+      "size": 32773,
+      "sha256_16": "5e1697695ee537e2"
     },
     {
       "path": "omniarchitect/style/hooks.py",
-      "size": 18098,
-      "sha256_16": "93a442740fdfcd1d"
+      "size": 18602,
+      "sha256_16": "4b4759780d1ece94"
     },
     {
       "path": "omniarchitect/style/provider_bridge.py",
-      "size": 13562,
-      "sha256_16": "e5e649c2152189d2"
+      "size": 14654,
+      "sha256_16": "8279bde6c51cf10d"
+    },
+    {
+      "path": "omniarchitect/style/recipes.py",
+      "size": 25099,
+      "sha256_16": "a0c34f6712f897d0"
     },
     {
       "path": "omniarchitect/style/recommender.py",
-      "size": 30789,
-      "sha256_16": "f80706f49cb3f35f"
+      "size": 32767,
+      "sha256_16": "f9c2986262251ba2"
     },
     {
       "path": "omniarchitect/style/resources.py",
-      "size": 3837,
-      "sha256_16": "2fbfcf1df532c7da"
+      "size": 4362,
+      "sha256_16": "d646311f12c0bc12"
     },
     {
       "path": "omniarchitect/style/validation.py",
@@ -1047,134 +1440,9 @@
       "sha256_16": "7ad61f51e091cde3"
     },
     {
-      "path": "omniarchitect/tests/__init__.py",
-      "size": 316,
-      "sha256_16": "60d9479d0f3d405a"
-    },
-    {
-      "path": "omniarchitect/tests/test_assets.py",
-      "size": 6021,
-      "sha256_16": "dece4a6a7311cc65"
-    },
-    {
-      "path": "omniarchitect/tests/test_brand_policy.py",
-      "size": 27456,
-      "sha256_16": "088bc781bf3f272f"
-    },
-    {
-      "path": "omniarchitect/tests/test_changes.py",
-      "size": 4354,
-      "sha256_16": "bec5cc251d765f8a"
-    },
-    {
-      "path": "omniarchitect/tests/test_concept.py",
-      "size": 25524,
-      "sha256_16": "6ecc6192ae5e4d84"
-    },
-    {
-      "path": "omniarchitect/tests/test_concept_render.py",
-      "size": 16941,
-      "sha256_16": "a2091cbce5e69973"
-    },
-    {
-      "path": "omniarchitect/tests/test_dxf.py",
-      "size": 4503,
-      "sha256_16": "45beb1f9bf11b9f7"
-    },
-    {
-      "path": "omniarchitect/tests/test_intake.py",
-      "size": 18269,
-      "sha256_16": "96489ec387c6d2c3"
-    },
-    {
-      "path": "omniarchitect/tests/test_integration.py",
-      "size": 31310,
-      "sha256_16": "5962f2743ec1c9f3"
-    },
-    {
-      "path": "omniarchitect/tests/test_knowledge.py",
-      "size": 4339,
-      "sha256_16": "c564e21aa094c5ea"
-    },
-    {
-      "path": "omniarchitect/tests/test_manual.py",
-      "size": 4694,
-      "sha256_16": "906ca2db831d4c0f"
-    },
-    {
-      "path": "omniarchitect/tests/test_model.py",
-      "size": 5291,
-      "sha256_16": "7a9da4a11d5ed9e1"
-    },
-    {
-      "path": "omniarchitect/tests/test_planner.py",
-      "size": 4638,
-      "sha256_16": "11f2b63e50f6c5b8"
-    },
-    {
-      "path": "omniarchitect/tests/test_presentation.py",
-      "size": 11072,
-      "sha256_16": "75682267c79bbe38"
-    },
-    {
-      "path": "omniarchitect/tests/test_provider.py",
-      "size": 13627,
-      "sha256_16": "94d85bfda64c132b"
-    },
-    {
-      "path": "omniarchitect/tests/test_routing.py",
-      "size": 3078,
-      "sha256_16": "f148021ae42ade09"
-    },
-    {
-      "path": "omniarchitect/tests/test_s1_integration.py",
-      "size": 13272,
-      "sha256_16": "3fa513d8a557bd28"
-    },
-    {
-      "path": "omniarchitect/tests/test_scenarios.py",
-      "size": 5644,
-      "sha256_16": "6d429166b63463cc"
-    },
-    {
-      "path": "omniarchitect/tests/test_stages.py",
-      "size": 5156,
-      "sha256_16": "8837ab1f7420c37f"
-    },
-    {
-      "path": "omniarchitect/tests/test_style_acceptance.py",
-      "size": 12386,
-      "sha256_16": "08c210770d499765"
-    },
-    {
-      "path": "omniarchitect/tests/test_style_catalog.py",
-      "size": 6720,
-      "sha256_16": "7a15859a41487556"
-    },
-    {
-      "path": "omniarchitect/tests/test_style_engine.py",
-      "size": 15862,
-      "sha256_16": "a30328fa9466ae31"
-    },
-    {
-      "path": "omniarchitect/tests/test_style_frame.py",
-      "size": 5520,
-      "sha256_16": "a19e3ddb08469e5a"
-    },
-    {
-      "path": "omniarchitect/tests/test_style_hooks.py",
-      "size": 4379,
-      "sha256_16": "7b08ddfb2d613932"
-    },
-    {
-      "path": "omniarchitect/tests/test_tools.py",
-      "size": 9187,
-      "sha256_16": "2bd59de942402bfe"
-    },
-    {
-      "path": "omniarchitect/tests/test_workflow.py",
-      "size": 5101,
-      "sha256_16": "eaf97d286c3ce62e"
+      "path": "omniarchitect/taxonomy.py",
+      "size": 110912,
+      "sha256_16": "b2088ac8b35d15ce"
     },
     {
       "path": "omniarchitect/tools/__init__.py",
@@ -1187,89 +1455,59 @@
       "sha256_16": "a7d87debbdfe5bdc"
     },
     {
+      "path": "omniarchitect/tools/mcp_bridge.py",
+      "size": 19729,
+      "sha256_16": "8bc6277865668502"
+    },
+    {
       "path": "omniarchitect/tools/registry.py",
       "size": 21932,
       "sha256_16": "27957779cf9d4bba"
     },
     {
+      "path": "omniarchitect/visual_brief.py",
+      "size": 14584,
+      "sha256_16": "bd4f0b4beca1ffba"
+    },
+    {
+      "path": "omniarchitect/visualref/__init__.py",
+      "size": 3844,
+      "sha256_16": "0820a9526be6a0b2"
+    },
+    {
+      "path": "omniarchitect/visualref/brief.py",
+      "size": 24456,
+      "sha256_16": "e5d13e13a51c2789"
+    },
+    {
+      "path": "omniarchitect/visualref/cli.py",
+      "size": 7230,
+      "sha256_16": "57497e402d23dccf"
+    },
+    {
+      "path": "omniarchitect/visualref/extract.py",
+      "size": 16989,
+      "sha256_16": "118b17b054904b19"
+    },
+    {
+      "path": "omniarchitect/visualref/sources.py",
+      "size": 11293,
+      "sha256_16": "5f13048858d9516f"
+    },
+    {
       "path": "omniarchitect/workflow.py",
-      "size": 72159,
-      "sha256_16": "b082bbd425db06da"
+      "size": 118470,
+      "sha256_16": "6d39daab2f1b0188"
+    },
+    {
+      "path": "omniarchitect/workspace.py",
+      "size": 9216,
+      "sha256_16": "ce04ce140fdce0d6"
     },
     {
       "path": "openai.yaml",
-      "size": 4674,
-      "sha256_16": "69a7564cb1268a21"
-    },
-    {
-      "path": "projects/demo-120/concept-render/canvas-brief.md",
-      "size": 9553,
-      "sha256_16": "6c7e55d43cc40c8d"
-    },
-    {
-      "path": "projects/demo-120/concept-render/canvas-jobs.json",
-      "size": 13441,
-      "sha256_16": "e5895081d20d3502"
-    },
-    {
-      "path": "projects/demo-120/concept-render/canvas-payload.json",
-      "size": 6175,
-      "sha256_16": "f72c9275f6de6c2b"
-    },
-    {
-      "path": "projects/demo-120/concept-render/deck/concept-rendering-r2.deck.json",
-      "size": 17683,
-      "sha256_16": "a645e27df4fc10b6"
-    },
-    {
-      "path": "projects/demo-120/concept-render/deck/concept-rendering-r2.html",
-      "size": 14117,
-      "sha256_16": "cbbc077fbf2a5554"
-    },
-    {
-      "path": "projects/demo-120/concept-render/deck/concept-rendering-r2.md",
-      "size": 8748,
-      "sha256_16": "05601a4559a77dbe"
-    },
-    {
-      "path": "projects/demo-120/concept-render/deck/concept-rendering-r2.pptx",
-      "size": 101737,
-      "sha256_16": "522607d59e238d2d"
-    },
-    {
-      "path": "projects/demo-120/concept-render/models.json",
-      "size": 1223,
-      "sha256_16": "cd65db0f446e38ec"
-    },
-    {
-      "path": "projects/demo-120/concept-render/reference/plan-r2-A.png",
-      "size": 34976,
-      "sha256_16": "db45498187ec8a2e"
-    },
-    {
-      "path": "projects/demo-120/concept-render/reference/rooms-r2-plan.png",
-      "size": 30914,
-      "sha256_16": "1223a7d342d14888"
-    },
-    {
-      "path": "projects/demo-120/concept-render/reference/rooms-r2.png",
-      "size": 141657,
-      "sha256_16": "a2ed76813e2790c1"
-    },
-    {
-      "path": "projects/demo-120/concept-render/RUN-STATUS.md",
-      "size": 2381,
-      "sha256_16": "731f74b8206c548e"
-    },
-    {
-      "path": "projects/demo-120/project.json",
-      "size": 73037,
-      "sha256_16": "7ebdd0be8a14ddfc"
-    },
-    {
-      "path": "projects/demo-120/README.md",
-      "size": 322,
-      "sha256_16": "f2b794f308f0a591"
+      "size": 4823,
+      "sha256_16": "831417b28e705de3"
     },
     {
       "path": "providers/omniailab.api.example.json",
@@ -1278,23 +1516,23 @@
     },
     {
       "path": "providers/README.md",
-      "size": 4144,
-      "sha256_16": "1c441b04cfdcedb0"
+      "size": 4077,
+      "sha256_16": "d3ae091732c8a474"
     },
     {
       "path": "pyproject.toml",
-      "size": 2161,
-      "sha256_16": "a6e85e495b49b6bc"
+      "size": 2100,
+      "sha256_16": "d7bfdfbbf76840d2"
     },
     {
       "path": "README.md",
-      "size": 52800,
-      "sha256_16": "1bed0b440c82a687"
+      "size": 59858,
+      "sha256_16": "1d0d0af3eec761eb"
     },
     {
       "path": "README_EN.md",
-      "size": 56695,
-      "sha256_16": "e669cf9182eb3dd8"
+      "size": 64667,
+      "sha256_16": "fbf545cadd0595b3"
     },
     {
       "path": "requirements.txt",
@@ -1337,199 +1575,174 @@
       "sha256_16": "394259d5778b83ea"
     },
     {
-      "path": "scripts/check_assets.py",
-      "size": 8641,
-      "sha256_16": "4bee5bb01dcad37c"
-    },
-    {
-      "path": "scripts/check_tables.py",
-      "size": 12430,
-      "sha256_16": "f3a27200b522d303"
-    },
-    {
-      "path": "scripts/normalize_attribution.py",
-      "size": 17262,
-      "sha256_16": "c85c4c35ff3a3138"
-    },
-    {
-      "path": "scripts/omniarchitect.cmd",
-      "size": 1061,
-      "sha256_16": "5fb71784e258a210"
-    },
-    {
-      "path": "scripts/run_tests.py",
-      "size": 2835,
-      "sha256_16": "0e72d22b7ff039ed"
-    },
-    {
-      "path": "scripts/verify_all.py",
-      "size": 21554,
-      "sha256_16": "f72f7d4e40ca06d3"
-    },
-    {
       "path": "SKILL.md",
-      "size": 22587,
-      "sha256_16": "6f12a37b06ea935c"
+      "size": 23998,
+      "sha256_16": "16901fac555dce7c"
     },
     {
       "path": "skills/3d-modeling.md",
-      "size": 5776,
-      "sha256_16": "adef1a6de75488e0"
+      "size": 5777,
+      "sha256_16": "a58ba034f17c6fa9"
     },
     {
       "path": "skills/ai-visualization.md",
-      "size": 6119,
-      "sha256_16": "214f446af42858c2"
+      "size": 6120,
+      "sha256_16": "c889a6181ded43df"
     },
     {
       "path": "skills/architectural-design.md",
-      "size": 5213,
-      "sha256_16": "f31c2d063e98e85a"
+      "size": 5763,
+      "sha256_16": "46f5ff3480a73cb0"
     },
     {
       "path": "skills/bim-modeling.md",
-      "size": 6093,
-      "sha256_16": "1ed1edbcf21b9585"
+      "size": 6094,
+      "sha256_16": "d3a70694f25cf02f"
     },
     {
       "path": "skills/building-services.md",
-      "size": 6622,
-      "sha256_16": "4c7d4cd02b302a99"
+      "size": 6623,
+      "sha256_16": "efaa37e5ecfd1aa8"
     },
     {
       "path": "skills/cad-drafting.md",
-      "size": 6280,
-      "sha256_16": "b0745fb12663a346"
+      "size": 6281,
+      "sha256_16": "8b3834545351cc4f"
     },
     {
       "path": "skills/concept-design.md",
-      "size": 6083,
-      "sha256_16": "fa6b3258fadeebd3"
+      "size": 6006,
+      "sha256_16": "7be3f082a6d45dc6"
     },
     {
       "path": "skills/concept-visualization.md",
-      "size": 5904,
-      "sha256_16": "b3537a2d4d6c5407"
+      "size": 5905,
+      "sha256_16": "3b1f3ed8551c3ed3"
     },
     {
       "path": "skills/construction-detailing.md",
-      "size": 6570,
-      "sha256_16": "eadcd947265684b0"
+      "size": 6571,
+      "sha256_16": "e6f4150333b5e76d"
     },
     {
       "path": "skills/coordination-check.md",
-      "size": 6312,
-      "sha256_16": "936498b1937216f3"
+      "size": 6313,
+      "sha256_16": "c52c1810bd2c6c93"
     },
     {
       "path": "skills/cost-check.md",
-      "size": 6085,
-      "sha256_16": "f6ee945082ebb5e7"
+      "size": 6086,
+      "sha256_16": "977cf98a8370c7d8"
     },
     {
       "path": "skills/create-draw.md",
-      "size": 4504,
-      "sha256_16": "32782648321e5279"
+      "size": 4505,
+      "sha256_16": "8083a2110ed46b46"
     },
     {
       "path": "skills/delivery.md",
-      "size": 6214,
-      "sha256_16": "7419bc135a6c2b61"
+      "size": 6215,
+      "sha256_16": "abfa5cf84db4f43b"
     },
     {
       "path": "skills/design-brief.md",
-      "size": 6280,
-      "sha256_16": "5d04702ddb17d989"
+      "size": 6199,
+      "sha256_16": "5cc5e3e305495041"
     },
     {
       "path": "skills/design-presentation.md",
-      "size": 7704,
-      "sha256_16": "5e14634b5879bd19"
+      "size": 7705,
+      "sha256_16": "11fca7fe4eeef7b5"
     },
     {
       "path": "skills/design-review.md",
-      "size": 6211,
-      "sha256_16": "50a5f38e487f4f7c"
+      "size": 6212,
+      "sha256_16": "06e8edec55f10fbe"
     },
     {
       "path": "skills/documentation.md",
-      "size": 5987,
-      "sha256_16": "1e536bdb13720128"
+      "size": 5988,
+      "sha256_16": "83222653bf7022ee"
     },
     {
       "path": "skills/ergonomics.md",
-      "size": 5608,
-      "sha256_16": "04c7e2e8598ade8d"
+      "size": 5609,
+      "sha256_16": "792d27cbba386609"
     },
     {
       "path": "skills/existing-drawing-analysis.md",
-      "size": 4924,
-      "sha256_16": "603c44c18c09320f"
+      "size": 4925,
+      "sha256_16": "85dbb2a5afff651f"
     },
     {
       "path": "skills/interior-design.md",
-      "size": 5579,
-      "sha256_16": "cc821121b2e4878e"
+      "size": 5580,
+      "sha256_16": "7be7761ceaaece24"
+    },
+    {
+      "path": "skills/landscape-design.md",
+      "size": 5794,
+      "sha256_16": "35409ba53c41a557"
     },
     {
       "path": "skills/layout-optimization.md",
-      "size": 5292,
-      "sha256_16": "a042f562222b93db"
+      "size": 5293,
+      "sha256_16": "4d99c24ccd34a095"
     },
     {
       "path": "skills/lighting-design.md",
-      "size": 5571,
-      "sha256_16": "93a168f855e7f673"
+      "size": 5572,
+      "sha256_16": "44cd1a692e37ed99"
     },
     {
       "path": "skills/material-design.md",
-      "size": 5662,
-      "sha256_16": "05fc6df8e4e84355"
+      "size": 5663,
+      "sha256_16": "7bfcce3a76e1f1bc"
     },
     {
       "path": "skills/material-schedule.md",
-      "size": 5986,
-      "sha256_16": "2af734ed86bd24eb"
+      "size": 5987,
+      "sha256_16": "88b7750ac61ce720"
     },
     {
       "path": "skills/moodboard-aesthetic-iteration.md",
-      "size": 5310,
-      "sha256_16": "face94f5473fec45"
+      "size": 5311,
+      "sha256_16": "175312e27809442c"
     },
     {
       "path": "skills/quantity-takeoff.md",
-      "size": 6055,
-      "sha256_16": "b7065ad1274ba293"
+      "size": 6056,
+      "sha256_16": "82d0d3a933da3152"
     },
     {
       "path": "skills/scene-rendering.md",
-      "size": 6139,
-      "sha256_16": "0c95ce7cdec4665f"
+      "size": 6140,
+      "sha256_16": "b4dd8d3c2d544daa"
     },
     {
       "path": "skills/site-analysis.md",
-      "size": 5303,
-      "sha256_16": "98bcdb2a10c082fa"
+      "size": 5304,
+      "sha256_16": "ae691fd3a43ba3ba"
     },
     {
       "path": "skills/space-planning.md",
-      "size": 5590,
-      "sha256_16": "836aa1ce0934b16d"
+      "size": 5591,
+      "sha256_16": "04f9e97557017005"
     },
     {
       "path": "skills/walkthrough.md",
-      "size": 6317,
-      "sha256_16": "bfe8dd7353c98967"
+      "size": 6318,
+      "sha256_16": "480cc39dadc7c9d0"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "size": 7075,
-      "sha256_16": "7d52372cab9ff313"
+      "size": 6971,
+      "sha256_16": "570eaed73982771c"
     },
     {
       "path": "VERSION",
-      "size": 7,
-      "sha256_16": "382e5778205c3446"
+      "size": 8,
+      "sha256_16": "e75e3da853e96cd9"
     },
     {
       "path": "workflows/interior-full.yaml",
@@ -1540,6 +1753,7 @@
   "truncated": false,
   "entrypoint": "SKILL.md",
   "python_package": "omniarchitect",
+  "whitelist": "omniarchitect/packaging.py:DIST_DIRS",
   "standalone": {
     "requires_platform_account": false,
     "requires_network": false,

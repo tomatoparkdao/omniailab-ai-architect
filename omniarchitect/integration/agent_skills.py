@@ -203,21 +203,14 @@ def references() -> List[str]:
 
 # --------------------------------------------------------------------------
 def payload_files(root: str | Path = SKILL_ROOT) -> List[Path]:
-    """Files a full (copy-mode) install would carry."""
-    r = Path(root)
-    out: List[Path] = []
-    skip_dirs = {".git", "out", "__pycache__", ".pytest_cache", "third_party",
-                 ".workbuddy"}
-    for p in sorted(r.rglob("*")):
-        if p.is_dir():
-            continue
-        parts = set(p.relative_to(r).parts[:-1])
-        if parts & skip_dirs:
-            continue
-        if p.suffix in (".pyc", ".pyo"):
-            continue
-        out.append(p)
-    return out
+    """Files a full (copy-mode) install would carry.
+
+    白名单在 `omniarchitect.packaging` —— 这里不再自己维护一套排除规则。
+    两处各写一份的话，`manifest.json` 和真正的安装包迟早会对不上。
+    """
+    from .. import packaging
+
+    return packaging.distribution_files(root)
 
 
 def digest(path: str | Path) -> str:
@@ -227,8 +220,17 @@ def digest(path: str | Path) -> str:
 
 
 def build_manifest(root: str | Path = SKILL_ROOT, with_hashes: bool = False) -> Dict[str, Any]:
+    """安装清单 = 分发白名单。不多登记一个，也不少登记一个。
+
+    `root` 字段只写相对标记 `"."`：清单会进公开分发包，写本机盘符既没用
+    （别人装到哪都不一样），又是把开发机的目录结构泄漏出去。
+    """
     r = Path(root)
     m = parse(r / "SKILL.md")
+    # `SkillManifest` 里带绝对根路径（运行时要能解析引用），但清单会进分发包 ——
+    # 那里只能写相对标记，否则本机目录结构跟着一起发出去。
+    meta = m.to_dict()
+    meta["root"] = "."
     files = payload_files(r)
     payload = []
     for p in files:
@@ -246,15 +248,16 @@ def build_manifest(root: str | Path = SKILL_ROOT, with_hashes: bool = False) -> 
         # emit it — otherwise the file would drift every time it is rebuilt.
         "$comment": SIGNATURE.lstrip("> ").strip(),
         "generated_from": f"omniarchitect v{project_version()}",
-        "skill": m.to_dict(),
+        "skill": meta,
         "issues": validate(r / "SKILL.md"),
-        "root": str(r),
+        "root": ".",
         "file_count": len(payload),
         "total_bytes": sum(f["size"] for f in payload),
-        "files": payload[:600],
-        "truncated": len(payload) > 600,
+        "files": payload[:2000],
+        "truncated": len(payload) > 2000,
         "entrypoint": "SKILL.md",
         "python_package": "omniarchitect",
+        "whitelist": "omniarchitect/packaging.py:DIST_DIRS",
         "standalone": {
             "requires_platform_account": False,
             "requires_network": False,

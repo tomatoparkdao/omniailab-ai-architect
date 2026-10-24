@@ -3,7 +3,7 @@ name: omniailab-moodboard-aesthetic-iteration
 description: 意向板与审美迭代 —— 用关键词锚定审美目标、按固定框架量化打分，并跨轮追踪整改闭环
 capability: moodboard-aesthetic-iteration
 stages: [S2, S5]
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

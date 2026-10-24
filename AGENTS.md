@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -38,13 +38,30 @@ python -m omniarchitect doctor
 ```
 
 - 父目录 `E:\SKILL\建筑室内设计skill\.workbuddy\` 存放会话记忆，**不属于本仓库，不得删除或改写**。
-- **代码与技能内容落在本目录内；运行产物一律落在本目录之外。**
-  测试、演示、渲染、验收跑出来的所有文件（`out/`、`scenarios/`、`run-*`、`s38/`、`v116/` 等）
-  必须写到 `E:\SKILL\建筑室内设计skill\缓存测试文件\`（即本目录的**同级目录**）。
-  代码默认值由 `paths.test_output_root()` 统一给出，不要在任何脚本里硬编码 `ROOT / "out"`；
-  守卫 `omniarchitect/tests/test_output_layout.py` 会拦下违规写法。
-  理由：曾经在本目录堆积 1.3 GB / 66 个 run 目录的产物，"这个技能到底发布了什么"完全看不清。
-- 禁止在 `C:\`、桌面、Home 或其它盘另建项目副本（产物目录除外，见上一条）。
+- **技能目录里只有能力；设计成果一律落在独立运行工作区。**
+  这条是硬规则，不是建议。技能目录放：技能定义、源代码、知识库、风格数据、Schema、
+  MCP 适配器、工具注册表、Skill 说明、安装与调用脚本、配置模板、许可证。
+  **不放**：客户项目、CAD/DXF、三维模型、效果图、视频、PPT、交付文件、测试截图、
+  场景缓存、历史验收运行目录。
+- 运行工作区由 `omniarchitect/workspace.py` 统一定义，五个分区固定：
+
+  | 分区 | 内容 |
+|---|---|
+  | `projects/` | 真实客户项目（`project.json` 与版本记录），不可再生 |
+  | `outputs/` | CAD / 模型 / 效果图 / PPT / HTML / 工程量 / 交付文件 |
+  | `tests/` | 测试与演示产物，可随时删除 |
+  | `cache/` | 中间缓存，可随时清空 |
+  | `archive/` | 历史运行资料与旧验收产物留档 |
+
+  默认根：Windows 为 `E:\OmniAiLab-Workspace\Architect`（E: 不存在时退回用户目录同名结构），
+  macOS / Linux 用各自的数据目录。用 `OMNIAILAB_WORKSPACE` 或分区的
+  `OMNIAILAB_{PROJECTS,OUTPUTS,TESTS,CACHE,ARCHIVE}_DIR` 覆盖。
+- 代码默认值只走 `paths.ensure_output_dir()` / `paths.projects_root()` /
+  `paths.test_output_root()`，**不要在任何脚本里硬编码 `ROOT / "out"` 或自建 `projects/`**。
+  守卫 `omniarchitect/tests/test_output_layout.py` 与 `test_packaging.py` 会拦下违规写法，
+  `python -m omniarchitect package` 会把技能目录里的生成物判为违规。
+- 跑测试默认在系统临时目录里做，跑完即删；要留档用 `--keep`（进工作区 `tests/`）。
+- 禁止在 `C:\`、桌面、Home 或其它盘另建**技能副本**（工作区除外，见上一条）。
 
 ### 目录职责
 
@@ -69,8 +86,9 @@ python -m omniarchitect doctor
 | `schemas/` | 空间模型 / 案例 / 工具能力 / 汇报 Schema | 只允许**向后兼容**的新增 |
 | `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
 | `installer/` · `compatibility/` | 安装脚本、清单与兼容说明 | 脚本 |
-| `projects/` | 示例与真实项目数据 | 项目数据 |
-| `../缓存测试文件/` | **运行产物（本目录之外）** | 测试/演示/渲染都写这里，见上一条铁律 |
+| `omniarchitect/workspace.py` | **运行工作区的唯一定义**：五分区 / 环境变量 / 项目解析 | 不得另起一套路径系统 |
+| `omniarchitect/packaging.py` | **分发白名单与包审计**：进包判据写在 `DIST_DIRS` / `DIST_ROOT_FILES` | 白名单只按身份判定，不按体积 |
+| `../OmniAiLab-Workspace/Architect/` | **运行工作区（本目录之外）**：项目 / 产物 / 测试 / 缓存 / 归档 | 设计成果都写这里，见上一条铁律 |
 | `openai.yaml` | 接口元数据（显示名 / 默认提示词 / 隐式调用开关） | 显示名与版本须与 `SKILL.md` 同步 |
 | `LICENSE` · `VERSION` | 许可与版本（全仓唯一处） | 版本号须与 `__version__`、`pyproject.toml` 一致 |
 | `README.md` · `README_EN.md` | 中英文对外说明 | 两份必须镜像，改动同步 |
@@ -220,7 +238,11 @@ python -m omniarchitect intake --project <dir> --action start --text "..."  # S1
 python -m omniarchitect confirm --project <dir> --stage S1 --by 业主  # G1 唯一确认入口（可 --acknowledge / --force）
 python -m omniarchitect concept --project <dir> --action generate  # S2 概念（图解/意向板/比较/提案）
 python -m omniarchitect concept --project <dir> --action select --concept C-B  # 选定一个方向（不是风格名）
+python -m omniarchitect workspace           :: 工作区五分区在哪 + 技能目录体积
+python -m omniarchitect package             :: 分发白名单与夹带审计（0 违规才干净）
 python -m omniarchitect demo --out out        :: 示例项目跑通全部八阶段
+:: 示例项目 demo-120 由 demo 命令生成在**工作区**的 projects/ 下；
+:: --project 先按路径找，找不到就到工作区 projects/ 里按名字找，写 `projects/demo-120` 也行。
 python -m omniarchitect status  --project projects/demo-120
 python -m omniarchitect route   --project projects/demo-120 "出施工图"
 python -m omniarchitect run     --project projects/demo-120 --from-stage S3

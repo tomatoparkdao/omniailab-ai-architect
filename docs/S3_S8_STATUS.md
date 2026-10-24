@@ -1,7 +1,7 @@
 ---
 name: omniailab-S3_S8_STATUS
 description: S3_S8_STATUS —— OmniAiLab AI 建筑与室内设计总设计师的说明文档。
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

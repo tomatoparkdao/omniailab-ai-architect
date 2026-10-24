@@ -24,7 +24,7 @@ from .adapters import DxfAdapter, doctor
 from .changes import analyse
 from .errors import OmniArchitectError, ValidationError
 from .model import load_project, summary, validate_all
-from .paths import EXAMPLES, PROJECTS, ROOT, ensure_output_dir
+from .paths import EXAMPLES, ROOT, ensure_output_dir, projects_root
 from .registry import criteria_report, registry_report
 from .routing import route
 from .stage_state import markdown as stage_markdown
@@ -37,10 +37,19 @@ from .workflow import DEFAULT_STAGES, STAGE_SLUG, StageRunner
 def _load(args) -> Any:
     if not getattr(args, "project", None):
         raise SystemExit("--project is required")
+    from .workspace import resolve_project
+
     p = Path(args.project)
     if not p.is_absolute():
         cand = ROOT / p
         p = cand if cand.exists() else p
+    if not p.exists():
+        # 项目数据住在工作区：`--project demo-120` 与 `--project projects/demo-120`
+        # 都要能找到，报错时还要说清找过哪些位置。
+        try:
+            p = resolve_project(args.project)
+        except FileNotFoundError as exc:
+            raise SystemExit(str(exc))
     if p.is_dir():
         p = p / "project.json"
     if not p.exists():
@@ -589,6 +598,102 @@ def cmd_standards(args) -> int:
         print(f"  - {line}")
     print()
     print(payload["note"])
+
+
+def cmd_workspace(args) -> int:
+    """运行工作区：五个分区在哪、怎么覆盖、技能目录里该有什么。
+
+    这个命令存在的意义是让人**先看清楚再动手**：产物到底写去哪，
+    以及技能目录当前是不是干净的。
+    """
+    from . import workspace
+
+    payload = workspace.describe()
+    payload["skill_tree"] = _skill_tree_summary()
+    if args.json:
+        _print_json(payload)
+        return 0
+    print(f"工作区根：{payload['root']}"
+          + ("（环境变量覆盖）" if payload["overridden"] else "（平台默认）"))
+    print(f"技能目录：{payload['skill_root']}")
+    print()
+    print("分区：")
+    for kind, info in payload["kinds"].items():
+        flag = "已存在" if info["exists"] else "未创建"
+        print(f"  {kind:<9} {info['path']}　[{flag}]")
+        print(f"            {info['description']}　覆盖变量：{info['env']}")
+    print()
+    print(f"技能目录体积：{payload['skill_tree']['total_mb']} MB"
+          f"（其中 .git {payload['skill_tree']['git_mb']} MB，"
+          f"{payload['skill_tree']['file_count']} 个文件）")
+    if payload["inside_skill"]:
+        print("！工作区指到了技能目录内部，这会让技能本体重新膨胀，请改 OMNIAILAB_WORKSPACE")
+    print()
+    print(payload["note"])
+    return 0
+
+
+def _skill_tree_summary() -> Dict[str, Any]:
+    """技能目录体积快照 —— 用来证明"跑完测试没变大"。"""
+    from .paths import ROOT
+
+    total = 0
+    git_bytes = 0
+    count = 0
+    for p in ROOT.rglob("*"):
+        if not p.is_file():
+            continue
+        try:
+            size = p.stat().st_size
+        except OSError:
+            continue
+        total += size
+        count += 1
+        if ".git" in p.relative_to(ROOT).parts:
+            git_bytes += size
+    return {
+        "total_bytes": total,
+        "total_mb": round(total / 1024 / 1024, 2),
+        "git_bytes": git_bytes,
+        "git_mb": round(git_bytes / 1024 / 1024, 2),
+        "source_bytes": total - git_bytes,
+        "source_mb": round((total - git_bytes) / 1024 / 1024, 2),
+        "file_count": count,
+    }
+
+
+def cmd_package(args) -> int:
+    """分发审计：正式安装包里到底有哪些文件，有没有夹带产物。
+
+    白名单之外的东西一律不进包，进了就报错并给出违规项 ——
+    而不是"复制完再说"。
+    """
+    from . import packaging
+
+    report = packaging.audit()
+    report["skill_tree"] = _skill_tree_summary()
+    if args.json:
+        _print_json(report)
+        return 0 if report["ok"] else 1
+
+    print(f"分发包：{report['file_count']} 个文件，"
+          f"{report['total_bytes'] / 1024 / 1024:.2f} MB")
+    print(f"最大单文件：{report['largest'][0]}（{report['largest'][1] / 1024:.0f} KB）")
+    print("\n按目录：")
+    for name, info in sorted(report["by_top"].items(), key=lambda kv: -kv[1]["bytes"]):
+        print(f"  {name:<16} {info['files']:>4} 个　{info['bytes'] / 1024:>8.0f} KB")
+    print()
+    if report["violations"]:
+        print(f"违规 {len(report['violations'])} 项：")
+        for v in report["violations"]:
+            print(f"  [{v['rule']}] {v['detail']}")
+    else:
+        print("违规 0 项：白名单之内、无产物、无绝对路径、manifest 一致。")
+    if report["warnings"]:
+        print(f"\n提示 {len(report['warnings'])} 项：")
+        for w in report["warnings"]:
+            print(f"  · {w}")
+    return 0 if report["ok"] else 1
     return 0
 
 
@@ -729,10 +834,12 @@ def cmd_change(args) -> int:
 def cmd_demo(args) -> int:
     from .demo import build_demo_project
 
-    d = PROJECTS / "demo-120"
+    # 示例项目也属于项目数据 → 建在工作区，不在技能目录里生成
+    d = projects_root() / "demo-120"
+    d.mkdir(parents=True, exist_ok=True)
     project = build_demo_project(d)
     print(f"示例项目已生成：{d / 'project.json'}")
-    out = ensure_output_dir(args.out, "out")
+    out = ensure_output_dir(args.out, "demo-120")
     runner = StageRunner(project, out, level_id="L1", scheme_variant=args.scheme,
                          assume_approval=True, project_dir=d)
     runner.run_all(confirm_all=True)
@@ -852,6 +959,14 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--jurisdiction", default="", help="辖区，如 CN/US/DE")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_standards)
+
+    sp = sub.add_parser("workspace", help="运行工作区（项目/产物/测试/缓存/归档在哪）")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_workspace)
+
+    sp = sub.add_parser("package", help="分发审计：白名单清单 + 夹带检查")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_package)
 
     sp = add_project(sub.add_parser("verify", help="模型校验"))
     sp.set_defaults(func=cmd_verify)

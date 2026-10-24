@@ -5,7 +5,7 @@ domain: ai-concept-visualization
 stage_affinity: [S3, S4, S5]
 loads_when: 需要在平面确认后生成概念效果图、编写或审查出图提示词、判断一张表现图能不能拿给业主时
 load_cost: medium
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

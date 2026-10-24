@@ -16,13 +16,16 @@ The rule for this project is flat:
   **structured data** (JSON metadata) plus an external reference — never as the
   file itself.
 
-Runtime output is out of scope: `out/` and the ignored per-project folders
-(`projects/*/renders/`, `projects/*/concept-render/`, `projects/*/private/`)
-never reach the remote, so a large render living there is not a finding.
+Runtime output is out of scope: it lives in the external workspace
+(`omniarchitect/workspace.py` — projects / outputs / tests / cache / archive),
+never inside the skill folder, so a large render living there is not a finding.
+But "the repo is clean" does not mean "the package is clean": `--distribution`
+audits the whitelist payload as well, i.e. the files that actually ship.
 
     python scripts/check_assets.py            # check, exit 1 on any finding
     python scripts/check_assets.py --json     # machine-readable
     python scripts/check_assets.py --list     # show the largest files
+    python scripts/check_assets.py --distribution   # also audit the installable package
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
@@ -175,9 +178,29 @@ def main() -> int:
                     help="单个文件的上限（MB），默认 1.0")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--list", action="store_true", help="列出最大的 10 个文件")
+    ap.add_argument("--distribution", action="store_true",
+                    help="同时审计**最终安装包**（白名单产物），不只是仓库里的文件")
     a = ap.parse_args()
 
     rep = scan(int(a.max_mb * 1024 * 1024))
+    if a.distribution:
+        # 仓库干净不等于分发包干净：白名单产物才是真正发出去的那一堆。
+        # 判据与 `python -m omniarchitect package` 同一份（omniarchitect.packaging）。
+        sys.path.insert(0, str(ROOT))
+        from omniarchitect import packaging
+        dist = packaging.audit(ROOT)
+        rep["distribution"] = {
+            "ok": dist["ok"],
+            "file_count": dist["file_count"],
+            "total_mb": dist["total_mb"],
+            "largest": dist["largest"],
+            "violations": dist["violations"],
+        }
+        rep["findings"] += len(dist["violations"])
+        rep["conclusion"] = (
+            "通过：无超限文件，无媒体/二进制文件，分发包干净"
+            if rep["findings"] == 0 else f"不通过：{rep['findings']} 项待处理")
+
     if a.json:
         print(json.dumps(rep, ensure_ascii=False, indent=2))
         return 0 if rep["findings"] == 0 else 1
@@ -186,6 +209,12 @@ def main() -> int:
     print(f"  项目根：{rep['root']}")
     print(f"  扫描文件：{rep['files_scanned']} 个 / 合计 {rep['total_mb']} MB")
     print(f"  上限：{rep['max_bytes'] // 1024 // 1024} MB")
+    if "distribution" in rep:
+        d = rep["distribution"]
+        print(f"  分发包：{d['file_count']} 个文件 / {d['total_mb']} MB　"
+              + ("干净" if d["ok"] else f"{len(d['violations'])} 项违规"))
+        for v in d["violations"][:8]:
+            print(f"    [{v['rule']}] {v['detail']}")
 
     if a.list or rep["findings"] == 0:
         print("  最大的文件：")

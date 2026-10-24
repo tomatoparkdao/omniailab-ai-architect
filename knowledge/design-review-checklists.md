@@ -5,7 +5,7 @@ description: 设计评审清单 —— 按阶段、按对象、可勾选的质�
 stage_affinity: [S1, S4, S6, S8]
 loads_when: 当任务涉及方案自检、阶段评审、提交前检查或交付验收时加载
 load_cost: heavy
-version: 1.20.0
+version: 1.21.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

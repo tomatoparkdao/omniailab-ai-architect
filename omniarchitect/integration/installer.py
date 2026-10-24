@@ -5,8 +5,12 @@ Design rules
 * **Never destructive.** An existing installation is moved aside to a timestamped
   backup, never deleted. `uninstall` moves it aside too.
 * **Dry-run first.** `plan()` shows every action before a single byte moves.
-* **Verifiable.** After installing, the entry point is re-parsed and the pointer
-  is resolved back to a real checkout; the report says whether it worked.
+* **Whitelist, not blacklist.** What ships is declared in
+  `omniarchitect.packaging`; anything not declared never enters the package —
+  including files that happen to sit in the repo after a demo run.
+* **Verifiable.** After installing, the entry point is re-parsed, the pointer is
+  resolved back to a real checkout, and the copied tree is audited for
+  generated artefacts. The report says whether it worked.
 * **Standalone by default.** No platform account, no key, no network.
 
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
@@ -21,6 +25,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+from .. import packaging
 from ..paths import ROOT
 from . import agent_skills as sk
 
@@ -32,8 +37,8 @@ BACKUP_DIR = "_backup"
 MODE_POINTER = "pointer"
 MODE_COPY = "copy"
 
-EXCLUDE_DIRS = {".git", "out", "__pycache__", ".pytest_cache",
-                ".workbuddy", "node_modules"}
+#: 仅用于门面判断（白名单在 packaging 里）。保留名字是为了兼容老调用方。
+EXCLUDE_DIRS = packaging.DIST_SKIP_DIR_NAMES
 EXCLUDE_SUFFIX = {".pyc", ".pyo"}
 
 
@@ -77,19 +82,8 @@ class InstallReport:
 
 
 def _payload(root: Path) -> List[Path]:
-    out: List[Path] = []
-    for p in sorted(root.rglob("*")):
-        if p.is_dir():
-            continue
-        rel = p.relative_to(root)
-        if set(rel.parts[:-1]) & EXCLUDE_DIRS:
-            continue
-        if set(rel.parts) & EXCLUDE_DIRS:
-            continue
-        if p.suffix in EXCLUDE_SUFFIX:
-            continue
-        out.append(p)
-    return out
+    """正式分发文件：白名单决定，不看目录里"还剩什么"。"""
+    return packaging.distribution_files(root)
 
 
 class Installer:
@@ -145,9 +139,11 @@ class Installer:
                 note="安装清单（含版本与来源校验）"))
         else:
             files = _payload(self.source)
-            rep.actions.append(Action("copy", source=str(self.source),
-                                      target=str(dest),
-                                      note=f"完整复制 {len(files)} 个文件"))
+            size = sum(f.stat().st_size for f in files if f.exists())
+            rep.actions.append(Action(
+                "copy", source=str(self.source), target=str(dest),
+                note=f"白名单复制 {len(files)} 个文件 / {size / 1024 / 1024:.2f} MB"
+                     "（不含项目、测试、开发脚本、缓存）"))
             for f in files[:40]:
                 rep.actions.append(Action("copy", source=str(f.relative_to(self.source)),
                                           target=str(dest / f.relative_to(self.source))))
@@ -262,10 +258,38 @@ def verify(target: str | Path) -> Dict[str, Any]:
             out["manifest_skill"] = data.get("skill", {}).get("name", "")
             out["manifest_files"] = data.get("file_count")
             out["manifest_issues"] = data.get("issues", [])
+            listed = {str(r.get("path", "")).replace("\\", "/")
+                      for r in data.get("files", [])}
+            listed.discard("")
+            if out.get("mode") == "copy":
+                # 只有 copy 模式才该在本地看到全部清单文件。pointer 模式的清单
+                # 描述的是"指向的那个仓库发什么"，本地只有 3 个文件，属正常。
+                missing = sorted(p for p in listed if not (dest / p).exists())
+                actual = {str(p.relative_to(dest)).replace("\\", "/")
+                          for p in dest.rglob("*") if p.is_file()}
+                unlisted = sorted(p for p in actual - listed
+                                  if p != MANIFEST_NAME
+                                  and not p.endswith("/manifest.json"))
+                out["manifest_missing"] = missing[:10]
+                out["unlisted_files"] = unlisted[:10]
+                if missing:
+                    errs.append(f"清单登记但安装目录缺失 {len(missing)} 个文件：{missing[:5]}")
+                if unlisted:
+                    errs.append(f"安装目录有 {len(unlisted)} 个文件未登记进清单：{unlisted[:5]}")
         except Exception as exc:
             errs.append(f"manifest 损坏：{exc}")
     else:
         errs.append("缺少 manifest.json")
+
+    # 装完之后再查一遍"里面有没有生成物"——白名单是第一道防线，
+    # 这里是不信任自己的第二道。
+    tree = packaging.audit_tree(dest)
+    out["payload_issues"] = tree["violations"]
+    if not tree["ok"]:
+        errs.extend(f"安装目录混入不该分发的文件：{v['detail']}"
+                    for v in tree["violations"][:5])
+    out["installed_files"] = tree["file_count"]
+    out["installed_mb"] = tree["total_mb"]
 
     out["ok"] = not errs
     return out
