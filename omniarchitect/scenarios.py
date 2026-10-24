@@ -203,9 +203,15 @@ def _check_file(rep: ScenarioReport, tools, path: Path, root: Path,
 
 # --------------------------------------------------------------------------
 class ScenarioRunner:
-    def __init__(self, out_root: str | Path = "out/scenarios",
+    def __init__(self, out_root: str | Path | None = None,
                  project_dir: str | Path | None = None) -> None:
-        self.out_root = Path(out_root)
+        # 默认落在技能目录之外：验收跑一轮就几百个文件，塞进技能里
+        # 会让"到底发布了什么"看不清楚。
+        if out_root:
+            self.out_root = Path(out_root)
+        else:
+            from .paths import ensure_output_dir
+            self.out_root = ensure_output_dir(None, "scenarios")
         self.project_dir = Path(project_dir) if project_dir else None
         self.tools = tool_registry()
 
@@ -656,16 +662,16 @@ def _provider_report(project_dir: Path) -> Dict[str, Any]:
     }
 
 
-def run(scenario: str, out_root: str | Path = "out/scenarios",
+def run(scenario: str, out_root: str | Path | None = None,
         project_dir: str | Path | None = None) -> Dict[str, Any]:
     return ScenarioRunner(out_root, project_dir).run(scenario).to_dict()
 
 
-def run_all(out_root: str | Path = "out/scenarios",
+def run_all(out_root: str | Path | None = None,
             project_dir: str | Path | None = None) -> Dict[str, Any]:
     r = ScenarioRunner(out_root, project_dir)
     reports = r.run_all()
-    files = r.report(reports, out_root)
+    files = r.report(reports, r.out_root)
     payload = {
         "summary": {
             "passed": sum(1 for x in reports if not x.failed),

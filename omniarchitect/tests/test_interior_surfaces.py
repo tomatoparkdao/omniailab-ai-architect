@@ -8,13 +8,14 @@ import json
 from pathlib import Path
 
 from omniarchitect.adapters.dxf import DxfAdapter
+from omniarchitect.paths import test_output_root
 from omniarchitect.demo import build_demo_project
 from omniarchitect.interior_surfaces import export
 from omniarchitect.workflow import StageRunner
 
 
 def test_residential_surface_cad_and_schedule_use_model_rooms() -> None:
-    root = Path(__file__).resolve().parents[2] / "out" / "interior-surface-test"
+    root = test_output_root() / "interior-surface-test"
     project = build_demo_project(root / "project")
     runner = StageRunner(project, root / "delivery")
     runner._ensure_scheme_installed()

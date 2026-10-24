@@ -1,0 +1,46 @@
+{
+  "_readme": [
+    "复制为项目根目录的 mcp.json 后填写；不要直接改名本文件再提交。",
+    "role 决定它承担哪类专业操作：cad 或 sketchup。不写 role 时按服务器名猜（含 cad / sketchup）。",
+    "toolAliases 用于把本系统的契约操作名钉到服务器真实工具名上——服务器工具名五花八门，不猜。",
+    "只填 command+args（stdio）或 url（http）；http 目前只登记不探测连通性。"
+  ],
+  "mcpServers": {
+    "cad": {
+      "role": "cad",
+      "command": "npx",
+      "args": ["-y", "your-cad-mcp-server"],
+      "env": {},
+      "toolAliases": {
+        "draw_plan": "create_plan",
+        "draw_elevation": "create_elevation",
+        "draw_section": "create_section",
+        "export_dxf": "write_dxf"
+      },
+      "_contract": {
+        "draw_plan": "输入 rooms/walls/level，输出可编辑 DXF 路径",
+        "draw_elevation": "输入 walls/openings，输出立面 DXF",
+        "draw_section": "输入 levels/walls，输出剖面 DXF",
+        "export_dxf": "把当前几何导出 DXF"
+      }
+    },
+    "sketchup": {
+      "role": "sketchup",
+      "command": "npx",
+      "args": ["-y", "your-sketchup-mcp-server"],
+      "env": {},
+      "toolAliases": {
+        "create_walls": "build_walls",
+        "create_openings": "cut_openings",
+        "capture_view": "export_image",
+        "export_obj": "export_model"
+      },
+      "_contract": {
+        "create_walls": "按墙体起终点/厚度建模",
+        "create_openings": "在墙上开洞（门/窗尺寸与位置）",
+        "capture_view": "固定机位出图（相同时刻同一相机，才可比对）",
+        "export_obj": "导出模型文件供本地几何校验"
+      }
+    }
+  }
+}

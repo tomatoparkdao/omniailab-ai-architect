@@ -27,9 +27,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect import research                       # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.model import Project                  # noqa: E402
 
-OUT = ROOT / "out" / "research-cases"
+OUT = test_output_root() / "research-cases"
 
 CASES = {
     "a": {

@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from omniarchitect.adapters.dxf import DxfAdapter
+from omniarchitect.paths import test_output_root
 from omniarchitect.adapters.mesh import MeshAdapter
 from omniarchitect.tests.test_sector_levels import _project
 from omniarchitect.workflow import StageRunner
@@ -16,7 +17,7 @@ from omniarchitect.workflow import StageRunner
 
 def _check(sector: str, text: str, code: str, expected: int, floors: int) -> None:
     project, _state = _project(sector, text, code)
-    root = Path(__file__).resolve().parents[2] / "out" / "sector-deepening-test"
+    root = test_output_root() / "sector-deepening-test"
     runner = StageRunner(project, root / sector)
     for stage in ("S4", "S5", "S6", "S7", "S8"):
         result = getattr(runner, f"stage_{stage}")()

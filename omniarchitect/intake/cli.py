@@ -62,7 +62,8 @@ def _project_path(value: str) -> Path:
 def _out_dir(args, project_path: Path) -> Path:
     if getattr(args, "out", ""):
         return Path(args.out)
-    return project_path.parent / "out" / "S1"
+    from ..paths import ensure_output_dir
+    return ensure_output_dir(None, "S1")
 
 
 def _print(payload: Any, as_json: bool) -> None:

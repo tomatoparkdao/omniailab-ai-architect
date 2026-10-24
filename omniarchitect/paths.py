@@ -8,6 +8,7 @@ cloned without editing constants.
 from __future__ import annotations
 
 from pathlib import Path
+import os
 
 ROOT = Path(__file__).resolve().parent.parent  # project root (package sits inside it)
 SCHEMAS = ROOT / "schemas"
@@ -53,9 +54,38 @@ ARCHITECT_SKILL_RAW_URL = (
     "https://raw.githubusercontent.com/tomatoparkdao/registered-architect/main/SKILL.md"
 )
 
+#: 外部专业规范能力入口（用户指定命名）。与 ARCHITECT_SKILL_URL 指向同一仓库，
+#: 保留两个名字是因为两处语义不同：一个说"它是谁"，一个说"它在流程里干什么"。
+#: **只登记链接，不下载**：仓库里的规范正文体量以百 MB 计，且会持续更新；
+#: 复制进来既拖垮本仓体积，也会变成一份过期副本。需要哪一条就按需读 raw 里
+#: 对应的子 Skill，读完即用、不落盘。
+EXTERNAL_STANDARDS_SKILL_URL = ARCHITECT_SKILL_URL
+
+
+def test_output_root() -> Path:
+    """Where test and demo artefacts go — **never inside the skill folder**.
+
+    A skill directory has to stay reviewable: 1.3 GB of render output, 66 run
+    directories and a nested checkout of somebody else's project makes it
+    impossible to see what is actually shipped. So every generated file goes to
+    a sibling folder next to the skill, not under it.
+
+    Default: `<parent of skill root>/缓存测试文件`. Override with
+    `OMNI_TEST_OUTPUT` when the layout differs (CI, another drive).
+    """
+    override = os.environ.get("OMNI_TEST_OUTPUT")
+    if override:
+        return Path(override)
+    return ROOT.parent / "缓存测试文件"
+
 
 def ensure_output_dir(path: str | Path | None, default: str = "out") -> Path:
-    p = Path(path) if path else (ROOT / default)
+    """Create and return an output directory, outside the skill folder.
+
+    An explicit `path` is honoured as given — the caller may have a reason
+    (a temp dir, a client folder). Only the *default* is redirected.
+    """
+    p = Path(path) if path else (test_output_root() / default)
     p.mkdir(parents=True, exist_ok=True)
     return p
 

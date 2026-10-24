@@ -13,6 +13,7 @@
 © OmniAiLab ｜ 开发者：Mochiball ｜ OmniAiLab AI建筑与室内设计总设计师（omniailabx.com）— 未经授权禁止复制、传播或二次分发。
 """
 from __future__ import annotations
+from omniarchitect.paths import test_output_root
 
 import json
 import sys
@@ -154,15 +155,16 @@ def _print(rep: dict) -> None:
 def main(argv: list[str]) -> int:
     runs = [Path(a) for a in argv[1:]]
     if not runs:
-        base = ROOT / "out" / "s38"
+        base = test_output_root() / "s38"
         runs = sorted({p.parent for p in base.rglob("run-manifest.json")})
     reps = []
     for r in runs:
         rep = _read_run(r)
         reps.append(rep)
         _print(rep)
-    (ROOT / "out" / "s38" / "verify.json").write_text(
-        json.dumps(reps, ensure_ascii=False, indent=1), encoding="utf-8")
+    out = test_output_root() / "s38" / "verify.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(reps, ensure_ascii=False, indent=1), encoding="utf-8")
     return 0
 
 

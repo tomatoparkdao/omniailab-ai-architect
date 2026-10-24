@@ -9,6 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from omniarchitect.adapters import DxfAdapter, MeshAdapter
+from omniarchitect.paths import test_output_root
 from omniarchitect.sector import brief, program
 from omniarchitect.sector.site_delivery import export, install_school
 from omniarchitect.sector.model_preview import COLORS, export as export_model_preview
@@ -37,7 +38,7 @@ def test_school_campus_cad_obj_and_takeoff_share_footprints() -> None:
     assert all(abs(a-b) < .02 for a, b in zip(ground.bbox(), placed)), (
         ground.bbox(), placed)
 
-    root = Path(__file__).resolve().parents[2] / "out" / "sector-site-test"
+    root = test_output_root() / "sector-site-test"
     artifacts = export(project, root)
     assert DxfAdapter().audit(artifacts[0], "S-FOOTPRINT")["ok"]
     # 红线 1 + 地块 5 + 临路带 1：临路带是这一轮补的，图上要有路也才有入口

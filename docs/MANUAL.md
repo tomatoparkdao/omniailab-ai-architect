@@ -1,7 +1,7 @@
 ---
 name: omniailab-ai-architect-manual
 description: 建筑与室内设计 Skill 完整操作手册 —— 八阶段逐段操作、八道门禁怎么过、命令速查、工具与权限分级、平台接入与创作能力独占、避坑总表与常见问题。
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

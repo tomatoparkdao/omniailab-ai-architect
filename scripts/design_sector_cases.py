@@ -37,6 +37,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect import workflow                                  # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.concept import gate as concept_gate              # noqa: E402
 from omniarchitect.concept.handoff import assess_plan_gate           # noqa: E402
 from omniarchitect.intake.interview import record_answer             # noqa: E402
@@ -44,7 +45,7 @@ from omniarchitect.model import Project                             # noqa: E402
 from omniarchitect.presentation import html as html_mod              # noqa: E402
 from omniarchitect.sector import plandraw                           # noqa: E402
 
-OUT = ROOT / "out" / "sector-round"
+OUT = test_output_root() / "sector-round"
 
 CASES = {
     "school": {

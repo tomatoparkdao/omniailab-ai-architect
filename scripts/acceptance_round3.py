@@ -31,6 +31,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from omniarchitect import changes, concept as C, disciplines as D          # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.demo import build_demo_project                          # noqa: E402
 from omniarchitect.intake.gate import assess_gate, decide_gate             # noqa: E402
 from omniarchitect.intake.interview import (                               # noqa: E402
@@ -40,7 +41,7 @@ from omniarchitect.intake.report import generate_bundle                    # noq
 from omniarchitect.model import Project                                    # noqa: E402
 from omniarchitect.workflow import StageRunner                             # noqa: E402
 
-OUT = ROOT / "out" / "acceptance-round3"
+OUT = test_output_root() / "acceptance-round3"
 
 
 class Client:

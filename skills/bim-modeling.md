@@ -3,7 +3,7 @@ name: omniailab-bim-modeling
 description: BIM 建模 —— 把统一空间模型翻译成带参数的构件与信息模型，支撑出图、算量与专业协同
 capability: bim-modeling
 stages: [S5, S7]
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

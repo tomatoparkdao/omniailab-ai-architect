@@ -1,7 +1,7 @@
 ---
 name: omniailab-acceptance-round5
 description: 第五轮验收 —— S2 选定概念是否真的落到 S3 平面、几何依据与 G3 三档结论；逐项标注 已验证 / 仅可探索 / 依赖顾问 / 未连接
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

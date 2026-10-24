@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 
 from omniarchitect.model import Project
+from omniarchitect.paths import test_output_root
 from omniarchitect.research import brief as brief_mod
 from omniarchitect.research import cases as case_mod
 from omniarchitect.research import report as report_mod
@@ -344,7 +345,8 @@ def test_run_writes_both_artifacts_and_stores_state():
         "https://www.archdaily.com/1187054/": ("200", DETAIL_HTML),
         "https://www.archdaily.com/1186590/": ("200", DETAIL_HTML),
     })
-    res = research_mod.run(p, out_dir="out/test-research", fetch_fn=f)
+    res = research_mod.run(p, out_dir=str(test_output_root() / "test-research"),
+                           fetch_fn=f)
     assert res.cases
     data = research_mod.load(p)
     assert data and data["counts"]["total"] == len(res.cases)

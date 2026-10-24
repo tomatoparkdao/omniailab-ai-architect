@@ -2,7 +2,7 @@
 name: omniailab-third-party-notices
 description: 第三方许可证与署名集中登记 —— 本仓唯一的第三方版权声明、许可证标识与来源链接存放处；普通设计成果与营销材料中不出现。
 scope: 许可证与署名登记（唯一处）
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

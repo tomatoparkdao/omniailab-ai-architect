@@ -34,10 +34,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect import workflow                              # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.intake.interview import record_answer        # noqa: E402
 from omniarchitect.model import Project                         # noqa: E402
 
-OUT = ROOT / "out" / "concept-round"
+OUT = test_output_root() / "concept-round"
 
 CASES = {
     "school": {

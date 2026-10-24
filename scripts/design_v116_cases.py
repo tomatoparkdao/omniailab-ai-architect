@@ -28,13 +28,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect import workflow                              # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.concept import evolution as evo              # noqa: E402
 from omniarchitect.concept import plate as plate_mod            # noqa: E402
 from omniarchitect.concept import proposal as prop              # noqa: E402
 from omniarchitect.intake.interview import record_answer        # noqa: E402
 from omniarchitect.model import Project                         # noqa: E402
 
-OUT = ROOT / "out" / "v116"
+OUT = test_output_root() / "v116"
 
 CASES = {
     "home": {

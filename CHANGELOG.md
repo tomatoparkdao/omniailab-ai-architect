@@ -1,7 +1,7 @@
 ---
 name: omniailab-changelog
 description: 变更记录 —— 自 v1.0.0（八阶段工作流）增量开发，未重建项目、未覆盖既有成果、既有测试全部保留并通过。
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -10,6 +10,66 @@ agent_created: true
 ---
 
 # 变更记录
+
+## v1.20.0 · 设计交接层：把 CAD、效果图、SketchUp 真正接成一条链
+
+上一轮做到"每个专业出得了本专业的图"。这一轮补的是图与图之间那段落空的部分：
+**这张图怎么变成效果图、怎么变成三维模型、发出去的指令到底有没有到达。**
+
+三条外部通道本轮实测都是缺外部交付物（不是没做）：
+CAD MCP 与 SketchUp MCP 无 `mcp.json`，图像平台缺 API 契约。
+所以做法是「连接层做成真的，缺口做成可执行的」。
+
+**MCP 桥接（新增 `tools/mcp_bridge.py`）**
+- 真实 JSON-RPC 客户端：`initialize` → `tools/list` → `tools/call`，握手过才算连上。
+- 契约按专业声明：CAD 四个操作（平面/立面/剖面/导出）、SketchUp 四个（墙/洞口/截图/导出）。
+- 三态裁决：`available` / `partial`（缺哪个操作点名）/ `not_configured`（附任务包）。
+- 工具名靠 `toolAliases` 钉住，不猜；未授权的调用直接拒（`needs_approval`）。
+- 已验证：用 stub 服务器实测握手、别名解析、真调用、缺件判 partial、任务包保参数。
+
+**SketchUp 交接（新增 `sketchup.py`）**
+- 无 MCP 时输出可直接运行的 `build_model.rb`：墙按厚度挤出、洞口在墙上画标记。
+- **长度一律带 `.mm`**——SketchUp Ruby 把裸数字当英寸，不带整个模型小 25.4 倍。
+- 洞口明确是标记不是切割（Make 无实体工具，跨版本无法可靠脚本开洞），文件头写明。
+- 固定机位 `camera_jobs.json`：与效果图同机位才比得了。
+
+**视觉任务书（新增 `visual_brief.py`）**
+- 提示词由五段拼成：几何事实 / 材料 / 光线 / 重点 / 不可改变项，数字全部取自模型。
+- 三专业三套规则：建筑日光 35°、室内 3500K、景观低角度长阴影；镜头与重点各不相同。
+- 专业口径修正：景观用「分区」不是「房间」；24 000 m² 的「场地基面」不算最大的房间。
+
+**线稿（几何控制）**
+- 墙填实、洞口挖白——空心的墙线图会被图像模型当成示意图忽略。
+- 景观没有墙，按用途 union 后画外环，否则 99 个碎块画成一张乱网。
+
+**一致性核查（新增 `consistency.py`）**
+- 任务书与模型脱节 → `stale` 并列出差异（模型改了房间数，旧任务书不能继续用）。
+- 导出的 OBJ 与模型外轮廓比对，米/毫米写错会被识别并换算。
+- 效果图是否忠于平面：**永远记 `pending_human`**，程序不替人判断。
+
+**接线**
+- S4 自动生成交接包到 `04-preliminary/handoff/`，三专业都生效。
+- 新命令：`studio`（交接包）、`mcp`（握手状态）、`standards`（外部规范入口，只给链接）。
+
+**外部规范 Skill**
+- `paths.EXTERNAL_STANDARDS_SKILL_URL` 指向自有仓库，`standards` 命令输出入口与按需读法。
+- **只登记链接，不下载**：规范正文体量以百 MB 计且持续更新，复制进仓只会得到过期副本。
+
+**产物边界（强制规则，永久生效）**
+- 测试、演示、渲染、验收产生的全部文件改写到技能目录**同级**的 `缓存测试文件/`，
+  技能目录里不再出现 `out/`、`scenarios/`、`run-*`、`s38/` 这类运行时目录。
+- 统一入口 `paths.test_output_root()`（可被 `OMNI_TEST_OUTPUT` 覆盖），
+  `ensure_output_dir(None)` 已内置重定向；10 个脚本与 4 个测试里的 `ROOT / "out"` 全部改掉。
+- 新增 `test_output_layout.py` 七道守卫：默认根在外部、技能目录无 `out/` 与 `run-*`、
+  `ScenarioRunner` 默认根、脚本源码扫描、**测试源码扫描**、env 覆盖。
+- 已把历史 1.3 GB / 66 个 run 目录迁到 `缓存测试文件/`。起因很实际：
+  产物堆在技能里，"这个技能到底发布了什么"根本看不清。
+- `AGENTS.md` 的目录铁律同步改写（原文写的是"所有产物必须落在本目录内"，已作废）。
+
+实跑：住宅 11 房间/门 11/窗 5、小学 56 房间/门窗 92、庭院 99 分区，三项目均出交接包；
+SketchUp 与图像平台如实记 `not_configured` 并留下可执行脚本与提示词。
+新增 `test_mcp_bridge.py`（7 条）+ `test_studio_handoff.py`（10 条）+ `test_output_layout.py`（7 条）；801 项测试通过。
+
 
 ## v1.19.0 · 三个专业真的出得了本专业的图
 

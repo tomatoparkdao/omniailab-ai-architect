@@ -5,7 +5,7 @@ description: 建筑设计原理 —— 方案阶段对全局负责的判断依�
 stage_affinity: [S1, S2, S3, S4]
 loads_when: 当任务涉及总体布局、体型生成、功能分区、流线组织或形体与场地关系判断时加载
 load_cost: medium
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

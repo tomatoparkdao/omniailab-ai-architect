@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect.adapters import DxfAdapter  # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.demo import build_demo_project  # noqa: E402
 from omniarchitect.sector.plandraw import plan_svg  # noqa: E402
 from omniarchitect.registry import SIGNATURE  # noqa: E402
@@ -24,7 +25,7 @@ from scripts.design_sector_cases import _shot  # noqa: E402
 
 
 def main() -> int:
-    root = ROOT / "out" / "residential-150-preview"
+    root = test_output_root() / "residential-150-preview"
     project = build_demo_project(root / "project")
     project.project_id = "preview-residence-150"
     project.name = "150㎡级住宅精装修 · 合成案例"

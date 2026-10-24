@@ -473,6 +473,125 @@ def cmd_conditions(args) -> int:
     return 0
 
 
+def cmd_studio(args) -> int:
+    """设计交接包：视觉任务书 + 线稿 + SketchUp 交接 + 一致性 + 连接状态。"""
+    from . import studio
+
+    project = _load(args)
+    base = Path(args.project)
+    proj_dir = base if base.is_dir() else base.parent
+    out = Path(args.out) if getattr(args, "out", None) else proj_dir / "studio"
+    try:
+        result = studio.package(
+            project, out,
+            discipline=getattr(args, "discipline", None) or None,
+            level_id=getattr(args, "level", None),
+            style=getattr(args, "style", "") or "",
+            obj_path=getattr(args, "obj", None) or None,
+            project_dir=proj_dir,
+        )
+    except ValueError as exc:
+        print(f"交接包未生成：{exc}")
+        return 1
+    if args.json:
+        _print_json({"discipline": result["discipline"],
+                     "files": result["files"],
+                     "consistency": result["consistency"],
+                     "mcp": result["mcp"],
+                     "provider": result["provider"],
+                     "shots": len(result["brief"]["shots"])})
+        return 0
+    g = result["brief"]["geometry"]
+    print(f"设计交接包　{result['discipline']}　→ {out}")
+    print(f"  几何：{g['rooms']} 个{g['unit']} / 门 {g['doors']} / 窗 {g['windows']}")
+    print(f"  镜头：{len(result['brief']['shots'])} 个（提示词已绑定几何）")
+    print(f"  SketchUp：{result['sketchup'].get('state')}")
+    print(f"  一致性：{result['consistency']['verdict']}")
+    mcp = result["mcp"]["servers"]
+    for role in ("cad", "sketchup"):
+        prof = mcp.get(role) or {}
+        print(f"  {prof.get('label') or role}：{prof.get('state')}")
+    print(f"  图像平台：{result['provider']['image_generation']}")
+    if result["consistency"]["blocking"]:
+        for b in result["consistency"]["blocking"]:
+            print(f"  ! {b}")
+    print(f"  说明：{out / 'README.md'}")
+    return 0
+
+
+def cmd_mcp(args) -> int:
+    """MCP 连接状态：握手后如实报告可用/半可用/未配置。"""
+    from .tools import mcp_bridge
+
+    base = Path(args.project) if getattr(args, "project", None) else None
+    proj_dir = None
+    if base is not None:
+        proj_dir = base if base.is_dir() else base.parent
+    payload = mcp_bridge.status(proj_dir)
+    if args.json:
+        _print_json(payload)
+        return 0
+    print(f"MCP 配置：{payload['config'] or '未找到 mcp.json'}")
+    for role, prof in payload["servers"].items():
+        state = prof.get("state")
+        detail = ""
+        if state == mcp_bridge.AVAILABLE:
+            detail = f"工具映射 {prof.get('resolved')}"
+        elif state == mcp_bridge.PARTIAL:
+            detail = f"缺 {prof.get('missing')}"
+        else:
+            detail = prof.get("error") or "未配置"
+        print(f"  {prof.get('label')}：{state} —— {detail}")
+    print(f"可用：{payload['usable'] or '无'}")
+    print("模板见 mcp.json.example；未配置时各阶段会写任务包而不是假装已调用。")
+    return 0
+
+
+def cmd_standards(args) -> int:
+    """外部规范 Skill：只给入口与按需读法，不下载仓库。
+
+    规范正文体量以百 MB 计且持续更新，复制进本仓只会得到一份过期副本。
+    这里输出的是"需要哪一条、去哪个地址读、读完的结论怎么标注"。
+    """
+    from .paths import ARCHITECT_SKILL_RAW_URL, EXTERNAL_STANDARDS_SKILL_URL
+
+    jurisdiction = getattr(args, "jurisdiction", "") or ""
+    if getattr(args, "project", None):
+        try:
+            project = _load(args)
+            jurisdiction = jurisdiction or str(
+                (project.meta or {}).get("jurisdiction") or "")
+        except Exception:                 # noqa: BLE001  没有项目也要能查入口
+            pass
+    payload = {
+        "url": EXTERNAL_STANDARDS_SKILL_URL,
+        "skill_md": ARCHITECT_SKILL_RAW_URL,
+        "policy": "只读链接、按需读子 Skill、不 clone、不 submodule、不缓存、不复制进本仓",
+        "jurisdiction": jurisdiction or "未指定（按项目所在地选择 country-* 模块）",
+        "usage": [
+            "需要规范依据时：读 SKILL.md 找出与本项目专业/辖区对应的子模块",
+            "只读与该次设计有关的那几条，不要整仓扫描",
+            "引用时记录：规范名称、适用地区、版本或发布日期、来源地址",
+            "结论标注为「待持证人员复核」，不得声明合规结论",
+        ],
+        "note": "本系统不替代项目所在地持证专业人员的法规审查与签署",
+    }
+    if args.json:
+        _print_json(payload)
+        return 0
+    print("外部规范 Skill（只登记链接，不下载）")
+    print(f"  仓库：{payload['url']}")
+    print(f"  入口：{payload['skill_md']}")
+    print(f"  辖区：{payload['jurisdiction']}")
+    print(f"  边界：{payload['policy']}")
+    print()
+    for line in payload["usage"]:
+        print(f"  - {line}")
+    print()
+    print(payload["note"])
+    return 0
+
+
 def cmd_verify(args) -> int:
     project = _load(args)
     issues: List[str] = []
@@ -712,6 +831,27 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--check", action="store_true", help="只校验，不写入模型")
     sp.add_argument("--replace", action="store_true", help="替换已有轮廓（属几何变更，慎用）")
     sp.set_defaults(func=cmd_conditions)
+
+    sp = add_project(sub.add_parser(
+        "studio", help="设计交接包：视觉任务书/线稿/SketchUp/一致性/连接状态"))
+    sp.add_argument("--out", default=None, help="输出目录（默认项目目录下 studio/）")
+    sp.add_argument("--discipline", default=None,
+                    choices=["architecture", "interior", "landscape"],
+                    help="专业（默认按项目判断）")
+    sp.add_argument("--style", default="", help="风格描述（默认取已确认概念）")
+    sp.add_argument("--obj", default=None, help="已导出的 OBJ，用于网格一致性比对")
+    sp.set_defaults(func=cmd_studio)
+
+    sp = sub.add_parser("mcp", help="MCP 连接状态（CAD / SketchUp）")
+    sp.add_argument("--project", default=None, help="项目目录（用于读取该目录的 mcp.json）")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_mcp)
+
+    sp = sub.add_parser("standards", help="外部规范 Skill 入口（只给链接，不下载）")
+    sp.add_argument("--project", default=None, help="项目目录（用于读取辖区）")
+    sp.add_argument("--jurisdiction", default="", help="辖区，如 CN/US/DE")
+    sp.add_argument("--json", action="store_true")
+    sp.set_defaults(func=cmd_standards)
 
     sp = add_project(sub.add_parser("verify", help="模型校验"))
     sp.set_defaults(func=cmd_verify)

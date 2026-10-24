@@ -1,7 +1,7 @@
 ---
 name: omniailab-agents-conventions
 description: 开发约定 —— 唯一项目根、目录职责、9 条硬性规则、命令清单与改动流程
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -38,7 +38,13 @@ python -m omniarchitect doctor
 ```
 
 - 父目录 `E:\SKILL\建筑室内设计skill\.workbuddy\` 存放会话记忆，**不属于本仓库，不得删除或改写**。
-- 所有工作文件、脚本、缓存、临时产物都必须落在本目录内。禁止在 `C:\`、桌面、Home 或其它盘另建项目副本。
+- **代码与技能内容落在本目录内；运行产物一律落在本目录之外。**
+  测试、演示、渲染、验收跑出来的所有文件（`out/`、`scenarios/`、`run-*`、`s38/`、`v116/` 等）
+  必须写到 `E:\SKILL\建筑室内设计skill\缓存测试文件\`（即本目录的**同级目录**）。
+  代码默认值由 `paths.test_output_root()` 统一给出，不要在任何脚本里硬编码 `ROOT / "out"`；
+  守卫 `omniarchitect/tests/test_output_layout.py` 会拦下违规写法。
+  理由：曾经在本目录堆积 1.3 GB / 66 个 run 目录的产物，"这个技能到底发布了什么"完全看不清。
+- 禁止在 `C:\`、桌面、Home 或其它盘另建项目副本（产物目录除外，见上一条）。
 
 ### 目录职责
 
@@ -64,7 +70,7 @@ python -m omniarchitect doctor
 | `workflows/` · `docs/` | 阶段流程定义与文档 | 文档 |
 | `installer/` · `compatibility/` | 安装脚本、清单与兼容说明 | 脚本 |
 | `projects/` | 示例与真实项目数据 | 项目数据 |
-| `out/` | 运行产物（可丢弃） | 可清理 |
+| `../缓存测试文件/` | **运行产物（本目录之外）** | 测试/演示/渲染都写这里，见上一条铁律 |
 | `openai.yaml` | 接口元数据（显示名 / 默认提示词 / 隐式调用开关） | 显示名与版本须与 `SKILL.md` 同步 |
 | `LICENSE` · `VERSION` | 许可与版本（全仓唯一处） | 版本号须与 `__version__`、`pyproject.toml` 一致 |
 | `README.md` · `README_EN.md` | 中英文对外说明 | 两份必须镜像，改动同步 |

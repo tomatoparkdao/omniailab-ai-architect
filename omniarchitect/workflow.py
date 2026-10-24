@@ -381,6 +381,10 @@ class StageRunner:
         if _cond:
             out.notes.insert(0, _cond)
             self._conditions_note = ""          # 只报一次，别在每个阶段重复同一句
+
+        # S4 是客户看汇报前的那一步：图纸之外还要交代"图怎么画、模型怎么建"。
+        if stage_id == "S4":
+            self._attach_handoff(out, self._dir("S4"))
         out.skills = out.skills or skills_for_stage(stage_id)
         out.stage_name = out.stage_name or f"{st.code} {st.name}"
         out.seconds = time.time() - t0
@@ -1466,6 +1470,44 @@ class StageRunner:
     # ==================================================================
     # 04 初步设计与方案深化
     # ==================================================================
+    # ------------------------------------------------------------------
+    def _attach_handoff(self, outcome: StageOutcome, d: Path) -> None:
+        """把视觉任务书与 SketchUp 交接挂到 S4 成果上。
+
+        S4 是"概念汇报前"的那一步：客户马上要看图。所以这一步不只出图纸，
+        还要把"图该怎么画、模型该怎么建"写成交接文件——提示词绑定几何、
+        线稿给图像模型当控制、建模脚本可以直接跑。
+
+        连接状态如实写：没有 MCP 就记 not_configured 并留可执行脚本，
+        没有图像平台就留着 prompt，绝不生成替代图。
+        """
+        if outcome.status in ("blocked", "failed"):
+            return
+        try:
+            from . import studio
+
+            res = studio.package(self.project, d / "handoff",
+                                 level_id=self.level_id,
+                                 project_dir=self.project_dir)
+        except Exception as exc:  # noqa: BLE001  交接包失败不该拖垮 S4
+            outcome.notes.append(f"设计交接包未生成：{type(exc).__name__}: {exc}")
+            return
+        hand = d / "handoff"
+        for name in ("visual-brief.json", "visual-brief.md", "linework.svg",
+                     "README.md", "consistency.json"):
+            target = hand / name
+            if target.exists():
+                outcome.artifacts.append(str(target))
+        rb = hand / "sketchup" / "build_model.rb"
+        if rb.exists():
+            outcome.artifacts.append(str(rb))
+        outcome.notes.append(
+            f"设计交接包：{len(res['brief']['shots'])} 个镜头（提示词取自模型几何）；"
+            f"SketchUp {res['sketchup'].get('state')}；"
+            f"图像平台 {res['provider']['image_generation']}")
+        if res["consistency"]["blocking"]:
+            outcome.notes.append("交接一致性阻断：" + "；".join(res["consistency"]["blocking"]))
+
     def stage_S4(self) -> StageOutcome:
         d = self._dir("S4")
         from .concept.handoff import plan_record

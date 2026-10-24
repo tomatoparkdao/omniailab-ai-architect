@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from omniarchitect.adapters.dxf import DxfAdapter
+from omniarchitect.paths import test_output_root
 from omniarchitect.adapters.mesh import MeshAdapter
 from omniarchitect.concept.handoff import store_plan_record
 from omniarchitect.model import Element, Level, Project, Space
@@ -35,7 +36,7 @@ def test_landscape_s4_to_s8_real_files() -> None:
                                           "height_mm": 3200},
                                 properties={"landscape_kind": "tree"})]
     store_plan_record(project, {"sector": "landscape", "discipline": "landscape"})
-    root = Path(__file__).resolve().parents[2] / "out" / "landscape-delivery-test"
+    root = test_output_root() / "landscape-delivery-test"
     runner = StageRunner(project, root)
     for stage in ("S4", "S5", "S6", "S7", "S8"):
         outcome = getattr(runner, f"stage_{stage}")()
@@ -84,7 +85,7 @@ def test_proposed_garden_cad_and_mesh_read_canonical_site_geometry() -> None:
         assert all(p.is_valid for p in polygons)
         assert abs(unary_union(polygons).area / 1e6 - 800) < 0.01
         assert abs(sum(p.area for p in polygons) / 1e6 - 800) < 0.01
-    root = Path(__file__).resolve().parents[2] / "out" / "garden-geometry-test"
+    root = test_output_root() / "garden-geometry-test"
     result = DxfAdapter().draw_landscape(project, root / "site.dxf")
     assert result.ok, result.errors
     assert result.validation["stats"]["entities"].get("CIRCLE", 0) >= 2

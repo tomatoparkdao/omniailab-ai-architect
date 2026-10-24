@@ -36,7 +36,8 @@ def _out_dir(args: Any, project: Project) -> Path:
     base = getattr(args, "out", None)
     if base:
         return Path(base)
-    return Path(args.project) / "out" / "S2"
+    from ..paths import ensure_output_dir
+    return ensure_output_dir(None, "S2")
 
 
 def _print(payload: Dict[str, Any], action: str) -> None:

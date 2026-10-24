@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from omniarchitect import changes, concept as C, finishes                     # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.demo import build_demo_project                            # noqa: E402
 from omniarchitect.intake import (                                           # noqa: E402
     answer_question,
@@ -42,7 +43,7 @@ from omniarchitect.model import Project                                      # n
 from omniarchitect.stage_state import all_states, get_state                   # noqa: E402
 from omniarchitect.workflow import StageRunner                               # noqa: E402
 
-OUT = ROOT / "out" / "acceptance-round1"
+OUT = test_output_root() / "acceptance-round1"
 
 ONE_LINER_A = "我有一套 150㎡ 的大平层，一家三口，想要现代意式极简，预算 160 万"
 ONE_LINER_B = "我们公司要搬办公室，一百多平，六十个人，希望安静、见客户有面子"

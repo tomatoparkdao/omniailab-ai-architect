@@ -478,7 +478,7 @@ def register(sub: "argparse._SubParsersAction") -> None:
 
     sp = sub.add_parser("scenario", help="运行 Scenario A/B/C 验收")
     sp.add_argument("--name", default="all", help="A | B | C | all")
-    sp.add_argument("--out", default="out/scenarios")
+    sp.add_argument("--out", default=None)
     sp.add_argument("--project", default=None)
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_scenario)

@@ -22,13 +22,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from omniarchitect import changes, conformance as CONF, intent as I     # noqa: E402
+from omniarchitect.paths import test_output_root
 from omniarchitect.demo import build_demo_project                       # noqa: E402
 from omniarchitect.intake.gate import decide_gate                       # noqa: E402
 from omniarchitect.intake.interview import answer_question, start_interview  # noqa: E402
 from omniarchitect.model import Element                                 # noqa: E402
 from omniarchitect.workflow import StageRunner                          # noqa: E402
 
-OUT = ROOT / "out" / "acceptance-round4"
+OUT = test_output_root() / "acceptance-round4"
 
 
 def _set_feature(p: Any, feature: Dict[str, Any], keep_others: bool = False) -> None:

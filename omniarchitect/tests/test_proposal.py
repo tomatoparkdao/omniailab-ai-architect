@@ -140,7 +140,8 @@ def test_reference_page_carries_credit_and_rights() -> None:
 
 
 def test_unavailable_reference_says_why_instead_of_substituting() -> None:
-    out = cur_mod.curate(Path("out/_unused"), ctx=_ctx(), sector="education",
+    out = cur_mod.curate(Path(tempfile.mkdtemp()) / "_unused", ctx=_ctx(),
+                         sector="education",
                          style_labels=["现代简洁"], use_cache=False)
     assert out["available"] is False
     assert out["shots"] == []

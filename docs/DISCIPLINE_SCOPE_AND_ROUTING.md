@@ -1,7 +1,7 @@
 ---
 name: 专业范围与路由
 description: OmniAiLab AI Architect 的委托范围识别——一个项目到底涉及哪些专业、问谁的问题、缺什么资料、哪些专业之间必须逐条回答接口
-version: 1.19.0
+version: 1.20.0
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
