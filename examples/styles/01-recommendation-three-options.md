@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-example-recommendation
 description: 示例 · 风格推荐三套方案 —— 稳妥 / 个性 / 混搭，含逐条归因的推荐理由与代价。
-version: 1.21.1
+version: 1.21.2
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

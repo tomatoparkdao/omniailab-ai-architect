@@ -1,7 +1,7 @@
 ---
 name: omniailab-ai-architect-manual
 description: 建筑与室内设计 Skill 完整操作手册 —— 八阶段逐段操作、八道门禁怎么过、命令速查、工具与权限分级、平台接入与创作能力独占、避坑总表与常见问题。
-version: 1.21.1
+version: 1.21.2
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
@@ -42,6 +42,7 @@ agent_created: true
 | 平面刚确认，要看概念效果图怎么出 | 第 7 节 |
 | 要找参考图做意向板、或把方案视频做生动 | 第 7b 节 |
 | 概念里有挑空、拆墙、大跨度，想知道怎么做成 | 第 7c 节 |
+| 不确定项目算哪类、该由哪个专业主导 | 第 7d 节 |
 | 想查某项能力归哪个阶段、怎么调 | 第 8 节 |
 | 报错了、环境不对、工具没装 | 第 9、12、13 节 |
 | 要接平台、要出真实效果图 | 第 10 节 |
@@ -79,7 +80,7 @@ agent_created: true
 
 | 工具 | 放这里 | 怎么调起 |
 |---|---|---|
-| **Codex**（推荐主用） | 没有原生 skill 目录：把文件夹放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，再在项目根目录的 `AGENTS.md` 里加一行：<br>`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行。` | 说"按 SKILL.md 开始做设计" |
+| **Codex**（推荐主用） | 没有原生 skill 目录：把文件夹放进项目，例如 `<你的项目>/skills/omniailab-ai-architect/`，再在项目根目录的 `AGENTS.md` 里加一行：<br>`设计任务：先读 skills/omniailab-ai-architect/SKILL.md，并按其流程执行。` | 说「按 `SKILL.md` 开始做设计」 |
 | **Claude / Claude Code** | 个人级 `~/.claude/skills/omniailab-ai-architect/`<br>项目级 `<你的项目>/.claude/skills/omniailab-ai-architect/` | 输入 `/omniailab-ai-architect`，或直接描述任务 |
 | **WorkBuddy** | 用户级 `~/.workbuddy/skills/omniailab-ai-architect/`<br>项目级 `<你的项目>/.workbuddy/skills/omniailab-ai-architect/` | 新开会话后出现在技能列表；说 `$omniailab-ai-architect 开始` |
 | **OmniAiLab**（omniailabx） | 官网下载客户端（版本以官网为准）后，把整个文件夹放进它的**技能目录**（客户端内可查看位置） | 说 `$omniailab-ai-architect 开始` |
@@ -105,9 +106,9 @@ python installer/verify_install.py --check-python     # 校验安装与解释器
 
 **指针安装 vs 复制安装**：`pointer`（默认）只在技能目录放 `SKILL.md` + 指回原仓库的 `omniailab-home.txt`，升级只需 `git pull`；`copy` 走**白名单**，只复制能力（技能定义 / 代码 / 知识 / 风格 / Schema / 文档 / 安装器），**不带项目、测试、开发脚本与缓存**，装出来 5 MB 级，适合搬移和离线分发。
 
-> **必须整个文件夹一起复制，不能只拷 SKILL.md。** 31 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、15 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
+> **必须整个文件夹一起复制，不能只拷 `SKILL.md`。** 31 项能力说明在 `skills/`（**文件名就是能力名**，可直接按名加载）、15 个知识域在 `knowledge/`、判据在 `docs/DESIGN_CRITERIA.md`、操作手册就是本文件；少拷一个目录，运行时就会断链。
 >
-> **也别把成果写进这个文件夹。** 设计成果一律落在独立的运行工作区，见第 16 章 —— 技能包只放能力，才能一直保持可打包、可审阅、可比对版本。
+> **也别把成果写进这个文件夹。** 设计成果一律落在独立的运行工作区，见第 15 章 —— 技能包只放能力，才能一直保持可打包、可审阅、可比对版本。
 
 ### 2.3 怎么跟它对话
 
@@ -180,9 +181,9 @@ python -m omniarchitect confirm --project <项目目录> --stage S3 --by 业主
 python -m omniarchitect reject  --project <项目目录> --stage S3 --reason "面积要重算"
 ```
 
-### 3.3 五条不可协商的专业逻辑
+### 3.3 七条不可协商的专业逻辑
 
-这五条写进了代码并有测试守着，**不是建议**：
+这七条写进了代码并有测试守着，**不是建议**：
 
 | 编号 | 规则 | 为什么 |
 |---|---|---|
@@ -202,8 +203,8 @@ python -m omniarchitect reject  --project <项目目录> --stage S3 --reason "�
 
 | 方式 | 怎么做 | 适合 |
 |---|---|---|
-| **A. 用示例项目先跑通** | `python -m omniarchitect demo --out out` | 第一次用，想看它能产出什么 |
-| **B. 从任务书开始** | `python -m omniarchitect new --project projects/我的项目` 后逐阶段跑 | 有明确需求，从零开始 |
+| **A. 用示例项目先跑通** | `python -m omniarchitect demo` | 第一次用，想看它能产出什么（示例项目建在工作区） |
+| **B. 从任务书开始** | `python -m omniarchitect new --project 我的项目` 后逐阶段跑 | 有明确需求，从零开始（项目建在工作区） |
 | **C. 从已有图纸/模型接手** | 把图纸数据整理进项目 JSON（或直接描述现状） | 已有原始条件，要它接着做 |
 
 **不需要准备的东西**：本地模型、向量数据库、任何 API Key、专业显卡。渲染与生成参数在
@@ -482,47 +483,6 @@ python -m omniarchitect canvas-models                                           
 
 ---
 
-## 7d. 项目分类与专业路由（先判断它在盖什么）
-
-同一句「做个酒店」，可能是新建一栋酒店，也可能只是既有酒店的室内精装。两者的专业、
-流程、成果完全不同。所以在问完用途之后，系统会先把三件事分开记下来：
-
-| 维度 | 例子 | 决定什么 |
-|---|---|---|
-| 用途（可多选） | A 建筑 15 类／B 室内 12 类／C 景观 9 类，共 575 个子类 | 用哪套设计方法、要问哪些行业问题 |
-| 项目性质 | 新建／改扩建／既有室内装修／独立景观／功能转换／历史保护 | 能不能动结构、要不要按既有条件做 |
-| 委托范围 | 只做室内／建筑+景观／三专业整体 | 哪些专业进入范围 |
-
-三条容易踩的：
-
-1. **名称不等于委托。** 说「酒店室内」，系统不会顺手给你排一版酒店建筑平面——
-   客户没买建筑。反过来，说「新建学校」，它会问班额、专用教室、接送与疏散。
-2. **民用建筑 = 居住建筑 + 公共建筑。** 学校、医院、酒店是公共建筑下面的功能类型，
-   不是与民用建筑并列的一类；工业和农业建筑是生产建筑，单独算。
-3. **一个项目可以有多个用途。** 「商业办公酒店综合体」就是三个标签，各专业的任务都会列，
-   但主导专业仍按委托与实际条件判，不按名字里谁排在前面。
-
-问什么：大类只贡献 2–3 条行业专项问题（每轮仍最多 3 问），不是几百套问卷。
-医院问床位/门诊量、医疗工艺谁给、有哪些专项（手术室/ICU/影像/负压）；
-学校问学制班额、住宿与接送、公共设施是否对外；厂房问工艺顺序、物流车次、洁净与防爆；
-室内景观问光照、楼板荷载、排水与维护能力。
-
-查索引与单个类型：
-
-```bash
-python -m omniarchitect taxonomy                      # 36 类索引
-python -m omniarchitect taxonomy --show A4            # 医院：专业要点 / 概念方向 / S3 任务
-python -m omniarchitect taxonomy --detect "既有企业办公室装修"
-```
-
-**能力边界写在类型里**，成果里也会写：住宅能算到房间级；医院只做功能关系、洁污分区与
-任务梳理，医疗工艺与感控须专项顾问；厂房必须由工艺专业给条件。新增一个类型不等于
-能自动完成那一类的全套合规设计。
-
-完整索引与路由说明见 `docs/PROJECT_TAXONOMY.md`。
-
----
-
 ## 7c. 结构与机电：是实现路径，不是审批口
 
 这是本版最容易误解的一处，单独说明。
@@ -561,6 +521,47 @@ python -m omniarchitect taxonomy --detect "既有企业办公室装修"
 ```bash
 python -c "from omniarchitect.design import enabling as e; r=e.structure_paths('想做通高客厅'); [print(p['name'],'|',p['trades'],'|',p['sign_off']) for g in r['goals'] for p in g['paths']]"
 ```
+
+---
+
+## 7d. 项目分类与专业路由（先判断它在盖什么）
+
+同一句「做个酒店」，可能是新建一栋酒店，也可能只是既有酒店的室内精装。两者的专业、
+流程、成果完全不同。所以在问完用途之后，系统会先把三件事分开记下来：
+
+| 维度 | 例子 | 决定什么 |
+|---|---|---|
+| 用途（可多选） | A 建筑 15 类／B 室内 12 类／C 景观 9 类，共 575 个子类 | 用哪套设计方法、要问哪些行业问题 |
+| 项目性质 | 新建／改扩建／既有室内装修／独立景观／功能转换／历史保护 | 能不能动结构、要不要按既有条件做 |
+| 委托范围 | 只做室内／建筑+景观／三专业整体 | 哪些专业进入范围 |
+
+三条容易踩的：
+
+1. **名称不等于委托。** 说「酒店室内」，系统不会顺手给你排一版酒店建筑平面——
+   客户没买建筑。反过来，说「新建学校」，它会问班额、专用教室、接送与疏散。
+2. **民用建筑 = 居住建筑 + 公共建筑。** 学校、医院、酒店是公共建筑下面的功能类型，
+   不是与民用建筑并列的一类；工业和农业建筑是生产建筑，单独算。
+3. **一个项目可以有多个用途。** 「商业办公酒店综合体」就是三个标签，各专业的任务都会列，
+   但主导专业仍按委托与实际条件判，不按名字里谁排在前面。
+
+问什么：大类只贡献 2–3 条行业专项问题（每轮仍最多 3 问），不是几百套问卷。
+医院问床位/门诊量、医疗工艺谁给、有哪些专项（手术室/ICU/影像/负压）；
+学校问学制班额、住宿与接送、公共设施是否对外；厂房问工艺顺序、物流车次、洁净与防爆；
+室内景观问光照、楼板荷载、排水与维护能力。
+
+查索引与单个类型：
+
+```bash
+python -m omniarchitect taxonomy                      # 36 类索引
+python -m omniarchitect taxonomy --show A4            # 医院：专业要点 / 概念方向 / S3 任务
+python -m omniarchitect taxonomy --detect "既有企业办公室装修"
+```
+
+**能力边界写在类型里**，成果里也会写：住宅能算到房间级；医院只做功能关系、洁污分区与
+任务梳理，医疗工艺与感控须专项顾问；厂房必须由工艺专业给条件。新增一个类型不等于
+能自动完成那一类的全套合规设计。
+
+完整索引与路由说明见 `docs/PROJECT_TAXONOMY.md`。
 
 ---
 
@@ -789,7 +790,7 @@ python -m omniarchitect verify --project <项目目录>
 ```
 
 **升级 Skill 会不会丢我的项目数据？**
-不会。项目数据在 `projects/` 下，与 Skill 本体分离；安装器**只移不删**，目标已存在时先备份到 `_backup/`。
+不会。项目数据在运行工作区的 `projects/` 下（见第 15 章），与 Skill 本体分离；安装器**只移不删**，目标已存在时先备份到 `_backup/`。
 
 ---
 
@@ -866,7 +867,7 @@ python -m omniarchitect package            # 白名单清单 + 夹带检查，�
 
 ## 16. 版本同步与更新
 
-**本手册与 Skill 版本严格同步（当前 v1.21.1）。** Skill 每次更新后，
+**本手册与 Skill 版本严格同步（当前 v1.21.2）。** Skill 每次更新后，
 本手册（飞书 + Notion + `docs/MANUAL.md` 三处）与两份 README 会同步更新，版本号保持一致——
 手册永远对应当前最新版 Skill。
 
@@ -883,7 +884,7 @@ python -m omniarchitect audit --write docs && python -m omniarchitect policy --w
 
 1. 每份 `.md` 的开头是统一的 front-matter，结尾是署名行（README 例外，按参考仓库做法不带元数据）；
 2. 表格用 `|---|---|` 写法（不补空格）；**中英文 README 的每张表总显示宽度必须 ≥ 140 单位**，
-   否则在 GitHub 上撑不满正文区、右边界会缩进——完整规则与换算依据见 [TABLES.md](TABLES.md)，
+   否则在 GitHub 上撑不满正文区、右边界会缩进——完整规则与换算依据见 [docs/TABLES.md](https://github.com/tomatoparkdao/omniailab-ai-architect/blob/main/docs/TABLES.md)，
    由 `python scripts/check_tables.py --check` 守住；
 3. 版本号在 `VERSION` / `pyproject.toml` / `SKILL.md` / `installer/manifest.json` / `openai.yaml` 与两份 README
    之间保持一致，各篇 `.md` 的 front-matter `version:` 同步跟进（历史变更记录里的旧版本号不动）。

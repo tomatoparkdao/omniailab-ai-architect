@@ -3,7 +3,7 @@ name: omniailab-material-design
 description: 材料与色彩设计 —— 把设计意图翻译成可采购、可施工、可维护的主材表、样板与排版
 capability: material-design
 stages: [S4, S5, S8]
-version: 1.21.1
+version: 1.21.2
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

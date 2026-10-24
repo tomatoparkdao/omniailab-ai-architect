@@ -1,7 +1,7 @@
 ---
 name: omniailab-style-examples
 description: 示例产物索引 —— 六项能力的真实输出，可直接对照。
-version: 1.21.1
+version: 1.21.2
 author: OmniAiLab
 developer: Mochiball
 agent_created: true

@@ -3,7 +3,7 @@ name: omniailab-design-brief
 description: 设计任务书 —— 把业主需求、预算与验收标准翻译成可勾选的功能任务书与面积指标，S6 用它回核定稿
 capability: design-brief
 stages: [S1, S6]
-version: 1.21.1
+version: 1.21.2
 author: OmniAiLab
 developer: Mochiball
 agent_created: true
